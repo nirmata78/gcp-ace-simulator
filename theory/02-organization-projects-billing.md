@@ -17,7 +17,9 @@ Everything in Google Cloud is attached to a node in one tree, paid for by one bi
 quotas of one project. Get this part right and half of the identity and governance questions in Part 3 answer
 themselves.
 
-## <a id="s2-1"></a>2.1 The resource hierarchy
+<a id="s2-1"></a>
+
+## 2.1 The resource hierarchy
 
 ```
 Organization                 the root: one per Cloud Identity / Workspace customer, or a standalone org
@@ -51,7 +53,9 @@ Organization                 the root: one per Cloud Identity / Workspace custom
 
 `gcloud` accepts the ID or the number, never the display name.
 
-## <a id="s2-2"></a>2.2 Creating the organization: Cloud Identity, Workspace, or standalone
+<a id="s2-2"></a>
+
+## 2.2 Creating the organization: Cloud Identity, Workspace, or standalone
 
 An **organization resource** is created for you — you never "create an organization" with a command. There are
 now two routes to one:
@@ -90,7 +94,9 @@ manages IAM on the resource hierarchy. Google's set-up guidance is to grant org-
 > Terraform. This is the practical meaning of the guide's *"setting up cloud networking"* in Section 1 — the
 > foundation network, not individual firewall rules.
 
-## <a id="s2-3"></a>2.3 Folders and projects in practice
+<a id="s2-3"></a>
+
+## 2.3 Folders and projects in practice
 
 {: .cmds }
 | Task | Command |
@@ -126,7 +132,9 @@ Administrator on a least-privilege question.
 > standard first governance step — it is the answer to *"users keep creating projects and billing accounts
 > outside the folder structure"*.
 
-## <a id="s2-4"></a>2.4 APIs and services
+<a id="s2-4"></a>
+
+## 2.4 APIs and services
 
 **APIs are enabled per project.** A new project has very little enabled, and a call to a disabled API fails with
 *"API has not been used in project N before or it is disabled"* — an **enablement** problem, not a permission
@@ -148,7 +156,9 @@ network ships with permissive firewall rules ([§4.4](04-networking.md#s4-4)).
 > **403 / PERMISSION_DENIED** — an IAM grant is missing. **401 / UNAUTHENTICATED** — there are no valid
 > credentials at all. The exam puts all three in one item often enough to learn the table.
 
-## <a id="s2-5"></a>2.5 Quotas and limits
+<a id="s2-5"></a>
+
+## 2.5 Quotas and limits
 
 | Kind | Caps | Example | When hit |
 |:----------------|:----------------------------------------|:------------------------------------------|:----------------------------|
@@ -172,7 +182,9 @@ distractor.
 > Free Trial accounts cannot use GPUs and have tight quotas; upgrading to a paid billing account is the fix, not a
 > quota request. Quota increases can also depend on billing history for a new account (*verify* current rules).
 
-## <a id="s2-6"></a>2.6 Billing accounts and the roles around them
+<a id="s2-6"></a>
+
+## 2.6 Billing accounts and the roles around them
 
 A **Cloud Billing account** pays for projects. **A project is linked to at most one billing account; a billing
 account can pay for many projects**, even across organizations. Two kinds exist: **self-serve** (card or bank
@@ -198,7 +210,9 @@ billing account stops its paid services, and resources may be deleted.
 |:------------------------------------|:----------------------------------------------------------------------|
 | Link a project to a billing account | `gcloud billing projects link P --billing-account=ID` |
 
-## <a id="s2-7"></a>2.7 Budgets, alerts and exports
+<a id="s2-7"></a>
+
+## 2.7 Budgets, alerts and exports
 
 <mark markdown="span">**A budget watches spend and notifies. It never stops anything.**</mark> Each budget has a **scope** (the whole billing
 account, or selected projects, services or labels), an **amount** (fixed, or last month's spend), and **threshold
@@ -232,7 +246,9 @@ exports backfill only from the **start of the previous month**; into a **single-
 nothing is backfilled. *"We need two years of queryable history"* is only possible if the export was on two years ago.
 It is configured on the **billing account**, into a dataset in a project you choose.
 
-## <a id="s2-8"></a>2.8 Reading and predicting cost
+<a id="s2-8"></a>
+
+## 2.8 Reading and predicting cost
 
 | Question | Tool |
 |:----------------------------------------------|:------------------------------------------------------------|
@@ -264,7 +280,9 @@ It is configured on the **billing account**, into a dataset in a project you cho
 | **Network tags** | Strings on VMs | **No** | VPC firewall rules and routes ([§4.3](04-networking.md#s4-3), [§4.4](04-networking.md#s4-4)) |
 | **Tags** (resource-manager tags) | IAM-governed key–values attached to org, folders, projects, resources; inherited | — | Conditional IAM, org policy, Cloud NGFW ([§3.7](03-identity-access.md#s3-7)) |
 
-## <a id="s2-9"></a>2.9 Seeing everything: Cloud Asset Inventory and Gemini Cloud Assist
+<a id="s2-9"></a>
+
+## 2.9 Seeing everything: Cloud Asset Inventory and Gemini Cloud Assist
 
 **Cloud Asset Inventory** is the metadata database of every resource and policy in your organization — the
 answer whenever a question needs a view *across* projects.
@@ -313,7 +331,9 @@ Manager, [§5.6](05-compute-engine.md#s5-6)). Reading it needs `roles/cloudasset
   project and region together. A **log scope** lets Logs Explorer query several projects' logs together without
   moving them.
 
-## <a id="s2-10"></a>2.10 Part 2 recall card
+<a id="s2-10"></a>
+
+## 2.10 Part 2 recall card
 
 | Prompt | Answer |
 |:------------------------------------------------|:--------------------------------------------------------|

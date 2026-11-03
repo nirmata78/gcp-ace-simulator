@@ -13,7 +13,9 @@ nav_order: 8
 {: .objectives }
 > 2.4 Infrastructure as Code tooling (Fabric FAST, Config Connector, Terraform, Helm) · AI-assisted planning and implementation (Gemini CLI, Google Antigravity, Gemini Cloud Assist, Application Design Center) · 2.1 Agent Runtime · 3.1 deploying an agent · notebooks in Workbench and BigQuery · Cloud Workstations
 
-## <a id="s8-1"></a>8.1 Infrastructure as code: the model
+<a id="s8-1"></a>
+
+## 8.1 Infrastructure as code: the model
 
 **Infrastructure as code (IaC)** describes infrastructure in version-controlled files and lets a tool make reality
 match them. The exam prefers it over console clicks and shell scripts for anything repeatable, and it prefers
@@ -32,7 +34,9 @@ match them. The exam prefers it over console clicks and shell scripts for anythi
 > maintained definition. **A shell script** is repeatable but not declarative. When an option offers Terraform (or
 > Infrastructure Manager) against any of these, Terraform wins.
 
-## <a id="s8-2"></a>8.2 Terraform on Google Cloud
+<a id="s8-2"></a>
+
+## 8.2 Terraform on Google Cloud
 
 | Concept | Meaning |
 |:------------------------------|:----------------------------------------------------------------------|
@@ -66,7 +70,9 @@ match them. The exam prefers it over console clicks and shell scripts for anythi
 plans (*previews*) and applies (*revisions*) as a service account, and records history — Terraform without owning
 the runner or the state bucket.
 
-## <a id="s8-3"></a>8.3 Blueprints and Kubernetes-native tools
+<a id="s8-3"></a>
+
+## 8.3 Blueprints and Kubernetes-native tools
 
 | Tool | What it is | Choose it when |
 |:------------------------------|:------------------------------------------------------------------|:------------------------------|
@@ -84,7 +90,9 @@ the runner or the state bucket.
 > and fits teams already working in Kubernetes YAML. **Helm** deploys *applications* into Kubernetes; it does not
 > create the cluster or cloud resources (unless charts contain Config Connector objects).
 
-## <a id="s8-4"></a>8.4 Making changes the recommended way
+<a id="s8-4"></a>
+
+## 8.4 Making changes the recommended way
 
 1. **Everything in version control**; changes by **pull request** with the `plan` output attached for review.
 2. **Apply from a pipeline**, not a laptop — Cloud Build or another CI running as a **dedicated deploy service
@@ -97,7 +105,9 @@ the runner or the state bucket.
    beta terraform vet`) before apply.
 6. **Promote the same code** dev → staging → prod with different variables, not three copies.
 
-## <a id="s8-5"></a>8.5 AI-assisted planning and implementation
+<a id="s8-5"></a>
+
+## 8.5 AI-assisted planning and implementation
 
 {: .new-title }
 > New in the June 2026 guide — AI-assisted tooling
@@ -133,7 +143,9 @@ with the signed-in user's permissions. Gemini Cloud Assist itself needs **`gemin
 enabled and **`roles/geminicloudassist.user`** for its users; *describe an app in a sentence and get a design to
 refine and deploy* is Gemini Cloud Assist in **Application Design Center**.
 
-## <a id="s8-6"></a>8.6 AI and developer platforms
+<a id="s8-6"></a>
+
+## 8.6 AI and developer platforms
 
 {: .new-title }
 > New in the June 2026 guide — agents, notebooks and workstations
@@ -208,7 +220,9 @@ timeouts** control cost.
 - **Tooling.** Store Terraform state in a **`gcs` backend** (shared, locked, versioned). A console create form's
   **Equivalent code** shows the gcloud, Terraform or REST version of your settings.
 
-## <a id="s8-7"></a>8.7 Part 8 recall card
+<a id="s8-7"></a>
+
+## 8.7 Part 8 recall card
 
 | Prompt | Answer |
 |:------------------------------------------------|:--------------------------------------------------------|

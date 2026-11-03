@@ -19,7 +19,7 @@ HERE = Path(__file__).resolve().parent
 THEORY = HERE.parent
 FRONT = re.compile(r"\A---\n.*?\n---\n\n", re.S)
 TOC = re.compile(r"^(# .+)\n\{: \.no_toc \}\n\n1\. TOC\n\{:toc\}\n", re.M)
-ANCHOR = re.compile(r'<a id="s[0-9AB]+-\d+"></a>')
+ANCHOR = re.compile(r'<a id="s[0-9AB]+-\d+"></a>\n\n')
 XREF = re.compile(r"\[(§[0-9AB]+\.\d+)\]\([^)]*\)")
 CALLOUT = re.compile(r"^\{: \.([a-z]+)(-title)? \}$")
 CODE_SPAN = re.compile(r"(`+)(?:(?!\1).)*?\1")

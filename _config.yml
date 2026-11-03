@@ -21,7 +21,7 @@ callouts_level: quiet
 callouts:
   objectives:
     title: Exam guide
-    color: grey-lt
+    color: grey-dk
   key:
     title: Remember this
     color: blue
@@ -36,7 +36,7 @@ callouts:
     color: yellow
   note:
     title: Worth knowing
-    color: grey-lt
+    color: grey-dk
   new:
     title: New in the June 2026 guide
     color: purple

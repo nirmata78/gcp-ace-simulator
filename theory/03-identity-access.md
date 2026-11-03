@@ -23,7 +23,9 @@ Three questions run through every access item, and they are answered by three di
 
 Keep the three apart and most distractors fall away by themselves.
 
-## <a id="s3-1"></a>3.1 Where human identities come from
+<a id="s3-1"></a>
+
+## 3.1 Where human identities come from
 
 | Source | What it is | When it is the answer |
 |:----------------------|:------------------------------------------------------------|:------------------------------|
@@ -63,7 +65,9 @@ contain users, service accounts and other groups.
 > binding, direct or via group, in every project, unusable at once — you cannot miss a binding you never had to
 > find. IAM edits are for people who *stay* and whose access changes.
 
-## <a id="s3-2"></a>3.2 Workforce Identity Federation
+<a id="s3-2"></a>
+
+## 3.2 Workforce Identity Federation
 
 {: .new-title }
 > New in the June 2026 guide — Workforce Identity Federation
@@ -101,7 +105,9 @@ workforce identities (*verify* the supported-products list before choosing it).
 > **people** from an external IdP, pools live at the **organization**. **Workload** is for **software** outside
 > Google Cloud — AWS, Azure, GitHub Actions, on-premises — pools live in a **project** ([§3.12](#s3-12)).
 
-## <a id="s3-3"></a>3.3 The IAM model and inheritance
+<a id="s3-3"></a>
+
+## 3.3 The IAM model and inheritance
 
 > **An allow policy binds a role to a set of principals, on a resource.** Every IAM item is a question about one
 > of those three parts.
@@ -133,7 +139,9 @@ needed when conditions are present). Each resource has at most one allow policy.
 > still inherited. To take access away you remove the grant **where it was made**, remove the person from the
 > **group** that carries it, or add a **deny** rule.
 
-## <a id="s3-4"></a>3.4 Roles: basic, predefined, custom
+<a id="s3-4"></a>
+
+## 3.4 Roles: basic, predefined, custom
 
 | Kind | Examples | When |
 |:------------|:----------------------------------------------|:------------------------------------------------------|
@@ -178,7 +186,9 @@ roles on this project?"* — an Owner or someone with a Security Admin-type role
 | Start from a predefined role | `gcloud iam roles copy --source=roles/compute.viewer --destination=myViewer --dest-organization=ORG` |
 | Add a permission to a custom role | `gcloud iam roles update vmOperator --project=P --add-permissions=compute.instances.start` |
 
-## <a id="s3-5"></a>3.5 Viewing and changing policies
+<a id="s3-5"></a>
+
+## 3.5 Viewing and changing policies
 
 {: .cmds }
 | Task | Command |
@@ -198,7 +208,9 @@ roles on this project?"* — an Owner or someone with a Security Admin-type role
 secret, a service account. Resource-level bindings are how you grant access to *one* bucket rather than all of
 them.
 
-## <a id="s3-6"></a>3.6 Conditions, deny policies and Privileged Access Manager
+<a id="s3-6"></a>
+
+## 3.6 Conditions, deny policies and Privileged Access Manager
 
 ### IAM conditions — scoping a grant
 
@@ -240,7 +252,9 @@ window and then removed automatically, with the whole flow audited. It is the an
 production admin rights only while working on an incident, with approval"* — standing Owner grants are the
 distractor.
 
-## <a id="s3-7"></a>3.7 Organization policy and tags
+<a id="s3-7"></a>
+
+## 3.7 Organization policy and tags
 
 **The Organization Policy Service restricts what may be configured**, for every principal including Owners. A
 policy sets a **constraint** on a node, and descendants inherit it.
@@ -295,7 +309,9 @@ policy:
 - **Conditional org policy**: enforce a constraint only where `env=prod`.
 - **Cloud NGFW**: *secure tags* select firewall-policy sources and targets ([§4.4](04-networking.md#s4-4)).
 
-## <a id="s3-8"></a>3.8 Troubleshooting and right-sizing access
+<a id="s3-8"></a>
+
+## 3.8 Troubleshooting and right-sizing access
 
 | Question | Tool |
 |:----------------------------------------------|:----------------------------------------------------------|
@@ -306,7 +322,9 @@ policy:
 | What would a policy change break? | **Policy Simulator** |
 
 
-## <a id="s3-9"></a>3.9 Service accounts: kinds and lifecycle
+<a id="s3-9"></a>
+
+## 3.9 Service accounts: kinds and lifecycle
 
 A **service account is both a principal and a resource.** You grant roles **to** it (what it can do) and roles
 **on** it (who can use it).
@@ -344,7 +362,9 @@ A **service account is both a principal and a resource.** You grant roles **to**
 name and description can. "Renaming" a service account means creating a new one, granting it the same roles,
 moving workloads to it, then disabling and deleting the old one.
 
-## <a id="s3-10"></a>3.10 Attaching and impersonating
+<a id="s3-10"></a>
+
+## 3.10 Attaching and impersonating
 
 Two different ways to "use" a service account, guarded by two different roles granted **on** the account:
 
@@ -392,7 +412,9 @@ account — grant the engineer Token Creator on it rather than handing out a key
 > (`actAs`). *"Run this command as `sa@` from my terminal / pipeline"* needs **Token Creator**. <mark markdown="span">Both are granted **on
 > the service account**, not on the project</mark>, for least privilege.
 
-## <a id="s3-11"></a>3.11 Short-lived credentials, and keys as a last resort
+<a id="s3-11"></a>
+
+## 3.11 Short-lived credentials, and keys as a last resort
 
 The **IAM Service Account Credentials API** (`iamcredentials.googleapis.com`) is what impersonation calls:
 
@@ -437,7 +459,9 @@ monitoring (Activity Analyzer, Security Command Center findings).
 > anything able to read the secret can exfiltrate. Secret Manager is the right home for secrets Google *cannot* mint
 > ([§3.13](#s3-13)); a service-account credential is something Google mints on demand.
 
-## <a id="s3-12"></a>3.12 Workload Identity Federation for external workloads
+<a id="s3-12"></a>
+
+## 3.12 Workload Identity Federation for external workloads
 
 {: .new-title }
 > New in the June 2026 guide — provisioning Workload Identity Federation
@@ -475,7 +499,9 @@ cluster's JWKS** with `--jwk-json-path`; the control plane never needs to be exp
 > repository in the world, for a public issuer — could federate. *"Only pipelines from our repository"* is an
 > attribute condition on the provider.
 
-## <a id="s3-13"></a>3.13 Secret Manager
+<a id="s3-13"></a>
+
+## 3.13 Secret Manager
 
 **Secret Manager stores secrets Google cannot mint for you** — a third-party API key, a database password, a TLS
 private key from an outside CA.
@@ -535,7 +561,9 @@ redeploy). GKE uses the Secret Manager add-on / CSI driver. Code can call the AP
   `authenticationInfo.principalSubject`; a GitHub Actions job needs **`permissions: id-token: write`** or there is
   no token to exchange.
 
-## <a id="s3-14"></a>3.14 Part 3 recall card
+<a id="s3-14"></a>
+
+## 3.14 Part 3 recall card
 
 | Prompt | Answer |
 |:------------------------------------------------|:--------------------------------------------------------|

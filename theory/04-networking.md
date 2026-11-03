@@ -17,7 +17,9 @@ Every VM, GKE node, Cloud SQL private IP and serverless connector lives on a VPC
 mostly one of four questions: *can these two things reach each other*, *who is allowed to*, *how does traffic
 get in or out*, and *which load balancer*. This part answers them in that order.
 
-## <a id="s4-1"></a>4.1 The VPC model
+<a id="s4-1"></a>
+
+## 4.1 The VPC model
 
 | Fact | Consequence |
 |:----------------------------------------------|:--------------------------------------------------------------|
@@ -38,7 +40,9 @@ SSH, RDP, ICMP from anywhere). Production work starts on a custom-mode VPC, and 
 | Custom-mode VPC | `gcloud compute networks create vpc-prod --subnet-mode=custom` |
 | Subnet with Private Google Access | `gcloud compute networks subnets create web-euc2 --network=vpc-prod --region=R --range=10.10.0.0/20 --enable-private-ip-google-access` |
 
-## <a id="s4-2"></a>4.2 Subnets and IP ranges
+<a id="s4-2"></a>
+
+## 4.2 Subnets and IP ranges
 
 - A subnet has one **primary IPv4 range** (RFC 1918 or other private ranges) and optional **secondary ranges** —
   used by GKE for Pod and Service IPs (alias IPs).
@@ -62,7 +66,9 @@ big"* has no fix except a new subnet and migration. Auto-mode subnets can grow u
 > expand. A **new region**, or a separate range for a different tier — create a new subnet in the existing VPC
 > (`subnets create`). Creating a new VPC is almost never the answer to "out of IPs".
 
-## <a id="s4-3"></a>4.3 Routes
+<a id="s4-3"></a>
+
+## 4.3 Routes
 
 Every packet leaving a VM is matched against the VPC's routing table.
 
@@ -94,7 +100,9 @@ priority spreads traffic (ECMP). Subnet routes cannot be overridden by a less sp
 > — the appliance VM also needs **IP forwarding** enabled (`--can-ip-forward` at creation), and firewall rules
 > still apply.
 
-## <a id="s4-4"></a>4.4 Firewall rules and Cloud NGFW policies
+<a id="s4-4"></a>
+
+## 4.4 Firewall rules and Cloud NGFW policies
 
 Firewalls are **distributed and stateful**: they are enforced at each VM's network interface, and return traffic
 of an allowed connection is allowed automatically. Google Cloud's firewall product is now called **Cloud Next
@@ -170,7 +178,9 @@ Policy rules add a fourth action to allow and deny: **`goto_next`**, which hands
 network tags need tag-to-secure-tag mapping first), then **associate** the policy — a new policy does nothing until
 associated. To record what a policy rule matches, set **`--enable-logging`** on that rule; flow logs sample and do not name the rule.
 
-## <a id="s4-5"></a>4.5 Shared VPC and VPC Network Peering
+<a id="s4-5"></a>
+
+## 4.5 Shared VPC and VPC Network Peering
 
 | Need | Product | The deciding property |
 |:----------------------------------------------|:------------------------|:----------------------------------------------------|
@@ -216,7 +226,9 @@ associated. To record what a policy rule matches, set **`--enable-logging`** on 
 > points straight at peering. *"No gateways or tunnels in the path"* eliminates VPN. *"A central network team must
 > own the firewall rules"* is Shared VPC, not peering.
 
-## <a id="s4-6"></a>4.6 Hybrid connectivity: VPN, Interconnect, Cloud Router
+<a id="s4-6"></a>
+
+## 4.6 Hybrid connectivity: VPN, Interconnect, Cloud Router
 
 | Product | Path | Capacity | SLA | Right when |
 |:----------------|:----------------|:----------------------|:------------------|:----------------------------|
@@ -242,7 +254,9 @@ global**, routes learned in one region are usable from all regions.
 > Equinix facility where Google is present"* — Dedicated Interconnect. *"5 Gbps, our data centre is nowhere near a
 > Google facility"* — Partner Interconnect.
 
-## <a id="s4-7"></a>4.7 Private access to Google and to services
+<a id="s4-7"></a>
+
+## 4.7 Private access to Google and to services
 
 | Need | Mechanism | How |
 |:----------------------------------------------|:----------------------------------|:----------------------------------------------|
@@ -258,7 +272,9 @@ global**, routes learned in one region are usable from all regions.
 > (package mirrors, a partner API). A private VM that needs only Cloud Storage and BigQuery needs PGA and nothing
 > else; one that must `apt-get` from the internet needs Cloud NAT.
 
-## <a id="s4-8"></a>4.8 IP addresses, Cloud DNS and Cloud NAT
+<a id="s4-8"></a>
+
+## 4.8 IP addresses, Cloud DNS and Cloud NAT
 
 ### Addresses
 
@@ -316,7 +332,9 @@ Router**. It serves VMs, **private GKE nodes**, and serverless workloads using D
 |:------------------------------------|:----------------------------------------------------------------------|
 | Cloud NAT for one region | `gcloud compute routers create nat-router --network=vpc-prod --region=R`, then `gcloud compute routers nats create nat-1 --router=nat-router --region=R --nat-all-subnet-ip-ranges --auto-allocate-nat-external-ips` |
 
-## <a id="s4-9"></a>4.9 Load balancing
+<a id="s4-9"></a>
+
+## 4.9 Load balancing
 
 Four questions choose every load balancer: **external or internal · global or regional · HTTP(S) or any TCP/UDP
 · proxy (terminates) or passthrough (preserves the client IP)**.
@@ -357,7 +375,9 @@ health checks, session affinity, Cloud CDN, Cloud Armor) → **backends**:
 **Certificates:** **Google-managed certificates** (provisioned and renewed automatically once DNS points at the
 LB, or via DNS authorisation in **Certificate Manager**) versus self-managed certificates you upload and renew.
 
-## <a id="s4-10"></a>4.10 Network Service Tiers, Cloud CDN and Cloud Armor
+<a id="s4-10"></a>
+
+## 4.10 Network Service Tiers, Cloud CDN and Cloud Armor
 
 | Tier | Path | Scope | Cost | Right when |
 |:----------------|:----------------------------------------------|:------------------|:--------|:----------------------------|
@@ -377,7 +397,9 @@ global external Application LB. **Cloud Armor** is a WAF and DDoS policy attache
 load balancers: preconfigured OWASP rules, IP and geo allow/deny, rate limiting, bot management, and **Adaptive
 Protection** (ML-detected layer-7 attacks).
 
-## <a id="s4-11"></a>4.11 Seeing the network: flow logs, firewall logs, Connectivity Tests
+<a id="s4-11"></a>
+
+## 4.11 Seeing the network: flow logs, firewall logs, Connectivity Tests
 
 | Tool | Records or does | Use it for |
 |:----------------------------------|:------------------------------------------------------------|:------------------------------|
@@ -416,7 +438,9 @@ Protection** (ML-detected layer-7 attacks).
   by adding another secondary range and new node pools with `--pod-ipv4-range`. **Dynamic port allocation** on
   Cloud NAT fixes port exhaustion on a few busy VMs.
 
-## <a id="s4-12"></a>4.12 Part 4 recall card
+<a id="s4-12"></a>
+
+## 4.12 Part 4 recall card
 
 | Prompt | Answer |
 |:------------------------------------------------|:--------------------------------------------------------|

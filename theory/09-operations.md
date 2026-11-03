@@ -13,7 +13,9 @@ nav_order: 9
 {: .objectives }
 > 1.1 provisioning and setting up Google Cloud Observability · 3.4 all of monitoring and logging: alerts, custom metrics, audit / flow / firewall logs, exports, log buckets, Log Analytics, log routers, viewing and filtering logs, diagnostic tools, Personalized Service Health, Ops Agent, Managed Service for Prometheus, Gemini Cloud Assist for Monitoring, Active Assist, Cloud Hub
 
-## <a id="s9-1"></a>9.1 Google Cloud Observability, and setting it up
+<a id="s9-1"></a>
+
+## 9.1 Google Cloud Observability, and setting it up
 
 | Product | Answers |
 |:------------------------------|:----------------------------------------------------------------------|
@@ -39,7 +41,9 @@ projects** — *"one dashboard over twelve projects"*. Keep the scoping project 
 **Monitoring → Settings**. The Logging equivalent is an **aggregated sink** or a **log scope** / Log Analytics view
 across projects ([§9.5](#s9-5)).
 
-## <a id="s9-2"></a>9.2 Metrics and the Ops Agent
+<a id="s9-2"></a>
+
+## 9.2 Metrics and the Ops Agent
 
 Metrics are identified by type; the **prefix tells you where they come from**:
 
@@ -64,7 +68,9 @@ needs **`roles/logging.logWriter`** and **`roles/monitoring.metricWriter`**. To 
 policy** through VM Manager ([§5.6](05-compute-engine.md#s5-6)) or the console's agent-install flow, not a script run by hand on each VM.
 
 
-## <a id="s9-3"></a>9.3 Alerting, uptime checks and SLOs
+<a id="s9-3"></a>
+
+## 9.3 Alerting, uptime checks and SLOs
 
 > **Only an alerting policy notifies anyone.** Dashboards, uptime checks, log-based metrics and SLOs measure; an
 > alerting policy decides and sends.
@@ -99,7 +105,9 @@ and chart availability and latency; they alert only through an attached policy. 
 budget** is the allowed failure; a **burn-rate** alert fires when the budget is being consumed too fast.
 
 
-## <a id="s9-4"></a>9.4 Custom metrics and Managed Service for Prometheus
+<a id="s9-4"></a>
+
+## 9.4 Custom metrics and Managed Service for Prometheus
 
 | Way in | When |
 |:------------------------------------------|:------------------------------------------------------------------|
@@ -119,7 +127,9 @@ retains them long-term, and lets you query with **PromQL** in Metrics Explorer, 
 
 
 
-## <a id="s9-5"></a>9.5 Cloud Logging: routing, buckets, Log Analytics
+<a id="s9-5"></a>
+
+## 9.5 Cloud Logging: routing, buckets, Log Analytics
 
 ```
 Log entries --> Log Router --> sinks (inclusion filter, exclusion filters)
@@ -173,7 +183,9 @@ logs and to join them with business data, without a second pipeline"* — Log An
 | **Cloud Storage** | **Retain cheaply for years**, read rarely — with lifecycle to Archive |
 | A log bucket with long retention | Keep logs in Logging's own tools and Log Analytics |
 
-## <a id="s9-6"></a>9.6 Reading logs
+<a id="s9-6"></a>
+
+## 9.6 Reading logs
 
 **Logs Explorer** (and `gcloud logging read`) use the Logging query language:
 
@@ -199,7 +211,9 @@ for audit logs** (`methodName`, `serviceName`, `resourceName`, `authenticationIn
 |:------------------------------------|:----------------------------------------------------------------------|
 | Query logs from the CLI | `gcloud logging read 'resource.type="k8s_container" AND severity>=ERROR' --freshness=1h` |
 
-## <a id="s9-7"></a>9.7 Audit, flow and firewall logs
+<a id="s9-7"></a>
+
+## 9.7 Audit, flow and firewall logs
 
 | Audit log type | Records | Default | Cost | Bucket |
 |:--------------------|:------------------------------------|:------------------------|:--------------|:------------|
@@ -223,7 +237,9 @@ connections) are not audit logs, but the guide groups them here because they ans
 *what happened on the network* — and are configured and read the same way, in Cloud Logging ([§4.11](04-networking.md#s4-11)). Both are
 charged by volume: tune sampling and aggregation for flow logs, and log only the rules you need.
 
-## <a id="s9-8"></a>9.8 Diagnosing an application
+<a id="s9-8"></a>
+
+## 9.8 Diagnosing an application
 
 | Symptom | Tool |
 |:----------------------------------------------|:------------------------------------------------------------------|
@@ -239,7 +255,9 @@ charged by volume: tune sampling and aggregation for flow logs, and log only the
 > <mark markdown="span">**Trace tells you *which*; Profiler tells you *why*.**</mark> A latency jump across four services is Trace first. CPU
 > utilisation tells you neither — a service can be slow while idle, waiting on a dependency.
 
-## <a id="s9-9"></a>9.9 Service health and Cloud Hub
+<a id="s9-9"></a>
+
+## 9.9 Service health and Cloud Hub
 
 {: .new-title }
 > New in the June 2026 guide — Personalized Service Health and Cloud Hub
@@ -257,7 +275,9 @@ charged by volume: tune sampling and aggregation for flow logs, and log only the
 > and maintenance**, deployments, cost and optimisation, and support cases. *"One view of the health of our checkout
 > application across its projects"* — Cloud Hub.
 
-## <a id="s9-10"></a>9.10 Optimising: Active Assist and Gemini Cloud Assist
+<a id="s9-10"></a>
+
+## 9.10 Optimising: Active Assist and Gemini Cloud Assist
 
 **Active Assist** is the family of **recommenders** that analyse usage and suggest changes, each with estimated
 savings or risk reduction:
@@ -291,7 +311,9 @@ by your permissions.
   entry** asks Gemini Cloud Assist what an entry means. Cloud Hub's **Deployments** page shows failed App Hub
   deployments; its **Optimization** page shows cost per project or application.
 
-## <a id="s9-11"></a>9.11 Part 9 recall card
+<a id="s9-11"></a>
+
+## 9.11 Part 9 recall card
 
 | Prompt | Answer |
 |:------------------------------------------------|:--------------------------------------------------------|
