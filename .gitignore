@@ -1,0 +1,43 @@
+# ── Private: your attempts, reports and notes never leave this machine ──
+data/history.json
+reports/*
+!reports/.gitkeep
+private/
+scripts/retro_content.py
+
+# ── Rendered output: every one is rebuilt from tracked sources ──
+*.pdf
+*.mp4
+*.m4a
+*.mov
+*.webm
+*.wav
+*.mp3
+theory/pdf/ACE-Theory-Recap.md
+theory/pdf/.build/
+theory/video/ACE-Video-Questions.md
+theory/video/publish/
+
+# ── Jekyll / GitHub Pages local builds ──
+_site/
+.sass-cache/
+.jekyll-cache/
+.jekyll-metadata
+Gemfile
+Gemfile.lock
+vendor/
+
+# ── Python ──
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# ── OS / editor / local agent config ──
+.DS_Store
+.obsidian/
+.idea/
+.vscode/
+*.swp
+.claude/
+.agents/

@@ -1,0 +1,487 @@
+#! title: Networking
+#! short: Networking
+
+## Part 4: Networking
+
+= th | Google Cloud Associate Cloud Engineer · Part 4 of 10 | Who can reach what, who is allowed to, and which load balancer | VPCs, subnets, routes, Cloud NGFW, Shared VPC, peering, hybrid links, private access, DNS, NAT, load balancing.
+N: Part four, networking. Every V-M, G-K-E node, Cloud SQL private address and serverless connector lives on a V-P-C. The exam's networking items are mostly one of four questions. Can these two things reach each other? Who is allowed to? How does traffic get in or out? And which load balancer? This part answers them in that order.
+
+## 4.1 The VPC model
+
+= dia | The model | One network across regions
+p4-vpc
+N: Look at the picture from the outside in. The outer dashed box is one V-P-C network, and it is global. It spans every region. The two green boxes are regions, and inside each is a subnet, which is regional, spanning all of that region's zones. Three V-Ms sit in those subnets. The red arrow shows a V-M in Warsaw talking to a V-M in Iowa, over internal addresses, with no V-P-N and no peering. And firewall rules and routes belong to the network, not the subnet. By contrast, two separate V-P-Cs are isolated from each other by default, even within one project.
+
+= table | Auto mode or custom mode | Custom is the production answer
+Fact | Consequence
+**Auto mode** | One `/20` subnet per region, from `10.128.0.0/9`. Convenient, but overlaps every other auto-mode VPC
+**Custom mode** | No subnets until you define them. **The production answer**
+Converting | Auto can convert to custom, never back
+**`default` network** | An auto-mode VPC with permissive firewall rules: internal, SSH, RDP, ICMP from anywhere
+> `gcloud compute networks create vpc-prod --subnet-mode=custom`
+N: A V-P-C runs in one of two modes. Auto mode creates one slash twenty subnet per region, from the same range, ten dot one two eight. It is convenient, but it overlaps with every other auto-mode V-P-C, so two of them can never be peered. Custom mode creates no subnets, and you define them. That is the production answer. Auto can convert to custom, but never back. The default network in a new project is an auto-mode V-P-C, with permissive firewall rules. Production work starts on a custom-mode V-P-C, and the skip default network creation policy stops the default network appearing at all.
+
+## 4.2 Subnets and IP ranges
+
+= list | Subnets | Primary range, secondary ranges, reserved addresses
+- One **primary IPv4 range**, plus optional **secondary ranges**, used by GKE for Pods and Services
+- ==**Four addresses in every primary range are reserved**==: network, gateway, second-to-last, broadcast
+- Ranges in one VPC, and across peered VPCs, **must not overlap**
+- Subnets can be **dual-stack** or IPv6-only (*recognise*)
+N: A subnet has one primary IPv4 range, and optional secondary ranges, which G-K-E uses for Pod and Service addresses. Four addresses in every primary range are reserved: the network address, the default gateway, the second to last, and the broadcast. So a slash twenty-nine has eight addresses, of which four are usable. Subnet ranges in one V-P-C, and across peered V-P-Cs, must not overlap.
+
+= cmd | Resizing | Expand only, never shrink
+Task | Command
+Grow a full subnet | gcloud compute networks subnets expand-ip-range web-euc2 --region=R --prefix-length=19
+> A subnet's primary range can be **expanded, without downtime, but never shrunk**.
+N: A subnet's primary range can be expanded, to a shorter prefix, without downtime, as long as the larger range does not overlap anything. It can never be shrunk. So the subnet is out of addresses means expand I-P range. We made it too big has no fix, except a new subnet and a migration. Auto-mode subnets can grow up to slash sixteen.
+
+= panel trap | Out of addresses | Adding a subnet versus expanding one
+More addresses *in the same region for the same workloads*: **expand**.
+A **new region**, or a separate range for a different tier: **create a new subnet** in the existing VPC.
+A new VPC is almost never the answer to *"out of IPs"*.
+N: Be careful here. More addresses, in the same region, for the same workloads: expand. A new region, or a separate range for a different tier: create a new subnet in the existing V-P-C. And creating a new V-P-C is almost never the answer to out of I-Ps.
+
+## 4.3 Routes
+
+= table | The routing table | Four kinds of route
+Route type | Created by | Notes
+**Subnet routes** | Automatically, per range | Cannot be deleted; make every subnet reachable across the VPC
+**Default route** `0.0.0.0/0` | Automatically | Priority 1000; delete it to cut internet egress paths
+**Custom static** | You | Destination, next hop, priority, optional **network tags**
+**Dynamic** | **Cloud Router**, via BGP | Learned over VPN or Interconnect; regional or global per routing mode
+N: Every packet leaving a V-M is matched against the V-P-C's routing table. Four kinds of route. Subnet routes are automatic, they cannot be deleted, and they make every subnet reachable across the V-P-C. The default route goes to the default internet gateway, at priority one thousand. Delete it, and you cut all internet egress paths. Custom static routes are yours, with a destination, a next hop, a priority, and optional network tags so that only some V-Ms use them. And dynamic routes are learned by Cloud Router, through B-G-P, over V-P-N or Interconnect.
+
+= table | Route selection | Most specific prefix first, then priority
+Step | Rule
+1 | The **most specific prefix** wins
+2 | Among equal prefixes, the **lowest priority number** wins
+3 | Equal priority spreads traffic (ECMP)
+Note | Subnet routes cannot be overridden by a less specific custom route
+> Next hops: a VM, an internal IP, an **internal passthrough Network LB**, a Classic VPN tunnel, the default gateway.
+N: How is a route chosen? The most specific prefix wins. Among equal prefixes, the lowest priority number wins. Equal priority spreads traffic across routes. And subnet routes cannot be overridden by a less specific custom route. The next hop of a custom static route can be a V-M, such as a firewall appliance, an internal I-P, an internal passthrough load balancer for highly available appliances, a Classic V-P-N tunnel, or the default internet gateway.
+
+= panel new | Custom static routes | The guide now names them
+Usual stems: send a range through a **network virtual appliance**; route only **tagged** VMs through it; give tagged VMs a **higher-priority** path.
+`gcloud compute routes create to-onprem --network=vpc-prod --destination-range=172.16.0.0/12 --next-hop-instance=fw-1 --tags=needs-inspection --priority=800`
+==A route only forwards.== The appliance VM also needs **IP forwarding** (`--can-ip-forward` at creation), and firewall rules still apply.
+N: The guide now names custom static routes. The usual stems: send traffic for a range through a network virtual appliance, route only tagged V-Ms through it, or give V-Ms with a special tag a higher priority path. The command on screen does all of that, with next hop instance, tags and priority. And remember that a route only forwards. The appliance V-M also needs I-P forwarding enabled, with dash dash can I-P forward at creation, and firewall rules still apply.
+
+## 4.4 Firewall rules and Cloud NGFW policies
+
+= table | VPC firewall rules | Distributed, stateful, and lowest number wins
+Component | Values
+Direction | **Ingress** or **egress**
+Action | Allow or deny
+**Priority** | **0–65535, lower wins**; default **1000**. Ties: deny beats allow
+Targets | All instances · **network tags** · **service accounts**
+Source or destination | IP ranges; for ingress also source tags or source service accounts
+Protocols, ports, logging | `tcp:443`, `udp:53`, `icmp`; logging off by default, per rule
+N: Firewalls are distributed and stateful. They are enforced at each V-M's network interface, and return traffic of an allowed connection is allowed automatically. Google's firewall product is now called Cloud Next Generation Firewall, or N-G-F-W, and it has two kinds of rule containers. First, the classic V-P-C firewall rules. Each rule has a direction, an action, and a priority from zero to sixty-five thousand five hundred and thirty-five, where lower wins, and the default is one thousand. On a tie, deny beats allow. Targets can be all instances, network tags or service accounts. Sources can be I-P ranges, and for ingress also tags or service accounts.
+
+= tiles | Implied rules | Present in every VPC, and invisible in the list
+allow | all egress, at priority 65535
+deny | all ingress, at priority 65535
+always | the metadata server `169.254.169.254` is reachable
+blocked | egress to TCP port 25 on external addresses
+N: Two implied rules exist in every V-P-C, invisible in the list: allow all egress, and deny all ingress, both at the lowest priority. Some traffic is outside the firewall's control altogether. The metadata server is always reachable. And egress to T-C-P port twenty-five on external addresses is always blocked, so you cannot send email directly from a V-M.
+
+= cmd sm | Firewall commands | Allow HTTPS, allow health checks, log a rule
+Task | Command
+HTTPS from anywhere to VMs tagged `web` | gcloud compute firewall-rules create allow-web --network=vpc-prod --direction=INGRESS --action=ALLOW --rules=tcp:443 --source-ranges=0.0.0.0/0 --target-tags=web
+Health checks to one service account's VMs | ... --rules=tcp:8080 --source-ranges=130.211.0.0/22,35.191.0.0/16 --target-service-accounts=SA_EMAIL
+Record what a rule matches | gcloud compute firewall-rules update allow-web --enable-logging
+N: Here are the commands in full. Read the first one as a sentence: on this network, for ingress, allow T-C-P four four three, from anywhere, to V-Ms tagged web. The second allows load balancer health checks to the V-Ms of one service account. Notice those two source ranges, as we come back to them. And the third turns on logging for a rule.
+
+= dia | Targets | Tag, service account or secure tag
+p4-tag-vs-sa
+N: Now, how you choose a target matters. On the left, a network tag is a plain string, and anyone able to edit the V-M can add it. Adding web silently opens that V-M to the web rule. In the middle, a target service account can be changed only by someone who may attach that account, and only while the V-M is stopped. On the right, a secure tag needs an I-A-M role to attach its value. So ensure only the web tier's V-Ms receive this traffic, even if developers edit instances, points at service accounts or secure tags. Now read the note.
+V: Network tags work only in V-P-C firewall rules. Firewall policies use secure tags, not network tags.
+[pause: 0.8]
+
+= table | Firewall policies | Hierarchical, global and regional
+Policy | Attached to | Use
+**Hierarchical** | Organization or folder | Guardrails for every VPC beneath: *"block this range everywhere"*
+**Global network** | One VPC, all regions | Modern replacement for VPC rules: secure tags, FQDNs, geolocation, address groups
+**Regional network** | One VPC in one region | Region-specific rules
+> A fourth action: `goto_next` hands evaluation down. A new policy does nothing until **associated**.
+N: The second kind of container is the firewall policy. A hierarchical policy attaches to the organization or a folder, and gives guardrails for every V-P-C beneath, such as block this range everywhere. A global network policy attaches to one V-P-C across all regions, and it is the modern replacement for V-P-C rules, with secure tags, domain names, geolocation and address groups. A regional network policy attaches to one V-P-C in one region. Policy rules add a fourth action, go to next, which hands evaluation down to the next level. And a new policy does nothing until it is associated.
+
+= dia | Evaluation order | Top to bottom, stopping at the first allow or deny
+p4-firewall-order
+N: Evaluation runs left to right here, and it stops at the first allow or deny. One, the hierarchical policy at the organization. Two, hierarchical policies on folders, top down. Three, V-P-C firewall rules and the global network policy, whose relative order is configurable per network. Four, the regional network policy. And five, the implied rules: allow egress, deny ingress. So a rule at the organization wins over anything a project team writes, unless it says go to next.
+
+= panel new | Cloud NGFW and secure tags | Resource-manager tags with a firewall purpose
+**Secure tags** are tags created with the firewall purpose and bound to a VPC. Attach tag values to VMs or GKE node pools; policy rules select by those values.
+Attaching needs `roles/resourcemanager.tagUser`, so **a developer cannot open a VM to a rule by editing it**.
+**Tiers:** **Essentials** (stateful firewall, policies, secure tags) · **Standard** (FQDN, geolocation, threat intelligence) · **Enterprise** (intrusion prevention, TLS inspection)
+N: New in the guide: secure tags. They are resource-manager tags created with the firewall purpose and bound to a V-P-C. You attach tag values to V-Ms or G-K-E node pools, and firewall policy rules select sources and targets by those values. Since attaching a value needs an I-A-M role, a developer cannot open a V-M to a rule simply by editing it. That is the property network tags lack. There are three tiers. Essentials is the foundational stateful firewall, with policies and secure tags. Standard adds domain name objects, geolocation and threat intelligence lists. Enterprise adds intrusion detection and prevention, with T-L-S inspection. To move an existing V-P-C's rules into a policy, use the migration tool, and rules using network tags need a mapping to secure tags first.
+
+## 4.5 Shared VPC and VPC Network Peering
+
+= table | Connecting networks | Three needs, three products
+Need | Product | Deciding property
+**One network, many projects**; a central team owns it | **Shared VPC** | Host + service projects, **one** network
+**Two separate VPCs**, private, no gateways | **VPC Network Peering** | Native, full bandwidth, **non-transitive**
+**Many VPCs**, hub-and-spoke, transitive | **Network Connectivity Center** | Spokes reach each other
+N: Three needs, three products. One network used by many projects, where a central team owns subnets, routes and firewalls, and app teams keep their own projects: Shared V-P-C. Two separate V-P-Cs, private connectivity, no gateways: V-P-C Network Peering, native, full bandwidth and non-transitive. Many V-P-Cs and on-premises sites, in a hub and spoke, with transitivity: Network Connectivity Center.
+
+= dia | Shared VPC | Host project and service projects
+p4-shared-vpc
+N: On the left, the host project owns the V-P-C: the network, subnets, routes and firewalls, run by a central team. On the right, service projects are attached, and create resources in the host's subnets. Team A's V-Ms live in the web subnet, but those V-Ms and their bills belong to team A's project. The network belongs to the host. It requires an organization. A service project attaches to one host, and a host cannot also be a service project.
+
+= table sm | Shared VPC roles and commands | Two roles, at very different scopes
+Role or task | Detail
+**Shared VPC Admin** | `roles/compute.xpnAdmin`, at the org or a folder: enables hosts, attaches service projects
+**Network User** | `roles/compute.networkUser` on the host, or on **individual subnets** for least privilege
+Make the host | `gcloud compute shared-vpc enable HOST_PROJECT`
+Attach a service project | `gcloud compute shared-vpc associated-projects add SVC --host-project=HOST`
+One subnet only | `gcloud compute networks subnets add-iam-policy-binding web-euc2 --region=R --member=group:team-a@example.com --role=roles/compute.networkUser`
+N: Two roles. The Shared V-P-C Admin, known as X-P-N admin, is granted at the organization or a folder. It enables hosts and attaches service projects. Network User lets service-project developers place resources in the subnets. It can be granted on the whole host project, or on individual subnets, which is the least-privilege answer.
+
+= dia | VPC Network Peering | Non-transitive
+p4-peering
+N: Peering. A is peered with B, and B is peered with C. Can A reach C? Follow the red line.
+V: Peering is non-transitive. If A peers with B, and B with C, A cannot reach C.
+[pause: 0.8]
+N: Nor can a peer use your V-P-N or Interconnect to reach your on-premises network, unless custom routes are exported and imported. Both sides must create the peering before it becomes active. The networks can be in different projects, or different organizations. Ranges must not overlap. Subnet routes are exchanged automatically, while custom routes need export and import. Firewall rules are never exchanged, so each side still controls its own ingress. Peering is also how private services access works for Cloud SQL and Memorystore, which is why those services inherit non-transitivity.
+
+= panel tip | How to read the stem | When a stem forgives a weakness, it names the product that has it
+*"Transitive routing is not required"* points straight at **peering**.
+*"No gateways or tunnels in the path"* eliminates **VPN**.
+*"A central network team must own the firewall rules"* is **Shared VPC**, not peering.
+N: Here is a useful reading trick. When a stem forgives a weakness, it is naming the product that has it. Transitive routing is not required points straight at peering. No gateways or tunnels in the path eliminates V-P-N. A central network team must own the firewall rules is Shared V-P-C, not peering.
+
+## 4.6 Hybrid connectivity: VPN, Interconnect, Cloud Router
+
+= table sm | Hybrid options | Path, capacity, SLA
+Product | Path | Capacity | SLA
+**HA VPN** | IPsec over the internet | ~3 Gbps per tunnel (*verify*) | **99.99%** with 2 interfaces, 2 tunnels
+Classic VPN | IPsec, one interface | Same | 99.9%; legacy
+**Dedicated Interconnect** | Your circuits in a Google **colo** | 10 or 100 Gbps | 99.9 or 99.99%
+**Partner Interconnect** | Via a provider | 50 Mbps to 50 Gbps | 99.9 or 99.99%
+**Cross-Cloud Interconnect** | Circuits to AWS, Azure, OCI | 10 or 100 Gbps | 99.9 or 99.99%
+Direct or Carrier Peering | To Google's edge | Varies | None; public services, **not your VPC**
+N: The hybrid options. H-A V-P-N is IPsec over the internet, about three gigabits per tunnel, and you can add tunnels. It reaches ninety-nine point nine nine percent with two interfaces and two tunnels. Classic V-P-N is the legacy option at ninety-nine point nine. Dedicated Interconnect means your own circuits, in a Google colocation facility, at ten or one hundred gigabits. Partner Interconnect goes through a provider, from fifty megabits to fifty gigabits per attachment, when you cannot reach a colocation facility. Cross-Cloud Interconnect is a private link to another cloud. And direct or carrier peering reaches Google's public services, not your V-P-C, with no service level agreement.
+
+= dia | Do the bandwidth sum first | Three stems, three answers
+p4-hybrid-pick
+N: Do the bandwidth sum first. Two gigabits, encrypted, next week: H-A V-P-N. Twenty gigabits sustained, in a facility where Google is present: Dedicated Interconnect. Five gigabits, with your data centre nowhere near a Google facility: Partner Interconnect. Now the red note.
+V: Interconnect traffic is not encrypted by default.
+[pause: 0.6]
+N: So private, high bandwidth and encrypted means MACsec on Dedicated Interconnect, or H-A V-P-N over Cloud Interconnect.
+
+= panel key | Cloud Router | The regional BGP speaker for your VPC
+It learns on-premises prefixes over VPN or Interconnect, and advertises your subnets back.
+**HA VPN requires it.** With the VPC's **dynamic routing mode set to global**, routes learned in one region are usable from all regions.
+N: Cloud Router is the regional B-G-P speaker for your V-P-C. It learns on-premises prefixes, and it advertises your subnets back. H-A V-P-N requires it. And if on-premises routes are only reachable from one region, the fix is the V-P-C's dynamic routing mode. Set it to global, and routes learned in one region become usable from all regions.
+
+## 4.7 Private access to Google and to services
+
+= table sm | Private access | Six needs, six mechanisms
+Need | Mechanism
+VMs **without external IPs** reach Google APIs | **Private Google Access**, a **per-subnet** setting
+**On-premises** hosts reach Google APIs privately | PGA for on-premises: `private.googleapis.com`, or `restricted.` with VPC Service Controls
+Google APIs at an **internal IP you choose** | **Private Service Connect endpoint**
+Private IP for **Cloud SQL, Memorystore, Filestore, AlloyDB** | **Private services access**: a range, and a peering to the producer VPC
+A **specific service** by internal IP, no peering | **Private Service Connect**: consumer endpoint, service attachment
+**Cloud Run, functions** reach your VPC | **Direct VPC egress** (recommended), or a Serverless VPC Access connector
+N: Six needs, six mechanisms. V-Ms without external addresses that reach Google A-P-Is: Private Google Access, a per-subnet setting. On-premises hosts that reach Google A-P-Is privately: the same idea, using private dot googleapis dot com, or restricted dot googleapis dot com with V-P-C Service Controls. Google A-P-Is at an internal address you choose: a Private Service Connect endpoint. A private address for Cloud SQL, Memorystore, Filestore or AlloyDB: private services access, where you allocate a range, and Google peers a service-producer network to yours. A specific service by internal address, with no peering and no overlap problems: Private Service Connect. And Cloud Run or functions reaching resources on your V-P-C: Direct V-P-C egress, or a Serverless V-P-C Access connector.
+
+= dia | Easy to confuse | Private Google Access versus Cloud NAT
+p4-pga-vs-nat
+N: These two are confused all the time. A private V-M on the left has no external address. Private Google Access reaches Google A-P-Is only. Cloud NAT reaches the internet, outbound only, for things like package mirrors or a partner A-P-I.
+V: P-G-A reaches Google A-P-Is only. Cloud NAT reaches the internet.
+[pause: 0.6]
+N: So a private V-M that needs only Cloud Storage and BigQuery needs Private Google Access and nothing else. One that must run apt-get from the internet needs Cloud NAT.
+
+## 4.8 IP addresses, Cloud DNS and Cloud NAT
+
+= table | Addresses | Ephemeral, static external, static internal
+Type | Behaviour
+**Ephemeral** | Assigned at creation; an ephemeral **external** IP is released when the VM **stops**
+**Static external, regional** | For VMs and regional LBs. **Billed while reserved and unused**
+**Static external, global** | For global load balancers; Premium Tier only
+**Static internal** | Reserved from a subnet: *"the licence server must always be `10.0.3.21`"*
+>! `10.x`, `172.16–31.x` and `192.168.x` can never be external IPs: an option assigning one is invalid on sight.
+N: Addresses. An ephemeral external address is released when the V-M stops. A regional static external address is for V-Ms and regional load balancers, and it is billed while reserved and unused. A global static external address is for global load balancers. A static internal address is reserved from a subnet, such as, the license server must always be this address. And a quick elimination: ten dot, one seven two dot sixteen to thirty-one, and one nine two dot one six eight are private ranges. An option that assigns one as an external address is invalid on sight.
+
+= cmd | Address commands | Reserve, keep, fix
+Task | Command
+Static IP for a global load balancer | gcloud compute addresses create lb-ip --global
+Keep a VM's current ephemeral IP | gcloud compute addresses create keep-me --addresses=34.118.1.2 --region=R
+Reserve a fixed internal IP | gcloud compute addresses create lic-ip --region=R --subnet=app-euc2 --addresses=10.0.3.21
+N: The commands are all gcloud compute addresses create. Dash dash global for a global load balancer. Passing dash dash addresses with the address a V-M already has promotes that ephemeral address to static, so you keep it. And passing a subnet with an address reserves a fixed internal I-P.
+
+= table | Cloud DNS | Zones and policies
+Zone or policy | Does
+**Public zone** | Authoritative DNS on the internet; **DNSSEC** available; 100% SLA
+**Private zone** | Names visible only to the **VPCs you authorise**
+**Forwarding zone** | Sends queries for a domain to **on-premises resolvers**
+**Peering zone** | Resolves a domain using **another VPC's** DNS configuration
+**Inbound server policy** | Gives the VPC resolver an address **on-premises clients can query**
+Response policy | Overrides answers for specific names
+> VMs also get internal DNS automatically: `VM_NAME.ZONE.c.PROJECT_ID.internal`
+N: Cloud D-N-S. A public zone is authoritative on the internet, with D-N-S-sec available, and a one hundred percent service level agreement. A private zone has names visible only to the V-P-Cs you authorize. A forwarding zone sends queries for a domain to on-premises resolvers. A peering zone resolves a domain using another V-P-C's configuration. An inbound server policy gives the V-P-C resolver an address that on-premises clients can query. And a response policy overrides answers for specific names. V-Ms also get internal D-N-S automatically.
+
+= dia | The deciding question | Direction decides the DNS object
+p4-dns-direction
+N: Direction decides the object. Cloud V-Ms must resolve on-premises names, such as corp dot local: a forwarding zone. On-premises hosts must resolve Cloud private names: an inbound server policy. One V-P-C resolving through another V-P-C's configuration: a peering zone. Ask which way the query travels, and the answer follows.
+
+= table | Cloud NAT | Outbound to the internet, and nothing inbound
+Setting | Why it matters
+**Automatic vs manual NAT IPs** | Manual IPs give a **fixed egress address** a partner can allow-list
+Ports per VM | Too few cause dropped connections: `OUT_OF_RESOURCES`
+**Dynamic port allocation** | Fixes port exhaustion on a few busy VMs
+NAT logging | Translations and drops, in Cloud Logging
+Public or Private NAT | Private NAT translates between VPCs or to on-premises with overlapping ranges
+> `gcloud compute routers create nat-router ...`, then `gcloud compute routers nats create nat-1 --router=nat-router ...`
+N: Cloud NAT gives resources without external addresses outbound connectivity to the internet, and nothing inbound. It is a regional, software-defined service, with no proxy V-M and no single point of failure, configured on a Cloud Router. It serves V-Ms, private G-K-E nodes, and serverless workloads using Direct V-P-C egress. Manual NAT addresses give a fixed egress address, which a partner can allow-list. Too few ports per V-M cause dropped connections under load, and dynamic port allocation fixes that on a few busy V-Ms. Notice the two steps in the command: create a router, then create the NAT on it.
+
+## 4.9 Load balancing
+
+= table sm | Load balancers | Seven products, four questions
+Load balancer | Layer | Scope | Traffic | Client IP?
+**Global external Application** | 7 | Global, **one anycast IP** | HTTP(S), gRPC | No: `X-Forwarded-For`
+Regional external Application | 7 | Regional | HTTP(S) | No
+**Internal Application** | 7 | Regional or cross-region | HTTP(S) | No
+External proxy Network | 4 | Global or regional | TCP, SSL | No
+Internal proxy Network | 4 | Internal | TCP | No
+**External passthrough Network** | 4 | Regional | TCP, **UDP**, ESP, ICMP | **Yes**
+**Internal passthrough Network** | 4 | Regional, internal | TCP, **UDP** | **Yes**
+N: Four questions choose every load balancer. External or internal? Global or regional? H-T-T-P, or any T-C-P or U-D-P? Proxy, which terminates the connection, or passthrough, which preserves the client address? That gives this table. Application load balancers work at layer seven. The global external one has one anycast address, and supports H-T-T-P-S, Cloud C-D-N and Cloud Armor. Regional and internal versions exist. Network load balancers work at layer four, as proxy or passthrough. Only the passthrough ones preserve the client address, and they are the ones that carry U-D-P.
+
+= dia | Three eliminations | They answer most load-balancer items
+p4-lb-pick
+N: Three eliminations answer most load balancer items. UDP, or not H-T-T-P, removes every Application load balancer. Must see the client's source address removes every proxy, so it is a passthrough load balancer. And one address worldwide, with failover between regions, is the global external Application load balancer, on Premium Tier. Ask these in order, and you are usually left with one option.
+
+= dia | The parts of an Application LB | Which the exam names
+p4-lb-anatomy
+N: The parts of an Application load balancer, left to right, and the exam names them. A forwarding rule holds the address and port. A target proxy holds the certificate. A U-R-L map holds host and path rules, deciding which backend service gets the request. The backend service is the policy point, with health checks, session affinity, Cloud C-D-N and Cloud Armor. And backends are the actual targets. So where does Cloud Armor attach? The backend service. Where does the certificate go? The target proxy. Where do path rules live? The U-R-L map.
+
+= table | Backend types | What a backend service can point at
+Backend type | Points at
+**Instance group** | VMs, managed or unmanaged
+**Zonal NEG** | Pod or VM IP and port: GKE **container-native load balancing**
+**Serverless NEG** | **Cloud Run**, functions, App Engine: the way behind a global LB
+Internet NEG | An external endpoint
+Hybrid NEG | On-premises or other-cloud endpoints
+Private Service Connect NEG | A published service or Google API
+N: Backend types. An instance group points at V-Ms. A zonal network endpoint group points directly at a Pod or V-M address and port, which is G-K-E container-native load balancing. A serverless network endpoint group points at Cloud Run or functions, and that is how you put them behind a global load balancer. And internet, hybrid and Private Service Connect groups reach external endpoints, on-premises endpoints and published services.
+
+= dia | The classic symptom | All backends unhealthy, right after creating the LB
+p4-health
+N: Here is the classic symptom, as a sequence. Google's probers send health checks from two ranges, shown in the amber note. Message one, a probe reaches the V-P-C firewall. Inside the frame, if no firewall rule allows those ranges, then message two, the probe is dropped by the implied deny ingress. Three, every backend is marked unhealthy. Four, a user sends a request. Five, the user gets errors, though the V-Ms are perfectly fine.
+V: Health checks come from thirty-five dot one nine one dot zero dot zero slash sixteen, and one three zero dot two one one dot zero dot zero slash twenty-two.
+[pause: 0.8]
+N: All backends unhealthy right after creating the load balancer is almost always this rule. For certificates, Google-managed certificates are provisioned and renewed automatically, once D-N-S points at the load balancer, or through D-N-S authorization in Certificate Manager. Self-managed ones are uploaded and renewed by you.
+
+## 4.10 Network Service Tiers, Cloud CDN and Cloud Armor
+
+= table | Network Service Tiers | Backbone or public internet
+Tier | Path | Scope | Cost
+**Premium** (default) | **Google's backbone**, from the edge nearest the user | **Global**: required for global LBs | Higher
+**Standard** | **Public internet** to and from the region | **Regional only** | Lower egress
+> *"Single anycast IP for users on three continents"* is Premium; Standard cannot do it.
+N: Network Service Tiers. Premium, the default, carries traffic on Google's backbone, entering and leaving at the edge closest to the user. It is required for global load balancers and global anycast addresses. Standard carries traffic over the public internet to and from the region. It is regional only, with a lower egress price. So lowest network cost, users in one region, and performance not critical: Standard Tier. A single anycast address for users on three continents: Premium Tier with a global external Application load balancer. It is set as a project default, or per resource.
+
+= cards c2 | Edge services | Cloud CDN and Cloud Armor
+Cloud CDN :: Caches responses at Google's edge. Enabled on a **backend service or backend bucket** of a global external Application LB.
+red Cloud Armor :: WAF and DDoS policy on **backend services** of external LBs: OWASP rules, IP and geo allow or deny, rate limiting, bot management, **Adaptive Protection**.
+N: Two edge services. Cloud C-D-N caches responses at Google's edge. It is enabled on a backend service or backend bucket of a global external Application load balancer. Cloud Armor is a web application firewall and DDoS policy, attached to backend services of external load balancers. It has preconfigured O-WASP rules, I-P and geographic allow or deny, rate limiting, bot management, and Adaptive Protection, which detects layer seven attacks using machine learning.
+
+## 4.11 Seeing the network: flow logs, firewall logs, Connectivity Tests
+
+= table sm | Network observability | Five tools
+Tool | Records or does | Use it for
+**VPC Flow Logs** | A **sample** of flows, per subnet or network | Traffic analysis, forensics
+**Firewall Rules Logging** | One record per connection, **allowed or denied by a rule** you enabled | *"Which rule blocked this?"*
+**Connectivity Tests** | Simulates a packet through routes, firewalls, peering, VPN | *"Why can't A reach B?"*
+Firewall Insights | Shadowed, overly permissive, unused rules | Cleaning up
+Topology, Performance Dashboard | Visual topology; Google-measured latency and loss | Baselining
+N: The tools for seeing the network. V-P-C Flow Logs record a sample of network flows, enabled per subnet or at network level, for traffic analysis and forensics. Firewall Rules Logging gives one record per connection, allowed or denied by a specific rule you enabled logging on. Connectivity Tests, in Network Intelligence Center, simulate a packet from A to B through routes, firewalls, peering and V-P-N, without touching production. Firewall Insights finds shadowed, overly permissive and unused rules. And Network Topology and the Performance Dashboard give a visual picture and latency measurements.
+
+= panel watch | Easy to confuse | Flow logs versus firewall logs
+**Flow logs** say *what traffic flowed*: sampled, per subnet.
+**Firewall logs** say *which rule decided* a connection.
+The **implied** deny-ingress rule cannot be logged. To log denied traffic, create an explicit low-priority deny rule with logging on.
+`gcloud compute networks subnets update web-euc2 --region=R --enable-flow-logs`
+N: Flow logs say what traffic flowed. Firewall logs say which rule decided a connection. And the implied deny ingress rule cannot be logged. So to log denied traffic, create an explicit low-priority deny rule, with logging on. Both of these land in Cloud Logging, and both cost ingestion. On a firewall policy, too, you set enable logging on the rule, because flow logs sample and do not name the rule.
+
+= list | More to recognise | Firewall, routing, connectivity, NAT
+- **Address group:** reusable IP-range list for policy rules. `get-effective-firewalls` lists every rule on one VM
+- **Policy-based route:** matches **source** and protocol, forwards to an internal passthrough LB
+- `--next-hop-ilb` on a static route spreads across healthy appliances
+- **NCC with VPC spokes:** any-to-any among many VPCs. **HA VPN to AWS:** two connections, **four tunnels** for 99.99%
+- **Cross-region internal Application LB** fails over internal traffic; a **serverless NEG per region** does it for Cloud Run
+- Full GKE Pod range? Add a secondary range and new node pools with `--pod-ipv4-range`
+N: A few more to recognise. An address group is a reusable list of I-P ranges for policy rules. Get effective firewalls lists every rule and policy that applies to one V-M. A policy-based route matches on source range and protocol, while static routes match destinations only. Network Connectivity Center with V-P-C spokes gives any-to-any connectivity among many V-P-Cs. H-A V-P-N to A-W-S uses two connections and four tunnels for the ninety-nine point nine nine percent topology. A cross-region internal Application load balancer fails internal traffic over between regions, and a global external one, with a serverless network endpoint group per region, does the same for Cloud Run. And a full G-K-E Pod range is extended by adding another secondary range and new node pools.
+
+## 4.12 Part 4 recall card
+
+= table | Recall card, 1 of 4 | Answer aloud before the voice does
+Prompt | Answer
+Subnet out of addresses | `subnets expand-ip-range`, never shrink
+Traffic for a range through an appliance VM | **Custom static route** + IP forwarding
+Lowest number wins? | Yes: 0–65535, default 1000
+Firewall targets devs cannot change by editing a VM | Service accounts, or **secure tags**
+Network tags in a firewall **policy**? | **No**: policies use secure tags
+Guardrail for every VPC in a folder | **Hierarchical firewall policy**
+N: Recall. Subnet out of addresses: expand I-P range, never shrink. Traffic for a range through an appliance: custom static route, plus I-P forwarding. Lowest number wins: yes, default one thousand. Firewall targets developers cannot change by editing a V-M: service accounts, or secure tags. Network tags in a firewall policy: no, policies use secure tags. A guardrail for every V-P-C in a folder: a hierarchical firewall policy.
+
+= table | Recall card, 2 of 4 | Answer aloud before the voice does
+Prompt | Answer
+Central team owns network, app teams own projects | **Shared VPC**
+Two VPCs, private, non-transitive is fine | **VPC Network Peering**
+Many VPCs, transitive hub | **Network Connectivity Center**
+Encrypted, a few Gbps, fast to set up | **HA VPN** (99.99%)
+10+ Gbps, in a Google colo | **Dedicated Interconnect**
+Cannot reach a colo | **Partner Interconnect**
+N: A central team owns the network, and app teams own projects: Shared V-P-C. Two V-P-Cs, private, non-transitive is fine: peering. Many V-P-Cs with a transitive hub: Network Connectivity Center. Encrypted, a few gigabits, fast to set up: H-A V-P-N. Ten gigabits or more, in a Google colocation facility: Dedicated Interconnect. Cannot reach a colocation facility: Partner Interconnect.
+
+= table | Recall card, 3 of 4 | Answer aloud before the voice does
+Prompt | Answer
+Private VMs to Google APIs only | **Private Google Access**
+Private VMs to the internet, nothing inbound | **Cloud NAT**
+Fixed egress IP for a partner's allow-list | Cloud NAT with **static** NAT IPs
+Cloud Run to a private Cloud SQL IP | **Direct VPC egress**
+Cloud VMs resolve `corp.local` | **Forwarding zone**
+On-prem resolves a Cloud private zone | **Inbound server policy**
+N: Private V-Ms to Google A-P-Is only: Private Google Access. Private V-Ms to the internet, with nothing inbound: Cloud NAT. A fixed egress address for a partner: Cloud NAT with static addresses. Cloud Run to a private Cloud SQL address: Direct V-P-C egress. Cloud V-Ms resolve corp dot local: a forwarding zone. On-premises resolves a Cloud private zone: an inbound server policy.
+
+= table | Recall card, 4 of 4 | Answer aloud before the voice does
+Prompt | Answer
+UDP, preserve client IP | **Passthrough** Network LB
+One anycast IP, TLS at edge, multi-region | **Global external Application LB**, Premium
+All backends unhealthy | Allow **35.191.0.0/16** and **130.211.0.0/22**
+Cheapest egress, one region | **Standard Tier**
+Why can't A reach B? | **Connectivity Tests**
+N: U-D-P, preserving the client address: a passthrough Network load balancer. One anycast address, T-L-S at the edge, multiple regions: the global external Application load balancer. All backends unhealthy: allow the two health check ranges. Cheapest egress, one region: Standard Tier. Why can't A reach B: Connectivity Tests.
+
+## Part 4 sample questions
+
+= th | Part 4 · practice | Ten exam-style questions | Ask which way the traffic flows, who owns it, and what the stem forgives.
+N: Ten questions. For each one, ask which way the traffic flows, who owns the network, and what the stem forgives.
+
+= q | A subnet in `europe-central2` is nearly out of addresses, and new VMs for the same workload must land in that region. You want the least disruption. What should you do?
+(A) Create a new VPC with a larger range and migrate
+(B) Run `gcloud compute networks subnets expand-ip-range` with a shorter prefix
+(C) Delete the subnet and recreate it larger
+(D) Add a secondary range and place VMs on it
+ans B
+why A :: A new VPC is almost never the answer to "out of IPs".
+why B :: Expansion needs no downtime, as long as the range does not overlap.
+why C :: Needs an outage and a migration.
+why D :: Secondary ranges are for alias IPs, such as GKE Pods.
+C: The answer is B. The deciding clauses are the same workload, the same region, and least disruption. Expansion happens without downtime. A and C are heavy and disruptive. D misuses secondary ranges, which serve alias addresses like G-K-E Pods, not primary V-M interfaces.
+
+= q | Developers can edit VM metadata and network tags. Security needs only the web tier to receive HTTPS, even if a developer edits an instance. Which firewall target should you use?
+(A) A network tag `web` in a VPC firewall rule
+(B) A target service account on the rule
+(C) All instances in the network
+(D) A source range of `0.0.0.0/0` with no target
+ans B
+why A :: Anyone able to edit the VM can add the tag.
+why B :: Changing it needs permission to attach the account, with the VM stopped.
+why C :: Opens every VM.
+why D :: With no target, the rule applies to every instance.
+C: The answer is B. Even if a developer edits an instance is the deciding clause. A network tag is only a string on the V-M, so a developer can add it. A target service account needs permission to attach, and the V-M has to be stopped. A secure tag in a firewall policy would also satisfy this, though it is not offered here. C and D open everything.
+
+= q | You create a global **network firewall policy** and write a rule targeting the network tag `web`. It cannot be configured that way. Why, and what is the fix?
+(A) Firewall policies use secure tags, so attach a secure tag value to the VMs
+(B) Network tags only work if the policy is associated at the folder level
+(C) The policy needs a higher priority number
+(D) Cloud NGFW Enterprise is needed for tag targets
+ans A
+why A :: Policies select by secure tags, not network tags.
+why B :: Association level does not change this.
+why C :: Priority has nothing to do with target types.
+why D :: Secure tags are available in Essentials.
+C: The answer is A. The mapping runs one way only: network tags work only in V-P-C firewall rules, and firewall policies use secure tags. B and C change the wrong setting. D is a trap, since secure tags are part of the Essentials tier, with no extra charge.
+
+= q | A central network team must own subnets and firewall rules, while four application teams keep their own projects and billing. What should you set up?
+(A) VPC Network Peering between five VPCs
+(B) Shared VPC with one host project and four service projects
+(C) One project for everyone, with folders per team
+(D) HA VPN tunnels between the teams' VPCs
+ans B
+why A :: Each VPC keeps its own firewalls, so no central ownership.
+why B :: One network, centrally owned, with separate projects.
+why C :: Loses separate billing and quota per team.
+why D :: Tunnels add cost and complexity, with no central control.
+C: The answer is B. A central team must own subnets and firewalls is the deciding clause, and keep their own projects is the second. Shared V-P-C gives exactly that. In peering, each side keeps its own firewall rules, so A fails. C removes the project boundary. D adds tunnels and solves nothing.
+
+= q | VPC A is peered with VPC B, and VPC B is peered with VPC C. A VM in A cannot reach a VM in C. Routes and firewalls in B look correct. Why?
+(A) Peering is non-transitive, so A and C need their own connection, or a hub
+(B) A firewall rule in B is blocking the traffic
+(C) Peered VPCs need the same project
+(D) The peering needs Premium Tier
+ans A
+why A :: Peering is not transitive.
+why B :: B is never in the path.
+why C :: Peers can be in different projects and organizations.
+why D :: Tiers apply to internet traffic, not peering.
+C: The answer is A. Peering is non-transitive. To connect them, peer A with C directly, or use Network Connectivity Center. B is tempting, but B's firewall is not in the path at all. C and D are simply false.
+
+= q | A company needs 5 Gbps to Google Cloud. Its data centre is far from any Google colocation facility, and traffic must not cross the public internet. What should it use?
+(A) Dedicated Interconnect
+(B) Partner Interconnect
+(C) HA VPN
+(D) Direct Peering
+ans B
+why A :: Needs your own circuits in a colocation facility.
+why B :: A provider bridges the distance, up to 50 Gbps.
+why C :: Runs over the public internet.
+why D :: Reaches Google public services, not your VPC.
+C: The answer is B. Three facts decide it: five gigabits, far from a facility, and not over the public internet. Dedicated needs you in a colocation facility. H-A V-P-N crosses the internet. And direct peering reaches Google's public services, not your V-P-C.
+
+= q | Private VMs in a subnet need to read from Cloud Storage and BigQuery. They have no external IPs, and nothing else needs to be reached. What is the minimum configuration?
+(A) Cloud NAT in the region
+(B) Enable Private Google Access on the subnet
+(C) A Dedicated Interconnect
+(D) A public IP on one bastion VM, with a proxy
+ans B
+why A :: Works, but gives internet egress they do not need.
+why B :: A per-subnet setting that reaches Google APIs only.
+why C :: Hybrid connectivity to on-premises is unrelated.
+why D :: Adds a public surface and a machine to run.
+C: The answer is B. Nothing else needs to be reached is the deciding clause. Private Google Access is a per-subnet setting, and it reaches Google A-P-Is only. A would work, but it opens internet egress they do not need. C and D are unrelated or worse.
+
+= q | On-premises servers must resolve names in a Cloud DNS **private zone**. They connect over HA VPN. What should you configure?
+(A) A forwarding zone for the private domain
+(B) A DNS inbound server policy on the VPC
+(C) A public zone with the same names
+(D) A peering zone on-premises
+ans B
+why A :: A forwarding zone sends queries from the Cloud to on-premises: the other direction.
+why B :: Gives on-premises clients an address to query in the VPC.
+why C :: Exposes private names on the internet.
+why D :: Peering zones resolve between VPCs.
+C: The answer is B. Direction decides the object. The query travels from on-premises into the Cloud, so that is an inbound server policy. A is the opposite direction, and it is the classic near miss. C publishes private names. D works between V-P-Cs.
+
+= q | A game server uses UDP and must see each player's real source IP. Players connect to one region. Which load balancer fits?
+(A) Global external Application Load Balancer
+(B) External proxy Network Load Balancer
+(C) External passthrough Network Load Balancer
+(D) Internal Application Load Balancer
+ans C
+why A :: HTTP only, so no UDP.
+why B :: A proxy hides the client IP, and this one carries TCP and SSL.
+why C :: Carries UDP and preserves the client IP.
+why D :: Internal and HTTP only.
+C: The answer is C. Run the eliminations. U-D-P removes every Application load balancer, so A and D are out. Must see the source address removes every proxy, so B is out. Only passthrough is left.
+
+= q | You created an external Application Load Balancer. Every backend shows unhealthy, but the application responds when you connect to a VM over its internal IP. What should you do first?
+(A) Allow `35.191.0.0/16` and `130.211.0.0/22` to the serving port in a firewall rule
+(B) Switch from Premium to Standard Tier
+(C) Reserve a static IP for the load balancer
+(D) Enable Cloud CDN on the backend service
+ans A
+why A :: Probes from those ranges are dropped by implied deny ingress.
+why B :: The tier does not affect health checks.
+why C :: The address does not affect backend health.
+why D :: A cache does not make backends healthy.
+C: The answer is A. All backends unhealthy right after creation, with a working application, is almost always the health check ranges. They arrive at the firewall as ingress, so without a rule, the implied deny drops them. The others change things that do not affect health checks.
+
+= th | End of Part 4 | Next: Compute Engine | Choosing compute, machine families, disks, SSH, snapshots, instance groups, GPUs and TPUs.
+N: That is part four. If you remember one habit from it, ask which way the traffic flows. Next, part five: Compute Engine, starting with how to choose between every compute option on the platform.

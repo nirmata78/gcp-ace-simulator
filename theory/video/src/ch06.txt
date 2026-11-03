@@ -1,0 +1,479 @@
+#! title: Containers and serverless
+#! short: Containers, serverless
+
+## Part 6: Containers and serverless
+
+= th | Google Cloud Associate Cloud Engineer · Part 6 of 10 | Clusters you run, and containers you do not | GKE modes, workloads, exposure, scaling, Workload Identity, Artifact Registry, Cloud Run, functions and events.
+N: Part six, containers and serverless. There are two big subjects here: Google Kubernetes Engine, where a cluster still exists, and Cloud Run, where it does not. Both use containers, and both got new objectives in the June twenty twenty-six guide, especially around traffic splitting, Autopilot resource requests, and service accounts for G-K-E applications.
+
+## 6.1 GKE architecture and cluster modes
+
+= dia | Two modes | Who owns the nodes, and what you pay for
+p6-autopilot-standard
+N: A G-K-E cluster is a Google-managed control plane, with an A-P-I server, scheduler and etcd, plus nodes, which are Compute Engine V-Ms running your Pods. The two modes differ in who owns those nodes. In Autopilot, Google provisions, scales, upgrades, repairs and secures them. You pay for Pod resource requests. It is always regional, and best-practice defaults are on and enforced. In Standard, you configure node pools, and you pay for nodes, whether Pods fill them or not. It can be zonal, multi-zonal or regional, and node access and privileged Pods are allowed.
+V: Do not want to manage nodes means Autopilot, not Standard with automation.
+[pause: 0.6]
+N: Automation on a Standard cluster changes how much work the nodes are, not who owns them, or how you are billed.
+
+= table sm | Topology and access | The choices at creation
+Choice | Meaning
+**Zonal** | One control-plane replica in one zone: a zone outage takes the control plane
+**Regional** | Control plane across **three zones**. ==`--num-nodes` is **per zone**: `--num-nodes=2` creates **six** nodes==
+**Private nodes** | **Internal IPs only**; need **Cloud NAT** for internet pulls, Private Google Access for Artifact Registry
+**Control-plane endpoint** | Public with **authorized networks**, private only, or the **DNS-based endpoint** secured by IAM
+**VPC-native** | Pods and Services use subnet **secondary ranges**: the default
+**Release channel** | Rapid · **Regular** (default) · Stable · Extended; maintenance windows and exclusions
+N: The choices at creation. A zonal cluster has one control-plane replica, so a zone outage takes the control plane. A regional cluster replicates the control plane across three zones, and spreads nodes among them. And here is a classic question: num nodes is per zone, so num nodes two creates six nodes. Private nodes have internal addresses only, and need Cloud NAT to pull images from the internet, and Private Google Access for Artifact Registry. The control-plane endpoint can be public with authorized networks, private only, or the D-N-S based endpoint secured by I-A-M. V-P-C-native means Pods and Services take addresses from secondary ranges. And the release channels are Rapid, Regular, Stable and Extended, with Regular as the default.
+
+= cmd | Cluster commands | Autopilot, regional, private
+Task | Command
+Autopilot cluster | gcloud container clusters create-auto shop --location=R
+Standard regional | gcloud container clusters create batch --location=R --num-nodes=1 --release-channel=regular
+Private nodes, limited control plane | ... --enable-private-nodes --enable-master-authorized-networks --master-authorized-networks=203.0.113.0/24
+N: The verbs. Create dash auto makes an Autopilot cluster. Create makes a Standard one, with location, num nodes, and release channel. Enable private nodes and authorized networks add the private access choices.
+
+## 6.2 kubectl and cluster access
+
+= dia | Two tools | gcloud manages the cluster; kubectl manages what runs in it
+p6-gcloud-kubectl
+N: On the left, gcloud manages the cluster: create, resize, upgrade, delete and node pools. On the right, kubectl manages what runs in it: Deployments, Services and Pods. In the middle is the bridge. gcloud container clusters get-credentials writes a kubeconfig entry. kubectl authenticates with the G-K-E gcloud auth plugin, which uses your gcloud credentials. So a missing plugin is the modern, kubectl cannot authenticate, error. Cloud Shell has both pre-installed.
+
+= table | Authorisation is two layers | IAM cluster-wide, RBAC per namespace
+Layer | Grants | Example
+**IAM** | Cluster-wide Kubernetes rights, at the project | `container.viewer`, `container.developer`, `container.admin`
+**Kubernetes RBAC** | Rights **per namespace**; can bind Google Groups | *"Team A may deploy only in namespace `team-a`"*
+N: Authorization is two layers. I-A-M grants cluster-wide Kubernetes rights at the project: viewer, developer and admin. Kubernetes RBAC, with Roles and RoleBindings, grants rights per namespace, and it can bind Google Groups. So team A may deploy only in namespace team A is RBAC. I-A-M has no namespace level.
+
+= cmd | Viewing cluster inventory | What is running, and why it is not
+Task | Command
+What runs, and where | kubectl get pods -o wide
+Why a Pod is not running | kubectl describe pod POD
+Logs of the crashed container | kubectl logs POD --previous
+Live CPU and memory | kubectl top pods
+The cluster's node pools | gcloud container node-pools list --cluster=shop --location=R
+N: Inventory. kubectl get pods shows what runs and where. kubectl describe pod shows the events, which explain why a Pod is not running. kubectl logs, with dash dash previous, shows the logs of the crashed container, which is what you need for a crash loop. kubectl top shows live C-P-U and memory. And node pools are listed with gcloud, since they belong to the cluster.
+
+## 6.3 Workloads
+
+= table sm | Kubernetes objects | Which object for which job
+Object | For
+**Pod** | One or more containers sharing a network namespace; the smallest unit
+**Deployment** | **Stateless** replicas, rolling updates, rollback. **The default**
+**StatefulSet** | **Stable names**, **per-Pod volumes**, ordered start-up: databases, queues
+**DaemonSet** | **One Pod per node**: log shippers, node agents
+**Job, CronJob** | Run to completion, once or on a schedule
+**ConfigMap, Secret** | Configuration as env vars or files
+**PersistentVolumeClaim** | A request for storage, by **StorageClass**: `standard-rwo`; Filestore for ReadWriteMany
+N: The objects. A Pod is one or more containers sharing a network namespace. A Deployment gives stateless replicas, rolling updates and rollback, and it is the default. A Stateful Set gives stable names, per-Pod persistent volumes and ordered start-up, for databases and queues. A Daemon Set runs one Pod per node, for log shippers and node agents. A Job or Cron Job runs to completion. A Config Map or Secret injects configuration. And a Persistent Volume Claim requests storage through a storage class. Standard R-W-O gives a balanced persistent disk, and Filestore gives read write many.
+
+= panel tip | Stem language | Which object
+*"Each replica needs its own disk and a stable hostname"*: **StatefulSet**.
+*"Exactly one collector on every node, including new ones"*: **DaemonSet**.
+*"Nightly clean-up at 02:00"*: **CronJob**.
+N: How to spot them. Each replica needs its own disk and a stable hostname: Stateful Set. Run exactly one collector on every node, including new ones: Daemon Set. Nightly clean-up at two in the morning: Cron Job.
+
+= cmd | kubectl verbs | Create, apply, roll, scale
+Task | Command
+Create and expose | kubectl create deployment web --image=IMG · kubectl expose deployment web --port=80 --target-port=8080
+Apply manifests, the normal way | kubectl apply -f k8s/
+New image | kubectl set image deployment/web web=IMG:1.5
+Watch; roll back | kubectl rollout status deployment/web · kubectl rollout undo deployment/web
+Scale by hand | kubectl scale deployment web --replicas=6
+N: The kubectl verbs. Create deployment and expose are imperative, while apply dash f is the normal way, using manifests. Set image triggers a rolling update. Rollout status watches it. Rollout undo rolls it back. And scale changes replicas by hand.
+
+## 6.4 Exposing workloads and splitting traffic
+
+= dia | Exposing a workload | Five objects, and what each gives you
+p6-expose
+N: Left to right. A ClusterIP Service gives a stable internal address, inside the cluster. A NodePort gives a port on every node's address. A LoadBalancer Service gives an address for one Service, at layer four, using a passthrough Network load balancer, and it becomes internal with an annotation. An Ingress gives one H-T-T-P entry point, with host and path rules to many Services, using an Application load balancer. And the Gateway API is Ingress's successor, with role separation and weighted traffic splitting. G-K-E uses container-native load balancing, where the load balancer targets Pod addresses directly through network endpoint groups.
+V: Path or host routing, or one address for many Services, means Ingress or Gateway.
+[pause: 0.6]
+N: So three apps behind one external address, routed by U-R-L path, is one Ingress, not three LoadBalancer Services.
+
+= panel new | Traffic splitting now includes GKE | Weights on an HTTPRoute
+Cloud Run and functions split between **revisions** natively. On GKE the native mechanism is the **Gateway API**:
+an `HTTPRoute` whose `backendRefs` carry **weights** sends 90% to the Service for v1 and 10% to the Service for v2.
+Two Deployments behind one Service, split by replica counts, is coarse and ties the split to capacity.
+N: New in the guide: traffic splitting now includes G-K-E. Cloud Run and functions split between revisions natively. On G-K-E, the native mechanism is the Gateway A-P-I. An H-T-T-P Route has backend references carrying weights, which sends, say, ninety percent to the Service in front of version one, and ten percent to the Service in front of version two. The older approximation, two Deployments behind one Service split by replica counts, is coarse, and it ties the split to capacity.
+
+## 6.5 Scaling Pods and nodes; Autopilot resource requests
+
+= dia | Four layers | Pods two ways, nodes two ways
+p6-scaling
+N: Scaling happens at four places. The Horizontal Pod Autoscaler changes the replica count, on C-P-U, memory, custom or external metrics. The Vertical Pod Autoscaler changes each Pod's requests, recommending only, or applying by recreating Pods. The cluster autoscaler, per node pool on Standard, changes the node count to fit pending Pods, and node auto-provisioning creates new pools. On Autopilot, nodes scale automatically. The red note: H-P-A and V-P-A must not both act on the same C-P-U or memory metric for one workload, since they fight. A common pattern is H-P-A on a custom metric such as requests per second, with V-P-A managing requests, or V-P-A in recommendation mode only.
+
+= cmd | Scaling commands | Each layer has its own tool
+Task | Command
+Horizontal Pod Autoscaler | kubectl autoscale deployment web --cpu-percent=60 --min=3 --max=30
+Vertical Pod Autoscaling | gcloud container clusters update batch --location=R --enable-vertical-pod-autoscaling
+Cluster autoscaler on a pool | gcloud container node-pools update default-pool --cluster=batch --location=R --enable-autoscaling --min-nodes=1 --max-nodes=10
+> HPA utilisation is usage divided by **request**, so oversized requests delay scaling.
+N: Notice which tool does which. kubectl autoscale for Pods. gcloud for the cluster and its node pools. And one fact to carry: H-P-A utilization is usage divided by the request, so oversized requests delay scaling.
+
+= panel new | Autopilot Pod resource requests | Requests are the bill and the scheduling input
+**No requests:** defaults apply (general-purpose class, about 0.5 vCPU and 2 GiB, *verify*).
+**Below minimums, or a CPU-to-memory ratio out of range:** adjusted upward, with a warning; `kubectl get pod -o yaml` shows the result.
+**Limits** equal requests, unless **Pod bursting** is supported: a limit above the request uses spare capacity while you pay only for the request.
+N: New in the guide, and specific to Autopilot: managing Pod resource requests. In Autopilot, requests are the bill and the scheduling input, so the platform enforces them. A container with no requests gets defaults applied, on the order of half a V-C-P-U and two gibibytes. Requests below the minimums, or with a C-P-U to memory ratio outside the allowed range, are adjusted upward automatically. kubectl get pod shows the result, and a warning explains the change. Limits equal requests, unless the cluster supports Pod bursting. Then a limit above the request lets the Pod use spare capacity, while you pay only for the request.
+
+= list new | Hardware on Autopilot | Per workload, not per pool
+- Autopilot has **no node pools to create**: the Pod asks
+- **Compute classes:** general-purpose, **Balanced**, **Scale-Out**, **Performance**, **Accelerator**
+- `nodeSelector: cloud.google.com/compute-class`
+- **Arm:** `kubernetes.io/arch: arm64`, with an arm64 image
+- **Spot Pods:** `cloud.google.com/gke-spot: "true"`
+> *"Costs more than expected"*: missing or oversized requests, use VPA recommendations. *"More memory than we asked for"*: minimum or ratio enforcement.
+N: Hardware on Autopilot is chosen per workload, not per pool, since there are no node pools to create. The Pod asks. Compute classes select hardware: general purpose, balanced, scale-out, performance and accelerator, requested with a node selector. Arm uses the arch selector, and an arm sixty-four image. Spot Pods use the G-K-E Spot selector. And two stems to know. Autopilot Pods cost more than expected: look for missing or oversized requests, and use V-P-A recommendations. A Pod was scheduled with more memory than we asked for: that is ratio or minimum enforcement.
+
+## 6.6 Node pools and upgrades (Standard)
+
+= table sm | Node pools | A managed instance group under the hood
+Task | How
+Add capacity of a **new kind** | `gcloud container node-pools create`, with the new machine type and labels or taints
+Change machine type | **Create a new pool**, cordon and drain the old, delete it: not editable in place
+Resize | `gcloud container clusters resize CLUSTER --node-pool=POOL --num-nodes=N`
+Autoscale | `--enable-autoscaling --min-nodes --max-nodes` (per zone), or `--total-min-nodes`
+Keep workloads on the right pool | **Labels + `nodeSelector`**; **taints + tolerations** keep others off
+Upgrades | **Surge** (`max-surge`, `max-unavailable`) or **blue-green**, per pool
+N: A node pool is a group of identically configured nodes, and it is a managed instance group under the hood. To add capacity of a new kind, such as G-P-Us, Spot or Arm, create a new pool. To change the machine type of existing nodes, you create a new pool, cordon and drain the old one, and delete it, because the machine type is not editable in place. To keep workloads on the right pool, use node labels with a node selector, and use taints with tolerations to keep everything else off. Upgrades are surge or blue-green. A Pod Disruption Budget limits evictions during drains. And blue-green upgrades keep old nodes for a soak period.
+
+## 6.7 Artifact Registry and image access
+
+= table | Artifact Registry | Images and packages
+Fact | Detail
+Stores | Container images, Maven, npm, Python, Go, apt, yum, Helm charts
+**Container Registry** | **Shut down**: `gcr.io` paths are now served by Artifact Registry
+Address | `LOCATION-docker.pkg.dev/PROJECT/REPO/IMAGE:TAG`
+**Standard / Remote / Virtual** | Your artefacts / caching proxy of an upstream / one endpoint over several
+Also | **Cleanup policies**; **Artifact Analysis** scans for vulnerabilities
+N: Artifact Registry stores container images and language packages. Container Registry is shut down, and G-C-R dot I-O paths are now served by Artifact Registry. Repositories are regional or multi-regional, addressed with location, dash docker dot pkg dot dev. There are three modes. Standard holds your own artefacts. Remote is a caching proxy of an upstream such as Docker Hub, so builds survive upstream rate limits and outages. Virtual is one endpoint over several repositories. Cleanup policies delete old versions, and Artifact Analysis scans images for vulnerabilities.
+
+= cmd | Roles and commands | Reader pulls, writer pushes
+Task or role | Command or meaning
+`artifactregistry.reader` | Pull
+`artifactregistry.writer` | Push and pull
+`artifactregistry.repoAdmin` | Manage repositories and artefacts
+Docker repository | gcloud artifacts repositories create shop --repository-format=docker --location=R
+Let local Docker push | gcloud auth configure-docker R-docker.pkg.dev
+N: Reader pulls, writer pushes and pulls, and repository admin manages. You create a repository with gcloud artifacts repositories create, with a format and location. And gcloud auth configure docker lets the local Docker command line push.
+
+= dia | The classic failure | Nodes pull images as the node pool's service account
+p6-image-pull
+N: Follow the pull. One, the kubelet pulls as the node pool's service account. Two, that account requests the image from Artifact Registry. Look at the first frame. If the account has no reader role, three, you get a four-oh-three, and the Pod is stuck in image pull back off. In the second frame, with reader granted, the layers arrive, and the container starts.
+V: Nodes pull images as the node pool's service account. No image pull secrets are needed.
+[pause: 0.6]
+N: With the same project, and the default Compute account with Editor, it just works, and it is too broad. The recommended design is a minimal custom node service account, using the default node service account role, and then you must grant it Artifact Registry reader explicitly. For a repository in another project, grant reader on that repository. Private nodes reach Artifact Registry through Private Google Access. Pulling from Docker Hub needs Cloud NAT, or a remote repository. A missing docker login, a public repository, or a key in an image pull secret are all distractors.
+
+## 6.8 Workload Identity Federation for GKE
+
+= panel new | A service account with a GKE application | No key mounted, no borrowed node identity
+**Pods authenticate to Google APIs as a Kubernetes service account (KSA) that IAM recognises.**
+Enabled by default on Autopilot. On Standard, enable a **workload pool** on the cluster, and the **GKE metadata server** on node pools.
+The Pod spec names `serviceAccountName: web`, and client libraries find credentials through ADC with no change.
+N: New in the guide: using a service account with a G-K-E application. Pods authenticate to Google A-P-Is as a Kubernetes service account that I-A-M recognises. So no key is mounted, and Pods do not borrow the node's identity. It is enabled by default on Autopilot. On Standard, enable a workload pool on the cluster, and the G-K-E metadata server on node pools. The Pod specification names its service account, and client libraries then find credentials through Application Default Credentials with no code change.
+
+= dia new | The flow | Two ways to grant access, both keyless
+p6-wi
+N: One, client libraries ask for a token. Two, the G-K-E metadata server exchanges the Kubernetes service account's token with the Security Token Service. Three, a federated token comes back. Then there are two paths. Path A: grant I-A-M straight to the Kubernetes service account, using a long principal identifier, and the Pod calls Cloud Storage directly. That is highlighted, because it is the simpler one. Path B: annotate the Kubernetes service account with a Google service account, and grant Workload Identity User on that Google account. The Pod then impersonates it.
+
+= cmd sm | Configuring it | Enable, then choose (a) or (b)
+Step | What you configure
+Enable (Standard) | gcloud container clusters update batch --location=R --workload-pool=P.svc.id.goog
+(a) IAM straight to the KSA | member principal://iam.googleapis.com/projects/NUM/locations/global/workloadIdentityPools/P.svc.id.goog/subject/ns/shop/sa/web
+(b) Impersonate a Google SA | roles/iam.workloadIdentityUser on the GSA for serviceAccount:P.svc.id.goog[shop/web]
+(b) Then annotate the KSA | iam.gke.io/gcp-service-account=GSA_EMAIL
+N: Here is what you configure. Workload pool is your project I-D, dot s-v-c, dot I-D, dot goog. In path A, the member names the pool, the namespace and the Kubernetes service account. In path B, the member is project dot s-v-c dot I-D dot goog, then namespace and account in square brackets, and you add the annotation.
+
+= panel watch | Easy to confuse | Node service account versus workload identity
+The **node** account does the node's own jobs: pulling images, writing logs and metrics.
+**Application** access to Cloud Storage, Pub/Sub or BigQuery belongs to the **Pod's** identity.
+Granting app roles to the node account gives them to **every Pod on the node**.
+`hostNetwork: true` Pods cannot use it: they reach the node's metadata server.
+N: Keep these apart. The node service account is for the node's own jobs: pulling images, writing logs and metrics. Application access belongs to the Pod's identity. Granting application roles to the node account gives them to every Pod on the node. And one limitation: Pods with host network true cannot use Workload Identity Federation for G-K-E, because they reach the node's metadata server, and act as the node's service account.
+
+## 6.9 Cloud Run services and jobs
+
+= table | Cloud Run resources | Containers without servers or clusters
+Resource | Is
+**Service** | Serves **requests** (HTTP, gRPC, WebSockets) at a stable HTTPS URL; scales on load
+**Job** | Runs **tasks to completion**, in parallel, with retries; on demand, or via Cloud Scheduler
+**Worker pool** | Always-on, non-request workloads such as queue consumers (*recognise*)
+**Revision** | An **immutable** snapshot of code and configuration, created by every deploy
+N: Cloud Run runs containers without servers or clusters, billed per use, scaling automatically, down to zero when idle. A service serves requests at a stable H-T-T-P-S U-R-L. A job runs tasks to completion, in parallel with retries, on demand or on a schedule through Cloud Scheduler. A worker pool handles always-on workloads, such as queue consumers. And a revision is an immutable snapshot of code and configuration, created by every deploy.
+
+= table | Deploying | Fewest steps, or most control
+Route | Steps | When
+**`gcloud run deploy SVC --source .`** | **One**: Cloud Build builds, stores, deploys | *"Fewest steps from source to a URL"*
+`gcloud run deploy SVC --image=IMAGE` | One | The image already exists
+`docker build` + `push` + `deploy` | Three, with a local daemon | You need control of the build
+Cloud Build trigger, Cloud Deploy | A pipeline | **Continuous** delivery on every commit
+> `gcloud run jobs create nightly-export --image=IMG --tasks=20 --max-retries=3` · `gcloud run jobs execute nightly-export`
+N: Deploying has four routes. gcloud run deploy with dash dash source dot takes one step. Cloud Build builds from a Dockerfile or buildpacks, stores in Artifact Registry and deploys, which answers, fewest steps from source to a U-R-L. With an image that exists, use dash dash image. Docker build, push and deploy takes three steps, for when you need control of the build. And a pipeline suits continuous delivery on every commit. Jobs have their own verbs: create, and execute.
+
+= table sm | Access and networking | The settings the exam uses
+Setting | Options
+**Authentication** | Require auth: callers need **`run.invoker`** and send an **ID token**; or allow unauthenticated (`allUsers`)
+**Ingress** | `all` · `internal` · `internal-and-cloud-load-balancing`
+**Egress to a VPC** | **Direct VPC egress**, or a Serverless VPC Access connector
+**Static outbound IP** | All egress through the VPC and **Cloud NAT** with a static address
+**Domain, CDN, WAF** | A **global external Application LB with a serverless NEG**
+**Identity, secrets** | A **dedicated service account**; `--set-secrets=DB_PASS=db-password:latest`
+N: Access and networking. With authentication required, callers need Cloud Run Invoker, and send an I-D token. Or you allow unauthenticated, for public sites, which grants invoker to all users. Ingress can be all, internal, or internal and cloud load balancing. Direct V-P-C egress reaches private addresses, such as Cloud SQL or Memorystore. A static outbound address means routing all egress through the V-P-C, and Cloud NAT with a static address. A custom domain, C-D-N or Cloud Armor means a global external Application load balancer with a serverless network endpoint group. And each service should have its own dedicated service account, never the default Compute account.
+
+= panel tip | Stem language | Service to service
+*"Service A must call private service B"*: grant **B's `run.invoker` to A's service account**. A attaches an ID token for B's URL.
+Making B public and checking a header is the distractor.
+N: Service A must call private service B: grant Cloud Run Invoker on B, to A's service account, and A attaches an I-D token for B's U-R-L. Making B public and checking a header is the distractor.
+
+## 6.10 Cloud Run revisions, traffic and scaling
+
+= th | The default to remember | Every deploy sends the new revision <em>100%</em> | A gradual rollout is a deliberate two-step.
+V: Every deploy creates a revision, and by default sends it one hundred percent of traffic immediately.
+[pause: 0.6]
+
+= dia | A canary on Cloud Run | Deploy at zero, test by tag, then shift
+p6-canary
+N: So a gradual rollout is deliberate. One, deploy with dash dash no traffic and a tag. Two, the new revision exists at zero percent, reachable on its own tag U-R-L, so you can test it. Three, update traffic, sending ten percent to the tag. Now ninety percent of users reach version one, and ten percent reach version two. When you are happy, update traffic to latest. And rollback is one command that points traffic back to the old revision, with no rebuild and no D-N-S change. Revisions are immutable, and they stay addressable.
+
+= table sm | Autoscaling settings | Six knobs, and what each one fixes
+Setting | Meaning | Default
+**Minimum instances** | Kept warm to avoid **cold starts**; above 0, no more idling to zero | 0
+**Maximum instances** | Ceiling: protects a database, caps cost | 100 (*verify*)
+**Concurrency** | Requests **at once on one instance** | 80, max 1000
+**Billing, CPU** | **Request-based**, or **instance-based** for background work | Request-based
+Startup CPU boost | Extra CPU during start-up | Off
+Request timeout | Per request | 5 min, up to 60
+N: The autoscaling settings. Minimum instances stay warm to avoid cold starts, but above zero the service no longer idles to zero cost. Maximum instances is a ceiling, which protects a database and caps cost. Concurrency is how many requests one instance handles at once, by default eighty. Billing is request-based, where C-P-U runs only while handling requests, or instance-based, where C-P-U is always on, for background work. Startup C-P-U boost gives extra C-P-U during start-up. And the request timeout defaults to five minutes.
+
+= panel tip | Four symptoms | Four fixes
+*"First request after idle is slow"*: **minimum instances**, or startup CPU boost.
+*"The database runs out of connections at peak"*: **maximum instances**, and/or lower **concurrency**.
+*"A single-threaded app misbehaves under load"*: **concurrency 1**.
+*"Work continues after the response is sent"*: **instance-based billing**, `--no-cpu-throttling`.
+N: Four symptoms, four fixes. First request after idle is slow: minimum instances, or a startup boost. The database runs out of connections at peak: maximum instances, or lower concurrency. A single-threaded app misbehaves under load: concurrency one. Work continues after the response is sent: instance-based billing, with no C-P-U throttling.
+
+## 6.11 Cloud Run functions and events
+
+= panel key | A function is a Cloud Run service | You write a handler; Google builds and runs the container
+So revisions, traffic splitting, scaling, concurrency, VPC egress and IAM work as they do on Cloud Run.
+`gcloud functions deploy thumb --gen2 --runtime=python312 --trigger-event-filters="type=google.cloud.storage.object.v1.finalized" --trigger-event-filters="bucket=lumen-uploads"`
+Also: `--trigger-topic=orders` · `--trigger-http`
+N: Cloud Run functions, formerly Cloud Functions, are functions deployed as Cloud Run services. You write a handler, and Google builds and runs the container. So revisions, traffic splitting, scaling, concurrency, V-P-C egress and I-A-M all work as they do on Cloud Run. The command shows a trigger with event filters: a finalized object in a particular bucket. Trigger topic fires on a Pub/Sub message, and trigger H-T-T-P fires on a request.
+
+= table sm | Where events come from | Sources and mechanisms
+Source | Mechanism | Notes
+**HTTP** | Direct request | ID token unless public
+**Pub/Sub message** | Eventarc creates a **push subscription** | At-least-once; idempotent handlers
+**Cloud Storage** object events | Eventarc, via Pub/Sub | Trigger in the **bucket's region**; **agent needs `pubsub.publisher`**
+**Audit Log events**: *"when anyone creates a VM"* | Eventarc on an audit log entry | The audit log type must be **enabled**
+Third-party, custom | Eventarc channels, Advanced buses | *Recognise*
+N: Where events come from. H-T-T-P is a direct request. A Pub/Sub message goes through a push subscription that Eventarc creates, and delivery is at least once, so handlers must be idempotent. Cloud Storage object events are finalized, deleted, archived and metadata updated. Audit log events answer, when anyone creates a V-M, and that audit log type must be enabled. Eventarc routes events from sources to Cloud Run, functions, G-K-E services and Workflows. A trigger has filters, a destination, and a service account that needs event receiver and Cloud Run invoker.
+
+= dia | The chain | An upload firing a function, and what breaks it
+p6-gcs-event
+N: Follow the chain. A bucket upload finalizes an object, and the Cloud Storage service agent publishes, so it needs Pub/Sub publisher. The Eventarc trigger filters the event, and it must be in the bucket's region. Pub/Sub carries it, at least once. Then the function runs. So the function never fires on uploads? Check, in order: the trigger's region matches the bucket's. The Cloud Storage service agent has publisher. The trigger's service account can invoke the function. And the event type is finalized, not metadata updated. Polling the bucket from a V-M is the assembled distractor. Also, retry on failure helps with transient errors, but it is dangerous without idempotency, since a permanent bug then retries until the event expires.
+
+## 6.12 App Engine, Cloud Build and delivery
+
+= cmd | App Engine: recognise it | One application per project, and a permanent region
+Task | Command
+Deploy without moving traffic | gcloud app deploy --no-promote --version=v7
+Split traffic 90/10 | gcloud app services set-traffic default --splits=v6=0.9,v7=0.1
+> **Standard** scales to zero. **Flexible** runs on VMs, minimum one instance. The region can **never** change.
+N: App Engine is not named in the guide, but it still appears as a distractor. There is one App Engine application per project, and its region can never change. The standard environment uses sandboxed runtimes, and scales to zero. The flexible environment runs containers on V-Ms, with a minimum of one instance. So it is mostly a distractor for scale to zero, since flexible cannot do it, or for a new region, since the region is permanent.
+
+= cards c2 | Delivery | Cloud Build and Cloud Deploy
+Cloud Build :: Runs a `cloudbuild.yaml` of container **steps** on **triggers** or on demand. Use a **user-specified service account** with only the roles it needs. `gcloud builds submit --tag=R-docker.pkg.dev/P/shop/web:1.6 .`
+grn Cloud Deploy :: Managed **release pipelines** to GKE and Cloud Run: promotion between targets, approvals and **canary** strategies.
+N: Cloud Build runs a YAML file of container steps, on triggers such as a push to a branch, or on demand. It runs as a service account, and best practice is a user-specified account with only the roles the pipeline needs, for example Cloud Run developer plus Service Account User on the runtime account. gcloud builds submit builds and pushes an image with no local Docker. Cloud Deploy adds managed release pipelines to G-K-E and Cloud Run, with promotion between targets, approvals and canary strategies.
+
+= list | More to recognise | Operating GKE and serverless
+- **Stable** channel for production. **DNS-based endpoint**: IAM, no bastion, no allow-list
+- ConfigMap env vars change only after **`kubectl rollout restart`**
+- `kubectl get pods -A --field-selector=status.phase=Pending` lists every Pending Pod
+- HPA on the external metric **`num_undelivered_messages`** scales Pub/Sub consumers
+- **GPU time-sharing:** Pods take turns. **Multi-instance GPUs:** isolated slices
+- Functions react to **Firestore document events** through Eventarc
+N: A few more. Enrol production in the Stable release channel. The D-N-S based control plane endpoint is authorized by I-A-M, so no bastion or allow-list is needed. Environment variables from a Config Map change only after kubectl rollout restart. That field selector lists every pending Pod. An H-P-A on the external metric, num undelivered messages, scales Pub/Sub consumers. G-P-U time sharing gives several Pods turns on one G-P-U, and multi-instance G-P-Us partition a G-P-U into isolated slices. And functions can react to Firestore document events through Eventarc.
+
+## 6.13 Part 6 recall card
+
+= table | Recall card, 1 of 4 | Answer aloud before the voice does
+Prompt | Answer
+No node management | **Autopilot**, always regional
+Regional Standard, `--num-nodes=2` | **Six** nodes
+Nodes with internal IPs only | `--enable-private-nodes`, plus Cloud NAT for internet pulls
+kubectl cannot authenticate | **`gke-gcloud-auth-plugin`**; `get-credentials`
+Namespace-level permissions | **Kubernetes RBAC**
+N: Recall. No node management: Autopilot. Regional Standard with num nodes two: six nodes. Nodes with internal addresses only: enable private nodes. kubectl cannot authenticate: the auth plugin, and get credentials. Namespace-level permissions: Kubernetes RBAC.
+
+= table | Recall card, 2 of 4 | Answer aloud before the voice does
+Prompt | Answer
+Stable names + per-replica disks | **StatefulSet**
+One Pod on every node | **DaemonSet**
+One IP, path routing to many Services | **Ingress** or **Gateway**
+10% to v2 on GKE | **Gateway API HTTPRoute weights**
+More replicas on load; right-size requests | **HPA**; **VPA**
+Autopilot Pod got more memory than requested | **Minimum or ratio enforcement**
+N: Stable names and per-replica disks: Stateful Set. One Pod on every node: Daemon Set. One address with path routing to many Services: Ingress or Gateway. Ten percent to version two on G-K-E: H-T-T-P Route weights. More replicas on load: H-P-A, and right-sizing requests: V-P-A. An Autopilot Pod got more memory than requested: minimum or ratio enforcement.
+
+= table | Recall card, 3 of 4 | Answer aloud before the voice does
+Prompt | Answer
+Change node machine type | **New node pool**, drain old
+`ImagePullBackOff`, 403 from `pkg.dev` | Node SA needs **`artifactregistry.reader`**
+Pod reads a bucket, no key | **Workload Identity Federation for GKE**
+Source to URL, one command | `gcloud run deploy --source .`
+Canary 10% on Cloud Run | `--no-traffic --tag`, then `update-traffic --to-tags=tag=10`
+N: Change node machine type: a new node pool, then drain the old. Image pull back off, with four-oh-three: the node account needs reader. A Pod reads a bucket, with no key: Workload Identity Federation for G-K-E. Source to U-R-L in one command: gcloud run deploy, dash dash source. Canary ten percent on Cloud Run: no traffic with a tag, then update traffic.
+
+= table | Recall card, 4 of 4 | Answer aloud before the voice does
+Prompt | Answer
+Cold starts | **Min instances**
+DB connection storms | **Max instances**, lower concurrency
+Service A calls private service B | A's SA gets **`run.invoker`** on B; ID token
+Custom domain + Cloud Armor for Cloud Run | Global external ALB + **serverless NEG**
+Function on upload never fires | Region match; GCS **agent** `pubsub.publisher`
+React to "VM created" anywhere | **Eventarc** audit-log trigger
+N: Cold starts: minimum instances. Database connection storms: maximum instances, or lower concurrency. Service A calls private service B: A's account gets invoker on B, with an I-D token. A custom domain and Cloud Armor for Cloud Run: a global external load balancer, with a serverless network endpoint group. A function on upload never fires: region match, and the agent's publisher role. React to a V-M being created anywhere: an Eventarc audit log trigger.
+
+## Part 6 sample questions
+
+= th | Part 6 · practice | Eleven exam-style questions | Watch for who owns the nodes, what scales, and who is the caller.
+N: Eleven questions. Watch for who owns the nodes, what actually scales, and who the caller is.
+
+= q | A team wants Kubernetes, and says it does **not want to manage nodes, upgrades or node pools**. What should you create?
+(A) A Standard regional cluster with cluster autoscaler
+(B) A GKE Autopilot cluster
+(C) A Standard cluster with node auto-provisioning
+(D) Cloud Run jobs
+ans B
+why A :: You still own the node pools.
+why B :: Google owns the nodes.
+why C :: Automation does not change who owns them.
+why D :: Not Kubernetes, which they want.
+C: The answer is B. Do not want to manage nodes is Autopilot, and A and C are the classic near misses. Automation on Standard changes how much work the nodes are, not who owns them. D drops the Kubernetes requirement.
+
+= q | You run `gcloud container clusters create batch --location=us-central1 --num-nodes=2`, creating a regional Standard cluster. How many nodes do you get?
+(A) 2
+(B) 3
+(C) 6
+(D) It depends on the release channel
+ans C
+why A :: Would be true for a zonal cluster.
+why B :: Confuses zones with nodes.
+why C :: Per zone × three zones.
+why D :: The channel has no effect on node count.
+C: The answer is C. On a regional cluster, num nodes is per zone, with three zones by default, so two times three is six. This also matters for cost, which is why examples in this course use num nodes one. A is what you would get on a zonal cluster.
+
+= q | Three web apps must share **one external IP**, routed by URL path, on GKE. What should you use?
+(A) Three Services of type LoadBalancer
+(B) One Ingress, or a Gateway with HTTPRoutes, in front of three Services
+(C) Three NodePort Services, with DNS round robin
+(D) An internal passthrough Network Load Balancer
+ans B
+why A :: One IP per Service, and layer 4.
+why B :: One entry point, with path rules.
+why C :: No path routing, and no single IP.
+why D :: Internal, and it has no path rules.
+C: The answer is B. One address and path routing mean Ingress or Gateway, at layer seven. A gives three addresses, at layer four. C and D cannot route by path.
+
+= q | Pods in a Standard cluster are stuck in `ImagePullBackOff`, with a 403 from `europe-docker.pkg.dev`. The node pool uses a minimal custom service account. What should you do?
+(A) Run `docker login` on each node
+(B) Grant `roles/artifactregistry.reader` to the node service account on the repository
+(C) Make the repository public
+(D) Create a key for the node account and add an `imagePullSecret`
+ans B
+why A :: Nodes do not use a Docker login.
+why B :: Nodes pull as the node pool's service account.
+why C :: Removes all access control from the images.
+why D :: Adds key material, and it is not needed.
+C: The answer is B. Nodes pull images as the node pool's service account, and a minimal custom account needs reader explicitly. A misunderstands how nodes pull. C solves the error by removing security. D adds key material when a keyless route exists.
+
+= q | A Pod must read from a Cloud Storage bucket, with no key files, and without giving that access to other Pods on the same node. What should you use?
+(A) Grant the role to the node service account
+(B) Workload Identity Federation for GKE, with a Kubernetes service account for that Pod
+(C) A key mounted as a Kubernetes Secret
+(D) `hostNetwork: true` on the Pod
+ans B
+why A :: Every Pod on the node would get the access.
+why B :: A per-workload identity, with no key.
+why C :: Key material, and only base64 encoded.
+why D :: Host-network Pods act as the node.
+C: The answer is B. Without giving that access to other Pods rules out A, since node account roles reach every Pod on the node. No key files rules out C. And D is the limitation we covered: host-network Pods reach the node's metadata server.
+
+= q | In Autopilot, a Pod requesting 250m CPU and 8 GiB of memory ends up with more CPU than requested, with a warning. Why?
+(A) A Vertical Pod Autoscaler must be running
+(B) The request was outside the allowed CPU-to-memory ratio, so Autopilot adjusted it upward
+(C) The node pool's machine type forces it
+(D) A LimitRange in the namespace raised the value
+ans B
+why A :: VPA is not needed for this behaviour.
+why B :: Autopilot enforces minimums and ratios.
+why C :: Autopilot has no node pools for you to configure.
+why D :: Possible on Kubernetes generally, but the warning points to Autopilot's enforcement.
+C: The answer is B. Autopilot enforces minimums and a C-P-U to memory ratio, and it adjusts requests upward, with a warning. Since requests are the bill, it is worth checking with kubectl get pod. C fails because Autopilot has no node pools to configure. A and D could change requests in other settings, but they are not what the stem describes.
+
+= q | A Cloud Run service must receive a new version gradually: 10% of traffic first, with immediate rollback if errors rise. What should you do?
+(A) Deploy normally, then use DNS weighting
+(B) Deploy with `--no-traffic --tag=canary`, then `update-traffic --to-tags=canary=10`
+(C) Deploy a second service and use two Cloud Run URLs in the client
+(D) Set `--min-instances` to 10% of the maximum
+ans B
+why A :: A normal deploy sends 100% at once, and DNS is cached and slow.
+why B :: A native split between revisions.
+why C :: Pushes routing into the client.
+why D :: Sets warm instances; it does not split traffic.
+C: The answer is B. Every deploy sends one hundred percent by default, so you deploy at zero, then shift. A fails on two counts, since D-N-S weighting is cached, coarse and slow to reverse. C moves the problem to the client. D confuses scaling with routing.
+
+= q | After a Cloud Run deployment, the database reports *too many connections* at peak. Autoscaling is working as designed. What is the most direct fix?
+(A) Lower maximum instances, and/or concurrency
+(B) Raise minimum instances
+(C) Enable startup CPU boost
+(D) Change to instance-based billing
+ans A
+why A :: Caps the number of connections reaching the database.
+why B :: Adds more warm instances, and more connections.
+why C :: Helps cold starts, and nothing else.
+why D :: Changes when CPU is allocated.
+C: The answer is A. Autoscaling working as designed means many instances, each opening connections. Maximum instances caps them, and lower concurrency reduces requests per instance. B makes it worse. C and D solve different symptoms.
+
+= q | Private Cloud Run service A must call private Cloud Run service B. What should you configure?
+(A) Grant `roles/run.invoker` on B to A's service account, and have A send an ID token
+(B) Make B public, and check a shared header
+(C) Put both in the same VPC with firewall rules
+(D) Grant `roles/run.admin` on B to all users in the project
+ans A
+why A :: IAM on B, with an ID token from A.
+why B :: The named distractor: public, with a guessable check.
+why C :: Cloud Run authentication is IAM, not firewalls.
+why D :: Far too broad, and the wrong principal.
+C: The answer is A. The caller's identity needs invoker on the target, and it proves itself with an I-D token for the target's U-R-L. B removes real authentication. C misunderstands how Cloud Run authenticates. D is too broad.
+
+= q | A Cloud Run function should fire on every upload to a bucket, but never does. The trigger's service account has the correct roles. Which **two** should you check next? Choose two.
+(A) The trigger is in the same region as the bucket
+(B) The Cloud Storage service agent has `roles/pubsub.publisher`
+(C) The bucket uses the Archive storage class
+(D) The function has more than one minimum instance
+(E) The function has a static external IP
+ans A, B
+why A :: The trigger must be in the bucket's region.
+why B :: The agent publishes the events.
+why C :: Storage class does not stop events.
+why D :: Minimum instances are unrelated.
+why E :: Inbound events do not use one.
+C: The answers are A and B. Events travel through Pub/Sub, published by the Cloud Storage service agent, and the trigger must match the bucket's region. Those two are the most common causes. Also check that the event type is finalized. C, D and E do not affect delivery of events.
+
+= q | Each replica of a Kubernetes database needs its own persistent disk, and a stable network identity. Which object should you use?
+(A) Deployment
+(B) DaemonSet
+(C) StatefulSet
+(D) CronJob
+ans C
+why A :: For stateless replicas with interchangeable names.
+why B :: One Pod per node, for agents.
+why C :: Stable names, and per-Pod volumes.
+why D :: Runs to completion on a schedule.
+C: The answer is C. A Stateful Set gives stable names, such as db zero and db one, and per-Pod volumes through volume claim templates, with ordered start-up. A is for stateless replicas. B runs one per node. D is scheduled batch work.
+
+= th | End of Part 6 | Next: storage and data | The largest product family on the exam: Cloud Storage classes, databases, analytics, messaging, and encryption keys.
+N: That is part six. Next is part seven, the longest part of the course: Cloud Storage, every database, analytics, messaging, and customer-managed encryption keys.

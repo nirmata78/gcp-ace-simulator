@@ -1,0 +1,265 @@
+#! title: Tooling: IaC, AI assistance, developer platforms
+#! short: Tooling
+
+## Part 8: Tooling
+
+= th new | Google Cloud Associate Cloud Engineer · Part 8 of 10 | Code, AI assistance, and developer platforms | Terraform and state, Fabric FAST, Config Connector, Helm, Gemini tooling, Agent Runtime, notebooks, Cloud Workstations.
+N: Part eight, tooling. This part is shorter, and much of it is new. The June twenty twenty-six guide describes an Associate Cloud Engineer as someone who works supported by A-I tooling, and it names specific infrastructure as code and A-I tools. We begin with infrastructure as code, because the rules of safe change apply to everything else in this part.
+
+## 8.1 Infrastructure as code: the model
+
+= table | Declarative or scripted | Why the exam prefers declarative
+Property | Declarative IaC | A script of `gcloud`
+You write | The **desired end state** | The **steps**
+Re-running | **Idempotent** | Fails or duplicates
+Preview | **Plan, diff before apply** | None
+Drift | **Detected** on the next plan | Invisible
+Review | A pull request on a readable diff | Review of imperative code
+N: Infrastructure as code describes infrastructure in version-controlled files, and lets a tool make reality match them. The exam prefers it over console clicks and shell scripts for anything repeatable, and it prefers declarative tools. With a declarative tool, you write the desired end state, and with a script, you write the steps. Re-running a declarative tool is idempotent, changing only what differs, while a script fails or duplicates. You get a plan before you apply. Drift is detected on the next plan. And reviewers see a readable diff.
+
+= panel trap | Three wrong answers | What loses to Terraform
+**Deployment Manager is deprecated**: never choose it for new work.
+**Console export** gives a one-time copy, not a maintained definition.
+**A shell script** is repeatable, but not declarative.
+When an option offers Terraform or Infrastructure Manager against any of these, Terraform wins.
+N: Three wrong answers to spot. Deployment Manager is deprecated, so never choose it for new work. Console export gives a one-time copy, not a maintained definition. And a shell script is repeatable, but not declarative. When an option offers Terraform or Infrastructure Manager against any of these, Terraform wins.
+
+## 8.2 Terraform on Google Cloud
+
+= table | Terraform vocabulary | Five words
+Concept | Meaning
+**Provider** | The plug-in that talks to an API: `google`, `google-beta`
+**Resource**, **data source** | Something Terraform manages; something it only reads
+**Module** | A reusable package of resources, with inputs and outputs
+**State** | The mapping from code to real resource IDs
+**Plan**, **apply** | Compute the diff; execute it
+N: Terraform vocabulary. A provider is the plug-in that talks to an A-P-I. A resource is something Terraform manages, and a data source is something it only reads. A module is a reusable package, with inputs and outputs. State is Terraform's record of what it manages, the mapping from code to real resource I-Ds. And plan computes the diff, while apply executes it.
+
+= dia | The recommended loop | And the exam's items are mostly about state
+p8-terraform-loop
+N: Follow the boxes. Code lives in git, and is reviewed by pull request. Terraform plan computes the diff, which you attach to the review. Terraform apply runs from a pipeline, as a dedicated deploy account, reached by impersonation or federation. And state lives remotely.
+V: Store state remotely, in a Cloud Storage backend, with locking.
+[pause: 0.6]
+N: Then two applies cannot run at once. Local state on laptops is the classic failure: two engineers, two truths.
+
+= list | State rules | The heart of Terraform
+- State contains **secrets and resource details**: restrict the bucket, enable **versioning**, never commit it
+- **One state per environment** limits the blast radius
+- Existing resources come in with **`import`** blocks or `terraform import`, not delete and recreate
+- **Pin** provider and module versions: `version = "~> 7.0"`
+- `terraform init` → `terraform plan -out=tfplan` → `terraform apply tfplan`
+N: More rules about state. It contains secrets and resource details, so restrict the bucket, enable versioning to recover a corrupted state, and never commit it to git. One state per environment limits the blast radius of a mistake. Resources made by hand are brought under management with import blocks or terraform import, and not by deleting and recreating them. Pin provider and module versions, so a plan today means the same tomorrow. And the loop is init, plan, apply.
+
+= panel key | Infrastructure Manager | Terraform, without owning the runner
+Google's managed service that **runs Terraform for you**: it stores state, runs plans (*previews*) and applies (*revisions*) as a service account, and records history.
+N: Infrastructure Manager is Google's managed service that runs Terraform for you. It stores state, runs plans, which it calls previews, and applies, which it calls revisions, as a service account, and it records history. So it is Terraform, without owning the runner or the state bucket.
+
+## 8.3 Blueprints and Kubernetes-native tools
+
+= table sm | Blueprints and tools | Which tool for which request
+Tool | What it is | Choose it when
+**Cloud Foundation Toolkit** | Google-maintained **Terraform modules** | *"Google's tested modules, not from scratch"*
+**Fabric FAST** | A staged **landing zone**: bootstrap → folders → networking and security → project factory | *"Enterprise org foundation quickly, Google's practices"*
+**Config Connector** | Google Cloud resources as **Kubernetes custom resources**, **reconciled** | *"Same YAML and GitOps as our apps"*
+**Config Controller** | Hosted Config Connector + Config Sync + Policy Controller | A managed control plane
+**Helm** | **Kubernetes package manager**: charts, values, releases | *"Same app across clusters, with rollback"*
+N: Beyond raw Terraform. Cloud Foundation Toolkit is Google-maintained Terraform modules and blueprints. New in the guide, Fabric FAST is an opinionated, staged landing zone, built from Cloud Foundation Fabric modules. Its stages go from bootstrap, through folders, networking and security, to a project factory. It answers, stand up an enterprise-grade foundation quickly, following Google's practices. Config Connector is a Kubernetes add-on that manages Google Cloud resources as Kubernetes custom resources. Config Controller is a hosted version. And Helm is the package manager for Kubernetes, with charts, values and releases.
+
+= dia | Easy to confuse | When does reconciliation happen?
+p8-tf-vs-kcc
+N: These are easily confused. Terraform and Config Connector are both declarative. Terraform reconciles when you run it. Config Connector reconciles continuously, inside a cluster, so a console change is reverted automatically, and it suits teams already working in Kubernetes YAML. Helm deploys applications into Kubernetes, and it does not create the cluster or cloud resources.
+
+## 8.4 Making changes the recommended way
+
+= list | Six habits | The recommended way to change infrastructure
+- **Version control**: changes by pull request, with the `plan` attached
+- **Apply from a pipeline**, as a **dedicated deploy service account**, by impersonation or federation, never a key
+- **Least privilege per stage**; separate states per environment
+- **No manual console changes**: the next `plan` shows the **drift**
+- **Policy as code**: org policies, plus `gcloud beta terraform vet`
+- **Promote the same code** through environments, with different variables
+N: Six habits make up the recommended way. Everything in version control, with changes by pull request and the plan attached for review. Apply from a pipeline, not a laptop, running as a dedicated deploy service account, reached by impersonation or Workload Identity Federation, never a key. Least privilege per stage, so the networking pipeline cannot touch I-A-M on the organization. No manual console changes in managed environments. If one happens, the next plan shows the drift, and you revert it in code, or adopt it into code. Policy as code, with organization policies as guardrails, and plan validation before apply. And promote the same code from development to staging to production, with different variables, and not three copies.
+
+## 8.5 AI-assisted planning and implementation
+
+= dia new | Four tools | Which tool fits this task
+p8-ai-tools
+N: New in the guide. Expect which tool fits this task items, and items about using them safely, not trivia about their menus. Gemini Cloud Assist lives in the console. It answers questions about your resources in natural language, generates gcloud and Terraform, troubleshoots with investigations over logs, metrics and configuration changes, and drafts alerts. Gemini C-L-I, or the Antigravity C-L-I, lives in your terminal. It is an agent that reads your code, runs shell commands with your approval, and writes infrastructure as code. In twenty twenty-six, Google moved Gemini C-L-I's capabilities into the Antigravity C-L-I. Google Antigravity is a desktop agent-first development platform. And Application Design Center lives in the console, where platform teams publish approved, Terraform-backed templates, and developers design on a visual canvas, and deploy. Results are registered as App Hub applications.
+
+= panel tip | Stem language | Four tools, four stems
+*"Ask which of my VMs have public IPs, from the console"*: **Gemini Cloud Assist**.
+*"From my terminal, have an agent generate and apply the Terraform"*: **Gemini CLI, Antigravity CLI**.
+*"Developers deploy only from governed, reusable templates"*: **Application Design Center**.
+*"An agentic IDE"*: **Antigravity**.
+N: The stems. Ask which of my V-Ms have public addresses, from the console: Gemini Cloud Assist. From my terminal, have an agent generate and apply the Terraform: Gemini C-L-I or the Antigravity C-L-I. The platform team wants developers to deploy only from governed, reusable templates: Application Design Center. An agentic I-D-E: Antigravity.
+
+= th new | The rules that do not change | Generated code is a <em>draft</em> | The assistant acts with your permissions. Review the plan before applying. Never paste secrets into prompts.
+V: The rules do not change because an A-I wrote it. Generated commands and infrastructure as code are drafts.
+[pause: 0.6]
+N: Review the plan before applying. The assistant acts with your permissions, so least privilege still governs what it can see and change. Prefer generated code that goes through the normal review and pipeline, over an agent making direct changes to production. And never paste secrets into prompts.
+
+= table new | Configuring the tools | Three mechanics worth recognising
+Mechanic | Meaning
+**`GEMINI.md`** in the repository | **Standing instructions** for Gemini CLI in every session
+**MCP servers**, `mcpServers` in `.gemini/settings.json` | Extra tools for Gemini CLI
+**Gemini Cloud Assist remote MCP server** | Lets a third-party assistant use it, with the signed-in user's permissions
+Enabling Cloud Assist | `geminicloudassist.googleapis.com`, and `roles/geminicloudassist.user`
+N: Three mechanics are worth recognising. A GEMINI dot M-D file in the repository gives Gemini C-L-I standing instructions, such as conventions, modules to use, and what never to do, in every session. Extra tools reach Gemini C-L-I through M-C-P servers, registered in the settings file. In the other direction, Gemini Cloud Assist exposes a remote M-C-P server, so a third-party assistant can use it, with the signed-in user's permissions. And Gemini Cloud Assist itself needs its A-P-I enabled, and the Gemini Cloud Assist User role. Describe an app in a sentence and get a design to refine and deploy is Gemini Cloud Assist in Application Design Center.
+
+## 8.6 AI and developer platforms
+
+= panel new | The rename | Vertex AI is now Gemini Enterprise Agent Platform
+Renamed April 2026, services unchanged. Old names still appear in documentation and older material:
+*Vertex AI Agent Engine* → **Agent Runtime**
+*Vertex AI Workbench* → **Agent Platform Workbench**
+N: First, a rename you need to know. Vertex A-I is now Gemini Enterprise Agent Platform, renamed in April twenty twenty-six, with services unchanged. Old names still appear in documentation and older material. Vertex A-I Agent Engine is now Agent Runtime, and Vertex A-I Workbench is now Agent Platform Workbench.
+
+= list new | Agent Runtime | A managed runtime for AI agents
+- For agents built with the **Agent Development Kit (ADK)**, LangChain, LangGraph
+- Provides **scaling, sessions, memory, identity, tracing, logging**
+- Deploy from the SDK or console: package, **deploy to a region**, give it a **service identity** with only the roles its tools need
+- **`requirements`**: *"ModuleNotFoundError after deploy"* means a missing requirement
+- A **staging bucket** in the agent's project; elsewhere it needs a grant to the **Agent Platform service agent**
+- **Update** the existing resource: callers keep its name
+N: Agent Runtime is a managed runtime for A-I agents, built with the Agent Development Kit, LangChain, LangGraph and other frameworks. You deploy the agent, and it provides scaling, sessions, memory, identity, tracing and logging. It is the compute answer for, host our agent without building the serving infrastructure. The alternative is packaging the agent yourself on Cloud Run or G-K-E. To deploy, you package the agent, deploy it to a region, and give it a service identity with only the roles its tools need. The deployment names its requirements, and only those packages are installed, so module not found after deploy means a missing requirement. It needs a staging bucket, kept in the agent's project. And you release a new version by updating the existing resource, so callers keep its name. Agent Identity gives each agent its own principal, and deleting the agent does not remove bindings to that principal.
+
+= table sm new | Notebooks | Workbench and BigQuery
+Surface | What it is | Operational points
+**Agent Platform Workbench** | Managed **JupyterLab on a VM** you configure | **Idle shutdown**. **Access:** single-user (`--instance-owners`, one account, not a group) or service-account. **Upgrade** keeps the data disk
+**BigQuery notebooks** | **Colab Enterprise** in BigQuery Studio: serverless | **Runtime templates** fix the machine and network; can be **scheduled**; shared individually, with version history
+> *"Notebook VMs running all weekend"*: **idle shutdown**. *"Notebook needs a GPU"*: Workbench with a GPU, in a zone that offers it.
+N: Notebooks come in two surfaces. Agent Platform Workbench instances are managed JupyterLab on a V-M you configure, with machine type, G-P-Us, disks and network. Idle shutdown stops you paying for idle notebooks. Access mode is single-user, for one individual account and not a group, or service account. Upgrading rebuilds the boot disk and keeps the data disk. BigQuery notebooks are Colab Enterprise in BigQuery Studio: serverless notebooks next to your data. Runtime templates define the machine, network and public address setting an admin allows. Notebooks can be scheduled, and they are code assets with version history, shared individually. So data scientists leaving notebook V-Ms running all weekend is solved by idle shutdown.
+
+= dia new | Cloud Workstations | Managed development environments, in layers
+p8-workstations
+N: Cloud Workstations gives developers managed development environments in Google Cloud, reached from a browser I-D-E, or a local I-D-E over a tunnel. Administrators define them in layers. A workstation cluster is a region and V-P-C subnet: where workstations run. A workstation configuration holds the machine type, the container image with tools, the persistent disk, idle and running timeouts, and who may use it. And a workstation is one developer's instance of that configuration. It answers, source code must not live on laptops, standardize every developer's toolchain, and developers need access to private resources on the V-P-C.
+
+= table new | Workstation details | Roles, images and what persists
+Topic | Detail
+Self-service | **`workstations.workstationCreator`** on a configuration; creators get **`workstations.user`** on their own
+Standard tooling | Extend a **base image**, push to Artifact Registry, set it on the configuration
+**Only `/home` persists** | *"My clone in /opt vanished overnight"*
+Private cluster | Reached only through Private Service Connect
+GPUs | Declared on the **configuration**
+N: Details. Workstation Creator on a configuration lets developers create workstations from it, and they get Workstations User on their own. Neither lets them edit the configuration. For standard tooling, extend a base image, push it to Artifact Registry, and set it as the configuration's image. And only home persists, like Cloud Shell. Anything written elsewhere is recreated from the image on every start. So my clone in slash opt vanished overnight is this. A private cluster is reached only through Private Service Connect. And G-P-Us are declared on the configuration.
+
+## 8.7 Part 8 recall card
+
+= table | Recall card, 1 of 3 | Answer aloud before the voice does
+Prompt | Answer
+Reviewable diff before change | **Terraform plan**
+Two engineers' applies clash | **GCS backend with locking**
+Manual console change in a managed environment | Shows as **drift** on the next plan
+Bring a hand-made bucket under Terraform | **`import`**
+Terraform without running it yourself | **Infrastructure Manager**
+N: Recall. A reviewable diff before change: Terraform plan. Two engineers' applies clash: a Cloud Storage backend with locking. A manual console change: it shows as drift on the next plan. A hand-made bucket under Terraform: import. Terraform without running it yourself: Infrastructure Manager.
+
+= table | Recall card, 2 of 3 | Answer aloud before the voice does
+Prompt | Answer
+Deprecated IaC service | **Deployment Manager**
+Enterprise landing zone, fast | **Fabric FAST**, CFT blueprints
+Cloud resources as Kubernetes YAML, auto-reconciled | **Config Connector**
+Same app to many clusters, rollback | **Helm**
+Plain-language questions about my resources | **Gemini Cloud Assist**
+N: The deprecated infrastructure as code service: Deployment Manager. An enterprise landing zone, fast: Fabric FAST. Cloud resources as Kubernetes YAML, auto-reconciled: Config Connector. The same app to many clusters with rollback: Helm. Plain-language questions about my resources: Gemini Cloud Assist.
+
+= table | Recall card, 3 of 3 | Answer aloud before the voice does
+Prompt | Answer
+Terminal AI agent | **Gemini CLI, Antigravity CLI**
+Governed, reusable app templates | **Application Design Center**
+Host an ADK or LangGraph agent | **Agent Runtime**
+Idle notebooks costing money | Workbench **idle shutdown**
+No source on laptops; standard dev toolchain | **Cloud Workstations**
+N: A terminal A-I agent: Gemini C-L-I or the Antigravity C-L-I. Governed, reusable app templates: Application Design Center. Host an A-D-K or LangGraph agent: Agent Runtime. Idle notebooks costing money: Workbench idle shutdown. No source on laptops, and a standard developer toolchain: Cloud Workstations.
+
+## Part 8 sample questions
+
+= th | Part 8 · practice | Seven exam-style questions | Which tool fits, and what stays true because an AI wrote it.
+N: Seven questions, on which tool fits, and on using it safely.
+
+= q | Two engineers run Terraform from their laptops and keep overwriting each other's changes. What is the best fix?
+(A) Store state in a Cloud Storage backend, with locking and versioning
+(B) Commit the state file to git
+(C) Take turns, using a chat channel
+(D) Switch to Deployment Manager
+ans A
+why A :: Shared state, and locking stops concurrent applies.
+why B :: Exposes secrets, and git does not lock.
+why C :: A process that relies on people remembering.
+why D :: Deprecated, and it does not address the problem.
+C: The answer is A. The classic failure is two engineers with two truths. A shared backend gives one truth, locking prevents concurrent applies, and versioning recovers a corrupted state. B puts secrets in git. C is not a control. D is deprecated.
+
+= q | A storage bucket was created by hand last year. It must now be managed by Terraform, without any downtime or data loss. What should you do?
+(A) Delete the bucket, and let Terraform recreate it
+(B) Write the resource in code, and use an `import` block or `terraform import`
+(C) Copy the data to a new bucket managed by Terraform, then delete the old one
+(D) Use the console's export once, and then ignore drift
+ans B
+why A :: Destroys the data.
+why B :: Adopts the existing resource into state.
+why C :: Works, but it is unnecessary and disruptive.
+why D :: A one-time copy, not a maintained definition.
+C: The answer is B. Import brings an existing resource into state, without touching it. A loses data. C moves everything when it does not need to, and bucket names are globally unique, so the new name would change too. D does not manage the resource.
+
+= q | Application teams already use Kubernetes YAML and GitOps. They want to manage their Cloud SQL instances and buckets the same way, with console changes reverted automatically. What should they use?
+(A) Helm
+(B) Terraform run from CI
+(C) Config Connector
+(D) Deployment Manager
+ans C
+why A :: Deploys applications into Kubernetes, not cloud resources.
+why B :: Reconciles only when it runs.
+why C :: Cloud resources as Kubernetes objects, continuously reconciled.
+why D :: Deprecated.
+C: The answer is C. Kubernetes YAML and automatic reverting are the two deciding clauses. Config Connector reconciles continuously, in a cluster. Terraform reconciles only when you run it. Helm packages applications. And D is deprecated.
+
+= q | A platform team wants developers to deploy only from governed, reusable architecture templates, designing on a visual canvas. Which tool fits?
+(A) Gemini CLI
+(B) Application Design Center
+(C) Cloud Workstations
+(D) Cloud Hub
+ans B
+why A :: A terminal agent, with no governed catalogue.
+why B :: Approved templates, a canvas, and registered applications.
+why C :: Development environments, not architecture templates.
+why D :: An operations view of existing applications.
+C: The answer is B. Governed, reusable templates and a visual canvas point to Application Design Center. A works in a terminal. C gives developers environments. D looks at health after deployment.
+
+= q | Gemini Cloud Assist generates a `gcloud` command that deletes several unused-looking disks. What should an engineer do?
+(A) Run it, since Gemini only acts within your permissions
+(B) Treat it as a draft: verify what it targets, and use the normal review before running
+(C) Refuse all AI-generated commands
+(D) Grant Gemini's account Owner so that it can run it directly
+ans B
+why A :: Permissions limit it, but they do not make it correct.
+why B :: Generated output is a draft to verify.
+why C :: The guide expects you to use AI tooling, safely.
+why D :: The opposite of least privilege.
+C: The answer is B. Generated commands are drafts. The assistant acts with your permissions, so if you have permission to delete those disks, the command would succeed, right or wrong. That is why A is dangerous. C ignores what the guide asks of you. D breaks least privilege.
+
+= q | A LangGraph agent must be hosted, with managed sessions and memory, and the team does not want to build serving infrastructure. After deployment it fails with `ModuleNotFoundError`. What should the team use, and what is the likely cause?
+(A) Agent Runtime; a package is missing from the deployment's `requirements`
+(B) Agent Runtime; the wrong IAM role on the staging bucket
+(C) GKE Autopilot; a missing node pool
+(D) Cloud Run; a missing `--min-instances`
+ans A
+why A :: Only the listed packages are installed.
+why B :: A bucket problem would not produce this error.
+why C :: Builds the serving infrastructure they want to avoid.
+why D :: Same again, and that flag has nothing to do with packages.
+C: The answer is A. Managed sessions and memory for an agent is Agent Runtime, and only the packages named in requirements are installed. So a module not found error means a missing requirement. C and D are the alternatives the stem rules out.
+
+= q | Developers report that a clone made in `/opt` on their Cloud Workstation vanished overnight, while files in their home directory are fine. What explains this, and what is the recommended approach?
+(A) Only `/home` persists; keep work there, and bake tools into the configuration's image
+(B) A cleanup policy in Artifact Registry deleted the clone
+(C) The persistent disk is too small
+(D) Idle timeouts delete all data
+ans A
+why A :: Everything else is recreated from the image on start.
+why B :: Registry policies do not touch workstation disks.
+why C :: Space is not the symptom.
+why D :: Idle timeouts stop the workstation, and /home persists.
+C: The answer is A. Only home persists, and anything else is recreated from the image on every start. It is the same idea as Cloud Shell. To standardize tools, extend a base image, push it to Artifact Registry, and set it on the configuration. D is a near miss: an idle timeout stops the workstation, and that recreation is what removes the clone, but home is preserved.
+
+= th | End of Part 8 | Next: operations | The heaviest growth in the new guide: monitoring, logging, audit logs, diagnostics and optimisation.
+N: That is part eight. Next is part nine, operations. Remember that operating grew to thirty percent of the paper.

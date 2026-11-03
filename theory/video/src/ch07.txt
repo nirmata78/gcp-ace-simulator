@@ -1,0 +1,591 @@
+#! title: Storage and data
+#! short: Storage and data
+
+## Part 7: Storage and data
+
+= th | Google Cloud Associate Cloud Engineer · Part 7 of 10 | Where data lives, how it survives, and who holds the keys | Object, block and file storage. Databases, BigQuery, messaging, moving data, multi-region redundancy, CMEK.
+N: Part seven, storage and data, the longest part of the course. It covers Cloud Storage and its classes, the file storage family, every database, BigQuery, loading and moving data, Pub/Sub and managed Kafka, Dataflow, backup, multi-region redundancy, and customer-managed encryption keys. Take it in sittings. The chapters are marked, so you can stop at any section.
+
+## 7.1 Choosing a storage product
+
+= table sm | Access model first | The product follows from the access model
+Access model | Product | Pick it when the stem says
+**Objects** over HTTPS | **Cloud Storage** | "files", "backups", "data lake", "static website", "archive"
+**Block** device for one VM | **Persistent Disk, Hyperdisk** | "boot disk", "database on a VM"
+**Shared NFS** for many VMs or Pods | **Filestore** | "shared file system", "ReadWriteMany in GKE"
+**NAS: NFS and SMB** | **NetApp Volumes** | "SMB", "Windows file shares", "migrate our NetApp"
+**Parallel file system** | **Managed Lustre** | "AI training data loading", "HPC scratch"
+Ephemeral local scratch | **Local SSD** | "temporary", "cache", "scratch"
+N: Start with the access model the application needs, and the product follows. Objects over H-T-T-P-S, of any size and number: Cloud Storage. A block device for one V-M: Persistent Disk or Hyperdisk. A shared P-O-S-I-X file system, N-F-S, for many V-Ms or Pods: Filestore. Enterprise network storage with N-F-S and S-M-B: NetApp Volumes. A parallel file system with very high throughput for thousands of clients: Managed Lustre. And ephemeral, ultra-fast local scratch: Local S-S-D.
+
+= dia new | The file-storage family | Three products, three deciding words
+p7-file-family
+N: New in the guide: the file storage family. Filestore is managed N-F-S, in tiers from basic H-D-D to zonal, regional and enterprise. Regional survives a zone. NetApp Volumes is NetApp's storage run by Google, with N-F-S and S-M-B, Active Directory integration, volume snapshots, backups and replication. It is the answer whenever Windows, S-M-B or NetApp appears. Managed Lustre is a fully managed parallel file system for A-I and H-P-C, where aggregate throughput to many clients matters more than anything else. None of them is object storage, and none is the answer to cheap archive.
+
+## 7.2 Cloud Storage: buckets, locations, classes
+
+= table sm | Cloud Storage facts | Buckets and objects
+Concept | Fact
+**Bucket names** | **Globally unique**, immutable; **location** also fixed at creation
+**Objects** | Immutable: a change writes a new object or *generation*; no partial updates
+Consistency | **Strong** read-after-write and list consistency
+**Location type** | **Region** · **dual-region** (optional **turbo replication**, within 15 min) · **multi-region** (`US`, `EU`, `ASIA`)
+Storage class | A bucket **default**, overridable **per object**
+N: Bucket names are globally unique and immutable, and a bucket's location is also fixed at creation. Objects are immutable, so a change writes a new object or generation, with no partial updates. Consistency is strong, for read after write and for lists. Locations are a region, a dual region, or a multi-region. A dual region is a predefined pair, or a configurable pair you choose within one continent, with optional turbo replication within fifteen minutes. And the storage class is a bucket default, overridable per object.
+
+= dia | The four classes | Memorise 0, 30, 90, 365
+p7-classes
+V: Memorise zero, thirty, ninety, three hundred sixty-five.
+[pause: 0.6]
+N: Those are the minimum storage durations. Standard has no minimum, for frequently accessed data. Nearline is thirty days, for about once a month. Coldline is ninety days, for about once a quarter. Archive is three hundred and sixty-five days, for once a year or less. As you move right, the storage price falls, and the retrieval fee rises. Deleting, overwriting or moving an object before its minimum is billed as if it had stayed the full minimum. And now the red note.
+V: All four classes have the same millisecond latency to the first byte.
+[pause: 0.8]
+N: There is no thaw, no restore step, and no waiting. That is a different cloud's archive model. So a stem that says read once a year, but must be available immediately when requested, is still Archive. The immediately clause decides nothing.
+
+= cmd sm | Bucket commands | And Autoclass, for unknown access patterns
+Task | Command
+Bucket with location and class | gcloud storage buckets create gs://kestrel-archive --location=EU --default-storage-class=ARCHIVE --uniform-bucket-level-access
+Let Autoclass choose | gcloud storage buckets create gs://kestrel-media --location=EUR4 --enable-autoclass
+Copy; mirror a directory | gcloud storage cp -r ./exports gs://kestrel-archive/2026/ · gcloud storage rsync ./site gs://kestrel-web --recursive
+Change one object's class | gcloud storage objects update gs://B/big.mov --storage-class=COLDLINE
+> **Autoclass** moves each object by its access, with no retrieval or early-deletion charges: *"patterns unknown or changing"*.
+N: Autoclass moves each object between classes automatically, based on its access pattern, with no retrieval or early-deletion charges. It is the answer to, access patterns are unknown or change. It replaces lifecycle class transitions on that bucket. The commands all begin with gcloud storage: buckets create with location and class, cp and rsync for copying, and objects update to change one object's class.
+
+## 7.3 Lifecycle, versioning, soft delete and retention
+
+= table sm | Six protections | What each feature does
+Feature | Does | Typical stem
+**Lifecycle rules** | **Delete** or **SetStorageClass** by age, versions, class | "Nearline after 30 days, delete after a year"
+**Versioning** | Keeps **noncurrent versions** | "recover a file someone overwrote"
+**Soft delete** | Deleted objects restorable, **7 days default**, up to 90 | "undo an accidental delete from yesterday"
+**Retention policy** | **No delete or overwrite** until the age | "keep every record for 7 years"
+**Bucket Lock** | **Locks** the policy **permanently** | "WORM", "immutable, even from admins"
+**Holds** | Per-object temporary or event-based holds | "legal hold on these files"
+N: Six features. Lifecycle rules delete objects, or set a colder class, by age, by the number of newer versions, by current class and more. Versioning keeps noncurrent versions when an object is overwritten or deleted. Soft delete keeps deleted objects restorable for a window, seven days by default on new buckets. A retention policy means objects cannot be deleted or overwritten until they reach an age. Bucket Lock locks the retention policy permanently, so it can be lengthened, but never shortened or removed. And object holds put a hold on individual objects, for a legal hold.
+
+= dia | Accidents or intent | Different protections for different threats
+p7-protect
+N: Compare them by threat. Versioning and soft delete protect against accidents, since someone with permission can still remove versions. A locked retention policy protects against intent. Nobody, including an Owner, can delete the object early, and nobody can unlock the policy. One more fact: lifecycle rules only move objects to colder classes, and never warm them up, and changes can take up to twenty-four hours to act.
+
+= cmd sm | Protection commands | Lifecycle, versioning, retention, holds
+Task | Command
+Lifecycle rules (a JSON file) | gcloud storage buckets update gs://B --lifecycle-file=lifecycle.json
+Versioning | gcloud storage buckets update gs://B --versioning
+Soft-delete window | gcloud storage buckets update gs://B --soft-delete-duration=30d
+Retention, then lock (irreversible) | ... --retention-period=7y · ... --lock-retention-period
+Hold one object | gcloud storage objects update gs://B/contract.pdf --temporary-hold
+N: Most are options on gcloud storage buckets update. A lifecycle file is JSON, with actions and conditions such as age and number of newer versions. Lock retention period is irreversible, so be sure before you run it.
+
+## 7.4 Securing objects
+
+= table sm | Securing objects | Access mechanisms
+Mechanism | Use
+**Uniform bucket-level access** | **IAM only**, no ACLs: recommended. Reversible for 90 days, then permanent
+Fine-grained | IAM plus per-object **ACLs**: legacy only
+**Public access prevention** | Blocks `allUsers`, `allAuthenticatedUsers`; also by org policy
+**Signed URL** | **Time-limited** access to one object, with **no Google identity**; V4 lasts at most 7 days
+Signed policy document | Browser **form uploads**, with constraints
+HMAC keys | S3-compatible tools
+N: Securing objects. Uniform bucket-level access means I-A-M only, with no object access control lists, and it is the recommended setting. It is reversible for ninety days, then permanent. Fine-grained access adds per-object access control lists, for legacy needs only. Public access prevention blocks all users and all authenticated users. A signed U-R-L gives time-limited access to one object, for someone with no Google identity, for download or upload, and a version four U-R-L lasts at most seven days. A signed policy document is for browser form uploads with constraints. And HMAC keys serve S3 compatible tools.
+
+= table | Storage roles | The ladder
+Role | Grants
+`storage.objectViewer` | Read and list objects
+`storage.objectCreator` | Create objects, **not** read, overwrite or delete
+`storage.objectUser` | Read, create, update, delete objects
+`storage.objectAdmin` | Full control of **objects**, not bucket settings
+`storage.admin` | Full control of buckets **and** objects
+> `gcloud storage sign-url gs://B/report.pdf --duration=2h --impersonate-service-account=SA_EMAIL`
+N: The role ladder. Object Viewer reads and lists. Object Creator creates, and cannot read, overwrite or delete. Object User reads, creates, updates and deletes. Object Admin has full control of objects, but not bucket settings. Storage Admin controls buckets as well. And look at the command. You can make a signed U-R-L with no key file, by impersonating a service account.
+
+= panel tip | Stem language | Three storage access stems
+*"A partner with no Google account must download one file this week"*: **signed URL**.
+*"A drop box where uploaders must not read each other's files"*: **`objectCreator`**.
+*"Manage objects but never change the bucket's settings"*: **`objectAdmin`**, not `admin`.
+N: Three stems. A partner with no Google account must download one file this week: a signed U-R-L. A drop box where uploaders must not read each other's files: Object Creator. Manage objects, but never change the bucket's settings: Object Admin, and not Storage Admin.
+
+## 7.5 Estimating storage cost
+
+= table sm | What you pay for | The bill, per product
+Product | You pay for | Levers
+**Cloud Storage** | GB-months by class · **operations** · **retrieval** · early deletion · egress | Class, lifecycle, Autoclass
+**PD, Hyperdisk** | **Provisioned** size; provisioned IOPS and throughput | Right-size; delete unattached disks
+**Cloud SQL, AlloyDB** | vCPU, memory, storage; **HA roughly doubles** | HA only where needed
+**BigQuery** | **Storage** (long-term after 90 days at half price) · **compute**: per TiB, or slots | Partition, cluster, fewer columns
+**Spanner, Bigtable** | Nodes or PUs · storage · replication | Autoscaling
+N: What you pay for. Cloud Storage bills gigabyte-months by class and location, operations, where writes and lists cost more than reads, retrieval on Nearline and colder, early deletion, and egress. Disks bill provisioned size, not used size. Cloud SQL and AlloyDB bill the instance, and high availability roughly doubles it. BigQuery bills storage, with long-term storage at about half price after ninety days unmodified, and compute, which is on-demand per tebibyte scanned, or capacity slots. Spanner and Bigtable bill compute capacity, storage and replication.
+
+= panel trap | BigQuery cost | `LIMIT` does not reduce on-demand cost
+The bytes scanned are the columns read, across the partitions touched.
+**Fewer columns**, a filter on the **partition** column, and **clustering** reduce it.
+`bq query --dry_run` shows the bytes, free. `--maximum_bytes_billed` makes an expensive query **fail** instead of running.
+N: An important trap.
+V: LIMIT does not reduce BigQuery on-demand cost.
+[pause: 0.6]
+N: The bytes scanned are the columns read, across the partitions touched. So select fewer columns, filter on the partition column, and use clustering. A dry run tells you the bytes a query would scan, for free. And maximum bytes billed makes an expensive query fail, instead of running.
+
+## 7.6 Choosing a database
+
+= dia | Choosing a database | Seven products, and what points at each
+p7-db-pick
+N: Seven products. Walk down the list. Managed relational, one primary for writes, is Cloud SQL, with MySQL, Postgres or S-Q-L Server. Postgres, much faster, or transactions and analytics on the same data, is AlloyDB. Global relational, scaling writes, with strong consistency across regions, is Spanner. Time series, internet of things, hundreds of thousands of writes per second, key lookups, is Bigtable. Documents for a mobile or web app, with real-time sync, is Firestore. Analytics and S-Q-L over huge datasets is BigQuery. And cache, session store or leaderboard is Memorystore.
+
+= table | Four eliminations | They decide most database items
+# | Elimination
+1 | Cloud SQL and AlloyDB **cannot scale writes horizontally**: beyond one primary, or across continents, is **Spanner**
+2 | BigQuery is **not** a low-latency point-lookup or OLTP store
+3 | Bigtable has **no joins, no multi-row transactions, no relational secondary indexes**
+4 | Memorystore is a **cache**, never the system of record
+N: Four eliminations decide most database items. One: Cloud SQL and AlloyDB cannot scale writes horizontally. So write throughput beyond one primary, or relational data spanning continents with strong consistency, is Spanner. Two: BigQuery is not a low-latency point lookup or transaction store. Three: Bigtable has no joins, no multi-row transactions, and no secondary indexes in the relational sense, so its design is row-key design. Four: Memorystore is a cache, and never the system of record.
+
+## 7.7 Cloud SQL and AlloyDB
+
+= table sm | Cloud SQL | The facts the exam uses
+Topic | Fact
+Editions | **Enterprise**, **Enterprise Plus** (higher SLA, data cache, near-zero-downtime maintenance)
+**High availability** | A **regional** instance: synchronous **standby in another zone**. **Standby serves no reads**
+**Read replicas** | **Asynchronous**, for **read scaling**; a cross-region replica can be **promoted**
+**Backups** | **Automated** daily and **on-demand**; restoring **to an instance overwrites it**
+**PITR** | Needs **binary logs** or **WAL archiving** **beforehand**; **clones to a new instance**
+Connecting | **Auth Proxy**, connectors · **private IP** · IAM database authentication
+N: Cloud SQL. Editions are Enterprise and Enterprise Plus. High availability is a regional instance, with a synchronous standby in another zone, and automatic failover. The standby serves no reads. Read replicas are asynchronous copies for scaling reads, in the same region or another, and a cross-region replica can be promoted for disaster recovery. Backups are automated daily, and on demand, and restoring to an instance overwrites it. Point-in-time recovery needs binary logging or write-ahead log archiving enabled beforehand, and it clones to a new instance. To connect, use the Cloud SQL Auth Proxy or connectors, private I-P, and I-A-M database authentication. Storage can grow automatically, but it cannot shrink.
+
+= dia | Three different jobs | HA, replica and point-in-time recovery
+p7-ha-replica-backup
+V: High availability is not read capacity, and a replica is not a backup.
+[pause: 0.6]
+N: On the left, the high availability standby exists only to take over from a failed zone. In the middle, a read replica serves reads, but it replicates a destructive delete within seconds, so it cannot undo one. On the right, point-in-time recovery undoes a bad statement.
+
+= dia | A bad DELETE at 14:05 | Lose the least data
+p7-pitr
+N: Follow the story. Message one, at five past two, a bad delete runs. Two, it is replicated to the read replica within seconds, so the replica is damaged too. Three, you run gcloud sql instances clone, with point in time at four minutes past two. Four, Cloud SQL builds a new instance as of that moment. The damaged original stays untouched for comparison. And five, you verify and then repoint the application. That is why this story is point-in-time recovery to a new instance, and not restoring a replica.
+
+= cmd sm | Cloud SQL commands | Create, replicate, clone, promote
+Task | Command
+HA, PITR, private IP only | gcloud sql instances create orders --database-version=POSTGRES_16 --region=R --availability-type=REGIONAL --enable-point-in-time-recovery --no-assign-ip --network=vpc-prod
+Read replica, another region | gcloud sql instances create orders-replica --master-instance-name=orders --region=R2
+Restore to a moment, as new | gcloud sql instances clone orders orders-restored --point-in-time='2026-09-20T14:04:00Z'
+Make the replica the primary | gcloud sql instances promote-replica orders-replica
+Connect; export | gcloud sql connect orders --user=postgres · gcloud sql export sql orders gs://B/orders.sql.gz --database=shop
+N: Read the first command as a checklist: availability type regional, for high availability. Enable point in time recovery. No assign I-P, with a network, for private only. Then the replica uses master instance name. Clone takes a point in time. And promote replica makes the replica a standalone primary.
+
+= panel key | AlloyDB for PostgreSQL | Primary, read pools, columnar engine
+A **cluster** holds a **primary** (HA by default across zones) and optional **read pool** instances.
+The **columnar engine** accelerates analytics on live transactional data. **Continuous backup** restores to any point in its window (14 days default, *verify*).
+**Cross-region secondary clusters** provide DR. Connects like Cloud SQL. *AlloyDB Omni* runs the same engine anywhere.
+N: AlloyDB. A cluster holds a primary instance, highly available by default across zones, and optional read pool instances that scale reads. Its columnar engine accelerates analytical queries on live transactional data. Continuous backup allows restore to any point in its window. Cross-region secondary clusters provide disaster recovery. It connects like Cloud SQL. And AlloyDB Omni runs the same engine anywhere.
+
+## 7.8 Spanner, Bigtable and Firestore
+
+= list | Spanner | Horizontally scalable, strongly consistent relational
+- **Configuration:** **regional** (99.99%), **dual-region** or **multi-region** (99.999%)
+- **Capacity:** nodes or **processing units**; 1 node = 1,000 PU; from 100 PU; managed **autoscaling**
+- **GoogleSQL** or **PostgreSQL** dialect; ACID across rows, tables, regions; **interleaved tables**
+- **Hotspots:** an increasing primary key sends inserts to one split: use UUIDv4, bit-reversed sequences, a hashed prefix
+- **Backups** and **PITR** within version retention, up to 7 days
+N: Spanner. An instance has a configuration: regional at four nines, or dual-region or multi-region at five nines. Compute capacity is in nodes or processing units, where one node is a thousand processing units, and small instances start at one hundred. It has Google S-Q-L or a Postgres dialect, with A-C-I-D transactions across rows, tables and regions. The classic trap is hotspots. A monotonically increasing primary key, such as a timestamp or sequence, sends all inserts to one split. So use a U-U-I-D version four, bit-reversed sequences, or a hashed prefix.
+
+= list | Bigtable | Row-key design is everything
+- **Instance:** one or more **clusters**, one per zone; nodes scale throughput linearly
+- **App profiles:** **single-cluster routing** (read-your-writes) or **multi-cluster** (failover, **eventual** consistency)
+- Queries are by key or key range. Avoid keys starting with a timestamp or sequential ID
+- Use `device#reverse_timestamp` shapes; keep related data adjacent
+- **Backups** restore into a new table. Data access: **`cbt`**
+N: Bigtable. An instance has one or more clusters, one per zone, with nodes that scale throughput linearly. Several clusters give replication. App profiles route traffic: single-cluster routing gives strong read your writes, and multi-cluster routing gives automatic failover, with eventual consistency between clusters. Row-key design is everything, since queries are by key or key range. Avoid keys that start with a timestamp or sequential I-D, as those create hotspots. Use a device, then a reverse timestamp, shape. Data access is with cbt, or client libraries.
+
+= list | Firestore | Serverless documents
+- **Native mode** (real-time listeners, offline SDKs) or **Datastore mode** (server workloads)
+- **MongoDB compatibility:** standard drivers on serverless Firestore
+- The **location is permanent**; a project can hold several **named databases**
+- **Composite indexes** must be created for multi-field queries; **TTL policies** delete expired documents
+- **PITR** (7 days), **scheduled backups**, export and import to Cloud Storage
+N: Firestore. Native mode has documents in collections, real-time listeners, and offline mobile and web S-D-Ks. Datastore mode serves server workloads using the Datastore A-P-I. Firestore with MongoDB compatibility accepts standard Mongo drivers, so it answers, move a Mongo app to a serverless database with minimal code change. The location is permanent. Single-field indexes are automatic, and composite indexes must be created for multi-field queries. Recovery has point-in-time recovery for seven days when enabled, scheduled backups which restore into a new database, and export and import.
+
+## 7.9 BigQuery
+
+= table sm | BigQuery concepts | Hierarchy, partitions, pricing, recovery
+Concept | Fact
+Hierarchy | Project → **dataset** (a fixed **location**) → tables, views, materialized views
+**Partitioning** | By ingestion time, a date column, or integer range; expiration drops old data
+**Clustering** | Sorts within partitions by up to four columns
+**Compute** | **On-demand** (per TiB) or **capacity** (editions: slots, reservations)
+**Time travel** | Up to **7 days** (configurable 2–7), then **7 days of fail-safe**
+Access | `dataViewer` on the **data** + `jobUser` on the **project that runs the query**
+N: BigQuery. The hierarchy is project, then dataset, which has a fixed location, then tables and views. Partitioning by ingestion time, a date column or an integer range means queries that filter on it scan less, and partition expiration drops old data. Clustering sorts data within partitions by up to four columns. Compute is on-demand per tebibyte scanned, or capacity using slots in reservations. Time travel lets you query or restore a table as of up to seven days ago, followed by seven days of fail-safe. And access takes two grants. Data viewer on the data, and job user on the project that runs the query.
+
+= cmd | BigQuery jobs | Every load, query, export and copy is a job
+Task | Command
+Recent jobs | bq ls -j -a
+One job's state and bytes | bq show -j JOB_ID
+Bytes a query would scan, free | bq query --use_legacy_sql=false --dry_run 'SELECT ...'
+Hard cap on one query | bq query --maximum_bytes_billed=10000000000 'SELECT ...'
+The most expensive queries | region-eu.INFORMATION_SCHEMA.JOBS, ordered by total_bytes_billed
+N: Every load, query, export and copy is a job. bq ls dash j lists recent jobs, and bq show dash j gives one job's state and bytes. Which queries cost the most yesterday? Information schema jobs, ordered by total bytes billed. Did last night's load succeed? bq show, or the job history. Stop analysts running a fifty terabyte query by mistake? Maximum bytes billed, or a custom query quota. A budget only alerts afterwards.
+
+## 7.10 Memorystore and Database Center
+
+= panel new | Database Center | One view of the whole database fleet
+Cloud SQL, AlloyDB, Spanner, Bigtable, Firestore, Memorystore, across projects.
+Surfaces **health, availability, security and cost issues**: no automated backups, no HA, outdated versions, public IPs, missing deletion protection, over-provisioning.
+No agents. Gemini answers fleet questions. A spreadsheet, or per-product consoles, are the distractors.
+N: First, Memorystore, which runs Redis, Redis Cluster, Valkey and Memcached, over private networking, for caching, session state, rate limiting and leaderboards. It is a cache in front of a database, not the database. Now, new in the guide: Database Center. It is one console view of the whole database fleet across projects. It inventories every instance, and it surfaces health, availability, security and cost issues: no automated backups, no high availability, outdated versions, public addresses, missing deletion protection, and over-provisioning. It needs no agents, and Gemini can answer questions such as which Cloud SQL instances in production have no backups. One place to see and fix risk across all our databases is Database Center.
+
+## 7.11 Loading and moving data
+
+= dia | Do the arithmetic first | Volume divided by bandwidth gives days
+p7-transfer
+V: One gigabit per second moves about ten terabytes per day. One hundred megabits moves about one.
+[pause: 0.6]
+N: Do the arithmetic before comparing tools. Volume divided by usable bandwidth gives days. If that is not acceptable, use Transfer Appliance, where you ship a device, load it on site, and send it back. If it is acceptable, ask where the data is. Another cloud, U-R-L lists or another bucket: Storage Transfer Service. On-premises file systems: Storage Transfer Service with agents. Small, one-off and scripted: gcloud storage cp or rsync. Into BigQuery on a recurring basis: BigQuery Data Transfer Service. Five hundred terabytes over one hundred megabits is about five hundred days, so only the appliance is left.
+
+= table sm | Moving data | The tools, and when each is right
+Tool | Right when
+**`gcloud storage cp, rsync`** | Small or scripted
+**Storage Transfer Service** | Large or **recurring**, from other clouds, URL lists, on-premises, between buckets
+**Transfer Appliance** | Hundreds of TB, a **thin or busy link**, or a deadline
+**`bq load`** | Batch loads **from Cloud Storage**: free
+**External tables, BigLake** | **Query in place**
+**BigQuery Data Transfer Service** | **Scheduled** loads from SaaS, GCS, S3
+**Storage Write API**, Pub/Sub, Dataflow | **Streaming** into BigQuery
+**Datastream** · **Database Migration Service** | Change data capture · migration into Cloud SQL or AlloyDB
+N: In more detail. Storage Transfer Service handles large or recurring transfers, with scheduling, retries, integrity checks and bandwidth limits. bq load runs batch loads from Cloud Storage, in C-S-V, JSON, Avro, Parquet or O-R-C, and batch loading is free. External tables and BigLake query in place, without loading. The Storage Write A-P-I, Pub/Sub BigQuery subscriptions and Dataflow stream into BigQuery. Datastream does change data capture from MySQL, Postgres and Oracle. And Database Migration Service migrates databases into Cloud SQL or AlloyDB.
+
+## 7.12 Messaging and pipelines: Pub/Sub, Managed Kafka, Dataflow
+
+= table sm | Pub/Sub | Topics, subscriptions, delivery
+Concept | Fact
+**Delivery types** | **Pull**, **push** to HTTPS with OIDC, or **export** to **BigQuery** or **Cloud Storage**
+Acknowledgement | At-least-once; **ack deadline** 10 s default, up to 600 s; **exactly-once** for pull
+Retention | Unacked messages **7 days** default, up to 31
+Failure | Retry policy; **dead-letter topic** after N attempts
+Ordering, replay | **Ordering keys**; **snapshots** and **seek**
+N: Pub/Sub. A topic is where publishers send messages. A subscription gets every message. Delivery is pull, push to an H-T-T-P-S endpoint with O-I-D-C authentication, or export straight into BigQuery or Cloud Storage. It is at least once by default, with an acknowledgement deadline of ten seconds by default, up to six hundred. Exactly once is available for pull. Unacknowledged messages are kept seven days by default. A dead-letter topic takes messages after N delivery attempts. Ordering keys preserve order per key. And snapshots and seek let you replay.
+
+= dia | Fan-out or load-balancing | Subscriptions decide it
+p7-fanout
+N: Look at the topic on the left, and three subscriptions. Billing and shipping each have their own subscription, so each service gets every message. That is fan-out. The red subscription, analytics, has three workers sharing it. They compete, and each message goes to only one of them. That is load-balancing.
+V: Fan-out needs one subscription per consumer.
+[pause: 0.6]
+N: So four services that must each process every order need four subscriptions on one topic.
+
+= panel new | Managed Service for Apache Kafka | When to pick it over Pub/Sub
+Runs Kafka clusters for you: vCPU and memory sizing, broker management, rebalancing, Kafka Connect. Speaks the **native Kafka protocol**.
+**Choose it:** existing **Kafka clients, connectors or skills**; **partition-ordered logs** replayed by **offset**; migrating self-managed Kafka.
+**Choose Pub/Sub:** serverless, global, per-message acknowledgement, no partitions to plan.
+N: New in the guide: Managed Service for Apache Kafka. It runs Kafka clusters for you, with sizing in V-C-P-U and memory, automatic broker management and rebalancing, and Kafka Connect, and it speaks the native Kafka protocol. Choose it when you already have Kafka clients, connectors or skills, need partition-ordered logs replayed by offset, or are migrating from self-managed Kafka. Choose Pub/Sub for a serverless global service, with per-message acknowledgement and no partitions to plan.
+
+= table | Dataflow | Apache Beam, batch and streaming
+Job action | Effect
+**Drain** | Stop reading input, **finish in-flight data**, then stop: **no data loss**
+**Cancel** | Stop **immediately**; in-flight data is lost
+**Update** | Replace a running streaming job with compatible code, keeping state
+> Health: job graph, **system lag**, **data freshness**. Workers need `roles/dataflow.worker`. **Templates** launch without code.
+N: Dataflow runs Apache Beam pipelines, batch and streaming, as a managed, autoscaling service. Templates, including Google-provided ones such as Pub/Sub to BigQuery, let people launch pipelines without code. Three job actions. Drain stops reading new input, finishes in-flight data, and then stops, with no data loss. Cancel stops immediately, and in-flight data is lost. Update replaces a running streaming job with compatible new code, keeping state. Job health is shown as system lag and data freshness.
+
+= table | Neighbours to recognise | One-line differences
+Product | Stem
+**Dataproc** | Managed Spark and Hadoop: lift-and-shift existing Spark jobs
+**Cloud Composer** | Managed Airflow: orchestrate a DAG of dependent steps
+**Workflows** | Orchestrate API calls
+**Cloud Scheduler** | Managed cron: one job on a timer
+**Cloud Tasks** | Queued calls with rate limits
+N: Some neighbours to recognise. Dataproc is managed Spark and Hadoop, for lifting and shifting existing Spark jobs. Cloud Composer is managed Airflow, for orchestrating a graph of dependent steps. Workflows orchestrates A-P-I calls. Cloud Scheduler is managed cron, one job on a timer. And Cloud Tasks gives queued calls with rate limits.
+
+## 7.13 Backup, restore and multi-region redundancy
+
+= table sm | Backup mechanisms | And what each one restores to
+Service | Mechanisms | Restores to
+Compute Engine | Snapshot schedules, machine images, **Backup and DR** | New disk or VM
+Cloud Storage | Versioning, soft delete, retention | Previous generation
+**Cloud SQL** | Automated, on-demand, **PITR** | Same instance (overwrites), or **clone**
+**AlloyDB, Spanner** | Continuous; full and incremental, PITR | **New cluster**; new database
+**Bigtable, Firestore** | Table backups; PITR, scheduled, export | New table; **new database**
+BigQuery | Time travel, fail-safe, snapshots | Table as of a time
+> **Backup and DR Service:** backup vaults that are immutable and indelible: *"backups ransomware cannot delete"*.
+N: Backups, and where they restore to. Notice how often the answer is new. Cloud SQL can restore over the same instance, or clone. AlloyDB restores into a new cluster, Spanner a new database, Bigtable a new table, and Firestore a new database. And Backup and D-R Service centralizes policy for V-Ms, disks, databases and file shares, with backup vaults that make backups immutable for a set period. That answers, backups that ransomware cannot delete.
+
+= table sm | Multi-region, 1 of 3 | Storage and relational
+Product | Multi-region option | What it gives
+Cloud Storage | **Dual-region** (turbo: RPO 15 min) or **multi-region** | Survives a region; no failover action. Default: **RPO 12 h**. Turbo is **dual-region only**
+Cloud SQL | **Cross-region replica**; **Enterprise Plus**: DR replica, switchover, **write endpoint** | Minutes of RPO; no app reconfiguration
+Cloud SQL backups | **Custom backup location** | Backups outlive the region
+AlloyDB | **Cross-region secondary cluster** | Promote on disaster
+N: Multi-region redundancy, product by product. The guide added this objective. Cloud Storage has dual-region, with turbo replication at a fifteen minute recovery point, or multi-region, with data surviving a region and no failover action. Default replication has a recovery point of twelve hours. Cloud SQL has a cross-region read replica, promoted on disaster. And Enterprise Plus adds a designated disaster recovery replica, with switchover, replica failover, and a write endpoint, a D-N-S name that follows the primary. So apps need no reconfiguration. AlloyDB has a cross-region secondary cluster.
+
+= table sm | Multi-region, 2 of 3 | Scale-out databases
+Product | Multi-region option | What it gives
+**Spanner** | **Multi-region** or **dual-region** (two regions, one country) | Synchronous, strong, **99.999%**. Move the **default leader** near writes
+Bigtable | **Clusters in several regions** + multi-cluster routing | Failover, **eventual consistency**
+Firestore | **Multi-region location**: `nam5`, `eur3` | Synchronous, automatic, 99.999%
+BigQuery | **Dataset replication**; **managed disaster recovery**: slots fail over with the data | **Trap:** a `US` or `EU` dataset alone has **no cross-region redundancy**
+N: Spanner uses a multi-region or dual-region configuration, where dual-region means two regions in one country. It is synchronous and strongly consistent. Moving the default leader to where writes originate moves no data. Bigtable uses clusters in several regions, with automatic failover and eventual consistency. Read your writes needs a single-cluster routing profile. Firestore uses a multi-region location, with synchronous replication. BigQuery has cross-region dataset replication, and managed disaster recovery, where slots fail over with the data. And here is a trap: a multi-region dataset, in U-S or E-U, is stored in one region of that geography, so it has no cross-region redundancy by itself.
+
+= table sm | Multi-region, 3 of 3 | Disks and files
+Product | Multi-region option | What it gives
+Persistent Disk | **Asynchronous Replication** to a second region | **RPO ≈ 1 minute**; attach the secondary
+Filestore | **Regional tier**; **backups in another region**; instance replication | Regional = zones only; backup = region loss
+NetApp Volumes | **Volume replication** | Destination read-only until stopped
+Memorystore | Standard Tier: zones of **one** region; some cross-region replicas (*verify*) | Promote on disaster
+N: Persistent Disk has Asynchronous Replication to a second region, with a recovery point of about a minute. Filestore's regional tier handles zone failures, and backups stored in another region handle region loss. Filestore instance replication keeps a standby in another region. NetApp Volumes has volume replication, and the destination is read-only until replication stops. And Memorystore's Standard tier fails over between zones of one region only.
+
+= panel tip | Stem language | Five redundancy stems
+*"Zero RPO, automatic failover, relational, across regions"*: **Spanner multi-region**; *"in one country"*: **dual-region**.
+*"Survive a region with minutes of loss, keep Postgres"*: **cross-region replica**, or **secondary cluster**.
+*"Readable if a region is lost, replicated in 15 minutes"*: **dual-region + turbo**.
+*"Data came back, jobs had no slots"*: **BigQuery managed DR**. *"Apps needed reconfiguring"*: **write endpoint**.
+N: Five stems. Zero recovery point, automatic failover, relational, across regions: Spanner multi-region, or dual-region if the data must stay in one country. Survive a region with a few minutes' data loss, keeping Postgres: a cross-region replica, or a secondary cluster. Objects readable if a region is lost, and replicated within fifteen minutes: dual-region with turbo replication. The data came back, but the jobs had no slots: BigQuery managed disaster recovery. Apps had to be reconfigured after failover: the Cloud SQL write endpoint.
+
+## 7.14 Encryption and customer-managed keys
+
+= table sm | Encryption models | Everything at rest is encrypted by default
+Model | Key held by | Revocation | Choose when
+**Google-managed** | Google | Not available | No stated key requirement
+**CMEK** | **You, in Cloud KMS** | **Disable or destroy a version** | "control, rotate, able to revoke"
+**CSEK** | You, sent **with every request** | Stop supplying it | Cloud Storage and Compute only
+**Cloud EKM** | **External key manager** | Yours | "Keys never stored in Google Cloud"
+Client-side | You, before upload | Yours | Provider must never see plaintext
+N: Everything at rest is encrypted by default with Google-managed keys, and you cannot turn it off. The questions are about what to choose when default is not enough. Customer-managed keys, CMEK, are held by you in Cloud K-M-S, with rotation on a schedule you set, and revocation by disabling or destroying a key version. Customer-supplied keys, CSEK, are sent with every request, for Cloud Storage and Compute Engine only. Cloud External Key Manager keeps keys outside Google entirely. And client-side encryption means the provider never sees plaintext.
+
+= dia | Cloud KMS vocabulary | Key ring, key, key version
+p7-kms
+N: The vocabulary. A key ring has a permanent location: a region, a multi-region or global. Inside it is a key, with a purpose, a rotation period, and a protection level: software, H-S-M, external, or external through V-P-C. Inside that are key versions, which hold the key material, and are enabled, disabled, scheduled for destruction or destroyed.
+
+= dia new | Configuring CMEK | The service agent needs the key
+p7-cmek
+N: New in the guide: configuring customer-managed keys. Follow the sequence. First, the amber note: grant the crypto key encrypter decrypter role on the key to the product's service agent. Then one, you create the resource with the key, and the locations must match. Two, data is written. Three, the service agent, not your user, and not your workload's service account, asks K-M-S to encrypt. Four, K-M-S responds, if the role and location are right. And in the frame: if you disable the key version, decryption fails, and data is unreadable, reversibly.
+
+= table | Three rules of CMEK | Each is a favourite distractor
+Rule | Detail
+**1 The service agent needs the key** | The Google-managed account needs `cryptoKeyEncrypterDecrypter`, not you
+**2 Locations must match** | An `EU` bucket or BigQuery dataset needs a key in `eu`; a `europe-west1` key fails
+**3 Rotation is not re-encryption** | A new primary version for new data; old versions must stay enabled
+Disable or destroy | **Disable:** unreadable, reversible. **Destroy:** permanent after a delay, 30 days default
+N: Three rules, and each is a favourite distractor. One, the service agent needs the key. Two, locations must match. A bucket in E-U needs a key in E-U, and a BigQuery dataset in the E-U multi-region with a europe west one key fails with a location error, however the permissions are set. Three, rotation is not re-encryption. Rotating creates a new primary version for new data, and existing data stays readable with older versions, which must stay enabled. Disabling a version makes data encrypted with it unreadable, reversibly. Destroying it is permanent after the scheduled destruction delay, thirty days by default. That is crypto-shredding.
+
+= cmd sm | CMEK commands, and Autokey | Create, grant, use, revoke
+Task | Command
+Key ring and key, HSM, 90-day rotation | gcloud kms keyrings create data-eu --location=europe-central2 · gcloud kms keys create sql-key --keyring=data-eu --location=europe-central2 --purpose=encryption --rotation-period=90d --protection-level=hsm
+Create the agent if absent | gcloud beta services identity create --service=sqladmin.googleapis.com
+Use the key | gcloud sql instances create ... --disk-encryption-key=KEY · gcloud storage buckets update gs://B --default-encryption-key=KEY
+Stop data being readable | gcloud kms keys versions disable 3 --key=sql-key --keyring=data-eu --location=europe-central2
+> **Autokey** creates keys per resource. `gcp.restrictNonCmekServices` **blocks** resources without CMEK.
+N: Commands on screen. And one more. Cloud K-M-S Autokey creates key rings and keys for customer-managed encryption automatically, per resource, in a dedicated key project. It is the answer to, enforce it everywhere, without hand-creating hundreds of keys. It pairs with the organization policy, restrict non CMEK services, which blocks creating resources in the listed services unless they use customer-managed keys. That is preventive, unlike an alert on audit logs.
+
+= list | More to recognise, 1 of 2 | Redundancy and products
+- Watch a Cloud SQL replica's **replication lag**: it is the data you would lose
+- Spanner **custom configurations** add read-only replicas; Spanner and Bigtable backups can be copied across regions
+- A BigQuery **dataset copy** is a copy, not a replica
+- A second Bigtable cluster also **isolates batch reads**
+- AlloyDB **vector search**; **Memorystore for Valkey**; Pub/Sub **BigQuery subscription** with no pipeline
+N: More to recognise. A Cloud SQL replica's replication lag is the data you would lose. Spanner custom configurations add read-only replicas for distant readers. A BigQuery dataset copy is a one-off or scheduled copy, not a replica. A second Bigtable cluster also isolates batch reads from serving traffic. AlloyDB has vector search. Memorystore for Valkey is open-source and Redis compatible. And a Pub/Sub BigQuery subscription writes messages to a table, with no pipeline.
+
+= list | More to recognise, 2 of 2 | Newer features and operations
+- **Hierarchical namespace** buckets: real folders, atomic renames. **Anywhere Cache:** zonal SSD read cache
+- **Backup vault** with minimum retention holds backups nobody can delete early
+- Spanner **`version_retention_period`** allows reads at a past timestamp
+- BigQuery **`EXTERNAL_QUERY`** joins live Cloud SQL rows
+- Rotating never re-encrypts: **rewrite** old data; a version scheduled for destruction can be **restored** in the delay
+N: Hierarchical namespace buckets give real folders and atomic renames. Anywhere Cache is a zonal S-S-D read cache in front of a bucket. A backup vault with enforced minimum retention holds backups nobody can delete early. Spanner version retention period allows reads at a past timestamp. BigQuery external query joins live Cloud SQL rows. And since rotating never re-encrypts, you rewrite old data onto the new version, and a version scheduled for destruction can be restored during the delay.
+
+## 7.15 Part 7 recall card
+
+= table | Recall card, 1 of 5 | Answer aloud before the voice does
+Prompt | Answer
+Minimum durations | **0, 30, 90, 365** days
+Read once a year, needed "immediately" | **Archive**: same latency
+Unknown access pattern | **Autoclass**
+Undo yesterday's accidental delete | **Soft delete**, or versioning
+Immutable for 7 years, even for admins | **Retention policy + Bucket Lock**
+File for someone with no Google account | **Signed URL**
+N: Recall. Minimum durations: zero, thirty, ninety, three sixty-five. Read once a year but needed immediately: Archive, same latency. Unknown access pattern: Autoclass. Undo yesterday's accidental delete: soft delete. Immutable for seven years, even for admins: retention with Bucket Lock. A file for someone with no Google account: a signed U-R-L.
+
+= table | Recall card, 2 of 5 | Answer aloud before the voice does
+Prompt | Answer
+Upload-only drop box | `storage.objectCreator`
+SMB shares for Windows | **NetApp Volumes**
+NFS for many VMs, RWX in GKE | **Filestore**
+Feed thousands of GPUs with training data | **Managed Lustre**
+Global relational, scale writes, strong consistency | **Spanner**
+N: An upload-only drop box: Object Creator. S-M-B shares for Windows: NetApp Volumes. N-F-S for many V-Ms: Filestore. Feeding thousands of G-P-Us: Managed Lustre. Global relational, scaling writes: Spanner.
+
+= table | Recall card, 3 of 5 | Answer aloud before the voice does
+Prompt | Answer
+Time series, 500k writes/s, key lookups | **Bigtable**: design the row key
+Mobile app, real-time sync | **Firestore**
+Warehouse SQL over TBs | **BigQuery**
+Postgres plus analytics on live data | **AlloyDB**
+Bad DELETE at 14:05 | Cloud SQL **PITR clone** to 14:04
+HA standby serves reads? | **No**: use a read replica
+N: Time series, five hundred thousand writes per second: Bigtable. A mobile app with real-time sync: Firestore. Warehouse S-Q-L over terabytes: BigQuery. Postgres plus analytics on live data: AlloyDB. A bad delete at five past two: a point-in-time clone to four past. Does the H-A standby serve reads? No, use a read replica.
+
+= table | Recall card, 4 of 5 | Answer aloud before the voice does
+Prompt | Answer
+Cut BigQuery cost | Partition, cluster, fewer columns; `LIMIT` does not help
+Which queries were expensive? | `INFORMATION_SCHEMA.JOBS`
+Fleet-wide database risk view | **Database Center**
+500 TB over 100 Mbps | **Transfer Appliance**
+S3 to Cloud Storage nightly | **Storage Transfer Service**
+N: Cut BigQuery cost: partition, cluster, fewer columns, and LIMIT does not help. Which queries were expensive: information schema jobs. A fleet-wide database risk view: Database Center. Five hundred terabytes over one hundred megabits: Transfer Appliance. S3 to Cloud Storage nightly: Storage Transfer Service.
+
+= table | Recall card, 5 of 5 | Answer aloud before the voice does
+Prompt | Answer
+Four consumers each get every message | **Four subscriptions**
+Existing Kafka clients, offsets | **Managed Service for Apache Kafka**
+Stop a streaming job without losing data | Dataflow **drain**
+CMEK: resource cannot use the key | Grant the **service agent** the role
+Make CMEK data unreadable now | **Disable** the key version
+N: Four consumers each get every message: four subscriptions. Existing Kafka clients and offsets: Managed Service for Apache Kafka. Stop a streaming job without data loss: Dataflow drain. A resource cannot use the key: grant the service agent the role. Make data unreadable now: disable the key version.
+
+## Part 7 sample questions
+
+= th | Part 7 · practice | Twelve exam-style questions | First the access model. Then durability. Then who may read it.
+N: Twelve questions. Ask first what the access model is, then what must survive, and then who may read it.
+
+= q | Compliance documents are read about once a year, must be kept for ten years, and must be readable immediately when requested. Which storage class minimizes cost?
+(A) Standard
+(B) Nearline
+(C) Coldline
+(D) Archive
+ans D
+why A :: Costs the most to store for data read this rarely.
+why B :: Designed for monthly access.
+why C :: Designed for quarterly access.
+why D :: Once a year or less; same millisecond latency as Standard.
+C: The answer is D. Read once a year points to Archive, and the immediately clause decides nothing, because all four classes have the same millisecond latency. If you chose Standard because of the word immediately, you were caught by the trap this item is built around.
+
+= q | A regulator requires records to be immutable for seven years, even from project owners, and the policy must not be removable. What should you configure?
+(A) Object versioning
+(B) Soft delete with a 90-day window
+(C) A retention policy with Bucket Lock
+(D) An IAM deny policy on `storage.objects.delete`
+ans C
+why A :: Someone with permission can still remove versions.
+why B :: The window is too short, and it does not prevent deletion.
+why C :: Locked retention cannot be shortened or removed by anyone.
+why D :: An administrator could remove the policy.
+C: The answer is C. Even from owners, and must not be removable, describe a locked retention policy. A and B protect against accidents, not intent. D is tempting, since deny binds Owners, but a deny policy can be changed by someone with the right role. A locked retention policy cannot be removed by anyone.
+
+= q | Your analytics team's on-demand BigQuery bill is too high. Queries use `SELECT *` over a table with years of data, filtered by date. Which **two** changes reduce the bytes billed? Choose two.
+(A) Partition the table by date, and filter on the partition column
+(B) Add `LIMIT 1000` to the queries
+(C) Select only the columns needed
+(D) Move the dataset to another location
+(E) Export the table to Cloud Storage nightly
+ans A, C
+why A :: Scans only the partitions touched.
+why B :: Does not reduce the bytes scanned.
+why C :: Columnar storage means fewer columns, fewer bytes.
+why D :: Location does not change bytes scanned.
+why E :: Adds work, and does not change the queries.
+C: The answers are A and C. Bytes scanned are the columns read, across the partitions touched. So partition by date and select fewer columns. B is the trap we just covered: LIMIT does not reduce on-demand cost, because the scan already happened. D and E do not affect scanned bytes.
+
+= q | A retailer needs relational data with strong consistency, serving users on three continents, and must scale writes beyond a single primary. What should they use?
+(A) Cloud SQL with cross-region read replicas
+(B) AlloyDB with read pools
+(C) Spanner with a multi-region configuration
+(D) Bigtable with multi-cluster routing
+ans C
+why A :: One primary for writes; replicas are asynchronous.
+why B :: Also one primary; read pools scale reads.
+why C :: Horizontally scalable writes with strong global consistency.
+why D :: Not relational, and multi-cluster is eventually consistent.
+C: The answer is C. Scale writes beyond a single primary, with strong consistency across continents, is the first elimination we learned. A and B both have one primary for writes. D is not relational, and it is eventually consistent between clusters.
+
+= q | An IoT platform ingests 500,000 sensor readings per second, and queries by device and time range. Which product, and what design rule?
+(A) Bigtable, with a row key like `device#reverse_timestamp`
+(B) Bigtable, with a row key starting with the timestamp
+(C) Cloud SQL, with an index on the timestamp
+(D) BigQuery, with point lookups per device
+ans A
+why A :: Right product, and the key groups device data without hotspots.
+why B :: Right product, but the key sends all writes to one node.
+why C :: One primary cannot take this write rate.
+why D :: Not a low-latency lookup store.
+C: The answer is A. The volume and the key access point to Bigtable. The difference between A and B is the row key, and B is a hotspot, since all new writes land at the same end of the key space. C cannot take the write rate, and D is not for point lookups.
+
+= q | At 14:05 a developer runs a bad `DELETE` on a Cloud SQL primary with a read replica and HA enabled. You must lose the least data, and keep the damaged instance for comparison. What should you do?
+(A) Promote the read replica
+(B) Fail over to the HA standby
+(C) Clone the instance with point-in-time recovery to 14:04
+(D) Restore last night's backup over the instance
+ans C
+why A :: The replica received the DELETE within seconds.
+why B :: The standby is synchronous, so it has the DELETE too.
+why C :: A new instance at 14:04, with the original untouched.
+why D :: Loses a day of data and overwrites the original.
+C: The answer is C. A replica and a standby are not backups: both have the delete. D loses all of today's data, and it overwrites the damaged instance you wanted to keep. Point-in-time recovery clones to a new instance, as long as logs were enabled beforehand.
+
+= q | You must migrate 500 TB from an on-premises data centre. The link is 100 Mbps and already busy, and the migration must finish within two months. What should you use?
+(A) `gcloud storage rsync`
+(B) Storage Transfer Service with on-premises agents
+(C) Transfer Appliance
+(D) Dedicated Interconnect, then `gcloud storage cp`
+ans C
+why A :: About 500 days, and the link is busy.
+why B :: Still limited by the same link.
+why C :: Ship a device, load on site, send it back.
+why D :: Takes time to provision, and it is overkill for one move.
+C: The answer is C. Do the sum first. One hundred megabits moves about one terabyte a day, so five hundred terabytes takes about five hundred days. That eliminates A and B. D could work in theory, but provisioning takes time, and the appliance is designed for this case.
+
+= q | Four independent services must each process every order event. Today they share one Pub/Sub subscription, and each sees only some of the orders. What should you change?
+(A) Increase the ack deadline
+(B) Give each service its own subscription on the topic
+(C) Create four topics, and publish each order four times
+(D) Enable exactly-once delivery
+ans B
+why A :: Does not change how messages are split.
+why B :: Each subscription gets every message.
+why C :: Pushes fan-out into the publisher.
+why D :: Does not change how messages are split.
+C: The answer is B. Workers sharing one subscription compete, which is load-balancing. Fan-out needs one subscription per consumer. C works, but it pushes the logic into the publisher, and the topic already does this for free.
+
+= q | You must stop a streaming Dataflow job for maintenance, with no data loss. What should you use?
+(A) Cancel
+(B) Drain
+(C) Delete the Pub/Sub topic
+(D) Stop the worker VMs
+ans B
+why A :: In-flight data is lost.
+why B :: Finishes in-flight data, then stops.
+why C :: Destroys the input.
+why D :: Dataflow would restart or fail them, and data could be delayed or lost.
+C: The answer is B. Drain stops reading new input, finishes in-flight data, then stops. Cancel is the one that loses in-flight data. C and D interfere with the job rather than stopping it cleanly.
+
+= q | Creating a Cloud SQL instance with CMEK fails with a permission error. The key is in the same region, and you are an admin on the key. What should you do?
+(A) Grant `roles/cloudkms.cryptoKeyEncrypterDecrypter` on the key to the Cloud SQL service agent
+(B) Grant `roles/cloudkms.admin` on the key to your own user
+(C) Move the key to `global`
+(D) Grant the key role to the application's service account
+ans A
+why A :: The product acts through its service agent.
+why B :: You already have this, and it is not what is used.
+why C :: The location is correct as it is.
+why D :: The workload's account is not what encrypts the disk.
+C: The answer is A. Three wrong identities are possible here: your user, the workload's service account, and the right one, the product's service agent. The stem rules out location, which is the second rule. If the agent does not exist yet, create it with gcloud beta services identity create.
+
+= q | A company runs an existing Kafka platform with many Kafka Connect connectors. It wants to stop managing brokers, while keeping clients and consumer offsets unchanged. What should it use?
+(A) Pub/Sub
+(B) Managed Service for Apache Kafka
+(C) Dataflow
+(D) Kafka on a managed instance group
+ans B
+why A :: Different protocol; clients would have to change.
+why B :: Native Kafka protocol, with brokers managed for you.
+why C :: A pipeline runner, not a broker.
+why D :: You still manage the brokers.
+C: The answer is B. Keeping clients, connectors and offsets is the deciding clause. Pub/Sub is a fine product, but it has no partitions and offsets, and clients would need to change. D is the assembled answer that the stem explicitly wants to leave behind.
+
+= q | Windows servers need shared file storage over SMB, integrated with Active Directory, and the team is migrating from NetApp ONTAP. What should they use?
+(A) Filestore
+(B) Google Cloud NetApp Volumes
+(C) Managed Lustre
+(D) Cloud Storage with FUSE
+ans B
+why A :: NFS, not SMB.
+why B :: SMB, Active Directory, and NetApp features.
+why C :: A parallel file system for HPC and AI.
+why D :: Objects, not a Windows file share.
+C: The answer is B. S-M-B, Windows and NetApp each point to NetApp Volumes on their own, and here you have all three. Filestore is N-F-S. Lustre is for high-throughput parallel workloads. And Cloud Storage is objects.
+
+= th | End of Part 7 | Next: tooling | Infrastructure as code, Gemini tooling, agents and developer platforms.
+N: That is part seven, and the heaviest lifting is done. Next is part eight, which is shorter: infrastructure as code, the A-I assisted tools that are new in the guide, and developer platforms.

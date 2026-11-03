@@ -1,0 +1,386 @@
+#! title: Organization, projects, billing and quotas
+#! short: Org, billing, quotas
+
+## Part 2: Organization, projects, billing and quotas
+
+= th | Google Cloud Associate Cloud Engineer · Part 2 of 10 | One tree, one bill, one set of quotas | Organization, folders and projects. Who pays. What stops spending, and what only warns. How to see everything you own.
+N: Part two. Everything in Google Cloud is attached to a node in one tree, is paid for by one billing account, and is bounded by the quotas of one project. Get this part right, and half of the identity and governance questions in part three answer themselves. This part maps to the exam's section one, plus the estimating costs objective from section three.
+
+## 2.1 The resource hierarchy
+
+= dia | The tree | Organization, folders, projects, resources
+p2-hierarchy
+N: Here is the tree. At the top, the organization: the root, one per Cloud Identity or Workspace customer, or one standalone organization. Below it, folders, which are optional and nestable up to ten levels: departments, environments, teams. Then projects, which can hang from a folder, or directly from the organization. And inside projects, resources: a V-M, a bucket, a Cloud SQL instance, a cluster, a topic. Follow the arrows downward, because policy travels in that direction. Four rules follow from this picture, and each one is examined directly.
+
+= table | Four rules from the tree | Each one is examined directly
+# | Rule | What it decides
+1 | **IAM allow policies inherit downward and are additive** | A folder grant reaches every project in it, including later ones
+2 | **Organization policies inherit downward too** | A lower node can replace, or for list constraints merge. It binds Owners
+3 | **The project is the boundary** | Billing link, quota, API enablement and, by default, networking
+4 | **Grant at the smallest node that covers the future** | "All of Finance's projects, including new ones" is one folder binding
+N: Rule one. I-A-M allow policies are inherited downward and are additive. A grant on a folder is effective on every project in it, including projects created later. There is no most specific wins. Rule two. Organization policies inherit downward too. The constraint is the rule type that Google defines. The organization policy is your setting of that constraint on a node. A lower node can replace it, or for list constraints, merge with it. And unlike I-A-M, it binds Owners too. Rule three. The project is the boundary for billing linkage, quota, A-P-I enablement and, by default, networking. So stopping one team exhausting another's quota means separate projects. Rule four. Grant at the smallest node that covers the requirement, including its future. All of Finance's projects, including new ones, is one binding on the Finance folder, not forty bindings on forty projects.
+
+= table | Project identifiers | Three identifiers, and only one is yours to change
+Identifier | Mutable? | Notes
+Project **ID** | **No** | Globally unique, chosen at creation, 6–30 characters. What almost every command takes
+Project **name** | Yes | A display label; not unique
+Project **number** | No | Assigned by Google; appears in default and Google-managed service account addresses
+> `gcloud` accepts the ID or the number, never the display name.
+N: A project has three identifiers. The project I-D is globally unique, you choose it at creation, and it can never change. Almost every command takes it. The project name is only a display label: you can change it, and it need not be unique. The project number is assigned by Google, and you will see it inside the addresses of default and Google-managed service accounts. gcloud accepts the I-D or the number, but never the display name.
+
+## 2.2 Creating the organization: Cloud Identity, Workspace, or standalone
+
+= dia new | Two routes | You never create an organization with a command
+p2-two-routes
+N: An organization resource is created for you. You never create an organization with a command. And now there are two routes to one. The classic route: verify a domain with Cloud Identity or Google Workspace, and the organization appears when that customer creates the first project or billing account. It is named after the domain, and it holds your managed users and groups. The new route, added in the June twenty twenty-six guide, is the standalone organization. It is created automatically when a new Free Trial customer signs in to the console with a Google account and accepts the terms. It is named after the user, never after a domain.
+
+= list new | Standalone organizations | A real hierarchy, without a domain or a super admin
+- A real hierarchy: folders, org policies, org-level IAM
+- The signing-up user becomes **Organization Owner**
+- Only for **new Free Trial customers**; **one organization per user account**
+- The name **cannot be a domain name**, e.g. `lara-brown-org`
+- People join by **invitation, accepted within 30 days**
+- A service account can never be an owner; at least one active Google account must remain
+> External sign-in for a standalone org goes through Workforce Identity Federation.
+N: Here are the facts to hold about standalone organizations. They give a new customer a real hierarchy, with folders, organization policies and org-level I-A-M, without a Cloud Identity super administrator or a verified domain. The user who signs up becomes Organization Owner. They are available only to new Free Trial customers, not existing accounts, and there is one organization per user account. The name cannot be a domain name, since domain names are reserved for Cloud Identity and Workspace organizations. Other people are added by invitation, which they must accept within thirty days. A service account can never be an organization owner, and at least one active Google account must remain one. And Workforce Identity Federation, in part three, is how a standalone organization lets people sign in with an external identity provider.
+
+= panel watch | Two administrators, two systems | Super admin versus Organization Administrator
+*"Create users, reset passwords, manage groups"* is the **Admin console**, and a Cloud Identity or Workspace admin role.
+*"Grant IAM roles on folders and projects"* is the **Organization Administrator** IAM role.
+Neither implies the other. Grant org-level roles to **groups** such as `gcp-organization-admins@`.
+N: In a Cloud Identity or Workspace organization, there are two kinds of administrator, in two different systems. The super administrator lives in the Admin console, and manages users, groups and domain settings. The Organization Administrator is an I-A-M role, which manages I-A-M on the resource hierarchy. Neither implies the other. So create users and reset passwords points to the Admin console. Grant roles on folders and projects points to the I-A-M role. Google's set-up guidance is to grant org-level roles to groups, not to individuals.
+
+= panel note | Setting up cloud networking | Google Cloud Setup: the guided foundation
+The console's guided flow for a new organization: identity and groups, administrative access, billing, the folder hierarchy, a starter network (a Shared VPC host with subnets), central logging and monitoring, and a baseline of security org policies.
+It can apply the result directly, or hand it to you as **Terraform**.
+N: Google Cloud Setup is the console's guided flow for a new organization. It takes you through identity and groups, administrative access, billing, the folder hierarchy, a starter network with a Shared V-P-C host and subnets, central logging and monitoring, and a baseline of security organization policies. It can apply the result directly, or give it to you as Terraform. This is the practical meaning of the guide's phrase, setting up cloud networking, in section one. It means the foundation network, not individual firewall rules.
+
+## 2.3 Folders and projects in practice
+
+= cmd sm | Commands | Task to command, for the verbs the exam tests
+Task | Command
+Create a folder | gcloud resource-manager folders create --display-name=finance --organization=ORG_ID
+Create a project in a folder | gcloud projects create kestrel-fin-prod --folder=FOLDER_ID
+Move a project | gcloud beta projects move P --folder=FOLDER_ID
+Delete, then restore | gcloud projects delete P · gcloud projects undelete P
+Protect from deletion (a lien) | gcloud alpha resource-manager liens create --project=P --restrictions=resourcemanager.projects.delete --reason=...
+> Deleting starts a **30-day pending-deletion** period. Billing stops, and `undelete` brings it all back.
+N: The commands. Create a folder with gcloud resource-manager folders create. Create a project in that folder with gcloud projects create, dash dash folder. Moving a project is on the beta track: gcloud beta projects move. Deleting a project does not destroy it right away. It starts a thirty-day pending deletion period. Billing stops, resources shut down, and gcloud projects undelete brings it all back. After thirty days it is gone. And to protect a critical project, you place a lien, which stops even an Owner deleting the project until the lien is removed.
+
+= table sm | Resource Manager roles | Roles you should be able to name
+Role | For
+`roles/resourcemanager.organizationAdmin` | Manage IAM and structure for the whole org. Very broad
+`roles/resourcemanager.folderAdmin` | Full control of a folder and everything under it
+`roles/resourcemanager.folderCreator` | Create folders
+`roles/resourcemanager.projectCreator` | Create projects, usually granted on a folder
+`roles/resourcemanager.projectDeleter` | Delete projects
+`roles/resourcemanager.projectMover` | Update and **move** projects between folders
+`roles/browser` | See the hierarchy, but nothing inside the projects
+N: Some roles to recognise. Organization Administrator is very broad. Folder Admin has full control of a folder and everything under it. Then there are narrow roles: Folder Creator, Project Creator, usually granted on a folder, Project Deleter and Project Mover. And Browser, which lets someone see the hierarchy of folders and projects, but nothing inside them.
+
+= th | The least-privilege move | <em>Project Mover</em> on a common ancestor | A move needs rights on the project, the source and the destination. One binding at the ancestor covers all three.
+V: A move needs rights on the project, the source and the destination. Project Mover, granted on a common ancestor, covers all three in one binding.
+[pause: 0.6]
+N: That is why it beats Folder Admin or Organization Administrator on a least-privilege question. The ancestor is often the organization.
+
+= panel trap | Historic default grants | Everyone can create projects and billing accounts
+When a Cloud Identity or Workspace organization is created, every user in the domain gets **Project Creator** and **Billing Account Creator** at the organization.
+Removing those two grants is a standard first governance step.
+N: Here is a trap that is also a real governance step. When a Cloud Identity or Workspace organization is created, every user in the domain is granted Project Creator and Billing Account Creator at the organization. Removing those two grants is a standard first step. It is the answer to, users keep creating projects and billing accounts outside the folder structure.
+
+## 2.4 APIs and services
+
+= cmd | APIs are enabled per project | A new project has very little switched on
+Task | Command
+Enable an API | gcloud services enable sqladmin.googleapis.com
+What is enabled | gcloud services list --enabled
+> Enabling the Compute Engine API also creates the `default` VPC, unless `compute.skipDefaultNetworkCreation` is enforced.
+N: A-P-Is are enabled per project, and a new project has very little enabled. You enable one with gcloud services enable, and you list them with gcloud services list, dash dash enabled. Enabling some A-P-Is also creates Google-managed service accounts, called service agents, which the product uses to act in your project. And enabling the Compute Engine A-P-I creates the default V-P-C network, unless the organization policy, compute dot skip default network creation, is enforced. That is a common baseline, because the default network ships with permissive firewall rules.
+
+= dia | Three error shapes | Three different fixes
+p2-three-errors
+N: Learn these three error shapes, because the exam can put all three in one item. On the left: A-P-I has not been used in project, or it is disabled. That is an enablement problem, and you enable the A-P-I. In the middle: four-oh-three, permission denied. You are authenticated, but an I-A-M grant is missing. On the right: four-oh-one, unauthenticated. There are no valid credentials at all. Enablement, authorization, authentication. Three different fixes.
+
+## 2.5 Quotas and limits
+
+= table | Three kinds of ceiling | Allocation quota, rate quota, system limit
+Kind | Caps | Example | When hit
+**Allocation quota** | How much may exist at once | vCPUs, GPUs, static IPs per region | Creation fails with a quota error
+**Rate quota** | Requests per interval | API reads per minute | `429 RESOURCE_EXHAUSTED`; retry with backoff
+**System limit** | A fixed maximum | Maximum labels per resource | Redesign, do not request
+N: Three kinds of ceiling. An allocation quota caps how much may exist at once, such as V-C-P-Us per region, G-P-Us per region, or static I-P addresses. When you hit it, creation fails with a quota error. A rate quota caps requests per interval, such as A-P-I reads per minute. When you hit it, you get four-two-nine, resource exhausted, and you retry with exponential backoff. A system limit is a fixed maximum that cannot be adjusted. For that, you redesign. You do not file a request.
+
+= list | Working with quotas | Per project, often per region
+- **Quotas are per project**, and many are **per region**
+- GPUs have both a per-region and an all-regions quota
+- Need more? **Request an increase in Cloud Quotas**, for that quota, in that project
+- The **quota adjuster** raises eligible quotas automatically as usage nears them; it only raises
+- A **quota usage alert** is a Cloud Monitoring alerting policy, not a budget
+> Spreading a workload across extra projects to dodge a quota is the distractor.
+N: Quotas are per project, and many are per region. G-P-Us have both a per-region quota and an all-regions quota, and you can hit either one. When a legitimate workload needs more, the answer is to request an increase for that quota, in that project, in Cloud Quotas. Or let the quota adjuster raise eligible quotas automatically as usage approaches them. A usage alert from the Quotas page is a Cloud Monitoring alerting policy, because a budget watches money, not quota. Spreading a workload across extra projects to dodge a quota is the distractor. And a note for Free Trial accounts: they cannot use G-P-Us. The fix is to upgrade to a paid billing account, not a quota request.
+
+= th | A distinction worth memorising | A quota is a <em>hard stop</em>. A budget is only an <em>alert</em>. | You can deliberately lower a quota, such as BigQuery query usage per day, to cap consumption.
+V: A quota is a hard stop. A budget is only an alert.
+[pause: 0.6]
+N: You can also lower a quota on purpose. For example, lower BigQuery's query usage per day quota to cap consumption. That is the answer to, make it impossible to exceed, where a budget is not.
+
+## 2.6 Billing accounts and the roles around them
+
+= table | Billing accounts | What pays for what
+Fact | Detail
+A project links to | **at most one** billing account
+A billing account pays for | **many** projects, even across organizations
+Self-serve | Card or bank account, charged automatically
+Invoiced | Monthly invoice, for eligible customers
+Unlinking billing | **Stops paid services**, and resources may be deleted
+N: A Cloud Billing account pays for projects. A project is linked to at most one billing account, and a billing account can pay for many projects, even across organizations. There are two kinds. Self-serve uses a card or bank account, charged automatically. Invoiced sends a monthly invoice, for eligible customers. And unlinking a project's billing account stops its paid services, so resources may be deleted.
+
+= table sm | Billing roles | Six roles, three different grant points
+Role | Granted on | Lets the holder
+`billing.admin` Administrator | Billing account | Everything: users, payment, links, budgets, exports
+`billing.user` User | Billing account | **Link projects to this account**
+`billing.viewer` Viewer | Billing account | Read costs and transactions
+`billing.costsManager` Costs Manager | Billing account | Budgets, exports, cost views. No payment control
+`billing.creator` Creator | Organization | Create new billing accounts
+`billing.projectManager` Project Billing Manager | Project | Link and unlink **this project**
+N: The billing roles. Notice the middle column, because the grant point matters. On the billing account: Administrator can do everything. User can link projects to this account. Viewer reads costs. Costs Manager handles budgets, exports and cost views, with no control of payment. At the organization: Billing Account Creator creates new billing accounts. And on the project: Project Billing Manager links and unlinks that project.
+
+= dia | The most examined billing fact | Linking a project needs a grant on both sides
+p2-link-both
+N: Now the most examined billing fact. To link a project to a billing account, a person needs a grant on both sides. On the left, permission on the project, which is Project Billing Manager or Owner. On the right, Billing Account User on the billing account. Look at the two arrows. Owner of the project alone cannot attach it to an account it has no role on.
+V: Linking needs a grant on both sides: the project and the billing account.
+[pause: 0.6]
+N: The command is gcloud billing projects link, followed by the project, dash dash billing account.
+
+## 2.7 Budgets, alerts and exports
+
+= table | Budgets | Scope, amount, threshold rules
+Part of a budget | Options
+**Scope** | The whole billing account, or selected projects, services or labels
+**Amount** | Fixed, or last month's spend
+**Threshold rules** | On **actual** or **forecasted** spend, such as 50%, 90%, 100%
+**Email** | The default, to billing admins and users
+**Monitoring channels** | Route to on-call tools, SMS, chat
+**Pub/Sub topic** | **Programmatic response**
+N: A budget has a scope, which is the whole billing account or selected projects, services or labels. It has an amount, either fixed, or last month's spend. And it has threshold rules on actual or forecasted spend, such as fifty, ninety and one hundred percent. Notifications go by email by default, through Cloud Monitoring channels to on-call tools or chat, or to a Pub/Sub topic for a programmatic response.
+V: A budget watches spend and notifies. It never stops anything.
+[pause: 0.8]
+
+= dia | Automatically stop spending | The supported pattern is four boxes, and it has a cost
+p2-budget-flow
+N: So what if the stem says, automatically stop spending at the budget? There is no built-in switch. The supported pattern is these four boxes. Left to right: the budget crosses a threshold. It publishes to a Pub/Sub topic. A Cloud Run function subscribes to that topic and runs your code. And the code acts, for example by disabling billing on the project. Be honest about what that costs: disabling billing shuts services down, and can delete resources. If the stem wants a hard ceiling on a resource, a quota is the tool.
+
+= table | Billing export to BigQuery | Reports are for looking; the export is for querying
+Export | Contains | Use
+**Standard usage cost** | Per service, SKU and project, with **labels** | Chargeback by team
+**Detailed usage cost** | The above **plus resource-level** rows | Per-resource analysis
+**Pricing** | List prices and your contract prices | Price analysis
+> It is configured on the **billing account**, into a dataset in a project you choose.
+N: The console's reports are for looking. The BigQuery export is for querying. It has three datasets. Standard usage cost has per-service, per-S-K-U, per-project cost with labels, and that is what you use for chargeback by team. Detailed usage cost adds resource-level rows, such as which V-M and which bucket. Pricing holds list prices and your contract prices. It is configured on the billing account, into a dataset in a project you choose.
+
+= panel trap | The export is not a time machine | Turn it on early
+Into a **multi-region** dataset, usage-cost exports backfill only from the **start of the previous month**.
+Into a **single-region** dataset, and for **pricing**, nothing is backfilled.
+*"Two years of queryable history"* is only possible if the export was on two years ago.
+N: Turn the export on early, because it is not a time machine. Into a multi-region dataset, the usage cost exports backfill only from the start of the previous month. Into a single-region dataset, and for the pricing export, nothing is backfilled at all. We need two years of queryable history is only possible if the export was switched on two years ago.
+
+## 2.8 Reading and predicting cost
+
+= table | Which cost tool | Four questions, four tools
+Question | Tool
+What **will** this cost? (nothing built yet) | **Google Cloud Pricing Calculator**
+What **did** it cost, by team? | **Billing export to BigQuery** + labels; reports for a glance
+Tell me **when** spend crosses a line | **Budget** with threshold rules
+How do I spend less on what I run? | **Active Assist** recommendations, CUD analysis, FinOps hub
+N: Four cost questions, four tools. What will this architecture cost, when nothing is built yet? The Pricing Calculator. What did it cost, by team? The billing export to BigQuery with labels, and reports for a quick look. Tell me when spend crosses a line? A budget. And how do I spend less on what I already run? Active Assist recommendations, committed use discount analysis, and the FinOps hub.
+
+= table | Discounts | Commitment against flexibility
+Mechanism | Commitment | Notes
+**Sustained use** | None, automatic | Eligible series running much of the month. E2 and several newer series get none (*verify*)
+**Committed use, resource-based** | 1 or 3 years of vCPU, memory or GPU in a region | Deepest for a steady footprint; billed whether used or not
+**Committed use, spend-based** | 1 or 3 years of hourly spend | Flexible across machine types and regions
+**Spot VMs** | None | Large discount; can be reclaimed at any time
+**Free Trial** | None | $300 credit for 90 days (*verify*)
+N: The discounts. Sustained use discounts are automatic, with no commitment, for eligible machine series running much of the month. E2 and several newer series do not receive them, and that changes, so verify. Resource-based committed use discounts commit you to one or three years of V-C-P-U, memory or G-P-U in a region. They give the deepest discount for a steady footprint, and you pay whether you use them or not. Spend-based committed use discounts commit to hourly spend, and are flexible across machine types and regions. Spot V-Ms need no commitment and carry a large discount, but they can be reclaimed at any time.
+
+= panel tip | Three phrases | How to spot the discount
+*"Steady, predictable, 24×7 for years"*: **committed use discount**, three years if the stem says so.
+*"Interruptible, restartable, cheapest"*: **Spot VMs**.
+*"No commitment, discount without doing anything"*: **sustained use discount**.
+N: How to spot them. Steady, predictable, twenty-four seven for years: committed use discount, three years if the stem says so. Interruptible, restartable, cheapest: Spot V-Ms. No commitment, a discount without doing anything: sustained use discount.
+
+= table | Three kinds of metadata | Labels are the cost dimension
+Metadata | What it is | In billing export? | Used by
+**Labels** | Free key-value pairs on resources | **Yes** | Cost attribution, filtering, automation
+**Network tags** | Strings on VMs | **No** | VPC firewall rules and routes
+**Tags** (resource-manager) | IAM-governed key-values, inherited | Not their job | Conditional IAM, org policy, Cloud NGFW
+N: Three kinds of metadata, with confusing names. Labels are free key-value pairs on resources. They appear in the billing export, so labels are the cost dimension. Network tags are plain strings on V-Ms, used by V-P-C firewall rules and routes. They do not appear in billing. And Tags, also called resource-manager tags, are key-value pairs governed by I-A-M, attached to organizations, folders, projects and resources, and inherited. They drive conditional I-A-M, organization policy and Cloud Next Generation Firewall. We return to them in parts three and four.
+
+## 2.9 Seeing everything: Cloud Asset Inventory and Gemini Cloud Assist
+
+= cmd sm | Cloud Asset Inventory | The answer whenever you need a view across projects
+Need | Command or capability
+Every VM with an external IP, across the org | gcloud asset search-all-resources --scope=organizations/ORG --query="..."
+Every binding granting `roles/owner` | gcloud asset search-all-iam-policies --scope=organizations/ORG --query="policy:roles/owner"
+Who can do X on Y? | gcloud asset analyze-iam-policy (this is Policy Analyzer)
+Everything into BigQuery for SQL | gcloud asset export --content-type=resource --bigquery-table=...
+React to changes in near real time | Asset feeds to a Pub/Sub topic
+What did it look like last month? | gcloud asset get-history (about 35 days)
+N: Cloud Asset Inventory is the metadata database of every resource and policy in your organization. It is the answer whenever a question needs a view across projects. Search all resources finds, for example, every V-M with an external I-P across the organization. Search all I-A-M policies finds every binding that grants Owner. Analyze I-A-M policy answers who can do this on that, and that capability is called Policy Analyzer. Export writes a snapshot into BigQuery for S-Q-L. Asset feeds publish changes to a Pub/Sub topic in near real time. And get history tells you what a resource looked like, going back about thirty-five days. Reading the inventory needs Cloud Asset Viewer at the scope you query.
+
+= panel new | Asset Inventory with Gemini Cloud Assist | The AI assistant in the console
+Answers natural-language questions about your estate: *"which instances in folder Finance have external IPs?"*
+It draws on Asset Inventory and your permissions. ==It cannot show what your IAM roles do not allow you to see.==
+Its output is a draft to verify, not an authority. It needs its API enabled, and a role such as `roles/geminicloudassist.user`.
+N: New in the June guide: Gemini Cloud Assist, the A-I assistant in the console. For this objective, it answers natural language questions about your estate, such as which Compute Engine instances in the Finance folder have external I-P addresses. It also explains or drafts the gcloud command or query to get the answer. Two things to keep in mind. It draws on Asset Inventory and on your permissions, so it cannot show you what your I-A-M roles do not allow you to see. And its output is a draft to verify, not an authority. It needs its A-P-I enabled, and a role such as Gemini Cloud Assist User.
+
+= list | More to recognise, 1 of 2 | Asset Inventory analyses, not just searches
+- Returns the **effective org policy** for every resource in scope
+- Reports the IAM and policy effects of a **project move before you move it**: moves have no dry run
+- Runs **SQL** over asset data without a user-built export
+- **Lien:** stops even an Owner deleting a project
+- **Assured Workloads:** a control package on a folder: data location **and** support-personnel controls
+N: A few more facts to recognise. Asset Inventory does more than search. It returns the effective organization policy for every resource in scope. It reports the I-A-M and policy effects of moving a project before you move it, which matters since project moves have no dry run. And it runs S-Q-L over asset data without a BigQuery export of your own. Also, Assured Workloads applies a control package to a folder, which covers data location and support personnel controls. The resource locations constraint alone covers location only.
+
+= list | More to recognise, 2 of 2 | Policy and cost details
+- `sql.restrictPublicIp` blocks public IPs on Cloud SQL
+- **Custom constraints** use CEL on resource fields when no predefined constraint fits
+- **Cost anomaly detection** flags spikes against history, with no thresholds to set
+- **Gemini Cloud Assist in Billing** answers *"why did the bill go up?"* within your billing permissions
+- A **log scope** lets Logs Explorer query several projects' logs without moving them
+N: The sequel dot restrict public I-P constraint blocks public addresses on Cloud SQL. Custom constraints use the Common Expression Language on resource fields when no predefined constraint fits, for example, every new G-K-E cluster must have Workload Identity Federation enabled. Cost anomaly detection flags spikes against historical patterns, with no thresholds to set. Gemini Cloud Assist in Cloud Billing answers why did the bill go up, within your billing permissions. And a log scope lets Logs Explorer query several projects' logs together, without moving them.
+
+## 2.10 Part 2 recall card
+
+= table | Recall card, 1 of 3 | Answer aloud before the voice does
+Prompt | Answer
+All of a department's projects, now and future | Bind on the **folder**
+Recover a project deleted last week | `gcloud projects undelete`, within 30 days
+Stop a critical project being deleted | A **lien**
+Move a project, least privilege | **Project Mover** at a common ancestor
+Users create projects anywhere they like | Remove the default **Project Creator** grant
+N: The recall card. A department's projects, now and in future: bind on the folder. Recover a project deleted last week: gcloud projects undelete, within thirty days. Stop a critical project being deleted: a lien. Move a project with least privilege: Project Mover at a common ancestor. Users create projects anywhere they like: remove the default Project Creator grant at the organization.
+
+= table | Recall card, 2 of 3 | Answer aloud before the voice does
+Prompt | Answer
+New Free Trial, no domain, wants folders and org policy | **Standalone organization**
+"API has not been used in project" | **Enable the API**
+Hard ceiling on consumption | **Quota**, lowered on purpose if needed
+Warn on spend, never interrupt | **Budget** threshold rules
+Act automatically at a budget threshold | Budget → **Pub/Sub** → Cloud Run function
+N: A new Free Trial with no domain that still wants folders and organization policy: a standalone organization. A-P-I has not been used in project: enable the A-P-I. A hard ceiling on consumption: a quota, lowered on purpose if needed. Warn on spend and never interrupt: budget threshold rules. Act automatically at a threshold: budget, to Pub/Sub, to a Cloud Run function.
+
+= table | Recall card, 3 of 3 | Answer aloud before the voice does
+Prompt | Answer
+Link project P to billing account B | Project Billing Manager or Owner on P **and** Billing Account User on B
+Chargeback by team | **Labels** + BigQuery **billing export**
+Price something not yet built | **Pricing Calculator**
+Every public-IP VM across the org | **Cloud Asset Inventory** search
+Ask about my resources in plain language | **Gemini Cloud Assist**
+N: Link project P to billing account B: a grant on both sides. Chargeback by team: labels and the BigQuery billing export. Price something not yet built: the Pricing Calculator. Every public I-P V-M across the organization: an Asset Inventory search. Ask about my resources in plain language: Gemini Cloud Assist.
+
+## Part 2 sample questions
+
+= th | Part 2 · practice | Eight exam-style questions | Listen, use the silence, name the deciding clause.
+N: Eight questions on the hierarchy, billing and quotas. As before, try to name the phrase that decides each one.
+
+= q | A startup signs up for a Free Trial with a personal Google account and sees a resource named `lara-brown-org` above its project. A co-founder needs organization-level administration. What is true?
+(A) It is a Cloud Identity organization; verify the company domain and rename it
+(B) It is a standalone organization; invite the co-founder as an owner, who must accept within 30 days
+(C) Organizations need Workspace; this resource is a placeholder
+(D) Grant the co-founder `roles/owner` on the project; org roles do not apply to trial accounts
+ans B
+why A :: A standalone org's name cannot be a domain.
+why B :: New Free Trial customers get one automatically, and people join by invitation.
+why C :: False: a standalone org is a real organization.
+why D :: Project Owner is not organization administration.
+C: The answer is B. The clues are Free Trial, and a name built from the user, not a domain. That is a standalone organization, and people join by an invitation accepted within thirty days. A fails, since a standalone organization's name can never be a domain. C is false. And D gives project Owner, which is not administration of the organization.
+
+= q | Finance needs read access to all of its projects, including projects created next year. There are 40 projects in the `finance` folder today. What should you do?
+(A) Bind a role to each user on each of the 40 projects with a script
+(B) Bind a role to the finance group on the `finance` folder
+(C) Bind `roles/viewer` to the finance group on the organization
+(D) Create a custom role at the folder level
+ans B
+why A :: Per-user, per-project, and it misses new projects.
+why B :: One group binding, inherited by every current and future project.
+why C :: Far too broad: it reaches every project in the organization.
+why D :: Custom roles cannot be defined at a folder.
+C: The answer is B. The deciding clause is, including projects created next year. Inheritance from the folder covers the future, and a group means people are managed by membership. A works today but fails tomorrow. C is overly broad, since the organization reaches everything. D has a fact to learn: custom roles exist at the organization or project level, never at a folder.
+
+= q | An engineer is Owner of a new project, but gets a permission error linking it to the company billing account. What is the most likely missing grant?
+(A) Billing Account User on the billing account
+(B) Project Billing Manager on the project
+(C) Billing Account Viewer on the billing account
+(D) Organization Administrator on the organization
+ans A
+why A :: Linking needs a grant on both sides, and the billing side is missing.
+why B :: Owner already covers the project side.
+why C :: Viewer reads costs but cannot link.
+why D :: Far too broad, and it is not a billing role.
+C: The answer is A. This is the two-sided rule. Owner already covers the project side, so the missing permission is on the billing account: Billing Account User. B is therefore redundant. C reads costs and cannot link. D is the kind of over-broad answer that least privilege eliminates.
+
+= q | Leadership wants development spend to **never** exceed a limit on BigQuery queries. A warning is not enough. What should you do?
+(A) Create a budget with thresholds at 50, 90 and 100%
+(B) Lower the BigQuery query usage per day quota on the project
+(C) Set a billing export to BigQuery and review it each morning
+(D) Ask Gemini Cloud Assist to monitor the costs
+ans B
+why A :: A budget only notifies.
+why B :: A quota is a hard stop, and it can be lowered on purpose.
+why C :: A report after the fact stops nothing.
+why D :: An assistant answers questions and enforces nothing.
+C: The answer is B. The deciding word is never, followed by, a warning is not enough. A quota is a hard stop, and you may lower one deliberately. A is the classic distractor, since a budget only notifies. C and D observe the spending, but neither of them enforces anything.
+
+= q | A project hits its regional limit on GPUs, and the workload is legitimate and approved. What is the recommended action?
+(A) Create more projects and spread the workload across them
+(B) Request a quota increase for that GPU quota in that project
+(C) Move the workload to a different billing account
+(D) Raise the budget for the project
+ans B
+why A :: Spreading to dodge a quota is the distractor.
+why B :: Quotas are per project, and increases go through Cloud Quotas.
+why C :: Billing accounts do not hold compute quota.
+why D :: A budget has no effect on quota.
+C: The answer is B. Quotas are per project and often per region, and a legitimate need gets an increase request in Cloud Quotas. A is the tempting workaround, and it is the wrong one. C and D confuse money with capacity.
+
+= q | A security team must list every VM with an external IP across 300 projects, without writing a script that loops over projects. What should they use?
+(A) `gcloud compute instances list` in each project
+(B) Cloud Asset Inventory, `search-all-resources` at the organization scope
+(C) The billing export to BigQuery
+(D) VPC Flow Logs
+ans B
+why A :: This is exactly the per-project loop they want to avoid.
+why B :: A single query across the whole organization.
+why C :: Billing data is about cost, not current configuration.
+why D :: Flow logs show traffic, not which VMs have external IPs.
+C: The answer is B. The deciding phrase is across three hundred projects. Whenever a question needs a view across projects, think Cloud Asset Inventory, with the search scoped to the organization. A is the loop they wanted to avoid. C holds cost data. And D holds traffic samples, not an inventory of configuration.
+
+= q | A finance analyst needs a monthly report of spend per team. Every resource already has a `team` label. Which **two** steps deliver this with the least effort? Choose two.
+(A) Enable the standard usage cost billing export to BigQuery
+(B) Query the export, grouping by the `team` label
+(C) Attach network tags with team names to every VM
+(D) Create one billing account per team
+(E) Create a budget per team, and read the alert emails
+ans A, B
+why A :: The export carries labels into a queryable table.
+why B :: Labels are the cost dimension.
+why C :: Network tags do not appear in the billing export.
+why D :: Heavy reorganization, and labels already exist.
+why E :: Budgets alert; they are not a report.
+C: The answers are A and B. Labels are the cost dimension, and the export brings them into BigQuery, so you group by the label. C is the classic metadata trap: network tags are for firewall rules, and they are not in the billing export. D reorganizes billing to solve something labels already solve. E gives alerts, not a report. And remember, on a choose two item, exactly two selections are needed.
+
+= q | Your organization's users keep creating projects and billing accounts outside the approved folder structure. What is the best first governance step?
+(A) Delete the unapproved projects each week
+(B) Remove the default Project Creator and Billing Account Creator grants at the organization
+(C) Set a budget on each billing account
+(D) Enforce `compute.skipDefaultNetworkCreation`
+ans B
+why A :: Treats the symptom, forever.
+why B :: Those defaults are why anyone in the domain can do this.
+why C :: Budgets do not stop project or account creation.
+why D :: Skips a network; it does not limit who creates projects.
+C: The answer is B. When a Cloud Identity or Workspace organization is created, every user in the domain receives those two roles at the organization. Remove them, and then grant Project Creator on specific folders to the people who need it. A treats the symptom. C is a budget again. And D is a real baseline, but it controls the default network, not who creates projects.
+
+= th | End of Part 2 | Next: identity and access | The largest section of theory: who exists, what they may do, and how software signs in without keys.
+N: That is part two: the tree, the bill and the ceilings. Next is the part that decides more marks than any other: identity and access.

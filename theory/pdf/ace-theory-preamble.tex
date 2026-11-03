@@ -1,0 +1,229 @@
+% ace-theory-preamble.tex --- visual system for ACE-Theory-Recap.md (single-column reference edition)
+%
+% 2026-09-29, second pass on the author's reading of the two-column edition: two columns split tables and
+% command panels mid-thought and were harder to read than they were dense. The page is now ONE column at a
+% larger size, like the exam-eve recap (reports/ACE-exam-eve-recap-*.pdf): full-width tables, panels across
+% the page, and two short panels side by side where they fit. The palette is the simulator's report palette.
+%
+% Page model
+%   # Part          -> always a new page, then a dark band (\partopener)
+%   ## N.M          -> teal band (\sectionband); "## N.M Part N recall card" also starts a new page and
+%                      must fit on it (build-theory.sh gate 9)
+%   ### / ####      -> sub-heads
+%   panels          -> tinted box with a coloured left bar; BREAKABLE across pages (framed.sty), so a long
+%                      panel never leaves a half-empty page behind it
+%   panel pairs     -> two short adjacent panels side by side (unbreakable minipages)
+%   tables          -> pandoc's longtable, restyled; widths measured from content by ace-theory.lua
+%   ::: {.cmds}     -> a command table: dark header, "task -> command" rows
+%   ==text==        -> yellow highlighter, word by word so it wraps (\hlw / \hls)
+%
+% Loaded with pandoc -H, i.e. AFTER pandoc's own longtable / verbatim / hyperref setup. Kept outside the
+% YAML on purpose: pandoc parses header-includes as markdown and mangles multi-line macros.
+%
+% TeX Live Basic here: tcolorbox, mdframed, needspace, soul, fvextra, paracol and newunicodechar are NOT
+% installed; framed IS (~/Library/texmf). Check kpsewhich before adding a package.
+
+% ---------------------------------------------------------------- palette
+\definecolor{ink}{HTML}{12181F}
+\definecolor{muted}{HTML}{5B6875}
+\definecolor{faint}{HTML}{8695A4}
+\definecolor{rule}{HTML}{D6DCE3}
+\definecolor{band}{HTML}{F2F5F8}
+\definecolor{green}{HTML}{1A7F4B}
+\definecolor{greenbg}{HTML}{E7F4EC}
+\definecolor{red}{HTML}{B3261E}
+\definecolor{redbg}{HTML}{FDECEB}
+\definecolor{amber}{HTML}{8A5A00}
+\definecolor{amberbg}{HTML}{FFF5E0}
+\definecolor{blue}{HTML}{1A56B0}
+\definecolor{bluebg}{HTML}{EAF1FB}
+\definecolor{teal}{HTML}{0F6B73}
+\definecolor{tealbg}{HTML}{E6F3F4}
+\definecolor{tealdark}{HTML}{0A4F55}
+\definecolor{purple}{HTML}{5B3EA8}
+\definecolor{purplebg}{HTML}{EFEAFB}
+\definecolor{magenta}{HTML}{9C2B6B}
+\definecolor{magentabg}{HTML}{FBEAF3}
+\definecolor{codebg}{HTML}{EEF1F5}
+\definecolor{night}{HTML}{16222E}
+\definecolor{hlyellow}{HTML}{FFEB7A}
+\definecolor{thesis}{HTML}{C9A400}
+\definecolor{thesisbg}{HTML}{FFF8D6}
+
+% ---------------------------------------------------------------- type
+\newfontfamily\headfont{Helvetica Neue Medium}[Ligatures=TeX]
+\newfontfamily\boldheadfont{Helvetica Neue Bold}[Ligatures=TeX]
+\newfontfamily\lightfont{Helvetica Neue Light}[Ligatures=TeX]
+% Body size is set here, not in the YAML: article only knows 10/11/12pt.
+\newcommand{\bodysize}{\fontsize{9}{10.8}\selectfont}
+\newcommand{\panelsize}{\fontsize{8.6}{10.5}\selectfont}
+\newcommand{\tablesize}{\fontsize{8.1}{9.8}\selectfont}
+\newcommand{\codesize}{\fontsize{7.6}{9.0}\selectfont}
+\AtBeginDocument{\color{ink}\bodysize}
+\usepackage{ragged2e}
+\AtBeginDocument{\RaggedRight}
+\setlength{\RaggedRightRightskip}{0pt plus 1fil}   % long inline code must never push a line into the margin
+\setlength{\RaggedRightParindent}{0pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{2.5pt plus 1pt minus 1pt}
+\setlength{\emergencystretch}{3em}
+\hyphenpenalty=400
+\widowpenalty=3000
+\clubpenalty=3000
+
+\usepackage{multicol}   % the cover prints the contents in three columns; the body is one column
+
+% ---------------------------------------------------------------- lists
+\usepackage{enumitem}
+\setlist{itemsep=1pt,parsep=0pt,topsep=2pt,leftmargin=1.15em}
+\setlist[itemize,1]{label={\color{teal}\footnotesize\textbullet}}
+\setlist[itemize,2]{label={\color{faint}--}}
+\setlist[enumerate,1]{label={\color{teal}\bfseries\arabic*.}}
+
+% ---------------------------------------------------------------- headings
+\usepackage{titlesec}
+% `###` -> \subsubsection: a teal sub-head with a hairline under it
+\titleformat{\subsubsection}{\headfont\fontsize{10}{12}\selectfont\color{teal}}{}{0pt}{}[\vspace{-2pt}{\color{rule}\titlerule[0.4pt]}]
+\titlespacing*{\subsubsection}{0pt}{7pt}{3pt}
+% `####` -> \paragraph: a small uppercase label
+\titleformat{\paragraph}[hang]{\sffamily\fontsize{7}{8.5}\selectfont\bfseries\color{purple}\addfontfeature{LetterSpace=5}}{}{0pt}{\MakeUppercase}
+\titlespacing*{\paragraph}{0pt}{6pt}{1pt}
+
+% needspace.sty is not installed; this is its two-line core. It keeps a band from being the last thing on a
+% page.
+\makeatletter
+\newcommand{\aceneedspace}[1]{\par\penalty-100\begingroup\setlength{\dimen@}{#1}\dimen@ii\pagegoal\advance\dimen@ii-\pagetotal\ifdim\dimen@>\dimen@ii\ifdim\dimen@ii>\z@\vfil\fi\break\fi\endgroup}
+\makeatother
+
+% Vertical rhythm, and a tighter one for a part that would otherwise end with a few lines alone on a page
+% (build-theory.sh finds those parts in the PDF and rebuilds with ACE_TIGHT naming them; ace-theory.lua then
+% emits \acetight after that part's opener). Every part opener restores the normal rhythm.
+\newcommand{\acenormal}{\renewcommand{\bodysize}{\fontsize{9}{10.8}\selectfont}\bodysize
+  \setlength{\parskip}{2.5pt plus 1pt minus 1pt}\renewcommand{\acetablestretch}{1.14}}
+\newcommand{\acetight}{\renewcommand{\bodysize}{\fontsize{9}{10.4}\selectfont}\bodysize
+  \setlength{\parskip}{1.5pt plus 0.5pt minus 0.5pt}\renewcommand{\acetablestretch}{1.07}}
+
+% Part opener: a new page, then a full-width dark band. Emitted by ace-theory.lua for every `#`.
+\newcommand{\currentpart}{}
+\newcommand{\partopener}[2]{%
+  \clearpage\acenormal\phantomsection
+  \addcontentsline{toc}{section}{\ifx\relax#1\relax\else #1\quad\fi #2}%
+  \gdef\currentpart{#1}\markboth{#2}{}%
+  \noindent\colorbox{night}{\parbox{\dimexpr\linewidth-2\fboxsep\relax}{%
+    \vspace{5pt}%
+    {\sffamily\fontsize{7}{8}\selectfont\bfseries\color{teal!55!white}\addfontfeature{LetterSpace=8}\MakeUppercase{#1}}\par\vspace{2pt}%
+    {\headfont\fontsize{18}{21}\selectfont\color{white}#2}\par\vspace{5pt}}}%
+  \par\vspace{4pt}}
+
+% Section band: a full-width teal strip with the number in a darker block, like the exam-eve recap.
+% #1 number, #2 title as typeset, #3 title as plain text (TOC, PDF bookmarks, running head).
+\newcommand{\sectionband}[3]{%
+  \aceneedspace{80pt}\addvspace{6pt}\phantomsection
+  \addcontentsline{toc}{subsection}{\protect\tocnum{#1}#3}%
+  \markright{#1\enspace #3}%
+  \noindent{\setlength{\fboxsep}{0pt}\colorbox{teal}{\hbox to \linewidth{%
+    \colorbox{tealdark}{\hbox to 12mm{\hfil\rule[-3.4pt]{0pt}{15pt}{\boldheadfont\fontsize{10.5}{12}\selectfont\color{white}#1}\hfil}}%
+    \hspace{7pt}{\headfont\fontsize{11}{13}\selectfont\color{white}#2}\hfil}}}%
+  \par\nopagebreak\vspace{4pt}\nopagebreak}
+\newcommand{\tocnum}[1]{\makebox[2.1em][l]{\color{teal}#1}}
+
+% The grey "EXAM GUIDE" line under a part band.
+\newcommand{\objectivesline}[1]{%
+  {\sffamily\fontsize{7.6}{9.2}\selectfont\color{muted}{\bfseries\color{teal}\addfontfeature{LetterSpace=5}EXAM GUIDE}\enspace #1\par}\vspace{3pt}}
+
+% ---------------------------------------------------------------- TOC (printed on the cover, three columns)
+\usepackage{titletoc}
+\titlecontents{section}[0pt]{\addvspace{3pt}\headfont\fontsize{7.6}{9}\selectfont\color{ink}}{}{}{\hfill\contentspage}
+\titlecontents{subsection}[0.4em]{\sffamily\fontsize{6.6}{7.9}\selectfont\color{muted}}{}{}{\titlerule*[0.5pc]{.}\contentspage}
+\setcounter{tocdepth}{2}
+
+% ---------------------------------------------------------------- header / footer
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+% \rightmark is the FIRST section mark on the page; on a part opener that is the part's empty mark, so the
+% separator is printed only when there is a section name to follow it.
+\makeatletter
+\newcommand{\acerightmark}{\protected@edef\ace@rm{\rightmark}\ifx\ace@rm\@empty\else\enspace{\color{faint}\textbullet}\enspace{\color{muted}\rightmark}\fi}
+\makeatother
+\fancyhead[L]{\sffamily\fontsize{6.5}{8}\selectfont{\color{teal}\bfseries\MakeUppercase{\currentpart}}\ifx\currentpart\empty\else\enspace{\color{faint}\textbullet}\enspace\fi{\color{muted}\leftmark}\acerightmark}
+\fancyhead[R]{\sffamily\fontsize{6.5}{8}\selectfont\color{faint}ACE THEORY RECAP\enspace\colorbox{teal}{\color{white}\bfseries\thepage}}
+\renewcommand{\headrule}{{\color{rule}\hrule height 0.4pt}}
+\renewcommand{\footrulewidth}{0pt}
+\setlength{\headheight}{12pt}
+\fancypagestyle{plain}{\fancyhf{}\renewcommand{\headrule}{}}
+
+% ---------------------------------------------------------------- panels
+% #1 accent  #2 tint  #3 label. acepanel is built on framed.sty, so it breaks across pages: in one column a
+% page-sized gap behind an unbreakable box is the worst thing a reference sheet can do. The left bar is a
+% bare \vrule beside the tinted box, so it takes the height of each piece framed hands over.
+\usepackage{framed}
+\newcommand{\acepanellabel}[2]{\ifx\relax#2\relax\else{\sffamily\fontsize{6.9}{8.2}\selectfont\bfseries\color{#1}\addfontfeature{LetterSpace=5}#2}\par\vspace{1pt}\fi}
+\newenvironment{acepanel}[3]{%
+  \par\addvspace{4pt}%
+  \def\FrameCommand##1{\setlength{\fboxsep}{0pt}\colorbox{#2}{{\color{#1}\vrule width 2.6pt}\hspace{6pt}\vbox{\kern4.5pt\hbox{##1}\kern4.5pt}\hspace{6pt}}}%
+  \MakeFramed{\advance\hsize-\width\FrameRestore}%
+  \panelsize\setlength{\parskip}{2.5pt}\RaggedRight
+  \setlist{itemsep=0.5pt,parsep=0pt,topsep=1pt,leftmargin=1.1em}%
+  \acepanellabel{#1}{#3}%
+}{%
+  \par\endMakeFramed\par\addvspace{4pt}}
+% The unbreakable variant, for panel pairs: lrbox + minipage, bar and tint drawn around the saved box.
+\newsavebox{\acepanelbox}
+\newlength{\acepanelinner}
+\newenvironment{acepanelfixed}[3]{%
+  \par\def\acepanelaccent{#1}\def\acepaneltint{#2}%
+  \setlength{\acepanelinner}{\dimexpr\linewidth-2.6pt-12pt\relax}%
+  \begin{lrbox}{\acepanelbox}\begin{minipage}[t]{\acepanelinner}%
+  \panelsize\setlength{\parskip}{2.5pt}\RaggedRight
+  \setlist{itemsep=0.5pt,parsep=0pt,topsep=1pt,leftmargin=1.1em}%
+  \acepanellabel{#1}{#3}%
+}{%
+  \par\end{minipage}\end{lrbox}%
+  \noindent{\setlength{\fboxsep}{0pt}\colorbox{\acepaneltint}{\hbox{%
+    {\color{\acepanelaccent}\vrule width 2.6pt}\hspace{6pt}%
+    \vtop{\kern4.5pt\copy\acepanelbox\kern4.5pt}\hspace{6pt}}}}\par}
+% Two short panels side by side: each is a minipage holding an acepanelfixed.
+\newenvironment{acepair}{\par\addvspace{4pt}\noindent\begin{minipage}[t]{\dimexpr0.5\linewidth-2.5mm\relax}}{\end{minipage}\par\addvspace{2pt}}
+\newcommand{\acepairsep}{\end{minipage}\hfill\begin{minipage}[t]{\dimexpr0.5\linewidth-2.5mm\relax}}
+
+% ---------------------------------------------------------------- code
+% ace-theory.lua wraps every code block (now only ASCII diagrams and log filters) in codepanel. Built with
+% --syntax-highlighting=none, so every block is a plain `verbatim`.
+\makeatletter
+\def\verbatim@font{\codesize\ttfamily}
+\makeatother
+\newsavebox{\acecodebox}
+\newenvironment{codepanel}{%
+  \par\addvspace{2pt}%
+  \begin{lrbox}{\acecodebox}\begin{minipage}[t]{\dimexpr\linewidth-2pt-8pt\relax}%
+  \setlength{\topsep}{0pt}\setlength{\partopsep}{0pt}\setlength{\parskip}{0pt}%
+}{%
+  \end{minipage}\end{lrbox}%
+  \noindent{\setlength{\fboxsep}{0pt}\colorbox{codebg}{\hbox{%
+    {\color{faint}\vrule width 2pt}\hspace{4pt}%
+    \vbox{\kern3pt\copy\acecodebox\kern3pt}\hspace{4pt}}}}%
+  \par\addvspace{2pt}}
+
+% ---------------------------------------------------------------- highlight
+% ==text== in the markdown. Each word is its own box so a highlight can wrap; the space between words is
+% yellow leaders glue, so the band looks continuous but the line can still break there.
+\newcommand{\hlw}[1]{{\setlength{\fboxsep}{0pt}\colorbox{hlyellow}{\strut #1}}}
+\newcommand{\hls}{{\color{hlyellow}\leaders\vrule height\ht\strutbox depth\dp\strutbox\hskip 0.27em plus 0.1em minus 0.05em}}
+
+% ---------------------------------------------------------------- tables
+% Every table is pandoc's longtable, restyled; ace-theory.lua sets the column widths and the header colour.
+\newcommand{\acetablestretch}{1.14}
+\AtBeginEnvironment{longtable}{\tablesize\renewcommand{\arraystretch}{\acetablestretch}\setlength{\tabcolsep}{4.5pt}}
+\setlength{\heavyrulewidth}{0pt}
+\setlength{\lightrulewidth}{0pt}
+\setlength{\aboverulesep}{0pt}
+\setlength{\belowrulesep}{0pt}
+\renewcommand{\bottomrule}{\arrayrulecolor{rule}\specialrule{0.6pt}{0pt}{0pt}\arrayrulecolor{black}}
+\setlength{\LTpre}{5pt}
+\setlength{\LTpost}{5pt}
+\newcommand{\thcell}{\cellcolor{teal}\color{white}\sffamily\bfseries}
+\newcommand{\thcmd}{\cellcolor{night}\color{white}\sffamily\bfseries}
+
+% ---------------------------------------------------------------- links
+\AtBeginDocument{\urlstyle{same}\hypersetup{colorlinks=true,linkcolor=ink,urlcolor=blue,citecolor=blue,pdfauthor={Aliaksandr Arashkevich},pdfsubject={Google Cloud Associate Cloud Engineer --- theory recap}}}

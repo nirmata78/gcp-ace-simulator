@@ -1,0 +1,312 @@
+#! title: The exam, the June 2026 guide, locations and tools
+#! short: Exam and tools
+
+## Part 1: how this course works
+
+= th | Google Cloud Associate Cloud Engineer · Part 1 of 10 | The exam, the June 2026 guide, locations and the tools | Ten parts. Every objective of the current exam guide, taught once, with exam-style questions after each part.
+N: Welcome. This is a full theory course for the Google Cloud Associate Cloud Engineer exam, built against the exam guide that went live on the thirtieth of June, twenty twenty-six. It is long on purpose. A thirty-minute summary of this material would be impossible to learn from, so we go slowly, one idea per slide, and every part ends with practice.
+
+= cards c3 | How to use it | Three voices, three jobs
+Teacher :: Walks every table and diagram, one idea at a time.
+grn Remember this :: A slower voice for the sentences to carry into the exam room.
+red Exam item :: Reads a question. You pause and decide. Then the explanation covers every option.
+> Slides are numbered, top right, so you can note *slide 3.27* and come back to it.
+N: You will hear three voices. I am the teacher, and I walk through every slide. Then there is this slower voice.
+V: This slower voice is for the sentences worth carrying into the exam room.
+I: And I read the exam items. When I finish, you get a few seconds of silence. Use the pause button if you need more time.
+C: And I explain the answer, including why each wrong option is wrong. That is where most of the learning happens.
+
+= table | The route | Ten parts, ordered by dependency, not by the guide's sections
+Part | Topic | Part | Topic
+**1** | Exam, locations, tools | **6** | Containers and serverless
+**2** | Organization, billing, quotas | **7** | Storage and data
+**3** | Identity and access | **8** | IaC, AI tooling, dev platforms
+**4** | Networking | **9** | Operations and observability
+**5** | Compute Engine | **10** | The last 48 hours, and a mixed mock
+N: Here is the route. The parts follow dependency, not the guide's section numbers, because you cannot understand firewall tags before identity, or Google Kubernetes Engine before networks. Part two builds the tree that everything hangs from. Part three is identity. Part four networking, then compute, containers, storage, tooling and operations. Part ten compresses everything for the final forty-eight hours, and ends with a mixed mock of questions from all sections.
+
+= panel note | A note on the questions | Original questions, written for this course
+All sample questions are written for this course from the public exam guide. They are not taken from the real exam, and they do not reproduce it.
+Facts marked *verify* on a slide change often. Check them in the current documentation before you rely on them.
+N: One note before we begin. Every question in this course is original, written from the public exam guide. None of them comes from the real exam. And where a fact changes often, such as a price or a time window, the slide tells you to verify it in the current documentation.
+
+## 1.1 The exam in numbers
+
+= tiles | The exam in numbers | What you are signing up for
+2 hours | to answer the whole paper
+50–60 | items, multiple choice and multiple select
+0 | penalty for a wrong answer, so never leave a blank
+3 years | validity of the certification
+> The cut score is not published. About 70% is the working convention.
+N: The numbers. Two hours. Fifty to sixty items, some with one correct answer and some with several. There is no penalty for a wrong answer, so never leave an item blank. The certification lasts three years. The cut score is not published. About seventy percent is the convention people work to, but treat that as folklore, not a promise.
+
+= table | Practicalities | The rest of the exam page
+Property | Standard exam | Renewal exam
+Length | 2 hours | 1 hour
+Items | 50–60 | 20
+Fee (*verify*) | $125 plus tax | $75 plus tax
+Languages | English, Japanese, Spanish, Portuguese | English, Japanese
+Delivery | Online or onsite proctored | Online or onsite proctored
+> Renewal opens 180 days before expiry. Recommended experience: 6+ months hands-on. No prerequisites.
+N: The rest of the exam page, checked against Google's site in November twenty twenty-six. The standard exam costs one hundred and twenty-five dollars plus tax, in four languages, either online proctored or at a test centre. There is also a renewal exam for people already certified: one hour, twenty items, seventy-five dollars, available from one hundred and eighty days before your certification expires. Google recommends six months of hands-on experience, but there are no formal prerequisites.
+
+= table | Time budget | About two minutes an item, in three passes
+Pass | What you do
+**1** | Answer everything you know. Flag anything that passes 90 seconds, but still pick an answer
+**2** | Return to the flagged items
+**3** | Check every multiple-select item, and every answer you changed
+N: A hundred and twenty minutes over fifty to sixty items is about two minutes each. A rhythm that works is three passes. First pass, answer everything you know, and flag anything that passes ninety seconds, but still select an answer so that nothing stays blank if time runs out. Second pass, the flagged items. Third pass, every multiple-select item, and every answer you changed.
+
+= panel trap | The instruction line | Read how many answers the item wants
+A multiple-select item says *Choose two* or *Choose three*.
+==Selecting the wrong number of answers scores zero.== So does a single answer on a two-answer item.
+N: One trap belongs here. A multiple-select item tells you how many answers it wants, in the instruction line. Selecting the wrong number scores zero for that item, and a single answer on a two-answer item also scores zero. Read the instruction line before you read the options.
+[pause: 0.8]
+
+## 1.2 The four sections, and what moved in June 2026
+
+= dia new | The structural change | Five sections became four, and operations grew
+p1-guide-shift
+N: Now the structural change, which is the reason this course exists. The old guide had five sections, weighted twenty, seventeen and a half, twenty-five, twenty and seventeen and a half. The new guide, live since the thirtieth of June twenty twenty-six, has four, weighted twenty, thirty, thirty and twenty. Planning and deploying were separate sections. They are now one section at thirty percent. And operating grew from twenty percent to thirty.
+V: Day two operations is now as heavy as building.
+[pause: 0.8]
+
+= table sm | The four sections | What each one covers
+Section | Weight | What it covers
+**1** Setting up a cloud solution environment | ~20% | Hierarchy, org policy, identities and groups, APIs, quotas, observability set-up, standalone orgs, networking set-up, locations, Asset Inventory, Workforce Identity Federation, billing
+**2** Planning and implementing a cloud solution | ~30% | Choosing and deploying compute (VMs, MIGs, GKE, serverless, agents, GPUs and TPUs), storage and data products, networking, IaC and AI-assisted tooling
+**3** Ensuring successful operation | ~30% | Day-2 work on compute, GKE, Cloud Run, storage and databases, networking, monitoring and logging, AI and developer platforms
+**4** Configuring access and security | ~20% | IAM policies and roles, inheritance, service accounts, impersonation, short-lived credentials, Workload Identity Federation
+N: Section one, about a fifth of the paper, is setting up the environment: the hierarchy, organization policy, identities, A-P-Is, quotas, the first network, billing. Section two, nearly a third, is planning and implementing, which means choosing and deploying compute, storage, data products and networking, plus infrastructure as code and A-I assisted tooling. Section three, another third, is keeping it all running. Section four, a fifth, is access and security. Notice that identity also appears in section one, so identity as a topic weighs more than twenty percent.
+
+= list new | New objectives · setup and planning | The list to check yourself against, part one
+- **Setup:** standalone organizations · setting up cloud networking · product availability by location · Asset Inventory with Gemini Cloud Assist · **Workforce Identity Federation**
+- **Compute:** Agent Runtime on Gemini Enterprise Agent Platform · Hyperdisk · **GPUs vs TPUs**
+- **Data:** Managed Service for Apache Kafka · Memorystore · Filestore, NetApp Volumes, Managed Lustre · multi-region redundancy
+- **Network:** **Cloud NGFW policies and secure tags** · Cloud Interconnect · Fabric FAST
+- **Tooling:** Gemini CLI · Google Antigravity · Gemini Cloud Assist · Application Design Center
+N: Here is what was added. If you studied from older material, this is your gap list. In setup: standalone organizations, setting up cloud networking, checking product availability by location, Cloud Asset Inventory together with Gemini Cloud Assist, and Workforce Identity Federation. In planning: Agent Runtime, Hyperdisk, and the choice between G-P-Us and T-P-Us. For data: managed Kafka, Memorystore, Filestore, NetApp Volumes and Managed Lustre. For networking: Cloud Next Generation Firewall policies with secure tags, Interconnect and Fabric FAST. And the A-I tooling: Gemini C-L-I, Google Antigravity, Gemini Cloud Assist and Application Design Center. Each of these gets a magenta badge when we reach it, so you can find it again.
+
+= list new | New objectives · operations and security | The list to check yourself against, part two
+- **GKE and traffic:** Autopilot Pod resource requests · traffic splitting across Cloud Run, functions *and GKE*
+- **AI and dev:** attaching GPUs and TPUs · deploying agents · Workbench and BigQuery notebooks · Cloud Workstations
+- **Data ops:** Database Center · **CMEK** · Query Insights and index advisor
+- **Network ops:** custom static routes · VPC Flow Logs and firewall logs · **Cloud Hub**
+- **Health and cost:** **Personalized Service Health** · Active Assist
+- **Security:** policy inheritance · Google-managed service accounts · service accounts for GKE apps · provisioning Workload Identity Federation
+N: In operations, the additions are very practical. Resource requests on Autopilot Pods. Traffic splitting that now spans Cloud Run, functions and G-K-E. Attaching accelerators and deploying agents. Workbench and BigQuery notebooks, and Cloud Workstations. Database Center, customer-managed encryption keys, Query Insights and the index advisor. Custom static routes, flow logs and firewall logs, Cloud Hub. Personalized Service Health and Active Assist. And in security: policy inheritance across the hierarchy, Google-managed service accounts, service accounts for G-K-E applications, and provisioning Workload Identity Federation.
+
+= table | What left the guide | Names that changed or disappeared
+Name | Status
+Cloud Run for Anthos, GKE Enterprise | No longer named in the guide
+Cloud Functions | Now **Cloud Run functions**
+App Engine | Not named at all, but it still exists and still appears as a distractor
+> The live guide on Google's site was compared with this course's copy on 2 November 2026: identical.
+N: And some things left. Cloud Run for Anthos and G-K-E Enterprise are no longer named. Cloud Functions is now called Cloud Run functions, so read an older question with that in mind. App Engine is not named at all, but it still exists and can appear as a wrong answer, so part six gives it one short section. I compared the live guide on Google's website with the copy this course is built on, on the second of November twenty twenty-six, and the two were identical.
+
+## 1.3 How ACE items are written
+
+= panel key | The shape of an item | A story, a requirement, four options that all work
+The exam is scenario-based. All four options work to some degree.
+It tests whether you pick **the one Google would recommend**.
+N: Before any product, learn how the items are written. Each one is a short story, a requirement, and four options that all work to some degree. So the question is rarely whether something can be done. The question is which option Google would recommend. Five preferences run through almost every item.
+
+= table | Five preferences | Almost every item is decided by one of these
+# | Preference | Means
+1 | **Managed over assembled** | A product for the job beats a VM running open-source software
+2 | **Least privilege, smallest scope** | A predefined role on one resource beats a broad role on a project
+3 | **No long-lived secrets** | Attached account, impersonation, federation beat a downloaded key
+4 | **Fewest moving parts** | One command, one object, unless a clause genuinely needs two
+5 | **Cost never beats a requirement** | "Cheapest" only decides between options that meet every clause
+N: One, managed over assembled. If a product exists for the job, the answer is that product, not a V-M running open-source software. Two, least privilege at the smallest sufficient scope. A predefined role on one resource beats a broad role on a project, and a group binding beats bindings per user. Three, no long-lived secrets. An attached service account, impersonation or federation beats a downloaded key whenever a keyless option exists. Four, the fewest moving parts that satisfy every clause. Five, cost matters, but never above a stated requirement. Cheapest only decides between options that already meet the availability, latency and compliance clauses.
+
+= panel tip | The reading habit | Find the deciding clause first
+Most stems contain one phrase that eliminates three options:
+*"without changing the application"* · *"including project owners"* · *"no key material"* · *"must survive a zone failure"* · *"scale to zero"*
+N: Now the most useful exam habit in this course. Most stems contain one phrase that eliminates three of the four options. Without changing the application. Including project owners. No key material. Must survive a zone failure. Scale to zero.
+V: Find the deciding clause first. Then check each option against it.
+[pause: 0.8]
+N: We will practise exactly this in every question set. The explanation always names the clause that decided it.
+
+## 1.4 Locations: regions, zones and what lives where
+
+= table | Vocabulary | Four words for where something lives
+Word | Means | Example
+**Region** | A geographic area | `europe-central2`, Warsaw
+**Zone** | An isolated failure domain inside a region; most regions have three | `europe-central2-a`
+**Multi-region** | A continent-scale location, for storage and analytics | `US`, `EU`, `ASIA`
+**Dual-region** | A named pair of regions, on some products | a Cloud Storage dual-region
+N: Four words. A region is a geographic area, such as europe central two, which is Warsaw. A zone is an isolated failure domain inside a region, and most regions have three. A multi-region is a continent-scale location, such as U-S or E-U, used by storage and analytics products. And some products add dual-regions, a named pair of regions.
+
+= dia | Scope | Every resource has a scope, and the scope decides what survives what
+p1-scope
+N: Every resource has a scope, and the scope decides what survives what. On the left, zonal things: V-Ms, zonal persistent disks, zonal managed instance groups, zonal clusters. They die with their zone. In the middle, regional things: subnets, regional disks, regional instance groups, Cloud SQL, Cloud Run, Cloud NAT, Cloud Router. If they are spread across zones, they survive a zone failure. On the right, global things: the V-P-C network, firewall rules, routes, images, snapshots by default, global load balancers, Cloud D-N-S, Pub/Sub topics and I-A-M. Those survive a region failure.
+
+= th | Two consequences worth holding | A VPC is <em>global</em>. Its subnets are <em>regional</em>. | Images and snapshots are global, so a disk in one zone can be recreated in any other zone or region from them.
+V: A V-P-C is global, while its subnets are regional. So one V-P-C spans every region, with no peering.
+[pause: 0.6]
+V: Images and snapshots are global. So a disk in one zone can be recreated in any other zone or region from them.
+[pause: 0.8]
+
+= cmd | Is it offered here? | Not every product exists in every region, or every zone
+Question | Command
+Which zones exist, and are they up? | gcloud compute zones list
+Is this machine type offered in the zone? | gcloud compute machine-types list --zones=ZONE
+Is this GPU offered in the zone? | gcloud compute accelerator-types list --filter="zone:ZONE"
+> The documentation answer: the Cloud locations page, and each product's locations page.
+N: Not every product, machine series, G-P-U or T-P-U type exists in every region, and within a region, not in every zone. The exam frames this as, the deployment failed in zone X, or which regions can host this workload. On the command line, you ask the catalogue: zones list, machine types list, accelerator types list. In the documentation, the answer is the Cloud locations page, and each product's own locations page.
+
+= dia new | Easy to confuse | Available versus allowed
+p1-available
+N: And now a distinction the exam likes. Is the A-three machine series offered in this zone? That is a catalogue question, answered by machine types list or accelerator types list. Make sure nobody can create resources outside the E-U? That is a governance question, answered by the organization policy constraint G-C-P dot resource locations. Neither one answers the other. A catalogue listing does not stop anyone. And a policy does not make a machine type exist.
+
+## 1.5 The interfaces: Console, gcloud, Cloud Shell, SDKs
+
+= table | The interfaces | Which tool is the answer for what
+Interface | Use it for
+Google Cloud console | Point and click; every Gemini Cloud Assist panel appears here
+`gcloud` | The CLI for almost every service
+`gcloud storage` | Cloud Storage. **Replaces `gsutil`**: prefer it in any new answer
+`bq` | BigQuery
+`kubectl` | Kubernetes objects **inside** a cluster, never to create the cluster itself
+`cbt` | Bigtable data-plane operations
+N: The interfaces. The console for point and click. gcloud is the command line for almost everything. For Cloud Storage, gcloud storage replaces gsutil, so prefer it in any new answer. bq is for BigQuery. kubectl manages Kubernetes objects inside a cluster, and it never creates the cluster itself. That job belongs to gcloud container clusters create. And cbt is for Bigtable data operations. Beyond those, Cloud Shell gives you a browser terminal with all of these already installed and authenticated, and client libraries are what your application code uses.
+
+= code | gcloud grammar | The grammar is regular, so you can read commands you have never seen
+gcloud [GROUP] [SUBGROUP] VERB NAME --flags
+
+gcloud compute instances create vm1 --zone=europe-central2-a
+gcloud compute instances list --format="table(name,zone)" --filter="zone:europe-*"
+
+gcloud beta projects move P --folder=FOLDER_ID
+> `--format` shapes the output. `--filter` selects. `beta` and `alpha` are release tracks, not typos.
+N: The grammar is regular, which helps when an option shows a command you have never typed. gcloud, then a group, sometimes a subgroup, then a verb, a name and flags. Scope is expressed with dash dash zone, dash dash region or dash dash global, and newer groups use dash dash location. Two flags work almost everywhere: dash dash format shapes the output, and dash dash filter selects what is returned. gcloud beta and gcloud alpha are release tracks, not typos. Some commands exist only there, such as beta projects move. Exam options sometimes drop the prefix, so judge the verb and the flags, not the track.
+
+= cmd | Configurations | A named bundle of account, project, region and zone
+Task | Command
+First-time set-up | gcloud init
+Create a named context | gcloud config configurations create prod
+Switch context in one command | gcloud config configurations activate prod
+Default project | gcloud config set project P
+Default region | gcloud config set compute/region R
+Add kubectl to a local SDK | gcloud components install kubectl
+N: A configuration is a named bundle of properties: an account, a project, a default region and zone. It is the answer to, switch between work contexts in one command. You create one with gcloud config configurations create, and you switch with gcloud config configurations activate. If an item asks how to move between production and development without retyping flags, this is it. Setting a default project or region is a separate verb: gcloud config set.
+
+= dia | Easy to confuse | Three clients, three sets of credentials
+p1-three-clients
+N: Here is a distinction that catches people. gcloud auth login gives your credentials to the gcloud command line. gcloud auth application-default login is different: it writes Application Default Credentials, which client libraries pick up, meaning your own code. And the Docker daemon is a third client, which you connect with gcloud auth configure-docker.
+V: A program that cannot find default credentials, on a laptop where gcloud works fine, needs application-default login.
+[pause: 0.8]
+
+= table | Cloud Shell | A small VM per user, and only one thing survives
+Property | Value
+What it is | A small VM, provisioned per user on demand, reached from the console
+Persistent storage | **5 GB mounted at `$HOME`**, the only thing that survives
+Everything else | Ephemeral: packages outside `$HOME` vanish when the VM is recycled
+Keeping tools | Install into `$HOME`, or re-install at start from `~/.customize_environment`
+Pre-installed | `gcloud`, `kubectl`, `docker`, `terraform`, `helm`, runtimes, an editor, web preview
+> *Verify:* an unused home disk is eventually deleted.
+N: Cloud Shell is a small V-M, created for you on demand, reached from the console. It has five gigabytes of persistent storage mounted at your home directory, and that is the only thing that survives. Everything else is temporary. If you install a package outside home, it disappears when the V-M is recycled. To keep tools, install them into home, or reinstall them at start from a file called dot customize environment, in your home directory. The session ends after idle time, and an unused home disk is eventually deleted.
+V: Only the home directory persists. That is the whole Cloud Shell topic.
+[pause: 0.6]
+N: Options that claim the V-M is permanently yours, that nothing persists, or that system paths like user local bin persist, are each a near miss of that one fact.
+
+## 1.6 Part 1 recall card
+
+= table | Recall card, 1 of 2 | Answer aloud before the voice does
+Prompt | Answer
+The four sections and weights | Setup 20 · Plan & implement 30 · Operate 30 · Security 20
+A VPC is ... ; a subnet is ... | Global ; regional
+Recreate a disk in another region | From a **snapshot** or **image**, both global
+Is GPU type X offered in this zone? | `gcloud compute accelerator-types list`
+Stop anyone creating resources outside the EU | `gcp.resourceLocations` org policy
+N: The recall card. Try to answer before I do. The four sections and weights: setup twenty, plan and implement thirty, operate thirty, security twenty. A V-P-C is global, and a subnet is regional. To recreate a disk in another region, use a snapshot or an image, because both are global. Is a G-P-U type offered in this zone? Accelerator types list. Stop anyone creating resources outside the E-U: the G-C-P dot resource locations organization policy.
+
+= table | Recall card, 2 of 2 | Answer aloud before the voice does
+Prompt | Answer
+Switch account + project + region in one command | `gcloud config configurations activate NAME`
+Library code cannot find credentials on a laptop | `gcloud auth application-default login`
+What survives a Cloud Shell recycle | **`$HOME`** (5 GB)
+Cloud Storage CLI | `gcloud storage` (not `gsutil`)
+Multiple-select: wrong number of answers | Scores zero
+N: Switch account, project and region in one command: gcloud config configurations activate. Library code cannot find credentials on a laptop: application-default login. What survives a Cloud Shell recycle: the home directory, five gigabytes. The Cloud Storage command line: gcloud storage, not gsutil. And choosing the wrong number of answers on a multiple-select item scores zero.
+
+## Part 1 sample questions
+
+= th | Part 1 · practice | Six exam-style questions | Listen to the item, use the silence, and name the deciding clause before the answer appears.
+N: Now the practice. Six questions. After each one, you get a few seconds of silence. Pause the video if you want longer. Try to name the phrase in the stem that decides the question, not only the letter.
+
+= q | A team's deployment fails: the chosen GPU type is not offered in `europe-west3-b`. They want to find out, from the command line, whether that GPU type exists in that zone before retrying. What should they use?
+(A) `gcloud compute accelerator-types list` with a zone filter
+(B) An organization policy on `gcp.resourceLocations`
+(C) `gcloud services list --enabled`
+(D) A quota increase request for GPUs in that region
+ans A
+why A :: "Exists in that zone" is a catalogue question.
+why B :: A policy controls what is allowed, not what exists.
+why C :: Shows enabled APIs, not hardware in a zone.
+why D :: A quota cannot create a GPU type a zone does not offer.
+C: The answer is A. The deciding clause is whether that G-P-U type exists in that zone. That is a catalogue question, so you ask the catalogue. B is the classic confusion of available and allowed. The resource locations policy decides what is permitted, and it cannot make hardware appear. C lists enabled A-P-Is, which is a different failure shape. D is tempting because G-P-Us do have quotas, but a quota error reads differently, and no quota creates a machine type that a zone does not offer.
+
+= q | A compliance team requires that **nobody**, including project owners, can create resources outside the EU. What should you do?
+(A) Ask every project owner to set `compute/region` to an EU region in their configuration
+(B) Set the `gcp.resourceLocations` organization policy on the organization
+(C) Review the Cloud locations page each quarter
+(D) Create a budget scoped to non-EU regions with an email alert
+ans B
+why A :: A local CLI default binds nobody.
+why B :: An org policy restricts everyone, owners included.
+why C :: Documentation shows availability and enforces nothing.
+why D :: A budget notifies after the fact, and stops nothing.
+C: The answer is B. There are two deciding clauses: nobody, and including project owners. Whenever you read those words, think organization policy. A is a local command-line default on one person's machine, so it enforces nothing. C reads documentation, which tells you what is available, not what is permitted. D is a budget, and we will see in part two that a budget notifies and never stops anything.
+
+= q | A developer's Python program fails on their laptop with *"could not find default credentials"*, though `gcloud compute instances list` works fine in the same terminal. What is the simplest secure fix?
+(A) Create a service-account key and set `GOOGLE_APPLICATION_CREDENTIALS`
+(B) Run `gcloud auth login` again
+(C) Run `gcloud auth application-default login`
+(D) Run `gcloud config configurations activate default`
+ans C
+why A :: It works, but creates a long-lived secret when a keyless option exists.
+why B :: This gives credentials to the CLI, which already has them.
+why C :: Writes the credentials that client libraries look for.
+why D :: Switches CLI context; it does not write ADC.
+C: The answer is C. The stem tells you gcloud already works, so the command line is authenticated, and only the client library is failing. Client libraries read Application Default Credentials, and application-default login writes them. A would also work, which is why it is dangerous. It creates a long-lived key, and we prefer no long-lived secrets. B repeats what already works. D changes the gcloud context and writes no credentials.
+
+= q | You install a custom tool in `/usr/local/bin` in Cloud Shell. Next week the tool is gone. You want it available in every session with the least effort. What should you do?
+(A) Reinstall it from `~/.customize_environment`, which runs when the VM starts
+(B) Increase the Cloud Shell disk quota
+(C) Attach a persistent disk to the Cloud Shell VM
+(D) Create an image of the Cloud Shell VM
+ans A
+why A :: `$HOME` persists, including this start-up script.
+why B :: Disk size is not the problem.
+why C :: You do not manage disks on the Cloud Shell VM.
+why D :: You cannot image a VM that Google recycles for you.
+C: The answer is A. Only the home directory persists, and the customize environment file lives in home and runs at start. So the tool comes back automatically. Installing the tool directly into home would also work, but it is not offered here. B misreads the symptom, because the tool was lost to a recycle, not to lack of space. C and D treat Cloud Shell as your own V-M. It is not. It is provisioned for you and recycled.
+
+= q | A VM in `us-central1-a` runs from a zonal persistent disk. You must recreate it in `europe-west1-b` with the same data, with the fewest steps. What should you do?
+(A) Move the disk with a Shared VPC
+(B) Create a snapshot of the disk, then create a disk from the snapshot in the new zone
+(C) Peer the two regions' subnets, then attach the disk to a new VM
+(D) Use Cloud Interconnect between the regions
+ans B
+why A :: Shared VPC shares networks, not disks.
+why B :: Snapshots are global, so they restore in any zone.
+why C :: A zonal disk attaches only in its own zone, whatever the network.
+why D :: Interconnect links on-premises to Google, not regions.
+C: The answer is B. The fact being tested is that snapshots and images are global. So you snapshot the disk in the first region, then create a new disk from that snapshot in the other. A and C are networking answers to a storage question. Even with perfect connectivity, a zonal disk attaches only to V-Ms in its own zone. And D is hybrid connectivity between your data centre and Google, which has nothing to do with this.
+
+= q | You work on three clients, each with its own account and project. You switch several times a day and keep deploying to the wrong one by mistake. What should you do?
+(A) Add `--project` and `--account` to every command you run
+(B) Create one gcloud configuration per client, and activate the one you need
+(C) Use a separate laptop user for each client
+(D) Run `gcloud init` each time you switch
+ans B
+why A :: It works, but this is the error-prone habit that causes the mistake.
+why B :: One command swaps account, project and region together.
+why C :: Heavy, and not a gcloud feature.
+why D :: Re-runs the interactive set-up every time.
+C: The answer is B. The deciding phrase is that you switch several times a day. A named configuration bundles the account, the project and the default region, and activate swaps them all in one command. A works, but relying on remembering flags is the source of the mistake. C is heavy and unrelated. And D is the first-time set-up, not a way to switch.
+
+= th | End of Part 1 | Next: the tree that everything hangs from | Part 2 covers the organization, folders and projects, billing, budgets, quotas and Cloud Asset Inventory.
+N: That is part one. You now know how the paper is built, what changed in June twenty twenty-six, how items are written, and where resources live. Next, part two: the resource tree that everything hangs from, and who pays for it.
