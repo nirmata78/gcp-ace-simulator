@@ -1,0 +1,475 @@
+#! title: Compute Engine
+#! short: Compute Engine
+
+## Part 5: Compute Engine
+
+= th | Google Cloud Associate Cloud Engineer · Part 5 of 10 | Choosing compute, then running it well | Machine families, disks, SSH, snapshots and images, managed instance groups, GPUs and TPUs.
+N: Part five, Compute Engine. We begin with the one decision the exam keeps returning to: which compute service. Then machine families, provisioning models, disks, connecting, images, instance groups, and accelerators.
+
+## 5.1 Choosing compute: the whole landscape
+
+= dia | The decision tree | Read top to bottom, and take the first exit that fits
+p5-compute-tree
+N: Read this top to bottom, and take the first exit that fits. Is it an A-I agent you want hosted, with sessions, memory and scaling managed for you? Then Agent Runtime. Otherwise, is it a container, or can it be one? If not, because you need the O-S, kernel modules, licensed software, lift and shift, or Windows, then a Compute Engine V-M, with a managed instance group to scale and heal. If it is a container, is it request or event driven and stateless? Then Cloud Run: a service for requests, a job for run-to-completion, a function for one small handler per event. If not, do you need Kubernetes, such as operators, stateful sets, daemon sets, Helm or a mesh? Then G-K-E, on Autopilot where Google runs the nodes, or Standard when you need node-level control.
+
+= table | Stem language, 1 of 2 | The words that point at the answer
+Stem language | Points at
+"scale to zero", "pay nothing when idle", "spiky HTTP" | **Cloud Run**
+"one function per upload, message or event" | **Cloud Run functions**, with Eventarc
+"already on Kubernetes", "Helm", "operators", "DaemonSet" | **GKE**
+"do not want to manage nodes, upgrades or node pools" | **GKE Autopilot**
+N: The stems use recognisable language. Scale to zero, pay nothing when idle, spiky H-T-T-P traffic: Cloud Run. One function per upload, message or event: Cloud Run functions, with Eventarc. Already on Kubernetes, Helm charts, operators, daemon set: G-K-E. Do not want to manage nodes, upgrades or node pools: G-K-E Autopilot.
+
+= table | Stem language, 2 of 2 | The words that point at the answer
+Stem language | Points at
+"specific OS or kernel", "licensed", "lift and shift", "Windows Server" | **Compute Engine**
+"batch job that runs to completion" | **Cloud Run jobs**, or Batch on Compute Engine
+"deploy our LangGraph or ADK agent, managed sessions and memory" | **Agent Runtime**
+"train a large model", "matrix maths at scale" | **GPUs** or **TPUs**
+N: A specific O-S or kernel, licensed software, lift and shift, Windows Server: Compute Engine. A batch job that runs to completion: Cloud Run jobs, or Batch on Compute Engine. Deploy our LangGraph or A-D-K agent, with managed sessions and memory: Agent Runtime. Train a large model, or matrix maths at scale: G-P-Us or T-P-Us.
+
+= panel trap | Scale-to-zero distractors | Only these idle to zero cost
+A **GKE Standard** cluster with an HPA scales **Pods**, but the nodes keep running and billing.
+A **MIG** scaling on CPU needs running VMs to measure.
+App Engine **flexible** keeps at least one instance.
+Only **Cloud Run, Cloud Run functions** (and App Engine standard) idle to zero cost.
+N: Watch for scale to zero distractors. A G-K-E Standard cluster with a Horizontal Pod Autoscaler scales Pods, but the nodes keep running and billing. A managed instance group scaling on C-P-U needs running V-Ms to measure. App Engine flexible keeps at least one instance. Only Cloud Run, Cloud Run functions and App Engine standard idle to zero cost.
+
+## 5.2 Machine families, custom types and provisioning models
+
+= table sm | Machine families | The exam tests the category, not model numbers
+Family | Series (*verify* the catalogue) | Use
+**General purpose** | E2, N2, N2D, N4, C3, C4, Arm-based C4A and T2A, Tau T2D | Most workloads; E2 for the cheapest
+**Compute-optimised** | C2, C2D, H3 | High clock, HPC, game servers
+**Memory-optimised** | M1, M2, M3, X4 | SAP HANA, very large in-memory databases
+**Storage-optimised** | Z3 | Very high local-SSD density
+**Accelerator-optimised** | A2, A3, A4, G2 | ML training, inference, graphics
+> *"4 TB of RAM in one VM"*: memory-optimised. *"Cheapest possible dev box"*: E2.
+N: Five machine families, and the exam tests the category, not model numbers. General purpose suits most workloads, with E2 as the cheapest general V-M. Compute-optimised gives high clock speed, for H-P-C and game servers. Memory-optimised is for SAP HANA and very large in-memory databases. Storage-optimised gives very high local S-S-D density. Accelerator-optimised is for machine learning and graphics. So four terabytes of memory in one V-M is memory-optimised, and the cheapest possible development box is E2.
+
+= panel key | Custom machine types | vCPU and memory set independently
+On E2, N2, N2D, N4 and N1, among others. The answer to *"6 vCPUs and 40 GB; every predefined shape wastes one or the other"*.
+**Extended memory** goes beyond the normal memory-per-vCPU ceiling.
+N: Custom machine types set V-C-P-U and memory independently, on E2, N2 and others. That is the answer to, six V-C-P-Us and forty gigabytes, where every predefined shape wastes one or the other. Extended memory goes beyond the normal memory-per-V-C-P-U ceiling.
+
+= table sm | Provisioning models | Discount against the catch
+Model | Discount | Catch | Right for
+**Standard** | None | None | Default
+**Spot VMs** | Large, 60–91% (*verify*) | **Preempted any time, ~30 s notice**; no SLA; no live migration; **no maximum runtime** | Fault-tolerant, checkpointing batch, CI, rendering
+Preemptible (legacy) | Large | Also **capped at 24 hours** | Superseded by Spot
+Committed use | Up to ~55–70% (*verify*) | 1 or 3 years, billed regardless | Steady 24×7
+Sole-tenant nodes | Premium | Most expensive | Physical isolation, licence rules
+N: Provisioning models. Spot V-Ms give a large discount, but they can be preempted at any time, with about thirty seconds notice, no service level agreement and no live migration. They have no maximum runtime. They suit fault-tolerant, checkpointing batch work, C-I runners and rendering. Preemptible V-Ms are the legacy version, also capped at twenty-four hours, so just recognise the name. Committed use is one or three years, billed regardless. Sole-tenant nodes are the most expensive, for physical isolation and licence rules.
+
+= cmd | Spot in practice | Stopped or deleted, your choice
+Task | Command
+Custom shape on a Spot VM | gcloud compute instances create render-1 --machine-type=n2-custom-6-40960 --provisioning-model=SPOT --instance-termination-action=DELETE
+> On preemption, a shutdown script gets the notice period to checkpoint. In a MIG, preempted VMs come back when capacity returns.
+N: Read the command. N2 custom six forty nine sixty means six V-C-P-Us with forty gigabytes, in megabytes. Provisioning model Spot. Instance termination action delete, or stop if you want to keep the disks for a later restart. On preemption, a shutdown script gets the notice period to checkpoint. In a managed instance group, preempted V-Ms are recreated when capacity returns.
+
+## 5.3 Launching an instance
+
+= table sm | Launch flags | What each family of flags controls
+Flag family | Controls
+`--image-family` + `--image-project` | Boots the **latest non-deprecated** image in a family
+Disks | Boot disk type and size; extra disks
+Network | Subnet, `--no-address` for no external IP, network tags
+Identity | Service account and scopes
+**Metadata** | `startup-script`, `shutdown-script`, `enable-oslogin`, `ssh-keys`
+**Availability policy** | `--maintenance-policy=MIGRATE` or `TERMINATE`; `--restart-on-failure`
+Protection | `--deletion-protection`; Shielded VM; Confidential VM
+N: When you launch an instance, the flags fall into families. Image family and image project boot the latest non-deprecated image in a family. Then disks, network, and identity. Metadata holds key-values read by the guest, including startup and shutdown scripts. Availability policy decides what happens on host maintenance. And protection includes deletion protection, Shielded V-M with secure boot, and Confidential V-M, which encrypts memory in use.
+
+= panel key | The availability policy | Two settings
+*On host maintenance:* **MIGRATE** keeps the VM running by moving it, the default. **TERMINATE** stops it.
+*Automatic restart:* brings the VM back if the host fails.
+==GPU VMs must use TERMINATE==, since they cannot live-migrate. Spot VMs always terminate, and never auto-restart.
+N: The availability policy is two settings. On host maintenance: migrate keeps the V-M running by moving it to another host, and that is the default. Terminate stops it. Automatic restart brings the V-M back if the host fails.
+V: G-P-U V-Ms must use terminate, because they cannot live-migrate.
+[pause: 0.6]
+N: And Spot V-Ms always terminate, and never auto-restart.
+
+= table | Changing a VM | What needs a stop, and what does not
+Change | Needs a stop?
+Machine type, service account, scopes | **Yes**
+Attach a disk | No
+Labels, tags, metadata | No
+A **stopped** VM | Keeps its disks, which are billed; loses an ephemeral external IP
+A **suspended** VM | Also keeps its memory state
+N: What needs a stop? The machine type, the service account and the scopes can be changed only while the V-M is stopped. Disks can be attached live, and labels, tags and metadata change live. A stopped V-M keeps its disks, which you still pay for, and it loses an ephemeral external address. A suspended V-M also keeps its memory state.
+
+## 5.4 Disks: Persistent Disk, Hyperdisk and Local SSD
+
+= table sm | Disk types | Network block storage, and one that is not
+Type | Nature | Notes
+**pd-balanced** | SSD-backed | Good default
+**pd-ssd** | Higher IOPS per GB | Databases on older series
+**pd-standard** | HDD-backed | Cheapest, sequential throughput
+**Hyperdisk Balanced, Throughput, Extreme** | **IOPS and throughput provisioned independently of size** | Newest series (C4, N4) support **only** Hyperdisk (*verify*)
+**Hyperdisk ML** | Read-only, **many VMs at once** | Serving model weights to a fleet
+**Local SSD** | Physically attached, 375 GB partitions | **Fastest, ephemeral**
+N: Disk types. Balanced persistent disk is the good default. S-S-D persistent disk gives higher I-O operations per gigabyte, and standard persistent disk is the cheapest, backed by hard drives. New in the guide: Hyperdisk, in Balanced, Throughput and Extreme, where performance is provisioned independently of size. Remember that the newest machine series, such as C4 and N4, support only Hyperdisk. Hyperdisk ML is read-only and attaches to many V-Ms at once, for serving model weights. And Local S-S-D is physically attached, the fastest of all, and ephemeral.
+
+= dia | What survives what | Four kinds of durability
+p5-disk-survive
+N: Now compare what each one survives, from left to right. Local S-S-D survives a reboot or live migration, but its data is lost when the V-M stops or is deleted. A zonal disk lives in one zone, and attaches only to V-Ms in that zone. A regional disk, or Hyperdisk Balanced High Availability, is synchronously replicated across two zones, so it survives a zone failure, and you force-attach it to a standby V-M. A snapshot is backup, which you can restore anywhere, but it is a point in time.
+V: Regional disks are high availability. Snapshots are backup.
+[pause: 0.6]
+N: So survive a zone failure with no data loss, for a single-V-M database, is a regional disk, and not a snapshot schedule.
+
+= cmd | Disk rules and commands | Up, never down
+Task | Command
+Grow a disk, never shrink | gcloud compute disks resize data-2 --zone=Z --size=1TB
+Attach an existing disk | gcloud compute instances attach-disk web-1 --disk=data-2 --zone=Z
+Regional disk, two zones | gcloud compute disks create db-ha --region=R --replica-zones=R-a,R-b --type=pd-balanced
+>! Local SSD plus a durability requirement is always wrong. Grow the file system inside the guest after a resize.
+N: Four rules of thumb. Disks can be resized up, never down, while attached, and you then grow the file system inside the guest. Local S-S-D plus a durability requirement is always wrong, as it is for scratch and caches. Regional disks are high availability, and snapshots are backup. And zonal disks attach only to V-Ms in their zone, so to move one, snapshot it and create a disk elsewhere.
+
+## 5.5 Connecting to instances: SSH keys, OS Login, IAP
+
+= table | Two ways SSH is authorised | Metadata keys, or IAM
+Method | Access is | Revoke by | Choose when
+**Metadata SSH keys** | Public keys in project or instance metadata | Removing the key | Small, informal set-ups
+**OS Login** | Linux accounts **tied to Google identities**, granted by an **IAM role** | Removing the role, or suspending the user | **The recommended answer** for teams
+N: Two ways Linux S-S-H access is authorized. Metadata S-S-H keys are public keys placed in project-wide or instance metadata. You revoke by removing the key from metadata, which suits small set-ups. OS Login ties Linux accounts to Google identities, so access is an I-A-M role. You revoke by removing the role, or by suspending the user. That is the recommended answer for teams.
+
+= table | OS Login roles | Access is pure IAM
+Role | Grants
+`roles/compute.osLogin` | SSH as a normal user
+`roles/compute.osAdminLogin` | SSH with **sudo**
+`roles/iam.serviceAccountUser` on the VM's account | Also needed when the VM runs as a service account
+`roles/compute.osLoginExternalUser`, on the org | Users from **outside** your organization
+> Enable with metadata `enable-oslogin=TRUE`, enforce with `compute.requireOsLogin`, add `enable-oslogin-2fa=TRUE` for two-step.
+N: OS Login is enabled with the metadata key enable O-S login, on a project or instance, or enforced org-wide with the require O-S login constraint. Then access is pure I-A-M. Compute O-S Login gives S-S-H as a normal user. Compute O-S Admin Login gives S-S-H with sudo. Service Account User on the V-M's account is also needed when the V-M runs as a service account. And users outside your organization need the external user role on the organization. O-S Login is Linux only, as Windows uses R-D-P, with a password from gcloud compute reset windows password.
+
+= panel trap | Project-wide keys | They reach every VM that does not block them
+*"A contractor's key must work on one VM only"*:
+an instance-level key with `block-project-ssh-keys=TRUE`,
+or better, **OS Login with an IAM binding on that one instance**.
+N: A trap on keys. Project-wide S-S-H keys reach every V-M in the project that does not block them. So a contractor's key that must work on one V-M only needs an instance-level key, with block project S-S-H keys set to true. Or better, O-S Login with an I-A-M binding on that one instance.
+
+= dia | No external IP | SSH through Identity-Aware Proxy
+p5-iap
+N: How do you reach a V-M with no external address? Follow the sequence. One, the engineer runs gcloud compute ssh, dash dash tunnel through I-A-P. Identity-Aware Proxy checks that the engineer holds the tunnel resource accessor role. Two, the highlighted message: I-A-P connects from a specific range, thirty-five dot two three five dot two four zero dot zero, slash twenty, to port twenty-two. Three, your firewall rule must allow that range. Then O-S Login checks the user's role. Finally, a shell, with no bastion and no public address.
+
+= table | Reaching a VM | The other mechanisms
+Mechanism | Needs
+**IAP TCP forwarding** | Firewall allowing **`35.235.240.0/20`** on 22 or 3389; **`roles/iap.tunnelResourceAccessor`**
+Bastion host | A VM with an external IP you harden and patch: the assembled alternative
+VPN or Interconnect | A private path from on-premises
+**Serial console** | Boot problems, broken networking: `gcloud compute connect-to-serial-port vm`
+> *"No public IP, per-user authorisation, no bastion"*: **IAP + OS Login**. *"VM will not boot"*: **serial console**.
+N: The alternatives. A bastion host is a V-M with an external address that you harden and patch, which is the assembled alternative. V-P-N or Interconnect gives a private path from on-premises. And the serial console is for boot problems and broken networking, enabled with the serial port enable metadata key. So no public address, per-user authorization, and no bastion: I-A-P with O-S Login. The V-M does not boot, or S-S-H daemon is dead: the serial console.
+
+## 5.6 Inventory and VM Manager
+
+= table sm | VM Manager | A fleet of VMs, driven by the OS Config agent
+Component | Does
+**OS inventory management** | Collects packages, OS version, available updates; exported to Asset Inventory
+**Patch management** | **Patch jobs** (now) and **patch deployments** (scheduled), with filters, pre and post scripts, a **rollout** with a **disruption budget**, and **compliance** reporting
+**OS policies** | Declare desired state: packages, files, services, scripts. The agent enforces it
+> Enable the OS Config API, and metadata `enable-osconfig=TRUE`.
+N: A project-level list is gcloud compute instances list. Across projects, that is Cloud Asset Inventory. V-M Manager is the suite for running a fleet, driven by the O-S Config agent, pre-installed in most Google public images. You enable it with the O-S Config A-P-I, and the enable O-S config metadata key. O-S inventory management collects installed packages and available updates. Patch management runs patch jobs now, and patch deployments on a schedule, filtered by labels or zones, with a rollout whose disruption budget caps how many V-Ms patch at once, and compliance reporting. And O-S policies declare the desired state, which the agent enforces.
+
+= panel tip | How to spot it | Fleet stems
+*"Patch 400 Linux VMs every Sunday, and report which are non-compliant"*: **patch deployment**.
+*"Make sure the Ops Agent is installed on every VM labelled `env=prod`"*: an **OS policy assignment**.
+A cron job on each VM is the assembled distractor.
+N: Patch four hundred Linux V-Ms every Sunday, and report which are non-compliant: a V-M Manager patch deployment. Make sure the Ops Agent is installed on every V-M labelled production: an O-S policy assignment. A cron job on each V-M is the assembled distractor.
+
+## 5.7 Snapshots, images and machine images
+
+= dia | Four artefacts | What each one captures
+p5-artefacts
+V: Snapshot: one disk's data. Image: one bootable disk. Machine image: the whole V-M. Template: a recipe.
+[pause: 0.8]
+N: Walk through them. A snapshot captures one disk's data, incrementally, and you use it to back up or clone that disk, in any zone or region. A custom image captures one disk as a bootable image, and boots new V-Ms from a golden state. It is what an instance template references. A machine image captures all of a V-M's disks plus its configuration: machine type, metadata, labels, tags, network and service account. Use it to clone, back up or move a whole V-M. An instance template is only a specification, with no data, which tells a managed instance group what to create.
+
+= list | Snapshots | The details the exam uses
+- **Incremental:** the first is full; deleting one never breaks the others
+- Stored multi-regionally or regionally, so a disk can be created anywhere
+- **Snapshot schedules:** resource policies on disks, with retention. A cron job is the distractor
+- **Archive snapshots** cost less to store, more to restore
+- **Instant snapshots:** fast, in-place rollback, **not** a backup, since they live with the disk
+- For application consistency, quiesce the application, or use **VSS** on Windows
+N: Snapshot details. They are incremental. The first is full, later ones store changed blocks, and deleting one never breaks the others. Snapshot schedules are resource policies attached to disks, with retention. They are the managed answer to, back up these disks nightly and keep fourteen days. Archive snapshots cost less to store and more to restore. Instant snapshots are fast, in-place copies for rollback, and not a backup, since they live with the disk. And for application consistency, quiesce the application, or use V-S-S on Windows.
+
+= list | Images | Families, deprecation, sharing, golden images
+- **Image families** point at the newest non-deprecated image
+- Build `hardened-v7`, add it to family `hardened`: every template using the family picks it up
+- **Deprecation states:** `DEPRECATED` (warn), `OBSOLETE` (no new use), `DELETED`
+- **Share** across projects: `roles/compute.imageUser` on the image project
+- **Golden image:** *"boot already hardened, no configuration at start-up"*. A startup script can fail
+N: Images. An image family points at the newest non-deprecated image. So build hardened v-seven, add it to the family hardened, and every template using the family picks it up. Deprecation states are deprecated, obsolete and deleted. Share images across projects by granting Compute Image User on the image project. And the golden image pattern: every V-M must boot already hardened, with no configuration step at start-up. You bake a custom image, because a startup script is configuration at boot, and it can fail.
+
+= cmd sm | Commands | Schedule, restore, bake, capture
+Task | Command
+Nightly snapshots, kept 14 days | gcloud compute resource-policies create snapshot-schedule nightly --region=R --daily-schedule --start-time=02:00 --max-retention-days=14
+Attach the schedule to a disk | gcloud compute disks add-resource-policies data-2 --resource-policies=nightly --zone=Z
+Restore a snapshot elsewhere | gcloud compute disks create data-2-copy --source-snapshot=snap-1 --zone=Z2
+Custom image in a family | gcloud compute images create hardened-v7 --source-disk=golden --source-disk-zone=Z --family=hardened
+Whole VM | gcloud compute machine-images create web-1-mi --source-instance=web-1 --source-instance-zone=Z
+N: The commands read as you would expect. A snapshot schedule is a resource policy, which you create and then attach to a disk. A disk restores with source snapshot, and notice that the zone can be different. An image is created with a family. And a machine image takes a source instance.
+
+= panel trap | The whole VM | Three disks and configuration, fewest steps
+*"Recreate this VM, with all three data disks and its configuration, in another zone, fewest steps"* is a **machine image**.
+Three snapshots move the data, but lose the machine type, metadata, tags and service account. A custom image contains only one disk.
+N: A trap to know. Recreate this V-M, with all three data disks and its configuration, in another zone, with the fewest steps. That is a machine image. Three snapshots move the data, but lose the machine type, metadata, tags and service account. And a custom image contains only one disk.
+
+## 5.8 Instance templates and managed instance groups
+
+= th | Instance templates | A template is <em>immutable</em> | To change what a group creates, make a new template, and roll it out. Templates are global or regional.
+V: An instance template is immutable. To change what a group creates, make a new template, and roll it out.
+[pause: 0.6]
+
+= table | Managed or unmanaged | Almost always managed
+Property | Managed (MIG) | Unmanaged
+Instances | Identical, **from a template** | Any VMs you add by hand
+Autoscaling, autohealing, rolling updates | **Yes** | No
+Use | Almost everything | Load-balancing a mixed legacy set
+Zonal or regional | **Regional MIGs** spread across zones, three by default | Not applicable
+N: A managed instance group, or MIG, holds identical V-Ms from a template, with autoscaling, autohealing and rolling updates. An unmanaged group holds any V-Ms you add by hand, with none of those features. It only suits load-balancing a mixed legacy set. A zonal MIG keeps all its V-Ms in one zone. A regional MIG spreads them across zones, three by default, and survives a zone outage. That is the answer to must stay up if a zone fails.
+
+= dia | Four features | Each one solves a different problem
+p5-mig-features
+N: Four MIG features, and each solves a different problem. Autohealing, with a health check on the MIG: the V-M is up, but the application is broken, and the MIG recreates it. Autoscaling: not enough or too much capacity, so it changes the count. Rolling updates: rolling a new template out without an outage. Regional distribution: surviving a zone failure. And the red note.
+V: A load balancer's health check only stops sending traffic. The MIG's autohealing check recreates the V-M.
+[pause: 0.6]
+N: The broken V-M would otherwise keep running forever. Give autohealing an initial delay long enough for boot, or it will kill instances in a loop.
+
+= table | Autoscaling | Signals and controls
+Signal | Example
+**CPU utilisation** | Target 60% average
+**Load-balancing serving capacity** | Utilisation or RPS per instance behind an HTTP(S) LB
+**Cloud Monitoring metric** | Per-instance or per-group, e.g. Pub/Sub backlog
+**Schedules** | Scale up at 08:00 on weekdays
+> Also: min and max replicas, **initialisation period**, **scale-in controls**, **predictive** autoscaling.
+N: Autoscaling signals. C-P-U utilization, such as a target of sixty percent. Load balancing serving capacity. A Cloud Monitoring metric, such as Pub/Sub backlog per instance. And schedules, such as scale up at eight on weekdays. Other controls: minimum and maximum replicas, the initialization period, which is how long a new V-M is ignored while it warms up, scale-in controls, which limit how fast it shrinks, and predictive autoscaling for C-P-U patterns.
+
+= dia | Updating a group | A canary, then a full rollout with no capacity loss
+p5-rolling
+N: Now a rollout, step by step. One, you start an update, with a canary version at twenty percent. Two, the MIG creates twenty percent of the group from template version two. Three, those V-Ms pass health checks, and receive traffic. You watch the errors. Four, highlighted, you start the full update, with max surge three and max unavailable zero, so capacity never drops. Five, the MIG surges new V-Ms first. Six, it deletes old V-Ms as new ones pass. And rollback is simply another start update, back to version one.
+
+= cmd sm | Group commands | Autoscale, heal, canary, roll
+Task | Command
+Autoscale on CPU | gcloud compute instance-groups managed set-autoscaling web-mig --region=R --min-num-replicas=3 --max-num-replicas=12 --target-cpu-utilization=0.6
+Autohealing | gcloud compute instance-groups managed update web-mig --region=R --health-check=hc-http --initial-delay=300
+Canary: 20% | ... rolling-action start-update web-mig --region=R --version=template=web-v1 --canary-version=template=web-v2,target-size=20%
+Full, no capacity loss | ... rolling-action start-update web-mig --region=R --version=template=web-v2 --max-surge=3 --max-unavailable=0
+Restart or recreate every VM | ... rolling-action restart web-mig · ... rolling-action replace web-mig
+N: On screen are the commands. Set autoscaling, with minimum, maximum and target. Update with a health check, and an initial delay. Then rolling action start update, with the two version forms. And rolling action restart or replace.
+
+= table | Update knobs | What each flag does
+Knob | Effect
+`--max-surge` | Extra instances above target during the update
+`--max-unavailable` | How many may be down at once; 0 = never below target
+`--type=proactive` or `opportunistic` | Replace now, or only when recreated anyway
+`--replacement-method=substitute` or `recreate` | New names, or keep names (stateful MIGs)
+**Stateful MIGs** | Preserve per-instance disks, metadata, IPs across recreation
+N: The knobs. Max surge creates extra instances above target, keeping capacity. Max unavailable says how many may be down at once. Type proactive replaces now, and opportunistic replaces only when instances are recreated anyway. Replacement method substitute gives new names, and recreate keeps names, needed for stateful MIGs. And stateful MIGs preserve per-instance disks, metadata and addresses across recreation, for workloads such as databases that need stable identity.
+
+## 5.9 GPUs and TPUs
+
+= dia new | GPUs or TPUs | The choice is about the workload
+p5-gpu-tpu
+N: New in the guide: identify whether to use G-P-Us or T-P-Us, and attach them. On the left, G-P-Us from NVIDIA are general-purpose parallel processors. They run anything using CUDA: PyTorch, TensorFlow, custom kernels. They are strong for broad model variety, inference, graphics, rendering and video. On the right, T-P-Us are Google's own chips, built for large tensor operations. They use JAX, PyTorch with X-L-A, or TensorFlow. They are strong at large-scale training and serving, at the lowest cost at scale. T-P-Us come as chips, hosts and slices. And when the stem gives no framework constraint and the workload is general, G-P-U is the safer answer.
+
+= panel tip | Stem language | Which accelerator
+*"Rendering"*, *"video transcoding"*, *"custom CUDA kernels"*, *"a few GPUs for inference"*: **GPU**.
+*"Train a very large transformer in JAX as cheaply as possible at scale"*: **TPU**.
+*"Very large training across thousands of chips"*: a **multi-host TPU slice**.
+N: The language. Rendering, video transcoding, custom CUDA kernels, a few G-P-Us for inference: G-P-U. Train a very large transformer in JAX, as cheaply as possible at scale: T-P-U. Very large training across thousands of chips: a multi-host T-P-U slice, joined by the inter-chip interconnect.
+
+= list new | Attaching GPUs | The hard constraints
+- **A2, A3, A4, G2:** GPUs built into the machine type; choose `a2-highgpu-1g`, not `--accelerator`
+- **N1** takes attached GPUs: `--accelerator=type=nvidia-tesla-t4,count=1`. E2 and C3 take none
+- **`--maintenance-policy=TERMINATE`**: GPU VMs cannot live-migrate
+- **Drivers:** a GPU-ready image (Deep Learning VM), or install them; GKE can do it for you
+- **Quota:** per region **and** all regions; request both
+- **Availability:** only certain **zones**; check `accelerator-types list`
+N: Attaching G-P-Us has hard constraints. Accelerator-optimised series have G-P-Us built into the machine type, so you choose the machine type, and not an accelerator flag. N1 V-Ms take attached G-P-Us with the accelerator flag, and E2 and C3 take none. Maintenance policy must be terminate. For drivers, use a G-P-U-ready image, such as a Deep Learning V-M, or install them, and G-K-E can install them for you. Quota exists per region and across all regions, and you may need both. And G-P-U and T-P-U types exist only in certain zones, so if the create call fails in a zone, check accelerator types list. Spot pricing applies too. Graphics desktops use NVIDIA G-P-Us with R-T-X Virtual Workstation images.
+
+= cmd sm | GPU commands | And Autopilot asks in the Pod
+Task | Command
+GPU attached to an N1 VM | gcloud compute instances create train-1 --machine-type=n1-standard-8 --accelerator=type=nvidia-tesla-t4,count=2 --maintenance-policy=TERMINATE
+GPU in the machine type | gcloud compute instances create infer-1 --machine-type=g2-standard-8 --maintenance-policy=TERMINATE
+Which zones offer it | gcloud compute accelerator-types list --filter="name~l4"
+GKE Autopilot Pod | nodeSelector: cloud.google.com/gke-accelerator: nvidia-l4 + resources.limits: nvidia.com/gpu: 1
+N: The commands show the two shapes: an N1 with an accelerator flag, and a G2 with the G-P-U built in. On G-K-E Autopilot, the Pod asks, with a node selector for the accelerator, and a resource limit for nvidia dot com slash G-P-U. Autopilot then provisions the node and the drivers.
+
+= list | More to recognise | Beyond the big four
+- **Batch** runs arrays of tasks on VMs it creates and deletes
+- **VMware Engine** moves vSphere estates unchanged. **Oracle Database@Google Cloud** runs Exadata
+- **Future reservation** holds capacity: quota is permission, a commitment is a discount, neither is capacity
+- **Dynamic Workload Scheduler flex-start** gets a set of GPUs together, without preemption during the run
+- Regional MIG **target distribution shape `ANY`** places VMs where a zone has capacity
+- **Hyperdisk Storage Pools** share capacity and performance across disks
+N: A few more to recognise. Batch runs arrays of tasks on V-Ms it creates and deletes. VMware Engine moves vSphere estates unchanged. A future reservation holds capacity for a known date. And note this sentence: quota is permission, a commitment is a discount, and neither is capacity. Dynamic Workload Scheduler flex start gets a set of G-P-Us together, when capacity appears. A regional MIG's target distribution shape, any, places V-Ms wherever a zone has capacity. And Hyperdisk Storage Pools share capacity and performance across many disks.
+
+## 5.10 Part 5 recall card
+
+= table | Recall card, 1 of 4 | Answer aloud before the voice does
+Prompt | Answer
+6 vCPU, 40 GB, no waste | **Custom machine type**
+Interruptible, checkpointing, cheapest | **Spot VM**: no 24 h cap, ~30 s notice
+GPU VM fails on maintenance policy | `--maintenance-policy=TERMINATE`
+Keep VM running during host maintenance | **MIGRATE**, the default
+Change machine type | **Stop** first
+N: Recall. Six V-C-P-Us and forty gigabytes with no waste: a custom machine type. Interruptible, checkpointing, cheapest: a Spot V-M. A G-P-U V-M failing on maintenance policy: set terminate. Keep a V-M running during host maintenance: migrate. Change machine type: stop first.
+
+= table | Recall card, 2 of 4 | Answer aloud before the voice does
+Prompt | Answer
+Newest series refuses a PD | Use **Hyperdisk**
+Block volume that survives a zone failure | **Regional PD**, Hyperdisk Balanced HA
+Fast scratch, data may vanish | **Local SSD**
+Team SSH, revocable by IAM | **OS Login**, plus 2FA
+SSH with no external IP, no bastion | **IAP TCP forwarding**: `35.235.240.0/20`
+N: The newest series refuses a persistent disk: use Hyperdisk. A block volume that survives a zone failure: a regional disk. Fast scratch where data may vanish: Local S-S-D. Team S-S-H, revocable by I-A-M: O-S Login. S-S-H with no external address and no bastion: I-A-P T-C-P forwarding, with its range.
+
+= table | Recall card, 3 of 4 | Answer aloud before the voice does
+Prompt | Answer
+VM won't boot | **Serial console**
+Patch a fleet on schedule, report compliance | **VM Manager** patch deployment
+Nightly disk backups, 14 days | **Snapshot schedule**
+Whole VM to another zone | **Machine image**
+Boot pre-hardened, no startup config | **Custom image** family in the template
+N: A V-M won't boot: the serial console. Patch a fleet on a schedule and report compliance: a V-M Manager patch deployment. Nightly disk backups, kept fourteen days: a snapshot schedule. A whole V-M to another zone: a machine image. Boot pre-hardened, with no startup configuration: a custom image family in the template.
+
+= table | Recall card, 4 of 4 | Answer aloud before the voice does
+Prompt | Answer
+App hung, VM up | MIG **autohealing**
+Survive a zone outage | **Regional** MIG
+New template, gradual, no capacity loss | `start-update --max-surge=N --max-unavailable=0`
+Large JAX training, lowest cost at scale | **TPU**
+Custom CUDA kernels, rendering | **GPU**
+N: An app hung with the V-M up: MIG autohealing. Survive a zone outage: a regional MIG. A new template, gradual, with no capacity loss: start update, with surge and zero unavailable. Large JAX training at the lowest cost: T-P-U. Custom CUDA kernels or rendering: G-P-U.
+
+## Part 5 sample questions
+
+= th | Part 5 · practice | Ten exam-style questions | Name the failure each option survives, and what the stem forgives.
+N: Ten questions. For each one, ask what failure or cost the stem is really about.
+
+= q | An overnight rendering job can restart from checkpoints, and cost is the main concern. What should you use?
+(A) Sole-tenant nodes
+(B) Spot VMs in a managed instance group
+(C) A three-year resource-based commitment
+(D) Standard VMs with autoscaling
+ans B
+why A :: The most expensive option, for isolation needs.
+why B :: Interruptible and restartable is exactly what Spot suits.
+why C :: A commitment suits steady 24×7 work, not nightly runs.
+why D :: Works, but at full price.
+C: The answer is B. Restart from checkpoints and cost are the deciding clauses. Spot gives a large discount in exchange for possible preemption, and the instance group recreates V-Ms as capacity returns. A is for isolation. C suits a steady footprint. D works, but costs more than it needs to.
+
+= q | A VM creation fails when you request a GPU with the default settings: *"Instances with guest accelerators do not support live migration."* What is the fix?
+(A) Set `--maintenance-policy=TERMINATE`
+(B) Request a GPU quota increase
+(C) Use a regional disk
+(D) Enable `--can-ip-forward`
+ans A
+why A :: GPU VMs cannot live-migrate, so they must terminate on maintenance.
+why B :: The message is not about quota.
+why C :: Disks have nothing to do with this.
+why D :: IP forwarding is for appliances.
+C: The answer is A. The error message tells you the reason, and you must know the flag. G-P-U V-Ms cannot live-migrate, and migrate is the default, so you set terminate. B would apply to a different error. C and D are unrelated.
+
+= q | A single-VM database must lose no committed data if a zone fails, and recover quickly on a standby VM in another zone. What should you use?
+(A) A daily snapshot schedule
+(B) A regional Persistent Disk, force-attached to the standby
+(C) Local SSD with a RAID array
+(D) A custom image rebuilt nightly
+ans B
+why A :: Loses everything since the last snapshot.
+why B :: Synchronous across two zones, so no committed data is lost.
+why C :: Local SSD is ephemeral, and it is lost with the VM.
+why D :: An image is a boot source, not live data.
+C: The answer is B. No committed data loss rules out point-in-time copies. A regional disk replicates synchronously across two zones. A loses what was written since the last snapshot. C fails the rule that Local S-S-D plus durability is always wrong. D is not live data.
+
+= q | You must let an engineer SSH to private VMs, with no bastion and no external IPs, using per-user authorization. Which **two** steps are required? Choose two.
+(A) Grant `roles/iap.tunnelResourceAccessor` to the engineer
+(B) Allow `35.235.240.0/20` to port 22 in a firewall rule
+(C) Reserve a static external IP for each VM
+(D) Add the engineer's key to project-wide metadata
+(E) Enable Private Google Access on the subnet
+ans A, B
+why A :: Authorizes the tunnel for that user.
+why B :: IAP connects from this range.
+why C :: Contradicts "no external IPs".
+why D :: Gives access to every VM in the project.
+why E :: For reaching Google APIs, not for inbound SSH.
+C: The answers are A and B. Tunnelling through Identity-Aware Proxy needs a role for the user, and a firewall rule for the proxy's range. C contradicts the stem. D is the project-wide key trap. E is a common confusion, since Private Google Access is outbound to Google A-P-Is, and has no effect on inbound S-S-H.
+
+= q | An application occasionally hangs while its VM stays running. Instances sit in a managed instance group behind a load balancer. Users are not affected, but capacity silently shrinks over time. What should you add?
+(A) An autohealing health check on the MIG, with a suitable initial delay
+(B) A larger CPU target for the autoscaler
+(C) A second load-balancer health check
+(D) A shutdown script
+ans A
+why A :: Recreates VMs that fail the application check.
+why B :: Does not repair a broken VM.
+why C :: Only stops traffic, which is already happening.
+why D :: Runs only when a VM is shutting down.
+C: The answer is A. The clue is that users are not affected. The load balancer's health check already stops traffic to a hung V-M, but the V-M keeps running forever. Only the MIG's autohealing health check recreates it. Set the initial delay long enough for boot, or it will kill instances in a loop.
+
+= q | You must roll a new template to a regional MIG with **no reduction in serving capacity**. What should you use?
+(A) `rolling-action start-update` with `--max-surge=3 --max-unavailable=0`
+(B) `rolling-action start-update` with `--max-surge=0 --max-unavailable=3`
+(C) Edit the existing instance template in place
+(D) Delete the MIG and create a new one from the new template
+ans A
+why A :: New VMs first, and never below target.
+why B :: Takes VMs down before replacements exist.
+why C :: Templates are immutable.
+why D :: Causes an outage.
+C: The answer is A. Zero unavailable means never below target, and a surge provides the room to do it. B reverses the settings. C is impossible, since a template is immutable. D is an outage.
+
+= q | You need to recreate a VM in another zone: all three of its disks, its machine type, metadata, tags and service account, with the fewest steps. What should you use?
+(A) Three snapshots
+(B) A custom image of the boot disk
+(C) A machine image
+(D) An instance template
+ans C
+why A :: Moves data, but loses configuration.
+why B :: Contains only one disk.
+why C :: All disks plus configuration.
+why D :: A recipe with no data.
+C: The answer is C. All disks plus configuration is precisely a machine image. A loses the configuration. B has one disk. D has no data at all. Remember the sentence: snapshot, one disk's data. Image, one bootable disk. Machine image, the whole V-M. Template, a recipe.
+
+= q | Your security team requires every VM to boot already hardened, with no configuration step at start-up. New VMs come from a MIG. What should you do?
+(A) Add a startup script that applies the hardening
+(B) Build a custom image in an image family, and reference the family in a new template
+(C) Use an OS policy to apply the settings after boot
+(D) Take a snapshot of the hardened disk, and attach it after boot
+ans B
+why A :: Configuration at boot, which is what the stem rules out.
+why B :: The golden-image pattern.
+why C :: Enforces after boot, not at it.
+why D :: Attaching a data disk does not change the boot state.
+C: The answer is B. No configuration step at start-up is the clause. That rules out startup scripts and post-boot enforcement, which are A and C. A custom image in a family is the golden image pattern. Since templates are immutable, you reference it in a new template.
+
+= q | A research team will train a very large transformer written in JAX, and wants the lowest cost at scale. Another team renders video with custom CUDA kernels. Which accelerators fit, in order?
+(A) GPUs for both
+(B) TPUs for the training, GPUs for the rendering
+(C) TPUs for both
+(D) GPUs for the training, TPUs for the rendering
+ans B
+why A :: Works, but misses the cost at scale for JAX training.
+why B :: Each workload matched to its accelerator.
+why C :: TPUs do not run CUDA, or render graphics.
+why D :: The reverse of the right mapping.
+C: The answer is B. Very large J-A-X training at the lowest cost at scale points to T-P-Us. Custom CUDA kernels and rendering point to G-P-Us, because CUDA is NVIDIA's platform, and T-P-Us never render graphics. So C and D are impossible, and A misses the cost clause.
+
+= q | You must patch 400 Linux VMs every Sunday, limit how many reboot at once, and report which are non-compliant. What should you use?
+(A) A cron job on each VM
+(B) A VM Manager patch deployment with a rollout and a disruption budget
+(C) New images, with a rolling update every Sunday
+(D) Cloud Scheduler calling a shell script over SSH
+ans B
+why A :: The assembled distractor, and no compliance view.
+why B :: Scheduled, controlled, and with compliance reporting.
+why C :: Heavy, and it applies only to MIGs.
+why D :: Assembled, and with no compliance reporting.
+C: The answer is B. The three requirements, on a schedule, limit concurrency, and report compliance, map exactly onto a patch deployment. A and D are the assembled answers, and we prefer managed over assembled. C is sometimes valid for immutable groups, but the stem does not say these V-Ms are in a group.
+
+= th | End of Part 5 | Next: containers and serverless | GKE modes, workloads, scaling, Workload Identity, Cloud Run revisions and traffic, event-driven patterns.
+N: That is part five. Next is part six, containers and serverless, where you will see scaling again at two levels, Pods and nodes.

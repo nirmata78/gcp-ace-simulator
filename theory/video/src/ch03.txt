@@ -1,0 +1,647 @@
+#! title: Identity and access
+#! short: Identity and access
+
+## Part 3: Identity and access
+
+= th | Google Cloud Associate Cloud Engineer · Part 3 of 10 | Who exists, what they may do, and what nobody may do | Identities, federation, IAM and inheritance, org policy, service accounts, keyless credentials, Secret Manager.
+N: Part three, identity and access. This is the densest part of the course, and it pays the most. The objectives come from section one, on applying organization policies, granting roles, managing users and groups, and configuring Workforce Identity Federation, and from all of section four, on I-A-M and service accounts.
+
+= dia | The frame | Three questions, answered by three different systems
+p3-three-systems
+N: Three questions run through every access item, and three different systems answer them. On the left: does this person or workload exist, and can it authenticate? That is Cloud Identity or Workspace, an external identity provider through federation, or a service account. In the middle: what may it do, and where? That is I-A-M, with allow policies, deny policies and conditions. On the right: what configurations are permitted at all, for anyone? That is organization policy.
+V: Keep the three apart, and most distractors fall away by themselves.
+[pause: 0.8]
+
+## 3.1 Where human identities come from
+
+= table | Identity sources | Four places a human identity can come from
+Source | What it is | When it is the answer
+**Google account** | A personal account | Individuals, standalone orgs, Free Trial
+**Cloud Identity** | Managed users, groups, devices, SSO, without Workspace apps | Managed identities for Google Cloud only
+**Google Workspace** | Cloud Identity plus Gmail, Drive and the rest | The company already runs on Workspace
+**External IdP, federated** | Users stay in Entra ID, Okta; **not** copied to Google | Workforce Identity Federation
+N: Human identities come from four places. A Google account, which is a personal account, suits individuals, standalone organizations and Free Trial. Cloud Identity, in Free or Premium, gives managed users, groups, devices and single sign-on, without the Workspace apps. Google Workspace is Cloud Identity plus Gmail, Drive and the rest. And an external identity provider, through Workforce Identity Federation, keeps users in Entra I-D or Okta, and does not copy them into Google.
+
+= panel key | The unit of access management | Groups, not people
+Grant roles to `group:sre@example.com`, then manage people by membership.
+A joiner becomes a membership change, not an IAM change, and the IAM policy stops churning.
+Groups can contain users, service accounts and other groups.
+N: Groups are the unit of access management. Grant roles to a group, such as S-R-E at example dot com, and then manage people by membership. A joiner becomes a membership change, not an I-A-M change, and the policy stops churning. Groups can contain users, service accounts and other groups.
+
+= table | Managing users and groups | Manual and automated
+Method | What it does
+**Admin console** | Create, suspend, delete users; manage groups by hand
+**Google Cloud Directory Sync** | **One-way** from Active Directory or LDAP **into** Cloud Identity, on your own server, on a schedule
+**SAML or OIDC single sign-on** | Users authenticate at the corporate IdP; passwords never live at Google
+**SCIM automatic provisioning** | Entra ID, Okta create, update, suspend Cloud Identity accounts as HR changes flow
+**Directory API, scripts** | Programmatic account and group management
+N: Managing users, manually and automated. The Admin console is the manual way. Google Cloud Directory Sync does a one-way sync of users and groups from Active Directory or L-DAP into Cloud Identity, and it runs on your own server, on a schedule. Single sign-on, with SAML or O-I-D-C, means users authenticate at the corporate identity provider, and passwords never live at Google. Automatic provisioning, with SCIM, lets Entra I-D or Okta create, update and suspend Cloud Identity accounts as H-R changes flow through. And the Directory A-P-I covers scripts.
+
+= panel watch | Sync versus SSO | Which accounts exist, and where people type a password
+**GCDS or SCIM** decides *which accounts exist* in Cloud Identity.
+**SSO** decides *where people type their password*.
+A typical enterprise uses both. **Workforce Identity Federation replaces both**: nothing is synced at all.
+N: Do not confuse these. Directory Sync or SCIM provisioning decides which accounts exist in Cloud Identity. Single sign-on decides where people type their password. A typical enterprise uses both: accounts synced from Active Directory, authentication at A-D F-S or Entra I-D. And Workforce Identity Federation replaces both, because nothing is synced at all.
+
+= table | Offboarding | Suspend, then delete
+Action | Effect
+**Suspend** | Sign-in blocked; sessions and OAuth tokens revoked; data and group memberships kept. **Reversible**
+**Delete** | Account removed. Transfer Drive and other data first. Restorable only for a short period (*verify*)
+N: Now, a person leaves. Suspending blocks sign-in and revokes sessions and tokens, and keeps their data and group memberships. It is reversible. Deleting removes the account, so transfer Drive and other data first. It can be restored only for a short period.
+V: A person who has left is removed at the identity layer, not in I-A-M.
+[pause: 0.6]
+N: Suspending makes every binding, direct or through a group, in every project, unusable at once. You cannot miss a binding you never had to find. I-A-M edits are for people who stay, and whose access changes.
+
+## 3.2 Workforce Identity Federation
+
+= panel new | Workforce Identity Federation | People from an external IdP, with no Google account
+People from Microsoft Entra ID, Okta, AD FS, or any OIDC or SAML 2.0 IdP use Google Cloud **without a Google account** and **without being synchronised into Cloud Identity**.
+The IdP stays the source of truth: disable a user there, and their Google Cloud access ends.
+N: New in the June guide, and heavily signalled: Workforce Identity Federation. It lets people from an external identity provider, such as Microsoft Entra I-D, Okta or A-D F-S, use Google Cloud without having a Google account, and without being synchronized into Cloud Identity. The identity provider stays the source of truth. Disable a user there, and their Google Cloud access ends.
+
+= table | The objects | Pool, provider, principal identifier
+Object | What it is
+**Workforce identity pool** | A container of external users, at the **organization** level, location `global`
+**Provider** | The trust with one IdP: OIDC or SAML, with **attribute mapping** and an optional **attribute condition**
+**Attribute mapping** | `google.subject`, `google.groups`, custom `attribute.*`
+**Attribute condition** | Limits who may federate at all, e.g. `assertion.employee_type == 'staff'`
+**Principal identifiers** | How IAM names federated users in bindings
+N: Three objects. A workforce identity pool is a container of external users, created at the organization level, in location global. A provider is the trust with one identity provider, either O-I-D-C or SAML. It holds the attribute mapping, which fills in google dot subject, google dot groups and any custom attributes. It can also hold an attribute condition, which limits who may federate at all. And the principal identifiers are how I-A-M names federated users in bindings.
+
+= code | Principal identifiers | How IAM names federated users
+# one user
+principal://iam.googleapis.com/locations/global/
+    workforcePools/POOL/subject/SUBJECT
+
+# a group from the IdP
+principalSet://iam.googleapis.com/locations/global/
+    workforcePools/POOL/group/GROUP_ID
+
+# everyone with an attribute
+principalSet://.../workforcePools/POOL/attribute.dept/finance
+N: Here are the identifier forms. A single user is principal, colon, slash, slash, with the pool and the subject. A group from the identity provider is principal set, with the pool and the group I-D. An attribute works the same way, such as attribute dot department, finance. You do not need to memorise the full string. You need to recognise principal and principal set, and know that the path says workforce pools.
+
+= dia new | The flow | A federated sign-in, step by step
+p3-workforce
+N: Walk through the flow. Message one, the employee opens the console through a federated sign-in. Two, Google redirects them to the external identity provider to authenticate. Three, the provider returns an assertion with the subject and groups. Four, the pool's provider checks the attribute condition and maps attributes. Five, a session is issued, lasting between fifteen minutes and twelve hours, and set per pool, so contractors can have shorter sessions than employees. Six, the highlighted step: the employee acts as a principal set. And seven, I-A-M allows it, if a binding matches.
+
+= panel trap | The most tested detail | Group bindings need `google.groups`
+==Group bindings only work if the provider maps the IdP's groups claim to `google.groups`.==
+Otherwise `principalSet .../group/...` matches nobody.
+Session duration is per pool: default 1 hour, range 15 minutes to 12 hours. Disabling a pool stops every federated user, reversibly.
+N: The most tested detail. Group bindings only work if the provider maps the identity provider's groups claim to google dot groups. Otherwise, the principal set for that group matches nobody, and everyone gets denied, even though the binding looks correct. Also: gcloud uses a login configuration file created for the pool. Disabling the pool stops every federated user at once, and can be undone. And some products do not support workforce identities, so verify the list of supported products before you choose it.
+
+= dia | Easy to confuse | Workforce versus Workload Identity Federation
+p3-federations
+N: Same machinery, different subjects. Workforce is for people from an external identity provider, and pools live at the organization. Workload is for software outside Google Cloud, such as A-W-S, Azure, GitHub Actions or on-premises systems, and pools live in a project. When you read an item, ask who is signing in, a person or a program, and the answer follows.
+
+## 3.3 The IAM model and inheritance
+
+= dia | The model | An allow policy binds a role to principals, on a resource
+p3-binding
+N: Now the core of I-A-M.
+V: An allow policy binds a role to a set of principals, on a resource.
+[pause: 0.6]
+N: Every I-A-M item is a question about one of those three parts. On the left, principals: who. In the middle, the role: a named bundle of permissions. You never grant a bare permission. On the right, the resource: where the policy is attached. It can be an organization, folder or project, or one individual resource such as a bucket, a topic, a secret or a service account. An optional condition can narrow the grant. A policy is a list of bindings, plus an etag for safe concurrent edits, and a version, which must be three when conditions are present. Each resource has at most one allow policy.
+
+= table sm | Principals | Who can appear in a binding
+Prefix | Means
+`user:` | One Google account
+`group:` | A Google group: the preferred way
+`serviceAccount:` | A service account
+`domain:` | Everyone in a Workspace or Cloud Identity domain
+`principal://` · `principalSet://` | Federated identities
+`allUsers` | **Anyone on the internet, unauthenticated**
+`allAuthenticatedUsers` | **Anyone with any Google account**: effectively public too
+N: The principal types. User, group, service account and domain. Principal and principal set, for federated identities. Then two dangerous ones. All users means anyone on the internet, with no authentication. All authenticated users means anyone with any Google account, which is effectively public too. Both are wrong answers, unless the stem is explicitly about public content.
+
+= dia | Inheritance | The rules that decide most items
+p3-inheritance
+N: Inheritance is what decides most items, so walk through this example. On the left is a chain from the organization down to a bucket, with one binding at each level. Sam is a Viewer at the organization. A group that Sam belongs to has Editor on the Finance folder. Sam has Storage Admin on the project. Ana has Object Viewer on the bucket itself. What can Sam do on the bucket? The red box says it: the union of everything. Viewer, plus Editor through the group, plus Storage Admin. Effective access is the union of every binding that reaches the principal, directly, through any group, at the resource and at every ancestor.
+V: A lower allow policy cannot remove a higher grant. There is no most specific wins.
+[pause: 0.8]
+
+= panel trap | The wrong instinct | "Remove the project-level role so the folder grant no longer applies"
+Impossible. The folder grant is still inherited.
+To take access away: remove the grant **where it was made**, remove the person from the **group** that carries it, or add a **deny** rule.
+N: So here is the wrong instinct. Remove the user's project-level role, so the folder grant no longer applies. That is impossible, because the folder grant is still inherited. To take access away, you have three options. Remove the grant where it was made. Remove the person from the group that carries it. Or add a deny rule. Only two things subtract from what allow policies grant: a deny policy, which removes permissions from principals, and an organization policy, which removes configurations from everyone. A third construct, the principal access boundary, caps which resources a principal may reach, and it never grants anything.
+
+## 3.4 Roles: basic, predefined, custom
+
+= table | Three kinds of role | Predefined is the default correct answer
+Kind | Examples | When
+**Basic** | `roles/owner`, `roles/editor`, `roles/viewer` | Legacy and far too broad. **Almost never the answer**
+**Predefined** | `roles/compute.instanceAdmin.v1`, `roles/pubsub.subscriber` | **The default correct answer.** Maintained by Google
+**Custom** | Your own list of permissions | **Only when the need falls strictly between two predefined roles**
+> Owner has what Editor lacks: managing IAM on the resource. An Editor can never grant roles.
+N: Three kinds of role. Basic roles, Owner, Editor and Viewer, are legacy, cross-service and far too broad. They are almost never the answer. Predefined roles are the default correct answer, maintained by Google, per service. Custom roles are only for when the need falls strictly between two predefined roles. And know what Owner has that Editor lacks: managing I-A-M on the resource. So who can grant roles on this project? An Owner, or someone with a Security Admin type role, and never an Editor.
+
+= table sm | Predefined roles, 1 of 2 | Worth naming on sight
+Area | Roles
+IAM | `iam.securityAdmin` · `iam.roleAdmin` · `iam.serviceAccountAdmin` · `iam.serviceAccountUser` · `iam.serviceAccountTokenCreator` · `iam.workloadIdentityUser`
+Compute | `compute.admin` · `compute.instanceAdmin.v1` · `compute.networkAdmin` · `compute.securityAdmin` · `compute.viewer` · `compute.osLogin` · `compute.osAdminLogin`
+Storage | `storage.objectViewer` · `storage.objectCreator` · `storage.objectUser` · `storage.objectAdmin` · `storage.admin`
+GKE | `container.admin` · `container.developer` · `container.viewer`
+N: You should be able to name these on sight. You do not need to read them all now, since they recur throughout the course. Notice the patterns. For Compute, there is instance admin for V-Ms, network admin for networks, security admin for firewalls. For Storage, there is a ladder: object viewer reads, object creator writes new objects, object user reads and writes, object admin has full object control, and storage admin also controls buckets. For G-K-E: admin, developer and viewer.
+
+= table sm | Predefined roles, 2 of 2 | Worth naming on sight
+Area | Roles
+Run, functions | `run.admin` · `run.developer` · `run.invoker` · `cloudfunctions.developer`
+Data | `bigquery.dataViewer` · `bigquery.dataEditor` · `bigquery.jobUser` · `bigquery.user` · `cloudsql.client` · `spanner.databaseUser` · `pubsub.publisher` · `pubsub.subscriber`
+Operations | `logging.viewer` · `logging.privateLogViewer` · `logging.configWriter` · `logging.logWriter` · `monitoring.viewer` · `monitoring.editor` · `monitoring.metricWriter`
+Secrets, keys | `secretmanager.secretAccessor` · `cloudkms.cryptoKeyEncrypterDecrypter` · `cloudkms.admin`
+N: For Cloud Run, invoker lets a caller call a service, and it comes up often. For BigQuery, remember that reading data and running queries are separate: data viewer on the dataset, and job user on the project. For operations, the private log viewer can read data access logs, and a plain log viewer cannot. For secrets, secret accessor reads the payload. And the crypto key encrypter decrypter is the role you give to a product that needs your encryption key.
+
+= panel watch | Separation of duties | `compute.networkAdmin` versus `compute.securityAdmin`
+**Network Admin** builds networks, subnets, routes and load balancers, but **cannot change firewall rules or SSL certificates**.
+**Security Admin** manages firewall rules and certificates.
+N: Here is a split the exam uses for separation of duties. Network Admin builds networks, subnets, routes and load balancers, but it cannot change firewall rules or S-S-L certificates. Security Admin manages firewall rules and certificates. So when an item says the network team builds networks but must not touch firewalls, that is Network Admin.
+
+= list | Custom roles | Only where they are defined, and only if you maintain them
+- Defined at the **organization** or **project** level, **not at a folder**
+- An org-level custom role can be granted anywhere in the org; a project-level one only in that project
+- Built from permissions with custom-role support level *supported*
+- Carry a **launch stage**: `ALPHA`, `BETA`, `GA`, `DEPRECATED`, `DISABLED`
+- **You maintain them**: when Google adds a permission, your custom role does not get it
+N: Custom roles. They are defined at the organization or project level, and not at a folder. An organization-level custom role can be granted anywhere in the organization, and a project-level one only in that project. They are built from permissions that support custom roles, and they carry a launch stage. And you maintain them. When Google adds a permission to a service, predefined roles gain it, and your custom role does not. That is the stated reason to prefer predefined roles.
+
+= cmd sm | Custom role commands | Create, copy, update
+Task | Command
+Custom role in a project | gcloud iam roles create vmOperator --project=P --permissions=compute.instances.get,...
+In the organization instead | gcloud iam roles create vmOperator --organization=ORG --permissions=...
+Start from a predefined role | gcloud iam roles copy --source=roles/compute.viewer --destination=myViewer --dest-organization=ORG
+Add a permission | gcloud iam roles update vmOperator --project=P --add-permissions=compute.instances.start
+N: The verbs are create, copy and update. Create takes dash dash project or dash dash organization, never a folder. Copy starts from a predefined role, which saves you listing every permission. Update takes add permissions.
+
+## 3.5 Viewing and changing policies
+
+= cmd sm | Policy commands | Additive by default
+Task | Command
+Grant one role | gcloud projects add-iam-policy-binding P --member=group:sre@example.com --role=roles/compute.instanceAdmin.v1
+Remove one binding | gcloud projects remove-iam-policy-binding P --member=user:x@example.com --role=roles/viewer
+Replace the whole policy | gcloud projects get-iam-policy P → edit → gcloud projects set-iam-policy P policy.json
+On other resources | gcloud resource-manager folders add-iam-policy-binding · gcloud organizations add-iam-policy-binding · gcloud storage buckets add-iam-policy-binding
+N: To grant one role, use add I-A-M policy binding. It is additive and safe. To remove one, use remove I-A-M policy binding. To replace the whole policy, you use get I-A-M policy, edit the file, then set I-A-M policy. The same verbs exist on folders, organizations and individual resources, such as buckets, topics, secrets and service accounts. Resource-level bindings are how you grant access to one bucket, rather than all of them.
+
+= panel trap | The dangerous verb | `set-iam-policy` replaces the whole policy
+It is a read, modify, write. Get the policy, edit it, set it back **with the same etag**.
+If someone changed the policy in between, the etag no longer matches and the write is rejected rather than silently overwriting their change.
+For one grant, `add-iam-policy-binding` is the safer answer.
+N: Here is the danger.
+V: Set I-A-M policy replaces the whole policy.
+[pause: 0.6]
+N: It is a read, modify, write. You get the policy, edit it, and set it back with the same etag. If someone changed the policy in between, the etag no longer matches, and the write is rejected, rather than silently overwriting their change. That is what the etag is for. For one grant, add I-A-M policy binding is the safer answer.
+
+## 3.6 Conditions, deny policies and Privileged Access Manager
+
+= table sm | IAM conditions | Scoping a grant with an expression
+Need | Condition
+Access that **expires** automatically | `request.time < timestamp("2026-12-31T00:00:00Z")`
+Only business hours | `request.time.getHours("Europe/Warsaw") >= 9 && ...`
+Only certain resources by name | `resource.name.startsWith("projects/_/buckets/fin-")`
+Only resources carrying a tag | `resource.matchTag("ORG_ID/env", "prod")`
+> *"The contractor's access must end on 31 October without anyone remembering to remove it"* is a condition.
+N: I-A-M conditions scope a grant, using an expression. Access that expires automatically uses a condition on request time. Business hours uses request time with a time zone. Only certain resources by name uses resource name starts with. Only resources carrying a tag uses resource match tag. And the classic stem is: the contractor's access must end on the thirty-first of October, without anyone remembering to remove it. That is a condition.
+
+= table | Deny policies | The IAM subtraction
+Part | Detail
+Names | Principals, the permissions they may never use, optional **exception principals**, optional condition
+Attaches to | An **organization, folder or project**
+Evaluation | **Before allow policies**: a matching deny wins over every allow
+Managing them | `roles/iam.denyAdmin`
+Permission form | `storage.googleapis.com/buckets.delete`
+N: A deny policy names principals, the permissions they may never use, optional exception principals, and an optional condition. It attaches to an organization, folder or project. And it is evaluated before allow policies, so a matching deny wins over every allow, everywhere below its attachment point. Managing them needs the deny admin role. Deny policies write permissions in a different form, with the service domain: storage dot googleapis dot com, slash, buckets dot delete.
+
+= panel watch | Easy to confuse | Deny policy versus organization policy
+A **deny policy** removes *permissions* from *principals*: *"developers must never delete production buckets, whatever roles they hold."*
+An **organization policy** removes *configurations* from *everyone*: *"no VM in this folder may have an external IP."*
+Both bind project Owners.
+N: These are easy to confuse. A deny policy removes permissions from principals: developers must never delete production buckets, whatever roles they hold. An organization policy removes configurations from everyone: no V-M in this folder may have an external I-P. Both bind project Owners. So ask yourself: is it about who may do an action, or what configuration may exist?
+
+= table | Privileged Access Manager | Just-in-time, time-bound elevation
+Step | What happens
+1 Entitlement | An admin defines which roles, on which resource, for how long, who may request, whether approval is needed
+2 Request | An eligible user requests a grant, with a justification
+3 Approval | An approver approves
+4 Grant | The role is granted for the window, then removed automatically; the whole flow is audited
+> *"Production admin rights only during an incident, with approval"* is PAM. Standing Owner grants are the distractor.
+N: Privileged Access Manager, or pam, gives just-in-time, time-bound elevation. An administrator defines an entitlement: which roles, on which resource, for how long, who may request, and whether approval is needed. An eligible user requests a grant with a justification. An approver approves. The role is granted for the window, then removed automatically, and the whole flow is audited. It is the answer to, engineers should hold production admin rights only while working on an incident, with approval.
+
+## 3.7 Organization policy and tags
+
+= table | Organization policy | Restricts what may be configured, for every principal
+Constraint shape | Example | Effect
+**Boolean** | `iam.disableServiceAccountKeyCreation` | On or off
+**List** | `gcp.resourceLocations`, `compute.vmExternalIpAccess` | Allow or deny listed values
+**Managed** | `compute.managed.*` | Typed, better validation, dry-run support
+**Custom** | A CEL condition on a resource's fields | *"No GKE cluster without Workload Identity"*
+N: The Organization Policy Service restricts what may be configured, for every principal, including Owners. A policy sets a constraint on a node, and descendants inherit it. Constraints come in four shapes. Boolean, which is on or off. List, which allows or denies listed values. Managed constraints, which are newer, typed versions of common constraints, with better validation. And custom constraints, written in the Common Expression Language on a resource's fields.
+
+= list | Working with org policy | Inheritance, testing, and who may change it
+- A child **inherits** unless its own policy **replaces** it
+- For list constraints, a child may instead **merge** with the parent
+- **Dry-run** policies and the **Policy Simulator** show what would be blocked before you enforce
+- Changing org policies needs `roles/orgpolicy.policyAdmin`, usually at the organization
+N: A child node inherits the parent's policy, unless its own policy replaces it. For list constraints, a child may instead merge with the parent. Dry run policies and the Policy Simulator show you what a new policy would block before you enforce it. And changing organization policies needs the Org Policy Administrator role, usually at the organization.
+
+= table sm | Constraints, 1 of 2 | Recognise on sight
+Constraint | Stops
+`gcp.resourceLocations` | Resources outside approved regions: **data residency**
+`iam.allowedPolicyMemberDomains` | Roles for identities outside your org: *domain restricted sharing*
+`iam.disableServiceAccountKeyCreation` | Creating service-account keys
+`iam.disableServiceAccountKeyUpload` | Uploading your own public keys
+`iam.automaticIamGrantsForDefaultServiceAccounts` | The automatic **Editor** grant to default service accounts
+`compute.vmExternalIpAccess` | VMs having external IPs
+N: Recognise these on sight. Resource locations stops resources outside approved regions, which is data residency. Allowed policy member domains stops granting roles to identities outside your organization, known as domain restricted sharing. Two constraints handle keys: disable creation, and disable upload. One removes the automatic Editor grant to default service accounts. And V-M external I-P access controls which V-Ms may have external addresses.
+
+= table sm | Constraints, 2 of 2 | Recognise on sight
+Constraint | Stops
+`compute.requireOsLogin` | SSH keys in metadata: forces OS Login
+`compute.skipDefaultNetworkCreation` | The `default` VPC in new projects
+`compute.restrictVpcPeering` · `compute.restrictSharedVpcHostProjects` | Uncontrolled network connections
+`storage.uniformBucketLevelAccess` | Buckets using ACLs
+`storage.publicAccessPrevention` | Buckets or objects being made public
+`gcp.restrictNonCmekServices` | Resources created without customer-managed keys
+N: Require OS Login stops S-S-H keys in metadata. Skip default network creation removes the default V-P-C. The next pair limits peering and Shared V-P-C hosts. For storage, uniform bucket-level access stops access control lists, and public access prevention stops public buckets. And restrict non CMEK services requires customer-managed encryption keys.
+
+= panel note | Secure by default | A brand-new org may refuse to create a key
+Organizations created from 2024 onward have several constraints enforced automatically: key creation disabled, uniform bucket-level access, public access prevention, domain restricted sharing, no automatic Editor grant (*verify* the list).
+N: Organizations created from twenty twenty-four onward have several of these enforced automatically. Among them: key creation disabled, uniform bucket-level access, public access prevention, domain restricted sharing, and no automatic Editor grant. That is why a brand-new organization may refuse to create a service-account key. It is not a bug.
+
+= th | How to spot it | "Including <em>project owners</em>" | The moment a stem says including owners, or even administrators, stop reading the IAM options.
+V: Prevent anyone, including project owners. The moment a stem says that, it is an organization policy.
+[pause: 0.8]
+
+= list | Tags | The IAM-governed metadata
+~ Key-value pairs defined at the organization or a project, attached to organizations, folders, projects and many resources, and **inherited**.
+- Who may attach a value is controlled by IAM: `roles/resourcemanager.tagUser`
+- **Conditional IAM:** `resource.matchTag(...)` in a binding
+- **Conditional org policy:** enforce a constraint only where `env=prod`
+- **Cloud NGFW:** *secure tags* select firewall-policy sources and targets
+N: Tags, the resource-manager kind, are key-value pairs defined at the organization or a project, attached to organizations, folders, projects and many resources, and inherited down the hierarchy. Unlike labels, who may attach a tag value is itself controlled by I-A-M, through the Tag User role. And that is why tags can safely drive policy. Conditional I-A-M uses resource match tag. Conditional organization policy enforces a constraint only where environment equals production. And Cloud Next Generation Firewall uses secure tags to select sources and targets, as you will see in part four.
+
+## 3.8 Troubleshooting and right-sizing access
+
+= table | Which access tool | Five questions, five tools
+Question | Tool
+*Why* can or can't this principal do this? | **Policy Troubleshooter**
+*Who* can do X on Y? *What* can this principal reach? | **Policy Analyzer**
+Which roles are more than it actually uses? | **IAM role recommender**, from about 90 days of usage
+Is this service account or key still used? | **Activity Analyzer**, usage insights
+What would a policy change break? | **Policy Simulator**
+N: Five tools, and each has its own question. Why can or can't this principal do this action on this resource? Policy Troubleshooter. Who can do this on that, or what can this principal reach? Policy Analyzer, which is part of Asset Inventory. Which roles exceed what this principal actually uses? The I-A-M role recommender in Active Assist, based on about ninety days of usage. Is this service account or key still used? Activity Analyzer. And what would a policy change break? Policy Simulator.
+
+## 3.9 Service accounts: kinds and lifecycle
+
+= th | The one sentence | A service account is both a <em>principal</em> and a <em>resource</em> | You grant roles to it: what it can do. You grant roles on it: who can use it.
+V: A service account is both a principal and a resource.
+[pause: 0.5]
+N: You grant roles to it, which decides what it can do. And you grant roles on it, which decides who can use it. Keeping those apart solves most service account items.
+
+= table sm | Three kinds | User-managed, default, Google-managed
+Kind | Address | Notes
+**User-managed** | `NAME@PROJECT_ID.iam.gserviceaccount.com` | You create it. One per workload
+**Default** | `PROJECT_NUMBER-compute@developer.gserviceaccount.com` · `PROJECT_ID@appspot.gserviceaccount.com` | Created on enabling the API. Historically **Editor**: replace it
+**Google-managed** (service agent) | `service-PROJECT_NUMBER@gcp-sa-SERVICE.iam.gserviceaccount.com` | Google's: the product **acting in your project**
+N: Three kinds. User-managed service accounts are the ones you create, one per workload. Their address uses your project I-D. Default service accounts are created when you enable an A-P-I. The Compute one uses the project number. Historically they were granted Editor, so replace them with purpose-made accounts. And Google-managed service accounts, called service agents, are created by Google. They are the product's own identity, acting in your project.
+
+= panel new | Google-managed service accounts | How Google services act on your resources
+Examples: Cloud Storage's agent publishes bucket notifications; Compute's attaches disks; a product's agent reads a CMEK key.
+**Do not remove their roles**, or the product breaks.
+**Grant them extra roles** when a feature needs it: `cryptoKeyEncrypterDecrypter` for CMEK, `pubsub.publisher` for Cloud Storage events.
+**Force-create one** with `gcloud beta services identity create --service=SERVICE.googleapis.com`.
+N: New in the guide: Google-managed service accounts. The Cloud Storage service agent publishes bucket notifications to Pub/Sub. The Compute Engine agent attaches disks. A product's agent reads a customer-managed key. Three things the exam uses. Do not remove their roles, or the product breaks. Grant them extra roles when a feature needs it, most often the key role for customer-managed encryption, or Pub/Sub publisher for Cloud Storage events. And you can force-create one before first use, with gcloud beta services identity create.
+
+= cmd | Lifecycle | Create, disable, delete, undelete
+Task | Command
+Create | gcloud iam service-accounts create app-runtime
+Stop it now, reversibly | gcloud iam service-accounts disable app-runtime@P.iam.gserviceaccount.com
+Delete | gcloud iam service-accounts delete SA_EMAIL
+Recover within 30 days | gcloud iam service-accounts undelete UNIQUE_ID
+>! A new account with the **same name** is a **different principal**, with a new unique ID, and gets none of the old bindings.
+N: The lifecycle.
+V: Disable before delete.
+[pause: 0.5]
+N: Disabling stops the account immediately, and it is reversible. Deleting leaves its role bindings behind as orphans. And a new account created with the same name is a different principal, with a new unique I-D, and it does not inherit the old bindings. Undelete works for thirty days, by unique I-D. Also, the account I-D is permanent. Its email never changes. Renaming a service account really means creating a new one, granting it the same roles, moving workloads to it, then disabling and deleting the old one.
+
+## 3.10 Attaching and impersonating
+
+= table | Two ways to use a service account | Two different roles, granted on the account
+Role on the service account | Lets the holder | Typical stem
+**`iam.serviceAccountUser`** (`actAs`) | **Attach** it to a resource they create | *"Deploy a Cloud Run service that runs as `app@`"*
+**`iam.serviceAccountTokenCreator`** | **Mint tokens**: act **as** it right now | *"A CI identity must deploy as `deployer@` with no keys"*
+N: There are two different ways to use a service account, guarded by two different roles, and both are granted on the account. Service Account User, whose permission is act as, lets you attach the account to a resource you create, such as a V-M, a Cloud Run service, a function or a Dataflow job. Service Account Token Creator lets you mint tokens for it, which means acting as it, right now.
+
+= dia | Attaching | The normal case: nothing stored, nothing rotated
+p3-attach
+N: Attaching is the normal case. Before message one, the engineer holds Service Account User on app at. One, the engineer deploys with dash dash service account equals app at. Two, the running workload asks the metadata server for a token. Three, it receives a short-lived access token. Four, it calls a Google A-P-I with that token. Five, the call is allowed, by the roles granted to app at. Nothing is stored, and nothing rotates by hand.
+
+= list | Attaching: details the exam uses | Cross-project, scopes, stopping
+- `gcloud compute instances create vm1 --service-account=SA_EMAIL --scopes=cloud-platform`
+- `gcloud run deploy api --image=IMG --service-account=SA_EMAIL`
+- **From another project:** needs `iam.disableCrossProjectServiceAccountUsage` not enforced on the account's project
+- **Access scopes** are a legacy filter on top of IAM. Best practice: `cloud-platform` scope, narrow IAM roles
+- Changing a VM's service account or scopes needs the VM **stopped**
+N: Details the exam uses. A V-M takes dash dash service account and dash dash scopes. Cloud Run takes dash dash service account. Attaching an account from another project, a common design with a central identities project, also requires that the disable cross-project service account usage policy is not enforced on the project that owns the account. Where it is enforced, the attach fails, however the I-A-M grants look. Access scopes are a legacy filter on top of I-A-M, and best practice is the cloud platform scope, plus narrow I-A-M roles. And changing a V-M's service account or scopes requires the V-M to be stopped.
+
+= dia | Impersonating | Acting as another identity, with no key
+p3-impersonate
+N: Impersonation. Before message one, the caller holds Token Creator on deployer at. One, the caller asks the I-A-M Credentials A-P-I to generate an access token. Two, it receives a short-lived token, an hour by default. Three, it calls an A-P-I as deployer at. Four, the audit log records both deployer and the original caller. The original caller is in a field called service account delegation info. So, which engineer acted as the deploy account? That field answers it.
+
+= cmd sm | Impersonation commands | Grant, then use
+Task | Command
+Let `ci` impersonate `deployer` | gcloud iam service-accounts add-iam-policy-binding deployer@P.iam.gserviceaccount.com --member=serviceAccount:ci@P.iam.gserviceaccount.com --role=roles/iam.serviceAccountTokenCreator
+Run one command as `deployer` | gcloud compute instances list --impersonate-service-account=deployer@P.iam.gserviceaccount.com
+Make it the gcloud default | gcloud config set auth/impersonate_service_account SA_EMAIL
+> Recommended for humans too: grant an engineer Token Creator, instead of handing out a key.
+N: The commands. Grant Token Creator on the account, using add I-A-M policy binding on the service account itself. Then run a single command with dash dash impersonate service account, or make it the default with gcloud config set. Impersonation is also the recommended way for people to use a privileged service account. Grant the engineer Token Creator, and do not hand out a key.
+
+= panel watch | The most useful split | Service Account User versus Token Creator
+*"Create a VM that runs as `sa@`"* needs **User** (`actAs`).
+*"Run this command as `sa@` from my terminal or pipeline"* needs **Token Creator**.
+==Both are granted on the service account, not on the project==, for least privilege.
+N: The split, once more. Create a V-M that runs as this account: User. Run this command as this account, from my terminal or pipeline: Token Creator.
+V: Both are granted on the service account, not on the project.
+[pause: 0.8]
+
+## 3.11 Short-lived credentials, and keys as a last resort
+
+= table | The Credentials API | What impersonation actually calls
+Call | Produces | Used for
+`generateAccessToken` | OAuth 2.0 access token, **1 hour** default, up to 12 h by org policy | Calling Google APIs
+`generateIdToken` | OIDC ID token for an **audience** | Calling Cloud Run, functions, IAP-protected apps
+`signBlob`, `signJwt` | A signature by Google-managed key | Signed URLs without a key file
+> `roles/iam.serviceAccountOpenIdTokenCreator` mints **ID tokens only**: least privilege for a scheduler.
+N: The I-A-M Service Account Credentials A-P-I has three calls. Generate access token gives an OAuth token, an hour by default, extendable to twelve hours by organization policy, used for calling Google A-P-Is. Generate I-D token gives an O-I-D-C token for an audience, used for calling Cloud Run, functions and apps behind Identity-Aware Proxy. Sign blob and sign J-W-T produce signatures with a Google-managed key, which is how you make signed U-R-Ls without a key file. And a narrower role, the service account open I-D token creator, mints I-D tokens only.
+
+= table | Application Default Credentials | The order client libraries look in
+Order | Source | Note
+1 | File named by `GOOGLE_APPLICATION_CREDENTIALS` | Usually a key file: the distractor
+2 | `gcloud auth application-default login` | A developer laptop
+3 | **Attached service account**, via the metadata server | No configuration on Google Cloud
+N: Client libraries find credentials in this order. First, the file named by the environment variable, Google application credentials. Second, the user credentials written by application-default login. Third, the attached service account, through the metadata server. On Google Cloud, that third source needs no configuration at all. That is why setting the environment variable to a key file is almost always the distractor.
+
+= table | Keys are the last resort | The keyless mechanism for each situation
+Situation | Keyless mechanism
+Workload on Google Cloud | **Attached** service account
+One Google Cloud identity needs another's rights | **Impersonation**
+Workload on AWS, Azure, GitHub, on-premises | **Workload Identity Federation**
+Pod in GKE | **Workload Identity Federation for GKE**
+Developer laptop | `gcloud auth application-default login`, plus impersonation
+Legacy system supporting none of these | A key: then restrict, rotate, monitor
+N: A user-managed key is a long-lived private key that never expires by default, can be copied anywhere, and rotates only if you rotate it. Google's position, and the exam's, is that a key is the last resort. So learn this table. A workload on Google Cloud uses an attached service account. One Google Cloud identity needing another's rights uses impersonation. A workload on A-W-S, Azure, GitHub or on-premises uses Workload Identity Federation. A Pod in G-K-E uses Workload Identity Federation for G-K-E. A developer laptop uses application-default login with impersonation. Only a legacy system that supports none of these uses a key. Then you restrict it, with the key expiry constraint, rotate it, and monitor it with Activity Analyzer.
+
+= panel trap | The near miss | "Store the JSON key in Secret Manager"
+This does **not** satisfy *"no key material"*. It is still a long-lived key that anything able to read the secret can exfiltrate.
+Secret Manager is the right home for secrets Google *cannot* mint. A service-account credential is something Google mints on demand.
+N: Here is the near miss. Store the JSON key in Secret Manager. That does not satisfy no key material. It is still a long-lived key, and anything able to read the secret can steal it. Secret Manager is the right home for secrets Google cannot mint. A service account credential is something Google mints on demand.
+
+## 3.12 Workload Identity Federation for external workloads
+
+= panel new | Provisioning Workload Identity Federation | Exchange the credential you already have
+Software outside Google Cloud exchanges the credential it already has for a short-lived Google token.
+An AWS role, an Azure managed identity, a GitHub or GitLab OIDC token, a SAML assertion or an X.509 certificate goes to Google's **Security Token Service**, is validated against your provider, and is exchanged.
+No service-account key ever leaves Google.
+N: New in the guide, and very testable. Software running outside Google Cloud exchanges the credential it already has for a short-lived Google token. An A-W-S role, an Azure managed identity, a GitHub Actions or GitLab token, a SAML assertion or an X.509 certificate is presented to Google's Security Token Service, validated against a provider you configured, and exchanged. No service-account key ever leaves Google.
+
+= dia new | The flow | A GitHub Actions job deploying with no key
+p3-wif
+N: Follow a GitHub Actions job. First, the amber note: the job needs permissions, I-D token, write. Otherwise, there is no token to exchange. Message one, the job presents its O-I-D-C token to the Security Token Service. Two, the highlighted step: the pool's provider validates it, and applies the attribute condition. Three, a federated token comes back. Now there are two paths. In path A, the job calls the A-P-I directly, as a federated principal. In path B, it impersonates a service account, which needs Workload Identity User on that account, and calls with a short-lived token. Use path B when an A-P-I does not accept federated principals directly.
+
+= table | Two jobs, two roles | Building the pool versus using it
+Job | Role
+**Create and maintain** pools and providers | `roles/iam.workloadIdentityPoolAdmin`
+**Use** one to act as a service account | `roles/iam.workloadIdentityUser`, on that account
+What the workload receives | A **credential configuration file**: no secret, only where to fetch the token, and which pool
+Kubernetes outside Google Cloud | An OIDC provider on the cluster's issuer. Unreachable issuer? Upload the **JWKS** with `--jwk-json-path`
+N: Two jobs, two roles. Creating and maintaining pools and providers needs Workload Identity Pool Admin. Using one to act as a service account needs Workload Identity User on that account. The workload is given a credential configuration file, and it contains no secret, only where to fetch the external token and which pool and provider to use. Kubernetes clusters outside Google Cloud federate with an O-I-D-C provider. If Google cannot reach the issuer, because the cluster is private, upload the cluster's J-W-K-S, and the control plane never needs to be exposed.
+
+= th | The security boundary | The <em>attribute condition</em> | Without one, any identity the IdP can issue could federate: any GitHub repository in the world, for a public issuer.
+V: The attribute condition is the security boundary.
+[pause: 0.6]
+N: Without one, any identity the provider can issue could federate. For a public issuer, that means any GitHub repository in the world. So only pipelines from our repository is an attribute condition on the provider. In practice, use separate pools per environment, and disable a provider during an incident at the identity provider. Audit logs show the federated principal in authentication info, principal subject.
+
+## 3.13 Secret Manager
+
+= table | Secret Manager | For secrets Google cannot mint
+Concept | Meaning
+**Secret** | The named container, with its own IAM policy and replication policy
+**Version** | The payload. Immutable. Enabled, disabled or destroyed
+**`latest`** | An alias for the newest enabled version; rotation is *add a version*
+**Replication** | Automatic, or user-managed; also regional secrets
+**Rotation schedule** | Notifies a Pub/Sub topic; **your code rotates**
+N: Secret Manager stores secrets Google cannot mint for you: a third-party A-P-I key, a database password, a T-L-S private key from an outside certificate authority. A secret is the named container, with its own I-A-M policy. A version is the actual payload, immutable, and enabled, disabled or destroyed. Latest is an alias for the newest enabled version, so rotating means adding a version. Replication is automatic or user-managed, and there are also regional secrets. And the rotation schedule only notifies a Pub/Sub topic. Your code does the rotating.
+
+= table | Secret Manager roles | Accessor reads the payload; viewer does not
+Role | Grants
+**`secretmanager.secretAccessor`** | **Read the payload.** Grant it **on the one secret**
+`secretmanager.viewer` | See that secrets and versions exist; **not** the payload
+`secretmanager.secretVersionManager` | Add, disable, destroy versions
+`secretmanager.admin` | Everything
+> `gcloud secrets versions add db-password --data-file=-` · `gcloud secrets versions access latest --secret=db-password`
+N: The role that matters is secret accessor, which reads the payload. It is what a workload needs, granted on the one secret, not the whole project. Viewer sees that secrets and versions exist, but not the payload. On the command line, gcloud secrets versions add rotates, and gcloud secrets versions access reads.
+
+= dia | Consuming secrets | Environment variable or file volume
+p3-secret-forms
+N: How do Cloud Run and Cloud Run functions consume a secret? On the left, as an environment variable, resolved when an instance starts. A new version only arrives with a new instance. In the middle, as a file volume, read at access time. A new version is picked up without a redeploy. So the answer to rotate without redeploying is the volume. On the right, code can call the A-P-I directly. G-K-E uses the Secret Manager add-on, or a C-S-I driver.
+
+= panel watch | Where a secret must not live | And why
+**In the image:** cannot rotate without a rebuild.
+**In instance metadata:** readable by every process on the VM, and visible in the console.
+**In the repository, or a plain bucket:** no versions, no rotation notices, generic audit.
+**A Kubernetes Secret** is only base64 unless you add encryption.
+N: Where must a secret not live, and why? Baked into the image, because it cannot rotate without a rebuild. In instance metadata, because every process on the V-M can read it, and it is visible in the console. In the repository, or in a plain bucket, since there are no versioning semantics and no rotation notifications. And a Kubernetes Secret is only base sixty-four, unless you add encryption.
+
+= list | More to recognise | Limits, delegation and operations
+- An allow policy holds at most **1,500 principals**: use groups
+- **Principal access boundary**: which resources principals are *eligible* for; never grants
+- A condition on `iam.googleapis.com/modifiedGrantsByRole` lets a delegate grant **only** named roles
+- **`roles/iam.securityReviewer`** reads every IAM policy, with no data access
+- **HMAC keys** serve S3-compatible tools
+- Cloud Scheduler calls private Cloud Run with an **OIDC token**, as an account with `run.invoker`
+N: A few more to recognise. An allow policy holds at most fifteen hundred principals, which is another reason to use groups. A principal access boundary says which resources a set of principals is eligible to use. It never grants anything, and it blocks access outside the boundary, whatever roles are granted. A condition on modified grants by role lets a delegate grant only named roles. Security Reviewer reads every I-A-M policy with no data access. HMAC keys on a service account serve S3 compatible tools. And Cloud Scheduler calls a private Cloud Run service with an O-I-D-C token, using an account holding the invoker role.
+
+## 3.14 Part 3 recall card
+
+= table | Recall card, 1 of 3 | Answer aloud before the voice does
+Prompt | Answer
+Leaver: revoke everything, now | **Suspend** the account, or disable in the external IdP
+Sync AD users into Cloud Identity | **GCDS** (one-way) or SCIM provisioning
+Entra ID users, no copies in Google | **Workforce Identity Federation**
+GitHub Actions deploying, no keys | **Workload Identity Federation** + attribute condition
+Remove an inherited grant from below | Impossible: remove at the source, or **deny policy**
+Access that expires by itself | **IAM condition** on `request.time`
+N: The recall card. A leaver, revoke everything now: suspend the account. Sync Active Directory users: Directory Sync, or SCIM. Entra I-D users, no copies in Google: Workforce Identity Federation. GitHub Actions deploying with no keys: Workload Identity Federation, with an attribute condition. Remove an inherited grant from below: impossible, so remove it at the source, or use a deny policy. Access that expires by itself: an I-A-M condition on request time.
+
+= table | Recall card, 2 of 3 | Answer aloud before the voice does
+Prompt | Answer
+Admin rights only during an incident, approved | **Privileged Access Manager**
+Need between two predefined roles | **Custom role**, org or project, never folder
+Build networks but not touch firewalls | `compute.networkAdmin`
+Nobody, including owners, may do X | **Organization policy**
+Why can't Ana stop this VM? | **Policy Troubleshooter**
+Who can read this bucket? | **Policy Analyzer**
+N: Admin rights only during an incident, with approval: Privileged Access Manager. A need between two predefined roles: a custom role, at the organization or project, never a folder. Build networks without touching firewalls: Network Admin. Nobody, including owners, may do this: organization policy. Why can't Ana stop this V-M? Policy Troubleshooter. Who can read this bucket? Policy Analyzer.
+
+= table | Recall card, 3 of 3 | Answer aloud before the voice does
+Prompt | Answer
+Attach an SA to a VM or service | **Service Account User** on the SA
+Act as an SA from CI or a terminal | **Token Creator** on the SA + impersonation
+Product needs to use my KMS key | Grant the product's **service agent** the key role
+Stop an SA now, reversibly | **Disable** it
+Third-party password, rotate without redeploy | **Secret Manager**, `secretAccessor`, mounted as a volume
+N: Attach a service account to a V-M or service: Service Account User on the account. Act as an account from a pipeline or terminal: Token Creator on the account. A product needs my encryption key: grant the product's service agent the key role. Stop an account now, reversibly: disable it. A third-party password, rotated without a redeploy: Secret Manager, with accessor on that secret, mounted as a volume.
+
+## Part 3 sample questions
+
+= th | Part 3 · practice | Twelve exam-style questions | Identity decides more marks than any other topic. Name the clause, then the mechanism.
+N: Twelve questions. Identity carries more marks than any other topic, so we practise it longer.
+
+= q | Maria left the company last night. She held roles granted directly and through groups, across dozens of projects. Access must end immediately, and she must not be able to sign in. What should you do?
+(A) Run a script that removes her bindings from every project
+(B) Suspend her account in Cloud Identity
+(C) Add a deny policy for her on the organization
+(D) Remove her from all groups
+ans B
+why A :: Slow, and it can miss bindings on folders or resources.
+why B :: Removes access at the identity layer, everywhere at once.
+why C :: Blocks permissions, but she can still sign in.
+why D :: Direct grants stay in effect.
+C: The answer is B. A person who has left is removed at the identity layer. Suspending revokes sessions and tokens, and it makes every binding unusable at once. A can miss bindings on folders and individual resources. C blocks permissions, but she could still sign in. D leaves her direct grants in place.
+
+= q | A company runs Microsoft Entra ID. It wants employees to use the Google Cloud console and `gcloud`, with **no accounts copied into Google**. What should you configure?
+(A) Google Cloud Directory Sync from Entra ID
+(B) SCIM provisioning from Entra ID into Cloud Identity
+(C) Workforce Identity Federation with a pool and an Entra ID provider
+(D) Workload Identity Federation with a project pool and an Entra ID provider
+ans C
+why A :: Copies accounts, and it is for LDAP or on-premises AD.
+why B :: Copies accounts into Cloud Identity.
+why C :: People federate, and nothing is synchronized.
+why D :: Workload federation is for software, not people.
+C: The answer is C. The deciding clause is no accounts copied into Google. A and B both copy accounts. D has the right machinery with the wrong subject, because Workload is for software. Workforce is for people, with a pool at the organization.
+
+= q | After configuring Workforce Identity Federation, finance users cannot reach resources bound to `principalSet://.../workforcePools/POOL/group/finance`. Individual subject bindings work. What is the most likely cause?
+(A) The provider does not map the IdP's groups claim to `google.groups`
+(B) The pool should be in a project, not the organization
+(C) Users need Google accounts
+(D) The binding should use `allAuthenticatedUsers`
+ans A
+why A :: Without the mapping, that principal set matches nobody.
+why B :: Workforce pools live at the organization.
+why C :: Federated users do not need Google accounts.
+why D :: This would make the resource effectively public.
+C: The answer is A. Group bindings only work if the provider maps the groups claim to google dot groups. The stem gives you the clue that individual subjects work, so the pool and sign-in are fine, and only group matching fails. B reverses workforce and workload. C defeats the point of federation. D is a security disaster.
+
+= q | A folder grants `roles/editor` to a group. A developer in that group must not have Editor on one project under that folder. A colleague proposes removing a project-level role from the developer. What actually works?
+(A) Remove the developer's project-level role
+(B) Add a more restrictive allow policy on the project
+(C) Remove the developer from the group, or attach a deny policy for the relevant permissions
+(D) Set a lower role on the project, since the most specific binding wins
+ans C
+why A :: The folder grant is still inherited.
+why B :: Allow policies only add.
+why C :: Removes at the source, or subtracts with deny.
+why D :: There is no "most specific wins" in IAM.
+C: The answer is C. Effective access is the union of every binding that reaches you. A lower allow policy can never remove a higher grant. So A, B and D all rest on the same false idea. To take access away, remove it at the source, or subtract it with a deny policy. Note that removing the person from the group affects everywhere that group is granted, so choose between the two by scope.
+
+= q | Prevent **everyone, including project owners**, from creating VMs with external IPs in the `prod` folder. What should you use?
+(A) A deny policy on `compute.instances.create`
+(B) A custom role without that permission
+(C) The `compute.vmExternalIpAccess` organization policy on the folder
+(D) A VPC firewall rule denying egress
+ans C
+why A :: Would block all VM creation, not only external IPs.
+why B :: Owners would still have their existing roles.
+why C :: Removes the configuration for everyone, inherited by the folder.
+why D :: Filters traffic, but the external IP still exists.
+C: The answer is C. Including project owners points to organization policy, and external I-Ps are a configuration, not a permission. A is too blunt, since it would stop V-Ms being created at all. B cannot take anything from existing Owners. D filters traffic, while the V-M still gets the address.
+
+= q | An engineer must deploy a Cloud Run service that runs as `app@my-proj.iam.gserviceaccount.com`. What additional role do they need, at least privilege?
+(A) `roles/iam.serviceAccountUser` on the `app@` service account
+(B) `roles/iam.serviceAccountTokenCreator` on the `app@` service account
+(C) `roles/iam.serviceAccountUser` on the project
+(D) `roles/owner` on the project
+ans A
+why A :: Attaching needs `actAs`, on that one account.
+why B :: This is for minting tokens, acting as it now.
+why C :: The right role at too wide a scope: all accounts in the project.
+why D :: Far beyond what is needed.
+C: The answer is A. Runs as means attach, and attach means Service Account User. B is the other way to use an account, namely impersonation. C has the right role at the wrong scope, since it allows use of every account in the project. D is obviously too broad.
+
+= q | A GitHub Actions workflow must deploy to Google Cloud with **no key material**, and only from the repository `acme/api`. Which **two** are required? Choose two.
+(A) A workload identity pool and an OIDC provider for GitHub, with an attribute condition on the repository
+(B) A service-account key stored in GitHub secrets
+(C) A service-account key stored in Secret Manager
+(D) `roles/iam.workloadIdentityUser` for the federated principal on the deploying service account
+(E) A workforce identity pool at the organization
+ans A, D
+why A :: The pool validates the token, and the condition restricts the repository.
+why B :: This is key material.
+why C :: Still key material, in a better place.
+why D :: Lets the federated identity act as the deployer.
+why E :: Workforce pools are for people.
+C: The answers are A and D. A sets up the trust, and its attribute condition is the security boundary, without which any repository could federate. D lets that federated identity act as the deploying service account. B and C are both key material, wherever they are stored. And E is the wrong kind of federation, since a pipeline is software.
+
+= q | Audit logs show `deploy-sa` deleted a production bucket. Engineers use it through impersonation. How do you find out **which engineer** acted?
+(A) It cannot be determined; impersonation hides the caller
+(B) Read `serviceAccountDelegationInfo` in the audit log entry
+(C) List the keys of `deploy-sa`
+(D) Use the IAM role recommender
+ans B
+why A :: False: both identities are logged.
+why B :: This field records the original principal.
+why C :: Impersonation does not use keys.
+why D :: Recommends role changes; it identifies no actions.
+C: The answer is B. This is one of the reasons impersonation beats sharing keys: the audit log records both the impersonated account and the original caller, in authentication info, service account delegation info. A is the false claim. C misses the point, because no key was involved. D suggests role changes, and it tells you nothing about this event.
+
+= q | Enabling a customer-managed encryption key on a Cloud Storage bucket fails with a permission error on the key. Your own account is an admin on the key. What is the fix?
+(A) Grant `roles/cloudkms.cryptoKeyEncrypterDecrypter` on the key to the Cloud Storage service agent
+(B) Grant `roles/cloudkms.admin` on the key to all users of the bucket
+(C) Remove the Cloud Storage service agent's existing roles, then retry
+(D) Disable the `gcp.restrictNonCmekServices` constraint
+ans A
+why A :: The product acts through its service agent.
+why B :: Far too broad, and the wrong identity.
+why C :: Removing an agent's roles breaks the product.
+why D :: That constraint requires CMEK. It does not block it.
+C: The answer is A. The product uses the key, so the product's identity needs the role. That identity is the Cloud Storage service agent, and the role is the crypto key encrypter decrypter. Your own admin rights are not what is used here. B grants too much, to the wrong people. C is what you must never do. D would loosen an unrelated requirement.
+
+= q | A contractor needs Compute Viewer on a project until 31 October, with no one having to remember to remove it. What should you do?
+(A) Grant the role with an IAM condition on `request.time`
+(B) Create a calendar reminder for the administrator
+(C) Grant the role, and create a budget that expires on that date
+(D) Use a service-account key with an expiry
+ans A
+why A :: The grant expires by itself.
+why B :: Relies on someone remembering, which the stem rules out.
+why C :: A budget has nothing to do with access.
+why D :: A key for a person is the wrong tool altogether.
+C: The answer is A. Without anyone remembering is the deciding clause, and a condition on request time is built exactly for it. If the stem added that it needs approval and is requested on demand, then Privileged Access Manager would be the better answer. B is what the stem ruled out. C and D are unrelated tools.
+
+= q | A Cloud Run service reads a third-party API key. Security wants to rotate the key without redeploying the service. What should you do?
+(A) Store it in Secret Manager and mount it as a file volume, referencing `latest`
+(B) Store it in Secret Manager and expose it as an environment variable
+(C) Pass it as a plain environment variable with `--set-env-vars`
+(D) Bake it into the container image
+ans A
+why A :: A volume is read at access time, so a new version is picked up.
+why B :: Resolved at instance start, so it needs a new instance.
+why C :: A plain value in the service configuration, with no rotation.
+why D :: Needs a rebuild to rotate.
+C: The answer is A. The deciding clause is without redeploying. A file volume is read at access time, so adding a new secret version takes effect without a deployment. B is the near miss, because an environment variable is resolved when an instance starts. C and D are places a secret must not live.
+
+= q | You must rename a service account used by several production workloads. What is the correct approach?
+(A) Change the account's email address with `gcloud iam service-accounts update`
+(B) Delete it, then create one with the new name, relying on the old bindings
+(C) Create a new account, grant the same roles, move workloads, then disable and delete the old one
+(D) Update only the display name, since that changes the address
+ans C
+why A :: The account ID in the email is permanent.
+why B :: A new account is a new principal, and old bindings do not apply.
+why C :: The only real way to "rename".
+why D :: The display name is only a label.
+C: The answer is C. The account I-D is permanent, so renaming really means creating a new account and migrating. A is impossible. B is the trap we covered: a new account, even with the same name, is a different principal with a new unique I-D, and the old bindings do not apply to it. D changes a label and leaves the address the same.
+
+= th | End of Part 3 | Next: networking | Can these two things reach each other, who is allowed to, how does traffic get in or out, and which load balancer.
+N: That is part three, the largest body of rules in the course. If you only have time to repeat one part, repeat this one. Next is part four, networking, where secure tags and service accounts come back as firewall targets.

@@ -1,0 +1,484 @@
+#! title: Compression for the last 48 hours, and a mixed mock
+#! short: Last 48 hours
+
+## Part 10: The last 48 hours
+
+= th | Google Cloud Associate Cloud Engineer · Part 10 of 10 | The whole course, folded four ways | Confusion pairs, the numbers, the command atlas, the stem words, then a mixed mock.
+N: Part ten. Nothing here is new. It is the course folded into the four shapes that are fastest to re-read: the pairs that distractors are built from, the numbers worth knowing, the command grammar, and the words in a stem that point at an answer. Then a mixed mock of fifteen questions. Watch this part two days before the exam, and again the night before.
+
+## 10.1 Confusion pairs: organization and identity
+
+= table sm | Pairs, 1 of 12 | Budget, labels, administrators, federation
+A | B | What separates them
+**Budget** | **Quota** | Budget **alerts**, never caps · quota **hard-stops**
+**Label** | **Network tag** | Cost attribution, in billing · firewall and route matching, never in billing
+**Network tag** | **Secure tag** | Anyone editing the VM · IAM-controlled, firewall **policies**
+**Super admin** | **Org Administrator** | Users, groups, domain · IAM on the hierarchy
+**GCDS, SCIM** | **Workforce federation** | Copy identities · no copies, IdP stays the source
+**Workforce** | **Workload** | People, org pool · software, project pool
+N: The pairs. Budget against quota: a budget alerts and never caps, and a quota hard-stops. Label against network tag: a label is for cost attribution and appears in billing, and a network tag is for firewall and route matching, and never appears in billing. Network tag against secure tag: anyone who edits the V-M can set a network tag, while a secure tag is controlled by I-A-M, for firewall policies. Super admin handles users, groups and the domain, while Organization Administrator handles I-A-M on the hierarchy. Directory Sync and SCIM copy identities, and Workforce Federation makes no copies. Workforce is for people, with an organization pool, and Workload is for software, with a project pool.
+
+= table sm | Pairs, 2 of 12 | IAM
+A | B | What separates them
+**IAM allow** | **Org policy** | Who may act · what may be configured, **including by owners**
+**Allow policy** | **Deny policy** | Additive union · subtracts, **evaluated first**
+**IAM condition** | **PAM** | Grant with expiry or scope · request-and-approve elevation
+**Troubleshooter** | **Analyzer** | *Why* can this principal · *who* can do it
+SA **User** | SA **Token Creator** | **Attach** to a resource · **act as** it now
+**Default SA** | **Service agent** | Your workload's legacy identity · Google's product in your project
+N: I-A-M allow says who may act, and organization policy says what may be configured, including by owners. An allow policy is an additive union, and a deny policy subtracts, and is evaluated first. An I-A-M condition is a grant with an expiry or scope, and Privileged Access Manager is request and approve. Policy Troubleshooter says why, and Policy Analyzer says who. Service Account User attaches, and Token Creator acts as it now. A default service account is your workload's legacy identity, and a service agent is Google's product acting in your project.
+
+= table sm | Pairs, 3 of 12 | Credentials and basic networking
+A | B | What separates them
+**Disable SA** | **Delete SA** | Reversible · orphaned bindings; same name is not same principal
+**Secret Manager** | **SA key** | Secrets Google cannot mint · a credential Google mints on demand
+**`auth login`** | **`application-default login`** | For the CLI · for client-library code
+**VPC** | **Subnet** | Global · regional
+**Expand subnet** | **New subnet** | Same range, never shrink · another region or tier
+**Shared VPC** | **Peering** | One network, many projects · two networks joined
+N: Disabling a service account is reversible, and deleting leaves orphaned bindings, and the same name is not the same principal. Secret Manager is for secrets Google cannot mint, and a service account key is a credential Google mints on demand, so do not store one. Auth login is for the command line, and application-default login is for client-library code. A V-P-C is global, and a subnet is regional. Expanding a subnet gives more addresses, and never shrinks, and a new subnet is for another region or tier. Shared V-P-C is one network for many projects, and peering is two networks joined.
+
+= table sm | Pairs, 4 of 12 | Connectivity
+A | B | What separates them
+**Peering** | **NCC** | Non-transitive pair · transitive hub
+**HA VPN** | **Interconnect** | Encrypted, quick, a few Gbps · private, 10–100 Gbps, not encrypted
+**Dedicated** | **Partner** | You are in a Google colo · you are not
+**Interconnect** | **Direct Peering** | Private VPC reach · Google public services only
+**Private Google Access** | **Cloud NAT** | Google APIs only · the internet
+**PSC** | **Private services access** | Endpoint, no peering · peered producer VPC
+N: Peering is a non-transitive pair, and Network Connectivity Center is a transitive hub. H-A V-P-N is encrypted, quick, and a few gigabits, and Interconnect is private, ten to one hundred gigabits, and not encrypted by default. Dedicated means you are in a Google colocation facility, and Partner means you are not. Interconnect reaches your V-P-C privately, and direct peering reaches Google public services only. Private Google Access reaches Google A-P-Is only, and Cloud NAT reaches the internet. Private Service Connect is an endpoint with no peering, and private services access is a peered producer network.
+
+= table sm | Pairs, 5 of 12 | Traffic
+A | B | What separates them
+**Forwarding zone** | **Inbound server policy** | Cloud resolves on-prem · on-prem resolves Cloud
+**Proxy** LB | **Passthrough** LB | Terminates, rewrites client IP · preserves client IP
+**Application** LB | **Network** LB | HTTP(S), layer 7 · TCP or UDP, layer 4
+**Premium** | **Standard** tier | Backbone, global · public internet, regional, cheaper
+**Flow logs** | **Firewall logs** | What flowed, sampled · which rule decided
+**Spot** | **Preemptible** | No max runtime · 24-hour cap, legacy
+N: A forwarding zone lets the Cloud resolve on-premises names, and an inbound server policy lets on-premises resolve Cloud names. A proxy load balancer terminates, and rewrites the client address, and a passthrough preserves it. An Application load balancer is H-T-T-P at layer seven, and a Network load balancer is T-C-P or U-D-P at layer four. Premium Tier uses Google's backbone and is global, and Standard uses the public internet, regional and cheaper. Flow logs say what flowed, sampled, and firewall logs say which rule decided. Spot has no maximum runtime, and preemptible has a twenty-four hour cap.
+
+= table sm | Pairs, 6 of 12 | Compute
+A | B | What separates them
+**MIGRATE** | **TERMINATE** | Live-migrate · stop; required for GPUs
+**Snapshot** | **Image** | One disk's data · one bootable disk
+**Image** | **Machine image** | One disk · all disks + VM configuration
+**Template** | **Machine image** | A spec for new VMs · a capture of an existing VM
+**Regional PD** | **Snapshot** | HA across zones · backup
+**Autohealing** | **Autoscaling** | Recreate a sick VM · change the count
+N: Migrate keeps a V-M running during maintenance, and terminate stops it, which is required for G-P-Us. A snapshot is one disk's data, and an image is one bootable disk. An image is one disk, and a machine image is all disks plus configuration. A template is a specification for new V-Ms, and a machine image is a capture of an existing V-M. A regional disk is high availability across zones, and a snapshot is backup. Autohealing recreates a sick V-M, and autoscaling changes the count.
+
+= table sm | Pairs, 7 of 12 | Compute and GKE
+A | B | What separates them
+**MIG health check** | **LB health check** | Recreates · only stops sending traffic
+**Metadata SSH keys** | **OS Login** | Keys removed by hand · IAM-governed accounts
+**GPU** | **TPU** | CUDA, variety, graphics · large XLA or JAX training
+**Autopilot** | **Standard + automation** | Google's nodes, per Pod request · still your nodes
+**HPA** | **VPA** | More Pods · bigger Pods
+**HPA** | **Cluster autoscaler** | Pods · nodes
+N: A MIG health check recreates, and a load balancer health check only stops sending traffic. Metadata S-S-H keys are removed by hand, and O-S Login uses I-A-M-governed accounts. G-P-U means CUDA, variety and graphics, and T-P-U means large J-A-X training at scale. Autopilot means Google's nodes, paid per Pod request, and Standard with automation means still your nodes. H-P-A means more Pods, and V-P-A means bigger Pods. And H-P-A scales Pods, and the cluster autoscaler scales nodes.
+
+= table sm | Pairs, 8 of 12 | GKE and serverless
+A | B | What separates them
+**Ingress, Gateway** | **LoadBalancer Service** | One IP, path routing · one IP per Service, layer 4
+**Node SA** | **Workload Identity** | Pulls images, writes logs · the app's API access
+**IAM** (GKE) | **RBAC** | Project-wide · per namespace
+**Cloud Run service** | **Cloud Run job** | Serves requests · runs to completion
+**Min instances** | **Max instances** | Avoid cold starts · protect downstream, cap cost
+**Request-based** | **Instance-based** | CPU during requests · CPU always
+N: Ingress or Gateway give one address with path routing, and a LoadBalancer Service is one address per Service, at layer four. A node service account pulls images and writes logs, and Workload Identity is the application's A-P-I access. I-A-M in G-K-E is project-wide, and RBAC is per namespace. A Cloud Run service serves requests, and a job runs to completion. Minimum instances avoid cold starts, and maximum instances protect downstream and cap cost. Request-based billing gives C-P-U during requests, and instance-based gives C-P-U always.
+
+= table sm | Pairs, 9 of 12 | Storage
+A | B | What separates them
+**App Engine standard** | **flexible** | Scales to zero · minimum one instance
+**Filestore** | **NetApp Volumes** | Managed NFS · NFS **and SMB**, NetApp
+**Nearline** | **Archive** | Monthly, 30 days · yearly, 365 days
+**Storage class** | **Latency** | Price and minimum differ; latency is the same
+**Versioning, soft delete** | **Bucket Lock** | Recover from accidents · immutable even against admins
+**Transfer Appliance** | **Storage Transfer** | The pipe cannot carry it in time · it can
+N: App Engine standard scales to zero, and flexible has a minimum of one instance. Filestore is managed N-F-S, and NetApp Volumes is N-F-S and S-M-B. Nearline is monthly, with thirty days, and Archive is yearly, with three sixty-five. Storage classes differ in price and minimum duration, and latency is the same. Versioning and soft delete recover from accidents, and Bucket Lock is immutable, even against admins. Transfer Appliance is for when the pipe cannot carry it in time, and Storage Transfer Service is for when it can.
+
+= table sm | Pairs, 10 of 12 | Databases and pipelines
+A | B | What separates them
+**Cloud SQL HA** | **Read replica** | Zone failover, serves nothing · read capacity
+**Read replica** | **PITR** | Replays the bad `DELETE` · restores to before it
+**Cloud SQL, AlloyDB** | **Spanner** | One write primary · horizontal writes, global consistency
+**Bigtable** | **BigQuery** | Millisecond key lookups · analytical scans
+**Pub/Sub** | **Managed Kafka** | Serverless, per-message ack · Kafka protocol, offsets
+**Topic** | **Subscription** | Fan-out needs one subscription per consumer
+N: Cloud SQL high availability is zone failover, and its standby serves nothing, while a read replica gives read capacity. A read replica replays the bad delete, and point-in-time recovery restores to before it. Cloud SQL and AlloyDB have one write primary, and Spanner has horizontal writes and global consistency. Bigtable gives millisecond key lookups, and BigQuery gives analytical scans. Pub/Sub is serverless, with per-message acknowledgement, and managed Kafka has the Kafka protocol and offsets. And fan-out needs one subscription per consumer.
+
+= table sm | Pairs, 11 of 12 | Pipelines, keys and IaC
+A | B | What separates them
+**Dataflow drain** | **cancel** | Finish in-flight, no loss · stop now, lose in-flight
+**Dataflow** | **Dataproc** | Beam, batch and stream · Spark, Hadoop lift-and-shift
+**CMEK** | **CSEK** | In Cloud KMS, revocable · raw key per request, Storage and Compute
+**Disable** key version | **Destroy** | Reversible unreadable · permanent after the delay
+**Terraform** | **Config Connector** | Reconciles when run · continuously, in a cluster
+**Terraform** | **Deployment Manager** | Current · deprecated
+N: Dataflow drain finishes in-flight data, and cancel stops now and loses it. Dataflow is Beam, batch and stream, and Dataproc is Spark and Hadoop, lifted and shifted. Customer-managed keys are in Cloud K-M-S and revocable, and customer-supplied keys are raw keys per request. Disabling a key version is reversibly unreadable, and destroying is permanent after the delay. Terraform reconciles when run, and Config Connector reconciles continuously. And Terraform is current, while Deployment Manager is deprecated.
+
+= table sm | Pairs, 12 of 12 | AI and operations
+A | B | What separates them
+**Cloud Assist** | **Gemini CLI, Antigravity** | In the console · in your terminal or IDE
+**Alerting policy** | Everything else | Only it notifies
+**Log-based alert** | **Log-based metric** | Per entry · a time series for rates
+**Trace** | **Profiler** | Which service · why, inside it
+`compute.googleapis.com` | `agent.googleapis.com` | Hypervisor · Ops Agent, memory
+**Admin Activity** | **Data Access** | Always on, free, 400 days · off by default, charged
+**Public dashboard** | **Personalized Service Health** | Everyone's · yours, alertable
+`401` | `403` | No credentials · missing permission
+N: Gemini Cloud Assist is in the console, about your resources, and Gemini C-L-I and Antigravity are in your terminal or I-D-E. Only an alerting policy notifies. A log-based alert works per entry, and a log-based metric is a time series for rates. Trace says which service, and Profiler says why, inside it. Compute dot googleapis is the hypervisor, and agent dot googleapis needs the Ops Agent. Admin Activity is always on and free, and Data Access is off by default and charged. The public dashboard shows everyone's incidents, and Personalized Service Health shows yours. And four-oh-one means no valid credentials, and four-oh-three means a missing permission.
+
+## 10.2 The numbers worth knowing
+
+= table sm | Numbers, 1 of 3 | Weights, durations, retention
+Number | Meaning
+**20, 30, 30, 20** | Section weights of the June 2026 guide
+**0, 30, 90, 365 days** | Standard, Nearline, Coldline, Archive minimums
+**7 days** | Soft-delete default; BigQuery time travel max; Spanner PITR max; Firestore PITR
+**90 days** | Uniform access reversible; BigQuery long-term storage after 90 days
+**30 days** | Project undelete; SA undelete; KMS destruction delay
+**400, 30 days** | `_Required` fixed, `_Default` default retention
+N: The numbers. Twenty, thirty, thirty, twenty: the section weights. Zero, thirty, ninety, three sixty-five: minimum storage durations. Seven days: the soft delete default, BigQuery time travel at most, Spanner point-in-time at most, and Firestore point-in-time. Ninety days: uniform access reversibility, and BigQuery long-term storage. Thirty days: project undelete, service account undelete, and the K-M-S destruction delay. Four hundred and thirty: Required and Default log retention.
+
+= table sm | Numbers, 2 of 3 | Compute and network
+Number | Meaning
+**5 GB** | Cloud Shell `$HOME`
+**~30 s** | Spot preemption notice; **24 h** preemptible cap
+**0–65535, default 1000, lower wins** | Firewall priority
+**4** | Reserved addresses in every subnet range
+**3 zones** | Regional GKE control plane; `--num-nodes` is per zone
+**99.99%** | HA VPN with two interfaces and tunnels
+**10, 100 Gbps** | Dedicated circuits; Partner **50 Mbps to 50 Gbps**
+N: Five gigabytes: Cloud Shell home. About thirty seconds: Spot preemption notice, and twenty-four hours: the preemptible cap. Zero to sixty-five thousand five hundred thirty-five, default one thousand, lower wins: firewall priority. Four: reserved addresses in every subnet. Three zones: a regional G-K-E control plane, and num nodes is per zone. Ninety-nine point nine nine: H-A V-P-N. Ten or one hundred gigabits: Dedicated circuits, and fifty megabits to fifty gigabits: Partner.
+
+= table sm | Numbers, 3 of 3 | Ranges and rates
+Number | Meaning
+**`35.191.0.0/16`, `130.211.0.0/22`** | Load-balancer health-check ranges
+**`35.235.240.0/20`** | IAP TCP forwarding source range
+**80, 1000** | Cloud Run default, maximum concurrency
+**1 h**, to 12 h | Default short-lived access token, extendable
+**15 min** | Dual-region turbo replication RPO
+**1 Gbps ≈ 10 TB a day** | Transfer arithmetic
+**1 node = 1,000 PU** | Spanner capacity
+N: Thirty-five dot one nine one, and one thirty dot two one one: load balancer health check ranges. Thirty-five dot two three five dot two four zero: I-A-P forwarding. Eighty and one thousand: Cloud Run default and maximum concurrency. One hour, up to twelve: a short-lived token. Fifteen minutes: turbo replication. One gigabit per second is about ten terabytes a day. And one Spanner node is a thousand processing units.
+
+## 10.3 The command atlas
+
+= cmd sm | Atlas, 1 of 3 | Context, hierarchy, IAM, service accounts
+Area | Commands worth recognising
+Context | gcloud config configurations create/activate · gcloud config set project P · gcloud auth login · gcloud auth application-default login
+Hierarchy, billing | gcloud projects create/delete/undelete · gcloud beta projects move P --folder=F · gcloud services enable API · gcloud billing projects link P --billing-account=B
+IAM | gcloud projects add-iam-policy-binding P --member=M --role=R [--condition=...] · set-iam-policy replaces everything · gcloud iam roles create/copy/update
+Service accounts | gcloud iam service-accounts create/disable/delete/undelete · --impersonate-service-account=SA
+N: The exam tests the verb and the deciding flag, not full invocations. So this is an index, and every command appeared in context earlier. Grammar: gcloud, group, subgroup, verb, name and flags, with scope by zone, region, global or location. Pause on these three slides if you want to read them slowly. Context and hierarchy, I-A-M, where set I-A-M policy replaces everything, and service accounts with impersonation.
+
+= cmd sm | Atlas, 2 of 3 | Network, compute, GKE, serverless
+Area | Commands worth recognising
+Network | gcloud compute networks create --subnet-mode=custom · subnets expand-ip-range · firewall-rules create --target-tags/--target-service-accounts · shared-vpc enable · networks peerings create · addresses create · routers nats create
+Compute | instances create --provisioning-model=SPOT · disks resize · snapshots/images/machine-images create · instance-groups managed set-autoscaling · rolling-action start-update --canary-version / --max-surge
+GKE | container clusters create-auto · create --num-nodes · get-credentials · node-pools update --enable-autoscaling · kubectl apply/rollout undo/scale/autoscale/describe/logs --previous
+Serverless | run deploy --source . / --image · --no-traffic --tag · services update-traffic --to-tags · --min-instances · functions deploy --trigger-event-filters · app deploy --no-promote · builds submit --tag
+N: Networks, with custom subnet mode, expand I-P range, firewall targets, Shared V-P-C and peering on both sides. Compute, with Spot, snapshots, images and machine images, and rolling action start update. G-K-E, with create auto, get credentials, and kubectl's verbs. And serverless, with deploy from source, no traffic with a tag, and update traffic.
+
+= cmd sm | Atlas, 3 of 3 | Storage, keys, operations
+Area | Commands worth recognising
+Storage, data | gcloud storage buckets create --default-storage-class · buckets update --lifecycle-file/--versioning/--retention-period · gcloud storage cp/rsync/sign-url · bq query --dry_run · bq load · sql instances create --availability-type=REGIONAL · sql instances clone --point-in-time · promote-replica
+Keys, secrets | gcloud kms keyrings/keys create · gcloud beta services identity create --service=S · gcloud secrets versions access latest
+Operations | gcloud logging sinks create ... --include-children · writerIdentity · gcloud logging buckets create --enable-analytics · gcloud logging read FILTER
+N: Storage, with class, lifecycle, versioning, retention, cp, rsync, and sign U-R-L. bq with dry run and load. Cloud SQL with availability type regional, clone with a point in time, and promote replica. Keys with key rings and the service identity command. And logging with sinks, writer identity, analytics buckets, and read.
+
+## 10.4 The words in a stem, and what they decide
+
+= table sm | Stem words, 1 of 8 | Organization and access
+If the stem says | Reach for
+"including projects created later" | Bind on the **folder**
+"including project owners", "even administrators" | **Organization policy**, or deny for permissions
+"never interrupt the workload" (spend) | **Budget**
+"must not exceed", "hard limit" | **Quota**
+"chargeback by team" | **Labels** + billing export
+"Free Trial, no domain, want folders" | **Standalone organization**
+N: The words in a stem. Try this as a drill: pause, cover the right column, and answer. Including projects created later: bind on the folder. Including project owners: organization policy, or deny for permissions. Never interrupt the workload: budget. Must not exceed: quota. Chargeback by team: labels with billing export. Free Trial, no domain, want folders: standalone organization.
+
+= table sm | Stem words, 2 of 8 | Identity
+If the stem says | Reach for
+"employee has left, immediately" | **Suspend** the identity
+"users stay in Entra ID or Okta, no copies" | **Workforce Identity Federation**
+"GitHub, AWS, on-prem workload, no keys" | **Workload Identity Federation**
+"no key material", "act as another SA" | **Impersonation**
+"expires automatically" | **IAM condition**
+"elevation only when needed, with approval" | **PAM**
+"between two predefined roles" | **Custom role**
+N: Employee has left, immediately: suspend. Users stay in Entra, no copies: Workforce Identity Federation. GitHub, A-W-S or on-premises workload, no keys: Workload Identity Federation. No key material, act as another account: impersonation. Expires automatically: an I-A-M condition. Elevation only when needed, with approval: Privileged Access Manager. Between two predefined roles: a custom role.
+
+= table sm | Stem words, 3 of 8 | Secrets and network
+If the stem says | Reach for
+"rotate without redeploying" | **Secret Manager**, volume mount
+"control, rotate, revoke the key" | **CMEK**
+"keys outside Google" | **Cloud EKM**
+"subnet out of IPs" | **Expand** the range
+"through the inspection appliance" | **Custom static route**
+"developers must not widen exposure by editing VMs" | **Secure tags**, SA targets
+"every VPC in the org must block X" | **Hierarchical firewall policy**
+N: Rotate without redeploying: Secret Manager, volume mount. Control, rotate and revoke the key: customer-managed keys. Keys outside Google: Cloud External Key Manager. Subnet out of addresses: expand. Through the inspection appliance: a custom static route. Developers must not widen exposure by editing V-Ms: secure tags or service account targets. Every V-P-C in the organization must block this: a hierarchical firewall policy.
+
+= table sm | Stem words, 4 of 8 | Connectivity and load balancing
+If the stem says | Reach for
+"transitive is not required" | **Peering**
+"central team owns network" | **Shared VPC**
+"encrypted, quick, a few Gbps" | **HA VPN**
+"cannot reach a colocation facility" | **Partner Interconnect**
+"no external IP, needs internet" | **Cloud NAT**
+"no external IP, only Google APIs" | **Private Google Access**
+"partner must allow-list our egress IP" | Cloud NAT with **static IPs**
+N: Transitive is not required: peering. A central team owns the network: Shared V-P-C. Encrypted, quick, a few gigabits: H-A V-P-N. Cannot reach a colocation facility: Partner Interconnect. No external address, needs internet: Cloud NAT. No external address, only Google A-P-Is: Private Google Access. A partner must allow-list our egress address: Cloud NAT with static addresses.
+
+= table sm | Stem words, 5 of 8 | Traffic and compute
+If the stem says | Reach for
+"UDP", "preserve client IP" | **Passthrough** NLB
+"one anycast IP worldwide" | **Global external ALB**, Premium
+"cheapest network, one region" | **Standard Tier**
+"all backends unhealthy" | Allow the **health-check ranges**
+"scale to zero" | **Cloud Run**
+"don't manage nodes" | **GKE Autopilot**
+"OS, kernel, licence, lift-and-shift" | **Compute Engine**
+N: U-D-P, or preserve the client address: a passthrough Network load balancer. One anycast address worldwide: the global external Application load balancer. Cheapest network in one region: Standard Tier. All backends unhealthy: allow the health check ranges. Scale to zero: Cloud Run. Don't manage nodes: Autopilot. O-S, kernel, licence, lift and shift: Compute Engine.
+
+= table sm | Stem words, 6 of 8 | Compute and GKE
+If the stem says | Reach for
+"interruptible, checkpoints" | **Spot VMs**
+"steady 24×7 for three years" | **3-year CUD**
+"GPU VM fails on maintenance" | `--maintenance-policy=TERMINATE`
+"JAX, large-scale training" | **TPU**
+"SSH, no public IP, no bastion" | **IAP** + OS Login
+"patch the fleet, compliance report" | **VM Manager**
+"whole VM to another zone" | **Machine image**
+"boot already hardened" | **Custom image** family
+N: Interruptible, with checkpoints: Spot. Steady twenty-four seven for three years: a three-year committed use discount. A G-P-U V-M failing on maintenance: terminate. J-A-X at large scale: T-P-U. S-S-H with no public address and no bastion: I-A-P with O-S Login. Patch the fleet, with a compliance report: V-M Manager. A whole V-M to another zone: a machine image. Boot already hardened: a custom image family.
+
+= table sm | Stem words, 7 of 8 | Availability, serverless, storage
+If the stem says | Reach for
+"app hung, VM up" | MIG **autohealing**
+"survive a zone failure" | **Regional** MIG, cluster, disk, Cloud SQL HA
+"one IP, route by path" | **Ingress, Gateway**
+"10% to the new version" | **Traffic split**, Gateway **weights**, MIG **canary**
+"fewest steps to a URL" | `gcloud run deploy --source .`
+"first request slow" | **Min instances**
+"ImagePullBackOff 403" | Node SA `artifactregistry.reader`
+"Pod needs a bucket, no key" | **Workload Identity Federation for GKE**
+N: App hung with the V-M up: autohealing. Survive a zone failure: regional, whatever the resource. One address, route by path: Ingress or Gateway. Ten percent to the new version: a traffic split, Gateway weights, or a MIG canary. Fewest steps to a U-R-L: run deploy from source. First request slow: minimum instances. Image pull back off with four-oh-three: the node account needs reader. A Pod needs a bucket with no key: Workload Identity Federation for G-K-E.
+
+= table sm | Stem words, 8 of 8 | Data, tooling, operations
+If the stem says | Reach for
+"read once a year" · "pattern unknown" | **Archive** · **Autoclass**
+"immutable for N years" · "no Google account" | **Retention + Bucket Lock** · **Signed URL**
+"SMB" · "shared NFS" | **NetApp Volumes** · **Filestore**
+"global, strong, scale writes" · "huge write rate" | **Spanner** · **Bigtable**
+"bad DELETE at a known time" · "risk across databases" | **PITR**, new instance · **Database Center**
+"hundreds of TB, thin pipe" · "every consumer, every message" | **Transfer Appliance** · a **subscription** each
+"reviewable diff" · "host our agent" · "no code on laptops" | **Terraform plan** · **Agent Runtime** · **Cloud Workstations**
+"page someone" · "memory missing" · "who read" · "Google incident" | **Alerting policy** · **Ops Agent** · **Data Access** · **Service Health**
+N: Read once a year: Archive. Pattern unknown: Autoclass. Immutable for N years: retention with Bucket Lock. No Google account: a signed U-R-L. S-M-B: NetApp Volumes. Shared N-F-S: Filestore. Global, strong, scaling writes: Spanner. Huge write rate: Bigtable. A bad delete: point-in-time recovery. Risk across databases: Database Center. Hundreds of terabytes over a thin pipe: Transfer Appliance. Every consumer gets every message: a subscription each. A reviewable diff: Terraform plan. Host our agent: Agent Runtime. No code on laptops: Cloud Workstations. Page someone: an alerting policy. Memory missing: the Ops Agent. Who read it: Data Access. A Google incident: Personalized Service Health.
+
+## The guide, mapped to this course
+
+= table | The guide, mapped | Every section of the June 2026 guide, and where it is taught
+Guide section | Weight | Taught in
+**1** Setting up an environment | ~20% | Parts 1, 2, 3 (identity), 4, 9 (setup)
+**2** Planning and implementing | ~30% | Parts 4, 5, 6, 7, 8
+**3** Ensuring successful operation | ~30% | Parts 4, 5, 6, 7, 8, 9
+**4** Access and security | ~20% | Parts 3, 6 (Workload Identity for GKE)
+> Independent study material. Not affiliated with, endorsed by, or sponsored by Google.
+N: Finally, here is how the guide's four sections map onto this course. Section one is in parts one to four, plus the observability set-up in part nine. Section two is spread across networking, compute, containers, storage and tooling. Section three is in those same parts, plus operations. And section four is part three, plus the G-K-E workload identity material in part six. Every bullet of the June twenty twenty-six guide is taught somewhere in this course. This is independent study material, and it is not affiliated with, endorsed by, or sponsored by Google.
+
+## Mixed mock: fifteen questions
+
+= th | Mixed mock | Fifteen questions, across all four sections | Treat this as exam practice: name the clause, choose, and keep a tally. Aim for twelve or more.
+N: Now the mixed mock. Fifteen questions from across the guide, in no particular order. Keep a tally. As a rough guide, aim for twelve or more correct, and for every miss, return to the part it came from.
+
+= q | A new Compute Engine project shows an error: *"API has not been used in project 123 before or it is disabled."* Your account is a project Owner. What is the fix?
+(A) Grant yourself `roles/compute.admin`
+(B) Run `gcloud services enable compute.googleapis.com`
+(C) Run `gcloud auth application-default login`
+(D) Request a quota increase
+ans B
+why A :: A permission fix for an enablement problem.
+why B :: Enablement is per project.
+why C :: A credentials fix for an enablement problem.
+why D :: A quota fix for an enablement problem.
+C: The answer is B. Three error shapes, three fixes. This wording means enablement. A would help with a four-oh-three. C would help with missing credentials. D would help with a quota error.
+
+= q | An HTTPS application serves users on three continents, from backends in two regions, with one IP address and automatic regional failover. Which setup fits?
+(A) Global external Application Load Balancer, on Premium Tier
+(B) Regional external Application Load Balancer, on Standard Tier
+(C) External passthrough Network Load Balancer
+(D) DNS round robin across two regional IPs
+ans A
+why A :: One anycast IP, cross-region failover.
+why B :: Regional only.
+why C :: Regional, at layer 4.
+why D :: Cached, slow to fail over, and two IPs.
+C: The answer is A. One address worldwide, with failover between regions, is the third elimination from part four. Standard Tier cannot do global, so B is out. C is regional. D is two addresses, and it is slow to fail over.
+
+= q | Developers must be able to create Cloud Run services that run as `runtime@`, but must not be able to run arbitrary commands as `runtime@` from their terminals. What should you grant on `runtime@`?
+(A) `roles/iam.serviceAccountTokenCreator`
+(B) `roles/iam.serviceAccountUser`
+(C) `roles/owner`
+(D) `roles/iam.serviceAccountKeyAdmin`
+ans B
+why A :: This is exactly what lets them act as it from a terminal.
+why B :: Attach, without minting tokens.
+why C :: Far beyond the need.
+why D :: Creates keys, the opposite of the goal.
+C: The answer is B. Attach needs User, and act as needs Token Creator. So granting only User meets both clauses. This item tests that you know the difference, not only which one to use.
+
+= q | A data team wants to run SQL across petabytes for BI dashboards, without managing servers. What should they use?
+(A) Cloud SQL
+(B) Bigtable
+(C) BigQuery
+(D) Memorystore
+ans C
+why A :: One primary, not for petabyte scans.
+why B :: Key lookups, not SQL analytics.
+why C :: Serverless analytical warehouse.
+why D :: A cache.
+C: The answer is C. Analytics, S-Q-L and petabytes point to BigQuery. Each of the others fails one of the eliminations from part seven.
+
+= q | A Standard GKE cluster needs GPU nodes for a single workload, and other workloads must stay off those nodes. What should you do?
+(A) Change the default pool's machine type in place
+(B) Create a new node pool with GPUs, taint it, and give the workload a toleration and node selector
+(C) Create a second cluster
+(D) Use `kubectl scale` with a GPU flag
+ans B
+why A :: Machine type is not editable in place.
+why B :: A new kind of capacity is a new pool; taints keep others off.
+why C :: Heavy, when one pool suffices.
+why D :: Changes replicas, not hardware.
+C: The answer is B. A new kind of capacity is a new node pool, and taints with tolerations keep other workloads off. A is impossible. C is more than the stem needs. D changes replica count only.
+
+= q | Your compliance team needs a guarantee that every new resource in listed services uses customer-managed encryption keys, preventing non-compliant creation. What should you use?
+(A) An alert on audit logs when a non-CMEK resource is created
+(B) The `gcp.restrictNonCmekServices` organization policy
+(C) A weekly Asset Inventory report
+(D) A budget per service
+ans B
+why A :: Detects afterwards; does not prevent.
+why B :: Blocks creation unless the resource uses CMEK.
+why C :: Detects afterwards too.
+why D :: Unrelated to encryption.
+C: The answer is B. Prevent is the deciding word. Organization policy is preventive, while alerts and reports detect afterwards. Autokey would pair well with this, so that people are not hand-creating keys.
+
+= q | An app on a private VM must reach a partner's API on the internet, from a **fixed IP address** the partner will allow-list. There must be nothing inbound. What should you use?
+(A) Private Google Access
+(B) Cloud NAT with manually reserved static NAT IPs
+(C) A static external IP on the VM
+(D) Partner Interconnect
+ans B
+why A :: Google APIs only.
+why B :: Outbound only, from a fixed address.
+why C :: Exposes the VM, so inbound becomes possible.
+why D :: Connects on-premises; it does not reach partner APIs.
+C: The answer is B. Fixed egress address and nothing inbound both point to Cloud NAT with static addresses. A reaches Google A-P-Is only. C makes the V-M directly addressable. D is hybrid connectivity, despite its similar name.
+
+= q | Ten teams must only deploy to Google Cloud through a pipeline, and manual console changes must be visible for review. Which approach fits best?
+(A) Terraform, applied from a pipeline as a deploy service account; drift shows on the next plan
+(B) A wiki page with `gcloud` commands
+(C) Gemini Cloud Assist applying changes directly
+(D) Deployment Manager
+ans A
+why A :: Reviewed plans, a pipeline identity, and drift detection.
+why B :: Not repeatable or checked.
+why C :: Generated output is a draft; bypasses review.
+why D :: Deprecated.
+C: The answer is A. A pipeline and visible drift are what declarative infrastructure as code gives you. B has no controls. C bypasses review, and generated output is a draft. D is deprecated.
+
+= q | A new product team wants a VPC for production. A colleague suggests using the `default` network, as it already exists. What is the recommended approach?
+(A) Use the `default` network, and add a deny-all rule
+(B) Create a custom-mode VPC, and enforce `compute.skipDefaultNetworkCreation` for new projects
+(C) Create an auto-mode VPC
+(D) Use legacy networks
+ans B
+why A :: Auto mode, with permissive defaults still in place.
+why B :: The production answer, and a good baseline.
+why C :: Fixed, overlapping ranges.
+why D :: Not an option for new work.
+C: The answer is B. Custom mode is the production answer, and the skip default network constraint stops the default network appearing. A and C keep overlapping auto-mode ranges, which can never be peered with each other.
+
+= q | A mobile app needs document storage, real-time updates to clients, and offline support, with no servers to manage. What should you use?
+(A) Firestore in Native mode
+(B) Cloud SQL
+(C) Bigtable
+(D) Filestore
+ans A
+why A :: Documents, listeners, and offline SDKs.
+why B :: Relational, and no real-time client sync.
+why C :: Wide-column with no client SDK features.
+why D :: A file system, not a database.
+C: The answer is A. Mobile, real-time and offline point to Firestore in Native mode. Datastore mode is for server workloads, which is why Native matters here.
+
+= q | Finance wants **no surprise** on spend, but production must **never** be interrupted automatically. What should you configure?
+(A) A budget with alert thresholds, notifying the finance team
+(B) A budget, Pub/Sub and a function that disables billing
+(C) Lower quotas on every service
+(D) Unlink the billing account at the threshold
+ans A
+why A :: Alerts, and it stops nothing.
+why B :: Could take production down.
+why C :: Hard stops could interrupt production.
+why D :: Stops services.
+C: The answer is A. Never interrupted is the deciding clause, and it is what a budget's weakness gives you. When a stem forgives a weakness, it names the product. B and D stop services. C can also cause interruptions.
+
+= q | Engineers should hold production admin rights only during incidents, with approval, and with a complete audit trail. What should you use?
+(A) An IAM condition with an end date
+(B) Privileged Access Manager
+(C) A shared admin account
+(D) `roles/owner` for the on-call group
+ans B
+why A :: Expires, but there is no request or approval.
+why B :: Just-in-time, approved, time-bound and audited.
+why C :: No individual accountability.
+why D :: Standing access, which is what it forbids.
+C: The answer is B. Only during incidents and with approval point to just-in-time elevation. A has no approval flow. C and D are standing access, and C also removes accountability.
+
+= q | A bucket must keep objects in Standard for 30 days, then Nearline, and delete them after a year. How should you configure this?
+(A) A lifecycle configuration with `SetStorageClass` and `Delete` rules
+(B) Autoclass
+(C) A nightly Cloud Run job that moves and deletes objects
+(D) A retention policy of one year
+ans A
+why A :: Declarative rules based on age.
+why B :: Moves by access pattern, and the stem gives fixed rules.
+why C :: Assembled, when a built-in rule exists.
+why D :: Prevents deletion before a year, and it moves nothing.
+C: The answer is A. Fixed, age-based rules are what lifecycle management does. Autoclass suits unknown patterns, so B does not fit. C is assembled. D stops deletion, which is nearly the opposite.
+
+= q | A new engineer must SSH to a Linux VM, with access granted and revoked through IAM, and sudo available. Which role fits, and what must be enabled?
+(A) `roles/compute.osAdminLogin`, with `enable-oslogin=TRUE`
+(B) `roles/compute.osLogin`, with `enable-oslogin=TRUE`
+(C) `roles/compute.instanceAdmin.v1`, with a key in project metadata
+(D) `roles/owner`, with no other setup
+ans A
+why A :: IAM-governed access, with sudo.
+why B :: No sudo.
+why C :: Metadata keys are not IAM-governed.
+why D :: Far too broad.
+C: The answer is A. Granted and revoked through I-A-M means O-S Login, and sudo means admin login. B is right apart from sudo. C uses metadata keys. D breaks least privilege.
+
+= q | You are asked which change the **June 2026** exam guide made to its structure. Which statement is correct?
+(A) It has five sections, with planning and deploying separate
+(B) It has four sections weighted about 20, 30, 30 and 20, and operations grew to 30%
+(C) It removed identity and access from the exam
+(D) It has three sections, with security removed
+ans B
+why A :: That was the previous guide.
+why B :: Four sections, and operating grew from 20% to 30%.
+why C :: Identity remains heavily tested.
+why D :: Security remains a full section.
+C: The answer is B. And it is a fitting last question. Planning and deploying merged into one section at thirty percent, operating grew to thirty percent, and day two operations is now as heavy as building.
+
+= th | End of the course | You have the whole surface now. Good luck. | Re-watch the parts where your mock answers went wrong, then sit a full timed practice paper.
+N: That is the end of the course. Here is how to use the time you have left. Re-watch the parts where your mock answers went wrong. Sit a full, timed practice paper. Read the instruction line on every multiple-select item. And in the exam room, find the deciding clause first.
+V: Find the deciding clause first. Then check each option against it.
+[pause: 1.0]
+N: Good luck.

@@ -1,0 +1,39 @@
+% ace-theory-titlepage.tex --- cover sheet, included with pandoc -B.
+% One page: the exam in numbers, the section weights, the colour key and the whole contents in three
+% columns. Numbers are the published exam facts (Google's exam page and the June 2026 exam guide).
+\thispagestyle{plain}
+\begingroup
+\newcommand{\statcell}[2]{\begin{minipage}[t]{0.19\linewidth}\centering{\headfont\fontsize{17}{20}\selectfont\color{ink}#1}\\[1pt]{\sffamily\fontsize{6.3}{7.5}\selectfont\color{muted}\addfontfeature{LetterSpace=5}#2}\end{minipage}}
+\newcommand{\weightbar}[4]{\noindent\begin{minipage}[c]{0.56\linewidth}\fontsize{8}{9.5}\selectfont\color{ink}#1\end{minipage}\hfill\begin{minipage}[c]{0.42\linewidth}{\color{#3}\rule{1.6\dimexpr#2\linewidth\relax}{7pt}}\hspace{5pt}{\sffamily\fontsize{8}{9.5}\selectfont\bfseries\color{#3}#4}\end{minipage}\par\vspace{2.5pt}}
+\newcommand{\keychip}[3]{{\setlength{\fboxsep}{2.5pt}\colorbox{#2}{{\color{#1}\vrule width 2pt}\enspace\sffamily\fontsize{6.8}{8}\selectfont\color{ink}#3}}}
+{\sffamily\fontsize{7.5}{9}\selectfont\bfseries\color{teal}\addfontfeature{LetterSpace=8}GOOGLE CLOUD CERTIFICATION\enspace\textbullet\enspace THEORY RECAP}\par\vspace{4pt}
+{\headfont\fontsize{28}{31}\selectfont\color{ink}Associate Cloud Engineer}\par\vspace{3pt}
+{\lightfont\fontsize{12}{15}\selectfont\color{muted}Every objective of the June 2026 exam guide, in the order the ideas depend on each other}\par\vspace{4pt}
+{\sffamily\fontsize{7.5}{9}\selectfont\color{muted}Aliaksandr Arashkevich\enspace\textbullet\enspace written against the exam guide live from 30 June 2026\enspace\textbullet\enspace reference edition of 29 September 2026}\par
+\vspace{7pt}{\color{rule}\hrule height 0.6pt}\vspace{6pt}
+\noindent\statcell{2 h}{ON THE CLOCK}\hfill\statcell{50–60}{QUESTIONS}\hfill\statcell{4}{SECTIONS}\hfill\statcell{$\approx$70\%}{WORKING CUT SCORE}\hfill\statcell{3 yr}{VALIDITY}\par
+\vspace{6pt}{\color{rule}\hrule height 0.6pt}\vspace{8pt}
+\noindent\begin{minipage}[t]{0.49\linewidth}
+{\sffamily\fontsize{6.5}{8}\selectfont\bfseries\color{muted}\addfontfeature{LetterSpace=6}WHAT THE PAPER WEIGHS}\par\vspace{4pt}
+\weightbar{1\enspace Setting up the environment}{0.20}{blue}{$\sim$20\%}
+\weightbar{2\enspace Planning and implementing}{0.30}{teal}{$\sim$30\%}
+\weightbar{3\enspace Ensuring successful operation}{0.30}{purple}{$\sim$30\%}
+\weightbar{4\enspace Configuring access and security}{0.20}{red}{$\sim$20\%}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.47\linewidth}
+{\sffamily\fontsize{6.5}{8}\selectfont\bfseries\color{muted}\addfontfeature{LetterSpace=6}HOW TO READ A PAGE}\par\vspace{4pt}
+\keychip{blue}{bluebg}{Remember this}\enspace\keychip{red}{redbg}{Exam trap}\enspace\keychip{green}{greenbg}{How to spot it}\par\vspace{3pt}
+\keychip{amber}{amberbg}{Easy to confuse}\enspace\keychip{teal}{tealbg}{Worth knowing}\enspace\keychip{night}{codebg}{Command to recognise}\par\vspace{3pt}
+\keychip{magenta}{magentabg}{New in the June 2026 guide}\enspace\keychip{thesis}{thesisbg}{The rule in one line}\par\vspace{4pt}
+{\fontsize{7.3}{8.8}\selectfont\color{ink}\hlw{Yellow}\hls\hlw{highlight}\,= the fact to carry into the room. Parts follow \textbf{dependency}, not the guide's order; \textbf{Appendix A} maps every guide bullet to its section. \emph{Verify} marks volatile facts. Commands are only the ones the exam tests, as task $\rightarrow$ command tables. Each part ends with a one-page recall card.\par}
+\end{minipage}\par
+\vspace{9pt}{\color{rule}\hrule height 0.6pt}\vspace{5pt}
+{\sffamily\fontsize{6.5}{8}\selectfont\bfseries\color{muted}\addfontfeature{LetterSpace=6}CONTENTS}\par\vspace{2pt}
+\begin{multicols}{3}
+\setlength{\columnseprule}{0pt}
+\makeatletter\@starttoc{toc}\makeatother
+\end{multicols}
+\vfill
+{\sffamily\fontsize{6.3}{7.5}\selectfont\color{faint}Independent study material. Not affiliated with, endorsed by, or sponsored by Google LLC. Product names are Google's.}
+\endgroup
+\clearpage

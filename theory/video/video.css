@@ -1,0 +1,69 @@
+/* Lighter video slides on top of pdf-kit style.css + deck.css: one idea per slide, big type, one diagram max.
+   Rendered at 13.333 x 7.5 in → 1920 x 1080 frames. */
+.slide { padding: 0.5in 0.7in 0.55in; }
+.slide .k { font-size: 13pt; font-weight: 700; letter-spacing: 2pt; text-transform: uppercase; color: var(--blue); margin-bottom: 4pt; }
+.slide .k.r { color: var(--red); }
+.slide h1 { font-size: 30pt; letter-spacing: -0.4pt; margin: 0 0 14pt !important; padding-bottom: 8pt; }
+.lead { font-size: 20pt; line-height: 1.4; color: #3a424a; margin: 0 0 14pt; max-width: 11.5in; }
+.lead b { color: var(--ink); }
+.slide figure.grow { display: flex; align-items: center; justify-content: center; margin: 0; min-height: 0; }
+.slide figure.grow svg { width: 100%; height: 100%; max-height: 100%; }
+.slide.dia { padding-top: 0.38in; }
+.slide.dia h1 { font-size: 25pt; margin-bottom: 8pt !important; padding-bottom: 5pt; }
+.big li { font-size: 21pt; line-height: 1.4; margin-bottom: 12pt; }
+.big { padding-left: 26pt; }
+table.bt { font-size: 17pt; width: 100%; } table.bt th, table.bt td { padding: 8pt 12pt; }
+table.bt th { font-size: 14pt; }
+.cards { display: grid; gap: 18pt; margin-top: 6pt; }
+.cards.c2 { grid-template-columns: 1fr 1fr; } .cards.c3 { grid-template-columns: 1fr 1fr 1fr; }
+.cards.c4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+.cd { border: 1px solid var(--line); border-top: 6px solid var(--blue); border-radius: 7pt; padding: 16pt 18pt; }
+.cd h3 { font-size: 21pt; margin: 0 0 8pt; } .cd p { font-size: 17pt; line-height: 1.42; margin: 0 0 6pt; color: #3a424a; }
+.cd.red { border-top-color: var(--red); } .cd.amb { border-top-color: #d18f1c; } .cd.grn { border-top-color: var(--green); }
+.tiles { display: grid; gap: 18pt; grid-template-columns: repeat(var(--n, 4), 1fr); margin: 10pt 0 22pt; }
+.tile { background: var(--soft); border: 1px solid var(--line); border-radius: 8pt; padding: 18pt 18pt 16pt; }
+.tile b { display: block; font-size: 40pt; font-weight: 800; letter-spacing: -1pt; color: var(--red); line-height: 1.05; }
+.tile span { display: block; font-size: 15pt; color: var(--muted); margin-top: 6pt; }
+.tile.blue b { color: var(--blue); }
+.line { font-size: 22pt; font-weight: 600; border-left: 6px solid var(--green); background: var(--green-bg);
+  padding: 14pt 20pt; border-radius: 0 7pt 7pt 0; color: #173d24; margin-top: auto; }
+.line.r { border-left-color: var(--red); background: var(--red-bg); color: #5a1308; }
+.line.a { border-left-color: #d18f1c; background: var(--amber-bg); color: #4a3207; }
+/* question slides */
+.qs { justify-content: center; background: #f3f0fb; }
+.qs .who { font-size: 14pt; font-weight: 700; letter-spacing: 2pt; color: #5b44b5; text-transform: uppercase; }
+.qs .qq { font-size: 40pt; font-weight: 750; letter-spacing: -0.8pt; line-height: 1.18; color: #2a1d66; margin: 14pt 0 22pt; max-width: 11.6in; }
+.qs .hint { font-size: 18pt; color: #5b5f8a; }
+.qs .ans { margin-top: 16pt; font-size: 20pt; background: #fff; border-left: 6px solid var(--green); padding: 14pt 20pt; border-radius: 0 7pt 7pt 0; max-width: 11.6in; }
+/* thesis slides */
+.th { background: var(--ink); color: #fff; justify-content: center; padding: 0.9in 1in; }
+.th .lbl { font-size: 14pt; font-weight: 700; letter-spacing: 2.5pt; color: #ff9b8a; text-transform: uppercase; }
+.th .s { font-size: 44pt; font-weight: 800; letter-spacing: -1.2pt; line-height: 1.14; margin: 16pt 0 20pt; max-width: 11.4in; }
+.th .s em { font-style: normal; color: #ff7a66; }
+.th .sub { font-size: 20pt; color: #c7ced6; max-width: 11in; line-height: 1.45; }
+.th .foot { color: #6e7781; }
+pre.big { font-size: 15pt; line-height: 1.45; padding: 12pt 16pt; }
+.slide .foot { font-size: 10pt; }
+.th ol.check { margin: 0; } .th ol.check li { font-size: 25pt; color: #d6dbe0; margin-bottom: 12pt; line-height: 1.3; }
+/* v2 (2026-10-29): a slide number on every frame, so reviewers can say "slide 23"; and a marker on the
+   auxiliary EM-layer slides that a Staff/IC candidate may skip in the real round. */
+body { counter-reset: sl; }
+.slide { counter-increment: sl; }
+.slide::after { content: counter(sl); position: absolute; top: 0.2in; right: 0.28in; min-width: 0.42in; text-align: center;
+  font: 700 13pt/1 Inter, sans-serif; padding: 5pt 7pt; border-radius: 6pt; background: #eef1f4; color: #57606a; }
+.slide.th::after { background: #2d333b; color: #c9d1d9; }
+.slide.aux::before { content: "AUX · EM LAYER · OPTIONAL IN A STAFF / IC ROUND"; position: absolute; top: 0.24in; right: 1.0in;
+  font: 700 10.5pt/1 Inter, sans-serif; letter-spacing: 1pt; padding: 5pt 9pt; border-radius: 5pt;
+  background: #fdf3e1; color: #7a4c0c; border: 1px solid #d18f1c; }
+.slide.th.aux::before { background: #4a3207; color: #ffd591; border-color: #a86a12; }
+pre.wire { font-size: 13pt; line-height: 1.38; padding: 10pt 14pt; margin: 0 0 10pt; }
+.cols2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16pt; }
+.cols2 pre.wire { margin: 0; }
+table.bt.sm { font-size: 14.5pt; } table.bt.sm th, table.bt.sm td { padding: 6pt 10pt; }
+table.bt td.calc { font-family: "DejaVu Sans Mono", monospace; font-size: 13pt; color: #0b3d6e; }
+.cols2 pre.wire { font-size: 11.5pt; white-space: pre; overflow: hidden; }
+
+/* readable code slides (2026-10-29 review): 16pt, comments on their own line, ≤ 16 lines */
+pre.code { font-size: 16pt; line-height: 1.5; padding: 12pt 18pt; white-space: pre; }
+pre.code .cm, pre.wire .cm { color: #6e7781; font-style: italic; }
+pre.code .kw { color: #c8341f; font-weight: 700; }

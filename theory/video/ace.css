@@ -1,0 +1,41 @@
+/* ACE course layer on top of video.css: question slides, exam panels, the June-2026 badge. */
+.slide.new::before { content: "NEW IN THE JUNE 2026 GUIDE"; position: absolute; top: 0.24in; right: 1.05in;
+  font: 700 10.5pt/1 Inter, sans-serif; letter-spacing: 1pt; padding: 5pt 9pt; border-radius: 5pt;
+  background: #fbe6f3; color: #9b1668; border: 1px solid #c2308a; }
+.slide.th.new::before { background: #5c0f3f; color: #ffc9ea; border-color: #c2308a; }
+.slide::after { min-width: 0.55in; }
+.panel { border-left: 8px solid var(--blue); background: #e8f0fa; border-radius: 0 9pt 9pt 0; padding: 20pt 26pt; margin-top: 4pt; }
+.panel .pl { font: 700 13pt/1 Inter, sans-serif; letter-spacing: 2pt; text-transform: uppercase; margin-bottom: 12pt; color: var(--blue); }
+.panel p { font-size: 21pt; line-height: 1.38; margin: 0 0 10pt; color: #1f2328; }
+.panel.trap { border-color: #c8341f; background: #fdecea; } .panel.trap .pl { color: #c8341f; }
+.panel.watch { border-color: #d18f1c; background: #fdf3e1; } .panel.watch .pl { color: #8a5a0c; }
+.panel.tip { border-color: #2d8a4e; background: #e7f4ec; } .panel.tip .pl { color: #2d8a4e; }
+.panel.new { border-color: #c2308a; background: #fbe6f3; } .panel.new .pl { color: #9b1668; }
+.panel.note { border-color: #57606a; background: #f3f4f6; } .panel.note .pl { color: #57606a; }
+.big li { font-size: 20.5pt; line-height: 1.34; margin-bottom: 9pt; }
+.big li code, .panel code, .cd code, .line code, .lead code { font-size: 0.86em; }
+table.bt code { font-size: 0.84em; word-break: break-word; }
+table.cmd td:last-child { font-family: "DejaVu Sans Mono", Menlo, monospace; font-size: 13.5pt; color: #0b3d6e; word-break: break-word; }
+table.cmd td:first-child { width: 33%; }
+table.bt.sm { font-size: 15pt; }
+mark { background: #fff3a3; padding: 0 2pt; }
+.th mark { background: none; color: #ff7a66; }
+/* questions */
+.qz { background: #f3f0fb; padding-top: 0.42in; }
+.qz .who { font-size: 13pt; font-weight: 700; letter-spacing: 2pt; color: #5b44b5; text-transform: uppercase; margin-bottom: 8pt; }
+.qz .stem { font-size: 23pt; font-weight: 650; line-height: 1.27; color: #2a1d66; margin-bottom: 14pt; max-width: 12in; }
+.qz .opt { display: flex; gap: 12pt; align-items: flex-start; background: #fff; border: 1px solid #d6d0ee; border-radius: 7pt; padding: 8pt 13pt; margin-bottom: 7pt; font-size: 18.5pt; line-height: 1.26; }
+.qz .opt b.l { flex: 0 0 auto; width: 25pt; height: 25pt; border-radius: 50%; background: #5b44b5; color: #fff; font-size: 14.5pt; display: flex; align-items: center; justify-content: center; margin-top: 1pt; }
+.qz .hint { margin-top: auto; font-size: 15pt; color: #5b5f8a; font-weight: 600; }
+.qz.rev .stem { font-size: 16pt; font-weight: 600; margin-bottom: 9pt; color: #4b4378; line-height: 1.24; }
+.qz.rev .opt { font-size: 15.5pt; padding: 6pt 11pt; margin-bottom: 6pt; display: block; line-height: 1.22; position: relative; padding-left: 40pt; }
+.qz.rev .opt b.l { position: absolute; left: 10pt; top: 6pt; width: 21pt; height: 21pt; font-size: 12pt; }
+.qz.rev .opt .why { display: block; font-size: 14.5pt; color: #4d5560; margin-top: 2pt; }
+.qz.rev .opt.ok { background: #e7f4ec; border: 2px solid #2d8a4e; font-weight: 650; }
+.qz.rev .opt.ok b.l { background: #2d8a4e; }
+.qz.rev .opt.ok .why { color: #173d24; font-weight: 500; }
+.qz.rev .opt.no { background: #fff; border-color: #e3dfe9; }
+.qz.rev .opt.no b.l { background: #9aa1aa; }
+.qz.rev .opt .why { background: none; border: 0; padding: 0; margin: 2pt 0 0; border-radius: 0; }
+.qz .stem code, .qz .opt code { font-size: 0.86em; }
+.th .s code { font-size: 0.8em; }

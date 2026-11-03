@@ -1,0 +1,85 @@
+title: gcp-ace-simulator
+description: A timed Google Cloud Associate Cloud Engineer practice exam and a free theory course, on the June 2026 exam guide.
+url: https://nirmata78.github.io
+baseurl: /gcp-ace-simulator
+remote_theme: just-the-docs/just-the-docs@v0.10.1
+color_scheme: light
+search_enabled: true
+heading_anchors: true
+aux_links:
+  "View on GitHub": https://github.com/nirmata78/gcp-ace-simulator
+aux_links_new_tab: true
+back_to_top: true
+gh_edit_link: true
+gh_edit_link_text: "Suggest a fix to this page"
+gh_edit_repository: https://github.com/nirmata78/gcp-ace-simulator
+gh_edit_branch: main
+gh_edit_view_mode: edit
+footer_content: 'MIT licensed · Not affiliated with, endorsed by, or sponsored by Google LLC · <a href="https://github.com/nirmata78/gcp-ace-simulator">github.com/nirmata78/gcp-ace-simulator</a>'
+
+callouts_level: quiet
+callouts:
+  objectives:
+    title: Exam guide
+    color: grey-lt
+  key:
+    title: Remember this
+    color: blue
+  trap:
+    title: Exam trap
+    color: red
+  tip:
+    title: How to spot it
+    color: green
+  watch:
+    title: Easy to confuse
+    color: yellow
+  note:
+    title: Worth knowing
+    color: grey-lt
+  new:
+    title: New in the June 2026 guide
+    color: purple
+  story:
+    title: Scenario
+    color: blue
+
+plugins:
+  - jekyll-remote-theme
+  - jekyll-titles-from-headings
+  - jekyll-relative-links
+  - jekyll-optional-front-matter
+  - jekyll-readme-index
+  - jekyll-seo-tag
+
+relative_links:
+  enabled: true
+  collections: false
+
+exclude:
+  - app.py
+  - CLAUDE.md
+  - LICENSE
+  - requirements.txt
+  - data/
+  - private/
+  - reports/
+  - scripts/
+  - src/
+  - tests/
+  - theory/pdf/
+  - theory/video/
+  - Gemfile
+  - Gemfile.lock
+  - vendor/
+  - .venv/
+
+defaults:
+  - scope: { path: "" }
+    values: { layout: default }
+  - scope: { path: "README.md" }
+    values: { title: Home, nav_order: 1, permalink: / }
+  - scope: { path: "theory/README.md" }
+    values: { title: Theory, nav_order: 2, has_children: true }
+  - scope: { path: "CONTRIBUTING.md" }
+    values: { title: Contributing, nav_order: 3 }

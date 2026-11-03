@@ -1,0 +1,14 @@
+# GCP ACE Exam Simulator — runtime dependencies
+# Python 3.11+
+
+streamlit>=1.40.0        # browser-native exam UI
+pydantic>=2.9.0          # question / attempt schemas
+reportlab>=4.2.0         # PDF score-report engine
+requests>=2.32.0         # fail-fast network probe
+
+# Optional: only needed for LLM-backed question authoring
+#   scripts/kb.py add --topic / --stem
+anthropic>=0.40.0
+
+# Dev / test
+pytest>=8.3.0
