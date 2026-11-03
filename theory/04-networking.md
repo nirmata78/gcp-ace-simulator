@@ -42,7 +42,7 @@ SSH, RDP, ICMP from anywhere). Production work starts on a custom-mode VPC, and 
 
 - A subnet has one **primary IPv4 range** (RFC 1918 or other private ranges) and optional **secondary ranges** —
   used by GKE for Pod and Service IPs (alias IPs).
-- <mark>**Four addresses in every primary range are reserved**</mark>: network, default gateway, second-to-last, and broadcast.
+- <mark markdown="span">**Four addresses in every primary range are reserved**</mark>: network, default gateway, second-to-last, and broadcast.
 - Subnet ranges in one VPC, and across peered VPCs, **must not overlap**.
 - Subnets can be **dual-stack** (IPv4 + IPv6) or IPv6-only (*recognise*).
 
@@ -53,7 +53,7 @@ SSH, RDP, ICMP from anywhere). Production work starts on a custom-mode VPC, and 
 |:------------------------------------|:----------------------------------------------------------------------|
 | Grow a full subnet (never shrink) | `gcloud compute networks subnets expand-ip-range web-euc2 --region=R --prefix-length=19` |
 
-<mark>**A subnet's primary range can be expanded (a shorter prefix), never shrunk**</mark>, without downtime, as long as the
+<mark markdown="span">**A subnet's primary range can be expanded (a shorter prefix), never shrunk**</mark>, without downtime, as long as the
 larger range does not overlap anything. *"The subnet is out of addresses"* is `expand-ip-range`; *"we made it too
 big"* has no fix except a new subnet and migration. Auto-mode subnets can grow up to `/16`.
 
@@ -157,7 +157,7 @@ Policy rules add a fourth action to allow and deny: **`goto_next`**, which hands
 > *values* to VM instances (or GKE node pools), and firewall-**policy** rules select sources and targets by those
 > values. Because attaching a tag value needs an IAM role (`roles/resourcemanager.tagUser` on the value), **a
 > developer cannot open a VM to a rule simply by editing it** — the property network tags lack. And the mapping
-> runs one way only: <mark>**network tags work only in VPC firewall rules; firewall policies use secure tags, not network
+> runs one way only: <mark markdown="span">**network tags work only in VPC firewall rules; firewall policies use secure tags, not network
 > tags.**</mark>
 >
 > **Cloud NGFW tiers:** **Essentials** — the foundational stateful firewall, policies, secure tags (no extra
@@ -198,7 +198,7 @@ associated. To record what a policy rule matches, set **`--enable-logging`** on 
 
 - **Both sides must create** the peering before it becomes active; the networks can be in different projects or
   organizations.
-- **Non-transitive:** if A peers with B and B with C, <mark>**A cannot reach C**</mark>. Nor can a peer use your VPN or
+- **Non-transitive:** if A peers with B and B with C, <mark markdown="span">**A cannot reach C**</mark>. Nor can a peer use your VPN or
   Interconnect to reach your on-premises network, unless custom routes are exported and imported.
 - **No overlapping subnet ranges** between peers.
 - **Subnet routes are exchanged automatically**; custom (static and dynamic) routes only if you enable export and
@@ -232,7 +232,7 @@ Interconnect and advertises your subnets back. HA VPN requires it. With the VPC'
 global**, routes learned in one region are usable from all regions.
 
 {: .note }
-> <mark>**Interconnect traffic is not encrypted by default.**</mark> Options: **MACsec** on Dedicated Interconnect, or **HA VPN
+> <mark markdown="span">**Interconnect traffic is not encrypted by default.**</mark> Options: **MACsec** on Dedicated Interconnect, or **HA VPN
 > over Cloud Interconnect** for IPsec on top of the private circuit. *"Private, high-bandwidth and encrypted"* is one
 > of those two.
 
@@ -254,7 +254,7 @@ global**, routes learned in one region are usable from all regions.
 | **Cloud Run / functions** reach resources on your VPC | **Direct VPC egress** (recommended) or a Serverless VPC Access connector | Per service |
 
 {: .watch }
-> **Private Google Access versus Cloud NAT.** <mark>PGA reaches **Google APIs only**. Cloud NAT reaches **the internet**</mark>
+> **Private Google Access versus Cloud NAT.** <mark markdown="span">PGA reaches **Google APIs only**. Cloud NAT reaches **the internet**</mark>
 > (package mirrors, a partner API). A private VM that needs only Cloud Storage and BigQuery needs PGA and nothing
 > else; one that must `apt-get` from the internet needs Cloud NAT.
 
@@ -295,7 +295,7 @@ VMs also get **internal DNS** automatically: `VM_NAME.ZONE.c.PROJECT_ID.internal
 
 
 {: .tip }
-> <mark>**Direction decides the DNS object.**</mark> Cloud VMs must resolve **on-premises** names — a **forwarding zone**.
+> <mark markdown="span">**Direction decides the DNS object.**</mark> Cloud VMs must resolve **on-premises** names — a **forwarding zone**.
 > On-premises hosts must resolve **Cloud private** names — an **inbound server policy**.
 
 ### Cloud NAT
@@ -350,7 +350,7 @@ health checks, session affinity, Cloud CDN, Cloud Armor) → **backends**:
 | Private Service Connect NEG | A published service or Google API |
 
 {: .trap }
-> <mark>**Health checks come from Google's probe ranges, `35.191.0.0/16` and `130.211.0.0/22`.**</mark> If no firewall rule allows
+> <mark markdown="span">**Health checks come from Google's probe ranges, `35.191.0.0/16` and `130.211.0.0/22`.**</mark> If no firewall rule allows
 > them to the backends' serving port, every backend is marked unhealthy and the load balancer returns errors even
 > though the VMs are fine. *"All backends unhealthy right after creating the LB"* is almost always this rule.
 

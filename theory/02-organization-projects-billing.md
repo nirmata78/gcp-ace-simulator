@@ -31,7 +31,7 @@ Organization                 the root: one per Cloud Identity / Workspace custom
 
 **Four rules follow from the tree, and each is examined directly:**
 
-1. <mark>**IAM allow policies are inherited downward and are additive.**</mark> A grant on a folder is effective on every
+1. <mark markdown="span">**IAM allow policies are inherited downward and are additive.**</mark> A grant on a folder is effective on every
    project in it, including projects created later. There is no "more specific wins" ([§3.3](03-identity-access.md#s3-3)).
 2. **Organization policies are inherited downward too.** The **constraint** is the rule type Google defines
    (`compute.vmExternalIpAccess`); the **organization policy** is your setting of that constraint on a node. Descendants inherit the policy; a lower node can **replace** it, or for
@@ -116,7 +116,7 @@ manages IAM on the resource hierarchy. Google's set-up guidance is to grant org-
 | `roles/resourcemanager.projectMover` | Update and **move** projects between folders |
 | `roles/browser` | See the hierarchy — folders and projects — but nothing inside them |
 
-A move needs rights on the project, the source and the destination. <mark>**Project Mover granted on a common ancestor
+A move needs rights on the project, the source and the destination. <mark markdown="span">**Project Mover granted on a common ancestor
 (often the organization) covers all three in one binding**</mark>, which is why it beats Folder Admin or Organization
 Administrator on a least-privilege question.
 
@@ -156,7 +156,7 @@ network ships with permissive firewall rules ([§4.4](04-networking.md#s4-4)).
 | **Rate quota** | Requests per interval | API reads per minute | `429 RESOURCE_EXHAUSTED`; retry with exponential backoff |
 | **System limit** | A fixed maximum, not adjustable | Maximum labels per resource | Redesign, do not request |
 
-<mark>**Quotas are per project**</mark>, and many are **per region** (GPUs have both a per-region and an all-regions quota).
+<mark markdown="span">**Quotas are per project**</mark>, and many are **per region** (GPUs have both a per-region and an all-regions quota).
 When a legitimate workload needs more, the answer is to **request an increase for that quota in that project** in
 **Cloud Quotas** (IAM & Admin → Quotas & System Limits), or let the **quota adjuster** raise eligible quotas
 automatically as usage approaches them. Spreading the workload across extra projects to dodge a quota is the
@@ -164,7 +164,7 @@ distractor.
 
 
 {: .key }
-> <mark>**A quota is a hard stop; a budget is only an alert ([§2.7](#s2-7)).**</mark> You can also *lower* a quota deliberately — for
+> <mark markdown="span">**A quota is a hard stop; a budget is only an alert ([§2.7](#s2-7)).**</mark> You can also *lower* a quota deliberately — for
 > example BigQuery's query-usage-per-day quota — to cap consumption. That is the answer to *"make it impossible to
 > exceed"*, where a budget is not.
 
@@ -189,7 +189,7 @@ billing account stops its paid services, and resources may be deleted.
 | `roles/billing.projectManager` — Project Billing Manager | Project | Link and unlink **this project** |
 
 {: .key }
-> <mark>**Linking a project needs a grant on both sides:**</mark> permission on the **project** (Project Billing Manager, or
+> <mark markdown="span">**Linking a project needs a grant on both sides:**</mark> permission on the **project** (Project Billing Manager, or
 > Owner) **and** Billing Account User on the **billing account**. Owner of the project alone cannot attach it to an
 > account it has no role on. This two-sided rule is the single most examined billing fact.
 
@@ -200,7 +200,7 @@ billing account stops its paid services, and resources may be deleted.
 
 ## <a id="s2-7"></a>2.7 Budgets, alerts and exports
 
-<mark>**A budget watches spend and notifies. It never stops anything.**</mark> Each budget has a **scope** (the whole billing
+<mark markdown="span">**A budget watches spend and notifies. It never stops anything.**</mark> Each budget has a **scope** (the whole billing
 account, or selected projects, services or labels), an **amount** (fixed, or last month's spend), and **threshold
 rules** on **actual** or **forecasted** spend — for example 50%, 90% and 100%.
 

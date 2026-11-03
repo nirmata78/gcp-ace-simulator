@@ -55,11 +55,11 @@ contain users, service accounts and other groups.
 
 | Action | Effect |
 |:----------------|:----------------------------------------------------------------------------------|
-| <mark>**Suspend**</mark> |; sessions and OAuth tokens are revoked; data and group memberships are kept. **Reversible** |
+| <mark markdown="span">**Suspend**</mark> |; sessions and OAuth tokens are revoked; data and group memberships are kept. **Reversible** |
 | **Delete** | The account is removed. Transfer Drive and other data first. Restorable only for a short period (*verify*) |
 
 {: .key }
-> <mark>**A person who has left is removed at the identity layer, not in IAM.**</mark> Suspending the account makes every IAM
+> <mark markdown="span">**A person who has left is removed at the identity layer, not in IAM.**</mark> Suspending the account makes every IAM
 > binding, direct or via group, in every project, unusable at once — you cannot miss a binding you never had to
 > find. IAM edits are for people who *stay* and whose access changes.
 
@@ -89,7 +89,7 @@ principalSet://iam.googleapis.com/locations/global/workforcePools/POOL/*
 
 **Granting access** uses those identifiers exactly like `user:` or `group:` — typically a `principalSet` for a
 group coming from the IdP. **Signing in**: federated users reach a federated sign-in for the console, and
-`gcloud` uses a login configuration file created for the pool. <mark>**Group bindings only work if the provider maps the
+`gcloud` uses a login configuration file created for the pool. <mark markdown="span">**Group bindings only work if the provider maps the
 IdP's groups claim to `google.groups`**</mark> — otherwise the `principalSet .../group/...` matches nobody. The pool's
 **session duration** (default 1 h, 15 min–12 h, e.g. `--session-duration=1800s`) sets how long console and gcloud
 sessions from that pool last — per pool, so contractors can get shorter sessions than employees. Some products and features do not support
@@ -120,7 +120,7 @@ needed when conditions are present). Each resource has at most one allow policy.
 
 1. **Effective access is the union** of every binding that reaches the principal — directly, through any group, at
    the resource and at every ancestor up to the organization.
-2. <mark>**A lower allow policy cannot remove a higher grant.**</mark> There is no "most specific wins" and no negative binding.
+2. <mark markdown="span">**A lower allow policy cannot remove a higher grant.**</mark> There is no "most specific wins" and no negative binding.
 3. **Only two things subtract from what allow policies grant:** an **IAM deny policy** (removes permissions from
    principals) and an **organization policy** (removes configurations from everyone) — [§3.6](#s3-6) and [§3.7](#s3-7). A
    **principal access boundary** policy also caps *which resources* a principal may reach, but it never grants
@@ -189,7 +189,7 @@ roles on this project?"* — an Owner or someone with a Security Admin-type role
 | The same on a folder, organization or bucket | `gcloud resource-manager folders add-iam-policy-binding` · `gcloud organizations add-iam-policy-binding` · `gcloud storage buckets add-iam-policy-binding` |
 
 {: .trap }
-> <mark>**`set-iam-policy` replaces the whole policy.**</mark> It is a read–modify–write: get the policy, edit it, set it back
+> <mark markdown="span">**`set-iam-policy` replaces the whole policy.**</mark> It is a read–modify–write: get the policy, edit it, set it back
 > with the same **etag** — if someone changed the policy in between, the etag no longer matches and the write is
 > rejected rather than silently overwriting their change. For one grant, `add-iam-policy-binding` is the safer
 > answer.
@@ -220,7 +220,7 @@ them.
 
 A **deny policy** names principals, permissions they may never use, optional **exception principals**, and an
 optional condition. It attaches to an **organization, folder or project** and is **evaluated before allow
-policies**: <mark>a matching deny wins over every allow</mark>, everywhere below its attachment point.
+policies**: <mark markdown="span">a matching deny wins over every allow</mark>, everywhere below its attachment point.
 
 
 Managing them needs `roles/iam.denyAdmin`. Deny policies name permissions in the form
@@ -336,7 +336,7 @@ A **service account is both a principal and a resource.** You grant roles **to**
 | Delete; recover within 30 days | `gcloud iam service-accounts delete SA_EMAIL` · `gcloud iam service-accounts undelete UNIQUE_ID` |
 
 {: .trap }
-> <mark>**Disable before delete.**</mark> Disabling stops the account immediately and is reversible. Deleting it leaves its role
+> <mark markdown="span">**Disable before delete.**</mark> Disabling stops the account immediately and is reversible. Deleting it leaves its role
 > bindings behind as orphans, and a new account created with the **same name** is a **different principal** (a new
 > unique ID) that does **not** inherit the old bindings. Undelete works for 30 days, by unique ID.
 
@@ -389,7 +389,7 @@ account — grant the engineer Token Creator on it rather than handing out a key
 
 {: .watch }
 > **Service Account User versus Token Creator.** *"Create a VM that runs as `sa@`"* needs **User**
-> (`actAs`). *"Run this command as `sa@` from my terminal / pipeline"* needs **Token Creator**. <mark>Both are granted **on
+> (`actAs`). *"Run this command as `sa@` from my terminal / pipeline"* needs **Token Creator**. <mark markdown="span">Both are granted **on
 > the service account**, not on the project</mark>, for least privilege.
 
 ## <a id="s3-11"></a>3.11 Short-lived credentials, and keys as a last resort
@@ -417,7 +417,7 @@ metadata server. On Google Cloud, the third needs no configuration at all — wh
 ### Service-account keys
 
 A **user-managed key** is a long-lived private key that **never expires by default**, can be copied anywhere, and
-is rotated only if you rotate it. Google's position, and the exam's: <mark>**a key is the last resort.**</mark>
+is rotated only if you rotate it. Google's position, and the exam's: <mark markdown="span">**a key is the last resort.**</mark>
 
 | Situation | Keyless mechanism |
 |:----------------------------------------------|:------------------------------------------------------|
@@ -471,7 +471,7 @@ service-account token issuer. If Google cannot reach that issuer (a private, on-
 cluster's JWKS** with `--jwk-json-path`; the control plane never needs to be exposed.
 
 {: .key }
-> <mark>**The attribute condition is the security boundary.**</mark> Without one, *any* identity the IdP can issue — any GitHub
+> <mark markdown="span">**The attribute condition is the security boundary.**</mark> Without one, *any* identity the IdP can issue — any GitHub
 > repository in the world, for a public issuer — could federate. *"Only pipelines from our repository"* is an
 > attribute condition on the provider.
 

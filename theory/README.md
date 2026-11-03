@@ -47,7 +47,7 @@ Each part ends in a **recall card**: the whole part on one screen, for the secon
 {: .new }
 > Introduced by the June 2026 guide.
 
-<mark>Highlighted text</mark> is the single most exam-relevant fact in a section.
+<mark markdown="span">Highlighted text</mark> is the single most exam-relevant fact in a section.
 
 ## The loop
 

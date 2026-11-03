@@ -40,7 +40,7 @@ def prose(line: str) -> str:
         out.append(m.group(0))
         pos = m.end()
     out.append(undash(line[pos:]))
-    return "".join(out).replace("<mark>", "==").replace("</mark>", "==")
+    return "".join(out).replace('<mark markdown="span">', "==").replace("</mark>", "==")
 
 
 def page_to_pandoc(text: str) -> str:

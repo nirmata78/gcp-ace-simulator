@@ -28,7 +28,7 @@ VMs running your Pods. The two modes differ in who owns those nodes.
 | Right when | *"We do not want to manage nodes"* | Node-level control, special hardware set-ups, DaemonSets that need host access |
 
 {: .trap }
-> <mark>**"Do not want to manage nodes" is Autopilot — not Standard with node auto-provisioning and autoscaling.**</mark>
+> <mark markdown="span">**"Do not want to manage nodes" is Autopilot — not Standard with node auto-provisioning and autoscaling.**</mark>
 > Automation on a Standard cluster changes how much work the nodes are, not who owns them or how you are billed.
 
 ### Cluster topology and access
@@ -36,7 +36,7 @@ VMs running your Pods. The two modes differ in who owns those nodes.
 | Choice | Meaning |
 |:----------------------------------|:------------------------------------------------------------------|
 | **Zonal** | One control-plane replica in one zone — a zone outage takes the control plane |
-| **Regional** | Control plane replicated across **three zones**; nodes spread across them. <mark>`--num-nodes` is **per zone**, so `--num-nodes=2` creates **six** nodes</mark> |
+| **Regional** | Control plane replicated across **three zones**; nodes spread across them. <mark markdown="span">`--num-nodes` is **per zone**, so `--num-nodes=2` creates **six** nodes</mark> |
 | **Private nodes** | Nodes have **internal IPs only** (`--enable-private-nodes`); they need **Cloud NAT** to pull images from the internet, and Private Google Access for Artifact Registry |
 | **Control-plane endpoint** | Public endpoint limited by **authorized networks**, a private endpoint only (`--enable-private-endpoint`), or the **DNS-based endpoint** secured by IAM |
 | **VPC-native** | Pods and Services take IPs from subnet **secondary ranges** (alias IPs) — the default |
@@ -117,7 +117,7 @@ GKE uses **container-native load balancing** — the LB targets Pod IPs directly
 and makes health checks per Pod.
 
 {: .key }
-> <mark>**Path or host routing, or one IP for many Services, means Ingress or Gateway.**</mark> A `LoadBalancer` Service is one IP
+> <mark markdown="span">**Path or host routing, or one IP for many Services, means Ingress or Gateway.**</mark> A `LoadBalancer` Service is one IP
 > for one Service at layer 4 — three apps behind *"one external IP routed by URL path"* is one Ingress, not three
 > LoadBalancer Services.
 
@@ -219,7 +219,7 @@ as OCI). **Container Registry is shut down** — `gcr.io` paths are now served b
 
 ### Configuring GKE to pull from Artifact Registry
 
-<mark>**Nodes pull images as the node pool's service account.**</mark> No `imagePullSecrets` are needed; what is needed is
+<mark markdown="span">**Nodes pull images as the node pool's service account.**</mark> No `imagePullSecrets` are needed; what is needed is
 **`roles/artifactregistry.reader` for that service account** on the repository (or its project).
 
 - **Same project, default Compute Engine service account with Editor** — it just works (and is too broad).
@@ -308,7 +308,7 @@ idle.
 
 ## <a id="s6-10"></a>6.10 Cloud Run revisions, traffic and scaling
 
-<mark>**Every deploy creates a revision, and by default sends it 100% of traffic immediately.**</mark> A gradual rollout is a
+<mark markdown="span">**Every deploy creates a revision, and by default sends it 100% of traffic immediately.**</mark> A gradual rollout is a
 deliberate two-step:
 
 {: .cmds }
@@ -389,7 +389,7 @@ without idempotency, because a permanent bug then retries until the event expire
 
 ### App Engine — recognise it
 
-App Engine is the original serverless platform. <mark>**One App Engine application per project, and its region can
+App Engine is the original serverless platform. <mark markdown="span">**One App Engine application per project, and its region can
 never change.**</mark> **Standard** environment: sandboxed runtimes, scales to zero, fast start. **Flexible**: containers on
 VMs, **minimum one instance**, no scale-to-zero. Services have **versions**; traffic splits between versions by
 percentage, and `gcloud app deploy --no-promote` deploys without moving traffic.
