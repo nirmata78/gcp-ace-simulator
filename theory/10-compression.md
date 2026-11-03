@@ -14,7 +14,9 @@ Nothing here is new. It is the booklet folded into the four shapes that are fast
 distractors are built from, the numbers worth knowing, the command grammar, and the words in a stem that point at
 an answer.
 
-## <a id="s10-1"></a>10.1 Confusion pairs
+<a id="s10-1"></a>
+
+## 10.1 Confusion pairs
 
 | A | B | What separates them |
 |:--------------------------|:--------------------------|:----------------------------------------------------------------|
@@ -93,7 +95,9 @@ an answer.
 | **Public status dashboard** | **Personalized Service Health** | Everyone's incidents · the ones affecting you, alertable |
 | `401` | `403` | No valid credentials · missing IAM permission |
 
-## <a id="s10-2"></a>10.2 The numbers worth knowing
+<a id="s10-2"></a>
+
+## 10.2 The numbers worth knowing
 
 | Number | Meaning |
 |:------------------------------|:----------------------------------------------------------------------|
@@ -118,7 +122,9 @@ an answer.
 | **1 Gbps ≈ 10 TB/day** | Transfer arithmetic |
 | **1 node = 1,000 PU** | Spanner compute capacity |
 
-## <a id="s10-3"></a>10.3 The command atlas
+<a id="s10-3"></a>
+
+## 10.3 The command atlas
 
 The grammar: `gcloud GROUP [SUBGROUP] VERB NAME --flags`; scope by `--zone`, `--region`, `--global` or
 `--location`. The exam tests the **verb and the deciding flag**, not full invocations — this is the index of the
@@ -139,7 +145,9 @@ ones worth recognising, each shown in context earlier.
 | Keys and secrets | `gcloud kms keyrings/keys create` · `gcloud beta services identity create --service=S` · `gcloud secrets versions access latest` |
 | Operations | `gcloud logging sinks create ... --include-children` · the sink's `writerIdentity` · `gcloud logging buckets create --enable-analytics` · `gcloud logging read FILTER` |
 
-## <a id="s10-4"></a>10.4 The words in a stem, and what they decide
+<a id="s10-4"></a>
+
+## 10.4 The words in a stem, and what they decide
 
 | If the stem says | Reach for |
 |:------------------------------------------------|:--------------------------------------------------------|

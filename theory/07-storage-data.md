@@ -13,7 +13,9 @@ nav_order: 7
 {: .objectives }
 > 2.2 choosing and deploying data products (Cloud SQL, BigQuery, Firestore, Spanner, Bigtable, AlloyDB, Dataflow, Pub/Sub, Managed Kafka, Memorystore) and storage products (Cloud Storage and its classes, Filestore, NetApp Volumes, Managed Lustre) · loading data · multi-region redundancy · 3.2 all of managing storage and data, including Database Center and CMEK
 
-## <a id="s7-1"></a>7.1 Choosing a storage product
+<a id="s7-1"></a>
+
+## 7.1 Choosing a storage product
 
 Start with the **access model** the application needs; the product follows.
 
@@ -36,7 +38,9 @@ Start with the **access model** the application needs; the product follows.
 > many clients matters more than anything else. None of them is object storage, and none is the answer to "cheap
 > archive".
 
-## <a id="s7-2"></a>7.2 Cloud Storage: buckets, locations, classes
+<a id="s7-2"></a>
+
+## 7.2 Cloud Storage: buckets, locations, classes
 
 | Concept | Fact |
 |:----------------------|:----------------------------------------------------------------------|
@@ -76,7 +80,9 @@ transitions on that bucket.
 | Copy; mirror a directory | `gcloud storage cp -r ./exports gs://kestrel-archive/2026/` · `gcloud storage rsync ./site gs://kestrel-web --recursive` |
 | Change one object's class | `gcloud storage objects update gs://B/big.mov --storage-class=COLDLINE` |
 
-## <a id="s7-3"></a>7.3 Lifecycle, versioning, soft delete and retention
+<a id="s7-3"></a>
+
+## 7.3 Lifecycle, versioning, soft delete and retention
 
 | Feature | Does | Typical stem |
 |:------------------------------|:------------------------------------------------------------|:------------------------------------------|
@@ -103,7 +109,9 @@ transitions on that bucket.
 > unlock the policy. Lifecycle rules only move objects to **colder** classes; they never warm them up, and changes
 > can take up to 24 hours to act.
 
-## <a id="s7-4"></a>7.4 Securing objects
+<a id="s7-4"></a>
+
+## 7.4 Securing objects
 
 | Mechanism | Use |
 |:------------------------------------------|:------------------------------------------------------------------|
@@ -134,7 +142,9 @@ transitions on that bucket.
 > uploaders must not read each other's files"* — **`objectCreator`**. *"Manage objects but never change the
 > bucket's settings"* — **`objectAdmin`**, not `admin`.
 
-## <a id="s7-5"></a>7.5 Estimating storage cost
+<a id="s7-5"></a>
+
+## 7.5 Estimating storage cost
 
 | Product | You pay for | Levers |
 |:----------------------|:------------------------------------------------------------|:------------------------------------------------|
@@ -158,7 +168,9 @@ after; **Storage Insights** and Active Assist recommendations to find waste.
 > partitions touched. Selecting fewer columns, filtering on the **partition** column, and **clustering** are what
 > reduce it. `--maximum_bytes_billed` makes an expensive query **fail** instead of running.
 
-## <a id="s7-6"></a>7.6 Choosing a database
+<a id="s7-6"></a>
+
+## 7.6 Choosing a database
 
 | Product | Model | Scale and consistency | Pick it when the stem says |
 |:----------------|:----------------------------------|:----------------------------------|:------------------------------------------|
@@ -179,7 +191,9 @@ after; **Storage Insights** and Active Assist recommendations to find waste.
 > is row-key design.
 > **4.** Memorystore is a **cache**, never the system of record.
 
-## <a id="s7-7"></a>7.7 Cloud SQL and AlloyDB
+<a id="s7-7"></a>
+
+## 7.7 Cloud SQL and AlloyDB
 
 ### Cloud SQL
 
@@ -217,7 +231,9 @@ instances** that scale reads. Its **columnar engine** accelerates analytical que
 scheduled backups; **cross-region secondary clusters** provide DR. It connects like Cloud SQL (Auth Proxy, private
 IP, PSC). *AlloyDB Omni* runs the same engine anywhere.
 
-## <a id="s7-8"></a>7.8 Spanner, Bigtable and Firestore
+<a id="s7-8"></a>
+
+## 7.8 Spanner, Bigtable and Firestore
 
 ### Spanner
 
@@ -258,7 +274,9 @@ IP, PSC). *AlloyDB Omni* runs the same engine anywhere.
   backups** (daily or weekly, restore into a **new** database), and managed **export/import** to Cloud Storage.
 
 
-## <a id="s7-9"></a>7.9 BigQuery
+<a id="s7-9"></a>
+
+## 7.9 BigQuery
 
 | Concept | Fact |
 |:------------------------------|:----------------------------------------------------------------------|
@@ -286,7 +304,9 @@ Every load, query, export and copy is a **job**.
 > `bq show -j` or the console's job history. *"Stop analysts running a 50 TB query by mistake"* —
 > **maximum bytes billed** or a **custom query quota**; a budget only alerts afterwards.
 
-## <a id="s7-10"></a>7.10 Memorystore and Database Center
+<a id="s7-10"></a>
+
+## 7.10 Memorystore and Database Center
 
 **Memorystore** runs **Redis** (standalone Basic tier, or Standard tier with a replica and automatic failover),
 **Redis Cluster**, **Valkey** and **Memcached**, reached over private networking. Typical jobs: caching query
@@ -303,7 +323,9 @@ rule stands: **a cache in front of a database, not the database**.
 > instances in production have no backups?"*). *"One place to see and fix risk across all our databases"* is Database
 > Center; a spreadsheet or per-product consoles are the distractors.
 
-## <a id="s7-11"></a>7.11 Loading and moving data
+<a id="s7-11"></a>
+
+## 7.11 Loading and moving data
 
 **Do the arithmetic before comparing tools.** <mark markdown="span">1 Gbps moves about **10 TB per day**</mark> at full, uncontended speed; 100
 Mbps about **1 TB per day**.
@@ -335,7 +357,9 @@ Volume / usable bandwidth = days.  Acceptable?
 |:------------------------------------|:----------------------------------------------------------------------|
 | Load files into a table | `bq load --source_format=PARQUET --autodetect sales.orders gs://kestrel-lake/orders/*.parquet` |
 
-## <a id="s7-12"></a>7.12 Messaging and pipelines: Pub/Sub, Managed Kafka, Dataflow
+<a id="s7-12"></a>
+
+## 7.12 Messaging and pipelines: Pub/Sub, Managed Kafka, Dataflow
 
 ### Pub/Sub
 
@@ -385,7 +409,9 @@ worker logs), with metrics in Cloud Monitoring. Workers run as a service account
 calls), **Cloud Scheduler** (managed cron — *one job on a timer*), **Cloud Tasks** (queued calls with rate
 limits).
 
-## <a id="s7-13"></a>7.13 Backup, restore and multi-region redundancy
+<a id="s7-13"></a>
+
+## 7.13 Backup, restore and multi-region redundancy
 
 ### Backup and restore
 
@@ -429,7 +455,9 @@ delete"*.
 > jobs had no slots"* — **BigQuery managed disaster recovery**. *"Apps had to be reconfigured after failover"* —
 > **Cloud SQL write endpoint**.
 
-## <a id="s7-14"></a>7.14 Encryption and customer-managed keys
+<a id="s7-14"></a>
+
+## 7.14 Encryption and customer-managed keys
 
 **Everything at rest is encrypted by default with Google-managed keys**, using envelope encryption; you cannot
 turn it off. The questions are about what to choose when default is not enough.
@@ -501,7 +529,9 @@ Key ring   location is permanent: a region, a multi-region (eu, us) or global
   Database Center also covers **databases on Compute Engine VMs**. Rotating a key never re-encrypts: **rewrite**
   old data onto the new version; a version scheduled for destruction can be **restored** during the delay.
 
-## <a id="s7-15"></a>7.15 Part 7 recall card
+<a id="s7-15"></a>
+
+## 7.15 Part 7 recall card
 
 | Prompt | Answer |
 |:------------------------------------------------|:--------------------------------------------------------|

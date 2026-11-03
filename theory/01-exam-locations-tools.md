@@ -17,7 +17,9 @@ Before any product, two things decide a surprising number of marks: knowing what
 and knowing *where* a resource lives — in a zone, a region, or globally. Both are here, with the tools you will
 be asked to drive the platform with.
 
-## <a id="s1-1"></a>1.1 The exam in numbers
+<a id="s1-1"></a>
+
+## 1.1 The exam in numbers
 
 | Property | Value |
 |:----------------------|:------------------------------------------------------------|
@@ -39,7 +41,9 @@ every multiple-select item and every answer you changed.
 > **A multiple-select item says "Choose two" (or three).** <mark markdown="span">Selecting the wrong *number* of answers scores zero</mark>, and so
 > does a single answer on a two-answer item. Read the instruction line before the options.
 
-## <a id="s1-2"></a>1.2 The four sections, and what moved in June 2026
+<a id="s1-2"></a>
+
+## 1.2 The four sections, and what moved in June 2026
 
 The exam guide that went live on **30 June 2026** has four sections:
 
@@ -73,7 +77,9 @@ are now one 30% section, and "operating" grew from 20% to 30%. **Day-2 operation
 **Cloud Run functions**. App Engine is not named at all, but it still exists and still appears as a distractor;
 [§6.12](06-containers-serverless.md#s6-12) covers it in one page.
 
-## <a id="s1-3"></a>1.3 How ACE items are written
+<a id="s1-3"></a>
+
+## 1.3 How ACE items are written
 
 The exam is scenario-based: a short story, a requirement, and four options that all *work* to some degree. It is
 testing whether you pick the one Google would recommend. Five preferences run through almost every item:
@@ -94,7 +100,9 @@ testing whether you pick the one Google would recommend. Five preferences run th
 > changing the application"*, *"including project owners"*, *"no key material"*, *"must survive a zone failure"*,
 > *"scale to zero"*. Underline it mentally before reading the options, and check each option against it.
 
-## <a id="s1-4"></a>1.4 Locations: regions, zones and what lives where
+<a id="s1-4"></a>
+
+## 1.4 Locations: regions, zones and what lives where
 
 A **region** is a geographic area (`europe-central2`, Warsaw). A **zone** is an isolated failure domain inside it
 (`europe-central2-a`); most regions have three. A **multi-region** is a continent-scale location (`US`, `EU`,
@@ -127,7 +135,9 @@ requirement the enforcement answer is different: the `gcp.resourceLocations` org
 > `machine-types list` / `accelerator-types list`. *"Make sure nobody can create resources outside the EU"* is a
 > governance question — the `gcp.resourceLocations` organization policy. Neither answers the other.
 
-## <a id="s1-5"></a>1.5 The interfaces: Console, gcloud, Cloud Shell, SDKs
+<a id="s1-5"></a>
+
+## 1.5 The interfaces: Console, gcloud, Cloud Shell, SDKs
 
 | Interface | Use it for |
 |:----------------------|:----------------------------------------------------------------|
@@ -185,7 +195,9 @@ answer to *"switch between work contexts in one command"*:
 > **"Only `$HOME` persists" is the whole Cloud Shell topic.** Options that claim the VM is permanently yours, that
 > nothing persists, or that system paths like `/usr/local/bin` persist are each a near-miss of that one fact.
 
-## <a id="s1-6"></a>1.6 Part 1 recall card
+<a id="s1-6"></a>
+
+## 1.6 Part 1 recall card
 
 | Prompt | Answer |
 |:----------------------------------------------|:------------------------------------------------|

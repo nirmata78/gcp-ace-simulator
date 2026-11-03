@@ -13,7 +13,9 @@ nav_order: 6
 {: .objectives }
 > 2.1 kubectl · deploying GKE clusters (Autopilot, regional, private) · deploying containerised applications · serverless deployments and event processing (Pub/Sub, Cloud Storage, Eventarc) · 3.1 cluster inventory · GKE and Artifact Registry · node pools · Kubernetes resources · HPA and VPA · Autopilot Pod resource requests · Cloud Run versions, traffic splitting (Cloud Run, functions, GKE), autoscaling · 4.2 service accounts with a GKE application
 
-## <a id="s6-1"></a>6.1 GKE architecture and cluster modes
+<a id="s6-1"></a>
+
+## 6.1 GKE architecture and cluster modes
 
 A GKE cluster is a **Google-managed control plane** (API server, scheduler, etcd) plus **nodes** — Compute Engine
 VMs running your Pods. The two modes differ in who owns those nodes.
@@ -49,7 +51,9 @@ VMs running your Pods. The two modes differ in who owns those nodes.
 | Standard regional cluster — `--num-nodes` is per zone | `gcloud container clusters create batch --location=R --num-nodes=1 --release-channel=regular` |
 | Private nodes, control plane limited to a range | `... --enable-private-nodes --enable-master-authorized-networks --master-authorized-networks=203.0.113.0/24` |
 
-## <a id="s6-2"></a>6.2 kubectl and cluster access
+<a id="s6-2"></a>
+
+## 6.2 kubectl and cluster access
 
 `gcloud` manages the **cluster** (create, resize, upgrade, delete, node pools); **`kubectl` manages what runs in it**
 (Deployments, Services, Pods). `get-credentials` is the bridge: it writes a kubeconfig entry.
@@ -79,7 +83,9 @@ RBAC.
 | Live CPU and memory | `kubectl top pods` |
 | The cluster's node pools | `gcloud container node-pools list --cluster=shop --location=R` |
 
-## <a id="s6-3"></a>6.3 Workloads
+<a id="s6-3"></a>
+
+## 6.3 Workloads
 
 | Object | For |
 |:------------------------------|:------------------------------------------------------------------------|
@@ -103,7 +109,9 @@ RBAC.
 > *"Each replica needs its own disk and a stable hostname"* — **StatefulSet**. *"Run exactly one collector on every
 > node, including new ones"* — **DaemonSet**. *"Nightly clean-up at 02:00"* — **CronJob**.
 
-## <a id="s6-4"></a>6.4 Exposing workloads and splitting traffic
+<a id="s6-4"></a>
+
+## 6.4 Exposing workloads and splitting traffic
 
 | Object | Gives you | Load balancer |
 |:------------------------------|:----------------------------------------------------------|:------------------------------------------|
@@ -132,7 +140,9 @@ and makes health checks per Pod.
 > one Service, split by replica counts — is coarse and ties the split to capacity.
 
 
-## <a id="s6-5"></a>6.5 Scaling Pods and nodes; Autopilot resource requests
+<a id="s6-5"></a>
+
+## 6.5 Scaling Pods and nodes; Autopilot resource requests
 
 | Layer | Mechanism | Scales |
 |:----------------------|:------------------------------------------|:------------------------------------------------------|
@@ -176,7 +186,9 @@ and makes health checks per Pod.
 > recommendations to right-size them. *"A Pod was scheduled with more memory than we asked for"* — ratio or
 > minimum enforcement.
 
-## <a id="s6-6"></a>6.6 Node pools and upgrades (Standard)
+<a id="s6-6"></a>
+
+## 6.6 Node pools and upgrades (Standard)
 
 A **node pool** is a group of identically configured nodes — a managed instance group under the hood.
 
@@ -191,7 +203,9 @@ A **node pool** is a group of identically configured nodes — a managed instanc
 | Upgrades | **Surge** upgrades (`max-surge`, `max-unavailable`) or **blue-green** upgrades per pool |
 
 
-## <a id="s6-7"></a>6.7 Artifact Registry and image access
+<a id="s6-7"></a>
+
+## 6.7 Artifact Registry and image access
 
 **Artifact Registry** stores container images and language packages (Maven, npm, Python, Go, apt, yum, Helm charts
 as OCI). **Container Registry is shut down** — `gcr.io` paths are now served by Artifact Registry. Repositories are
@@ -234,7 +248,9 @@ as OCI). **Container Registry is shut down** — `gcr.io` paths are now served b
 > `artifactregistry.reader` — not a missing `docker login`, not a public repository, and not a service-account key
 > in an `imagePullSecret`.
 
-## <a id="s6-8"></a>6.8 Workload Identity Federation for GKE
+<a id="s6-8"></a>
+
+## 6.8 Workload Identity Federation for GKE
 
 {: .new-title }
 > New in the June 2026 guide — a Google Cloud service account with a GKE application
@@ -263,7 +279,9 @@ The Pod spec names `serviceAccountName: web`. Client libraries then find credent
 One limitation is worth knowing: **Pods that use the host network (`hostNetwork: true`) cannot use Workload Identity
 Federation for GKE** — they reach the node's metadata server and act as the node's service account.
 
-## <a id="s6-9"></a>6.9 Cloud Run services and jobs
+<a id="s6-9"></a>
+
+## 6.9 Cloud Run services and jobs
 
 **Cloud Run runs containers without servers or clusters**, billed per use, scaling automatically — to zero when
 idle.
@@ -306,7 +324,9 @@ idle.
 > *"Service A must call private service B"* — grant **B's `run.invoker` to A's service account**; A attaches an ID
 > token for B's URL. Making B public and checking a header is the distractor.
 
-## <a id="s6-10"></a>6.10 Cloud Run revisions, traffic and scaling
+<a id="s6-10"></a>
+
+## 6.10 Cloud Run revisions, traffic and scaling
 
 <mark markdown="span">**Every deploy creates a revision, and by default sends it 100% of traffic immediately.**</mark> A gradual rollout is a
 deliberate two-step:
@@ -345,7 +365,9 @@ deliberate two-step:
 > connections at peak"* — **maximum instances** and/or lower **concurrency**. *"A single-threaded app misbehaves
 > under load"* — **concurrency 1**. *"Work continues after the response is sent"* — **instance-based billing**.
 
-## <a id="s6-11"></a>6.11 Cloud Run functions and events
+<a id="s6-11"></a>
+
+## 6.11 Cloud Run functions and events
 
 **Cloud Run functions** (formerly Cloud Functions) are functions deployed **as Cloud Run services** — you write a
 handler; Google builds and runs the container. So revisions, traffic splitting, scaling, concurrency, VPC egress
@@ -385,7 +407,9 @@ the "a function *is* a Cloud Run service" point concrete.
 **Retries.** Event-driven functions may enable **retry on failure** — useful for transient errors, dangerous
 without idempotency, because a permanent bug then retries until the event expires.
 
-## <a id="s6-12"></a>6.12 App Engine, Cloud Build and delivery
+<a id="s6-12"></a>
+
+## 6.12 App Engine, Cloud Build and delivery
 
 ### App Engine — recognise it
 
@@ -432,7 +456,9 @@ Run, with promotion between targets, approvals and **canary** strategies.
   private IPs without connector instances. Cloud Run functions react to **Firestore document events** through
   Eventarc. Choose the **snapshot storage location** explicitly when residency requires a region.
 
-## <a id="s6-13"></a>6.13 Part 6 recall card
+<a id="s6-13"></a>
+
+## 6.13 Part 6 recall card
 
 | Prompt | Answer |
 |:------------------------------------------------|:--------------------------------------------------------|

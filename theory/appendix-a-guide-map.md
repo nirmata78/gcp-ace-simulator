@@ -13,7 +13,9 @@ nav_order: 11
 Every bullet of the guide that went live on 30 June 2026, in the guide's own order, and where it is taught.
 Magenta panels in the body mark the bullets that are new in that guide.
 
-## <a id="sA-1"></a>A.1 Section 1 — Setting up a cloud solution environment (~20%)
+<a id="sA-1"></a>
+
+## A.1 Section 1 — Setting up a cloud solution environment (~20%)
 
 | Guide bullet | Taught in |
 |:----------------------------------------------------------------|:----------------------------|
@@ -34,7 +36,9 @@ Magenta panels in the body mark the bullets that are new in that guide.
 | Establishing billing budgets and alerts | [§2.7](02-organization-projects-billing.md#s2-7) |
 | Setting up billing exports | [§2.7](02-organization-projects-billing.md#s2-7) |
 
-## <a id="sA-2"></a>A.2 Section 2 — Planning and implementing a cloud solution (~30%)
+<a id="sA-2"></a>
+
+## A.2 Section 2 — Planning and implementing a cloud solution (~30%)
 
 | Guide bullet | Taught in |
 |:----------------------------------------------------------------|:----------------------------|
@@ -63,7 +67,9 @@ Magenta panels in the body mark the bullets that are new in that guide.
 | **2.4** IaC tooling (Fabric FAST, Config Connector, Terraform, Helm) | [§8.1](08-tooling.md#s8-1)–[§8.4](08-tooling.md#s8-4) |
 | AI-assisted planning (Gemini CLI, Antigravity, Gemini Cloud Assist, Application Design Center) | [§8.5](08-tooling.md#s8-5) |
 
-## <a id="sA-3"></a>A.3 Section 3 — Ensuring the successful operation of a cloud solution (~30%)
+<a id="sA-3"></a>
+
+## A.3 Section 3 — Ensuring the successful operation of a cloud solution (~30%)
 
 | Guide bullet | Taught in |
 |:----------------------------------------------------------------|:----------------------------|
@@ -110,7 +116,9 @@ Magenta panels in the body mark the bullets that are new in that guide.
 | Active Assist | [§9.10](09-operations.md#s9-10) |
 | Cloud Hub | [§9.9](09-operations.md#s9-9) |
 
-## <a id="sA-4"></a>A.4 Section 4 — Configuring access and security (~20%)
+<a id="sA-4"></a>
+
+## A.4 Section 4 — Configuring access and security (~20%)
 
 | Guide bullet | Taught in |
 |:----------------------------------------------------------------|:----------------------------|
