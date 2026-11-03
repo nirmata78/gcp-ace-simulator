@@ -36,7 +36,7 @@ everything you know and flagging anything over 90 seconds; a second pass on the 
 every multiple-select item and every answer you changed.
 
 {: .trap }
-> **A multiple-select item says "Choose two" (or three).** <mark>Selecting the wrong *number* of answers scores zero</mark>, and so
+> **A multiple-select item says "Choose two" (or three).** <mark markdown="span">Selecting the wrong *number* of answers scores zero</mark>, and so
 > does a single answer on a two-answer item. Read the instruction line before the options.
 
 ## <a id="s1-2"></a>1.2 The four sections, and what moved in June 2026
@@ -108,8 +108,8 @@ Every resource has a scope, and the scope decides what survives what:
 | **Regional** | Subnets, regional disks, regional MIGs, Cloud SQL instances (HA ones span two zones), Cloud Run services, regional load balancers, Cloud Router, Cloud NAT, Artifact Registry repositories, regional GKE clusters | A zone failure (if spread) |
 | **Multi-regional / global** | VPC networks, firewall rules, routes, images, snapshots (by default), global instance templates, global load balancers, Cloud DNS, Pub/Sub topics, IAM | A region failure |
 
-**Two consequences worth holding:** <mark>a **VPC is global while its subnets are regional**</mark>, so one VPC spans every
-region with no peering; and <mark>**images and snapshots are global**</mark>, so a disk in one zone can be recreated in any
+**Two consequences worth holding:** <mark markdown="span">a **VPC is global while its subnets are regional**</mark>, so one VPC spans every
+region with no peering; and <mark markdown="span">**images and snapshots are global**</mark>, so a disk in one zone can be recreated in any
 other zone or region from them.
 
 ### Verifying that a product is available where you need it

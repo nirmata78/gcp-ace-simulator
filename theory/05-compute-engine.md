@@ -100,10 +100,10 @@ gets the notice period to checkpoint. In a MIG, preempted VMs are recreated when
 {: .key }
 > **The availability policy is two settings.** *On host maintenance*: **MIGRATE** keeps the VM running by moving it
 > to another host — the default — or **TERMINATE** stops it. *Automatic restart*: bring the VM back if the host
-> fails. <mark>**GPU VMs must use TERMINATE**</mark> (they cannot live-migrate), and Spot VMs always terminate and never
+> fails. <mark markdown="span">**GPU VMs must use TERMINATE**</mark> (they cannot live-migrate), and Spot VMs always terminate and never
 > auto-restart.
 
-**Changing a running VM:** the machine type, service account and scopes can be changed <mark>**only while the VM is
+**Changing a running VM:** the machine type, service account and scopes can be changed <mark markdown="span">**only while the VM is
 stopped**</mark>; disks can be attached live; labels, tags and metadata change live. A **stopped** VM keeps its disks
 (billed) and loses an ephemeral external IP; a **suspended** VM also keeps its memory state.
 
@@ -122,9 +122,9 @@ stopped**</mark>; disks can be attached live; labels, tags and metadata change l
 
 **Rules of thumb the exam uses:**
 
-1. <mark>**Disks can be resized up, never down**</mark>, while attached. Grow the file system inside the guest afterwards.
-2. <mark>**Local SSD plus a durability requirement is always wrong.**</mark> Use it for scratch, caches, temporary data.
-3. <mark>**Regional disks are high availability; snapshots are backup.**</mark> *"Survive a zone failure with no data loss"* for
+1. <mark markdown="span">**Disks can be resized up, never down**</mark>, while attached. Grow the file system inside the guest afterwards.
+2. <mark markdown="span">**Local SSD plus a durability requirement is always wrong.**</mark> Use it for scratch, caches, temporary data.
+3. <mark markdown="span">**Regional disks are high availability; snapshots are backup.**</mark> *"Survive a zone failure with no data loss"* for
    a single-VM database is a regional disk, not a snapshot schedule.
 4. **Zonal disks attach only to VMs in their zone.** To move one, snapshot it and create a disk elsewhere.
 
@@ -244,7 +244,7 @@ Google public images). Enable it with the OS Config API and metadata `enable-osc
 
 ## <a id="s5-8"></a>5.8 Instance templates and managed instance groups
 
-<mark>**An instance template is immutable.**</mark> To change what a group creates, make a **new** template and roll it out.
+<mark markdown="span">**An instance template is immutable.**</mark> To change what a group creates, make a **new** template and roll it out.
 Templates are **global** or **regional** (a regional template keeps its dependencies in one region).
 
 ### MIG versus unmanaged instance group

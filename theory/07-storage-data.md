@@ -55,11 +55,11 @@ Start with the **access model** the application needs; the product follows.
 | **Coldline** | About **once a quarter** | **90 days** | Lower still | Higher |
 | **Archive** | **Once a year or less** | **365 days** | **Lowest** | Highest |
 
-<mark>**Memorise 0 / 30 / 90 / 365.**</mark> Deleting, overwriting or moving an object before its minimum is billed as if it
+<mark markdown="span">**Memorise 0 / 30 / 90 / 365.**</mark> Deleting, overwriting or moving an object before its minimum is billed as if it
 had stayed the full minimum (the **early-deletion charge**).
 
 {: .key }
-> <mark>**All four classes have the same millisecond latency to the first byte.**</mark> There is no thaw, no restore step, no
+> <mark markdown="span">**All four classes have the same millisecond latency to the first byte.**</mark> There is no thaw, no restore step, no
 > waiting — that is a different cloud's archive model. Classes differ only in **storage price, retrieval price,
 > minimum duration** (and availability SLA). A stem that says *"read once a year but must be available immediately
 > when requested"* is still **Archive**; the "immediately" clause decides nothing.
@@ -154,7 +154,7 @@ after; **Storage Insights** and Active Assist recommendations to find waste.
 | Hard cap on one query's cost | `bq query --maximum_bytes_billed=10000000000 'SELECT ...'` |
 
 {: .trap }
-> <mark>**`LIMIT` does not reduce BigQuery on-demand cost**</mark> — the bytes scanned are the columns read across the
+> <mark markdown="span">**`LIMIT` does not reduce BigQuery on-demand cost**</mark> — the bytes scanned are the columns read across the
 > partitions touched. Selecting fewer columns, filtering on the **partition** column, and **clustering** are what
 > reduce it. `--maximum_bytes_billed` makes an expensive query **fail** instead of running.
 
@@ -204,7 +204,7 @@ after; **Storage Insights** and Active Assist recommendations to find waste.
 | Connect; export | `gcloud sql connect orders --user=postgres` · `gcloud sql export sql orders gs://B/orders.sql.gz --database=shop` |
 
 {: .watch }
-> <mark>**High availability is not read capacity, and a replica is not a backup.**</mark> HA's standby exists only to take over
+> <mark markdown="span">**High availability is not read capacity, and a replica is not a backup.**</mark> HA's standby exists only to take over
 > from a failed zone. A read replica serves reads — and **replicates a destructive `DELETE` within seconds**, so it
 > cannot undo one. *"A bad statement ran at 14:05; lose the least data"* is **PITR to a new instance** at 14:04,
 > leaving the damaged original untouched for comparison.
@@ -305,7 +305,7 @@ rule stands: **a cache in front of a database, not the database**.
 
 ## <a id="s7-11"></a>7.11 Loading and moving data
 
-**Do the arithmetic before comparing tools.** <mark>1 Gbps moves about **10 TB per day**</mark> at full, uncontended speed; 100
+**Do the arithmetic before comparing tools.** <mark markdown="span">1 Gbps moves about **10 TB per day**</mark> at full, uncontended speed; 100
 Mbps about **1 TB per day**.
 
 ```
@@ -351,7 +351,7 @@ Volume / usable bandwidth = days.  Acceptable?
 | Replay | **Snapshots** and **seek** to a time |
 
 {: .key }
-> <mark>**Fan-out needs one subscription per consumer.**</mark> Four services that must each process every order need **four
+> <mark markdown="span">**Fan-out needs one subscription per consumer.**</mark> Four services that must each process every order need **four
 > subscriptions** on one topic. Four workers sharing **one** subscription compete, and each message goes to one of
 > them — that is load-balancing, not fan-out.
 
@@ -455,11 +455,11 @@ Key ring   location is permanent: a region, a multi-region (eu, us) or global
 > New in the June 2026 guide — configuring CMEK
 >
 > **Three rules make CMEK work, and each is a favourite distractor.**
-> <mark>**1. The service agent needs the key.**</mark> The product's **Google-managed service account** — not your user, not your
+> <mark markdown="span">**1. The service agent needs the key.**</mark> The product's **Google-managed service account** — not your user, not your
 > workload's service account — needs **`roles/cloudkms.cryptoKeyEncrypterDecrypter`** on the key ([§3.9](03-identity-access.md#s3-9)).
 > **2. Locations must match.** The key's location must be compatible with the resource's: a bucket in `EU` needs a
 > key in `eu` (or a region inside it, per product rules); a regional Cloud SQL instance needs a key in that region.
-> <mark>**3. Rotation is not re-encryption.**</mark> Rotating creates a **new primary version** for new data; existing data stays
+> <mark markdown="span">**3. Rotation is not re-encryption.**</mark> Rotating creates a **new primary version** for new data; existing data stays
 > readable with the older versions, which must stay enabled. **Disabling** a version makes data encrypted with it
 > unreadable (reversible); **destroying** it is permanent after the scheduled-destruction delay (30 days by default)
 > — *crypto-shredding*.

@@ -1,3 +1,8 @@
+---
+title: Contributing
+nav_order: 3
+---
+
 # Contributing
 
 Thanks for helping make this a better way to prepare for the exam.
@@ -54,7 +59,7 @@ The pages in `theory/` are the source. Their callouts use kramdown syntax:
 ```
 
 Classes: `key` · `trap` · `tip` · `watch` · `note` · `new`. Write cross-references as links to the section anchor,
-such as `[§4.4](04-networking.md#s4-4)`, and use `<mark>` sparingly, for about one fact per section. Avoid `{{` and
+such as `[§4.4](04-networking.md#s4-4)`, and use `<mark markdown="span">` sparingly, for about one fact per section. Avoid `{{` and
 `{%`: GitHub Pages treats them as Liquid.
 
 You do not need to build the PDF. It is an optional local output; [`theory/README.md`](theory/README.md) explains it.

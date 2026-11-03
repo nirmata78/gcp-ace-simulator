@@ -53,7 +53,7 @@ Metrics are identified by type; the **prefix tells you where they come from**:
 | `prometheus.googleapis.com/...` | **Managed Service for Prometheus** |
 
 {: .key }
-> **The hypervisor cannot see inside the guest.** CPU appears on every VM's charts; <mark>**memory and disk-space
+> **The hypervisor cannot see inside the guest.** CPU appears on every VM's charts; <mark markdown="span">**memory and disk-space
 > utilisation appear only after the Ops Agent is installed.**</mark> *"Memory is missing from the dashboard"* — install the
 > Ops Agent.
 
@@ -140,7 +140,7 @@ Log entries --> Log Router --> sinks (inclusion filter, exclusion filters)
 
 **Sinks** live on a project, folder, organization or billing account. An **aggregated sink** on a folder or
 organization with `--include-children` routes every project's logs beneath it — the answer to *"central logging
-for all projects"*. Each sink has a **writer identity** (a service account) that <mark>**must be granted write access at
+for all projects"*. Each sink has a **writer identity** (a service account) that <mark markdown="span">**must be granted write access at
 the destination**</mark> (`bigquery.dataEditor`, `storage.objectCreator`, `pubsub.publisher`, or `logging.bucketWriter`)
 — a sink that "does nothing" usually lacks this grant.
 
@@ -215,7 +215,7 @@ noisy batch service account). Console: **IAM & Admin → Audit Logs**. Reading D
 
 {: .key }
 > *"Who changed this firewall rule?"* — **Admin Activity**, always there. *"Who read these objects?"* — **Data
-> Access**, which exists <mark>**only if it was enabled before** the reads</mark>. *"We have no record of who downloaded the file"*
+> Access**, which exists <mark markdown="span">**only if it was enabled before** the reads</mark>. *"We have no record of who downloaded the file"*
 > usually means Data Access logging was never turned on.
 
 **VPC Flow Logs** (sampled flows per subnet or network) and **Firewall Rules Logging** (per rule, allowed or denied
@@ -236,7 +236,7 @@ charged by volume: tune sampling and aggregation for flow logs, and log only the
 | Is it **Google**? | **Personalized Service Health** ([§9.9](#s9-9)) |
 
 {: .tip }
-> <mark>**Trace tells you *which*; Profiler tells you *why*.**</mark> A latency jump across four services is Trace first. CPU
+> <mark markdown="span">**Trace tells you *which*; Profiler tells you *why*.**</mark> A latency jump across four services is Trace first. CPU
 > utilisation tells you neither — a service can be slow while idle, waiting on a dependency.
 
 ## <a id="s9-9"></a>9.9 Service health and Cloud Hub

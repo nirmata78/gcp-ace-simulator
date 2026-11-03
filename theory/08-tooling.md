@@ -28,7 +28,7 @@ match them. The exam prefers it over console clicks and shell scripts for anythi
 | Review | Pull request on a readable diff | Review of imperative code |
 
 {: .trap }
-> <mark>**Deployment Manager is deprecated**</mark> — never choose it for new work. **Console export** gives a one-time copy, not a
+> <mark markdown="span">**Deployment Manager is deprecated**</mark> — never choose it for new work. **Console export** gives a one-time copy, not a
 > maintained definition. **A shell script** is repeatable but not declarative. When an option offers Terraform (or
 > Infrastructure Manager) against any of these, Terraform wins.
 
@@ -44,7 +44,7 @@ match them. The exam prefers it over console clicks and shell scripts for anythi
 
 **State is the heart of it, and the exam's Terraform items are mostly about state:**
 
-- <mark>**Store it remotely** in a **Cloud Storage backend**</mark> — shared by the team, with **locking** so two applies cannot
+- <mark markdown="span">**Store it remotely** in a **Cloud Storage backend**</mark> — shared by the team, with **locking** so two applies cannot
   run at once. Local state on laptops is the classic failure: two engineers, two truths.
 - **State contains secrets and resource details.** Restrict the bucket, enable **versioning** to recover a corrupted
   state, never commit it to git.
@@ -120,7 +120,7 @@ the runner or the state bucket.
 > *"An agentic IDE"* — **Antigravity**.
 
 {: .key }
-> **The rules that do not change because an AI wrote it.** <mark>Generated commands and IaC are **drafts**</mark>: review the plan
+> **The rules that do not change because an AI wrote it.** <mark markdown="span">Generated commands and IaC are **drafts**</mark>: review the plan
 > before applying. The assistant acts **with your permissions**, so least privilege still governs what it can see and
 > change. Prefer generated **code** that goes through the normal review and pipeline over an agent making direct
 > changes to production. Never paste secrets into prompts.
