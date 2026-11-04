@@ -108,6 +108,11 @@ transitions on that bucket.
 > policy** protects against **intent**: nobody, including an Owner, can delete the object early, and nobody can
 > unlock the policy. Lifecycle rules only move objects to **colder** classes; they never warm them up, and changes
 > can take up to 24 hours to act.
+>
+> **Lifecycle on a versioned bucket.** `Delete` on a live object makes it noncurrent, and its `age` still counts from
+> creation. A plain `age` rule therefore deletes the noncurrent version too, on a later run. With `isLive: true` the rule
+> never matches noncurrent versions, so they stay and stay billed until another rule removes them, such as
+> `daysSinceNoncurrentTime`. `numNewerVersions` never matches the newest noncurrent version once the live one is gone.
 
 <a id="s7-4"></a>
 

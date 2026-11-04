@@ -114,6 +114,12 @@ def test_doc_refs_point_at_google_cloud(bank: QuestionBank) -> None:
             assert q.explanation.doc_ref.startswith("https://")
 
 
+def test_live_only_lifecycle_question_keeps_its_premise(bank: QuestionBank) -> None:
+    """A plain age rule also deletes noncurrent versions, so the stem must say isLive."""
+    q = next(q for q in bank.questions if q.id == "ace-s3-147")
+    assert "isLive is true" in q.question
+
+
 def test_correct_answers_are_spread_across_letters(bank: QuestionBank) -> None:
     """A bank where the answer is usually 'C' is a bank you can game."""
     counts = {k: 0 for k in OPTION_KEYS}

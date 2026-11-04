@@ -72,7 +72,7 @@ Only the latest release is supported.
 | Version | What | Tracked in |
 |---|---|---|
 | **1.0.0** | First release: the simulator, the question bank and the theory course | [Changelog](CHANGELOG.md) |
-| 1.0.x | Corrections from verifying the five newest questions, if any are needed | [#2](https://github.com/nirmata78/gcp-ace-simulator/issues/2) |
+| 1.0.1 | Corrections from verifying the five newest questions | [#2](https://github.com/nirmata78/gcp-ace-simulator/issues/2) |
 | 1.1.0 | One-command launch with Docker, and the tech debt that blocks it | [#3](https://github.com/nirmata78/gcp-ace-simulator/issues/3), [plan](docs/plans/v1.1.0-docker.yaml) |
 | Next MINOR | Rewritten questions from the provenance review | [#1](https://github.com/nirmata78/gcp-ace-simulator/issues/1) |
 
