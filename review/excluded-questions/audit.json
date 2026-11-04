@@ -1,0 +1,947 @@
+{
+ "method": "Jaccard and containment of normalised stem tokens against each heading of the dump README; stop words removed; tokens under 3 chars dropped",
+ "dump": {
+  "repo": "Ditectrev/Google-Cloud-Platform-GCP-Associate-Cloud-Engineer-Practice-Tests-Exams-Questions-Answers",
+  "commit": "eec88f3dbf69b40d8bcd9664b6f9ed22d63423dc",
+  "licence": null,
+  "stems_compared": 179
+ },
+ "questions": [
+  {
+   "id": "ace-dom3-050",
+   "source": "user",
+   "objective": "2.1",
+   "subtopic": "Launching Instances",
+   "jaccard": 1.0,
+   "containment": 1.0,
+   "dump_readme_line": 1731
+  },
+  {
+   "id": "ace-dom5-020",
+   "source": "user",
+   "objective": "4.1",
+   "subtopic": "Role Types and Custom Roles",
+   "jaccard": 1.0,
+   "containment": 1.0,
+   "dump_readme_line": 366
+  },
+  {
+   "id": "ace-dom5-025",
+   "source": "user",
+   "objective": "4.2",
+   "subtopic": "Service Accounts and Least Privilege",
+   "jaccard": 0.941,
+   "containment": 1.0,
+   "dump_readme_line": 645
+  },
+  {
+   "id": "ace-dom5-029",
+   "source": "user",
+   "objective": "4.1",
+   "subtopic": "Role Types and Custom Roles",
+   "jaccard": 0.889,
+   "containment": 0.941,
+   "dump_readme_line": 1236
+  },
+  {
+   "id": "ace-dom4-001",
+   "source": "curated",
+   "objective": "3.4",
+   "subtopic": "Resource Alerts",
+   "jaccard": 0.882,
+   "containment": 0.938,
+   "dump_readme_line": 1425
+  },
+  {
+   "id": "ace-dom2-083",
+   "source": "user",
+   "objective": "3.2",
+   "subtopic": "Backup and Restore",
+   "jaccard": 0.842,
+   "containment": 1.0,
+   "dump_readme_line": 852
+  },
+  {
+   "id": "ace-dom5-037",
+   "source": "user",
+   "objective": "4.1",
+   "subtopic": "IAM Policies and Inheritance",
+   "jaccard": 0.833,
+   "containment": 0.938,
+   "dump_readme_line": 1650
+  },
+  {
+   "id": "ace-dom1-051",
+   "source": "user",
+   "objective": "3.2",
+   "subtopic": "Storage Cost Estimation",
+   "jaccard": 0.824,
+   "containment": 0.875,
+   "dump_readme_line": 483
+  },
+  {
+   "id": "ace-dom5-022",
+   "source": "user",
+   "objective": "3.2",
+   "subtopic": "Securing Cloud Storage Objects",
+   "jaccard": 0.789,
+   "containment": 0.882,
+   "dump_readme_line": 393
+  },
+  {
+   "id": "ace-dom4-037",
+   "source": "user",
+   "objective": "3.2",
+   "subtopic": "Backup and Restore",
+   "jaccard": 0.786,
+   "containment": 0.917,
+   "dump_readme_line": 1858
+  },
+  {
+   "id": "ace-dom2-080",
+   "source": "user",
+   "objective": "2.3",
+   "subtopic": "VPC Design",
+   "jaccard": 0.759,
+   "containment": 0.957,
+   "dump_readme_line": 429
+  },
+  {
+   "id": "ace-dom5-027",
+   "source": "user",
+   "objective": "3.2",
+   "subtopic": "Securing Cloud Storage Objects",
+   "jaccard": 0.75,
+   "containment": 0.833,
+   "dump_readme_line": 789
+  },
+  {
+   "id": "ace-dom5-030",
+   "source": "user",
+   "objective": "4.1",
+   "subtopic": "IAM Policies and Inheritance",
+   "jaccard": 0.75,
+   "containment": 0.875,
+   "dump_readme_line": 1254
+  },
+  {
+   "id": "ace-dom5-021",
+   "source": "user",
+   "objective": "4.1",
+   "subtopic": "Role Types and Custom Roles",
+   "jaccard": 0.733,
+   "containment": 0.733,
+   "dump_readme_line": 456
+  },
+  {
+   "id": "ace-dom3-000",
+   "source": "official-sample",
+   "objective": "2.4",
+   "subtopic": "Infrastructure as Code",
+   "jaccard": 0.708,
+   "containment": 0.81,
+   "dump_readme_line": 310
+  },
+  {
+   "id": "ace-dom2-102",
+   "source": "user",
+   "objective": "2.1",
+   "subtopic": "GKE Cluster Configurations",
+   "jaccard": 0.706,
+   "containment": 0.8,
+   "dump_readme_line": 537
+  },
+  {
+   "id": "ace-dom5-023",
+   "source": "user",
+   "objective": "4.1",
+   "subtopic": "Role Types and Custom Roles",
+   "jaccard": 0.706,
+   "containment": 0.75,
+   "dump_readme_line": 582
+  },
+  {
+   "id": "ace-dom5-018",
+   "source": "curated",
+   "objective": "2.1",
+   "subtopic": "OS Login",
+   "jaccard": 0.7,
+   "containment": 0.933,
+   "dump_readme_line": 977
+  },
+  {
+   "id": "ace-dom3-048",
+   "source": "user",
+   "objective": "3.1",
+   "subtopic": "Connecting to Instances",
+   "jaccard": 0.7,
+   "containment": 0.875,
+   "dump_readme_line": 968
+  },
+  {
+   "id": "ace-dom2-087",
+   "source": "user",
+   "objective": "2.2",
+   "subtopic": "Loading Data",
+   "jaccard": 0.696,
+   "containment": 0.889,
+   "dump_readme_line": 1076
+  },
+  {
+   "id": "ace-dom5-026",
+   "source": "user",
+   "objective": "2.1",
+   "subtopic": "OS Login",
+   "jaccard": 0.694,
+   "containment": 0.893,
+   "dump_readme_line": 663
+  },
+  {
+   "id": "ace-dom2-095",
+   "source": "user",
+   "objective": "2.1",
+   "subtopic": "Compute Platform Selection",
+   "jaccard": 0.68,
+   "containment": 0.895,
+   "dump_readme_line": 1542
+  },
+  {
+   "id": "ace-dom1-044",
+   "source": "curated",
+   "objective": "1.1",
+   "subtopic": "Observability Setup",
+   "jaccard": 0.667,
+   "containment": 0.857,
+   "dump_readme_line": 492
+  },
+  {
+   "id": "ace-dom2-062",
+   "source": "curated",
+   "objective": "2.4",
+   "subtopic": "Infrastructure as Code",
+   "jaccard": 0.667,
+   "containment": 0.778,
+   "dump_readme_line": 1759
+  },
+  {
+   "id": "ace-dom4-035",
+   "source": "user",
+   "objective": "2.1",
+   "subtopic": "Storage for Compute Engine",
+   "jaccard": 0.667,
+   "containment": 0.87,
+   "dump_readme_line": 1470
+  },
+  {
+   "id": "ace-dom2-103",
+   "source": "user",
+   "objective": "3.2",
+   "subtopic": "Object Lifecycle",
+   "jaccard": 0.667,
+   "containment": 0.824,
+   "dump_readme_line": 555
+  },
+  {
+   "id": "ace-dom4-033",
+   "source": "user",
+   "objective": "3.4",
+   "subtopic": "Audit, Flow and Firewall Logs",
+   "jaccard": 0.667,
+   "containment": 0.783,
+   "dump_readme_line": 1371
+  },
+  {
+   "id": "ace-dom5-034",
+   "source": "user",
+   "objective": "4.2",
+   "subtopic": "Service Accounts and Least Privilege",
+   "jaccard": 0.667,
+   "containment": 0.741,
+   "dump_readme_line": 1524
+  },
+  {
+   "id": "ace-dom5-006",
+   "source": "curated",
+   "objective": "4.1",
+   "subtopic": "IAM Policies and Inheritance",
+   "jaccard": 0.655,
+   "containment": 0.905,
+   "dump_readme_line": 1317
+  },
+  {
+   "id": "ace-dom2-084",
+   "source": "user",
+   "objective": "2.3",
+   "subtopic": "Hybrid Connectivity",
+   "jaccard": 0.643,
+   "containment": 0.783,
+   "dump_readme_line": 861
+  },
+  {
+   "id": "ace-dom2-085",
+   "source": "user",
+   "objective": "4.1",
+   "subtopic": "Role Types and Custom Roles",
+   "jaccard": 0.64,
+   "containment": 0.8,
+   "dump_readme_line": 870
+  },
+  {
+   "id": "ace-dom4-031",
+   "source": "user",
+   "objective": "3.3",
+   "subtopic": "Subnets, Addresses and Routes",
+   "jaccard": 0.625,
+   "containment": 0.667,
+   "dump_readme_line": 771
+  },
+  {
+   "id": "ace-dom1-052",
+   "source": "user",
+   "objective": "1.2",
+   "subtopic": "Billing Accounts",
+   "jaccard": 0.621,
+   "containment": 0.783,
+   "dump_readme_line": 564
+  },
+  {
+   "id": "ace-dom1-055",
+   "source": "user",
+   "objective": "1.2",
+   "subtopic": "Billing Accounts",
+   "jaccard": 0.619,
+   "containment": 0.765,
+   "dump_readme_line": 1795
+  },
+  {
+   "id": "ace-dom2-079",
+   "source": "user",
+   "objective": "2.2",
+   "subtopic": "Database Selection",
+   "jaccard": 0.615,
+   "containment": 0.8,
+   "dump_readme_line": 375
+  },
+  {
+   "id": "ace-dom3-049",
+   "source": "user",
+   "objective": "3.1",
+   "subtopic": "Kubernetes Resources",
+   "jaccard": 0.613,
+   "containment": 0.792,
+   "dump_readme_line": 1157
+  },
+  {
+   "id": "ace-dom5-024",
+   "source": "user",
+   "objective": "4.1",
+   "subtopic": "Role Types and Custom Roles",
+   "jaccard": 0.611,
+   "containment": 0.611,
+   "dump_readme_line": 600
+  },
+  {
+   "id": "ace-dom5-036",
+   "source": "user",
+   "objective": "4.2",
+   "subtopic": "Service Accounts and Least Privilege",
+   "jaccard": 0.607,
+   "containment": 0.85,
+   "dump_readme_line": 1849
+  },
+  {
+   "id": "ace-dom5-038",
+   "source": "user",
+   "objective": "4.1",
+   "subtopic": "Role Types and Custom Roles",
+   "jaccard": 0.6,
+   "containment": 0.913,
+   "dump_readme_line": 1740
+  },
+  {
+   "id": "ace-dom1-054",
+   "source": "user",
+   "objective": "1.1",
+   "subtopic": "Foundation Networking",
+   "jaccard": 0.594,
+   "containment": 0.792,
+   "dump_readme_line": 1308
+  },
+  {
+   "id": "ace-dom2-090",
+   "source": "user",
+   "objective": "2.2",
+   "subtopic": "Cloud Storage Classes",
+   "jaccard": 0.583,
+   "containment": 0.824,
+   "dump_readme_line": 1139
+  },
+  {
+   "id": "ace-dom2-099",
+   "source": "user",
+   "objective": "2.1",
+   "subtopic": "Launching Instances",
+   "jaccard": 0.577,
+   "containment": 0.789,
+   "dump_readme_line": 1885
+  },
+  {
+   "id": "ace-dom3-044",
+   "source": "user",
+   "objective": "3.1",
+   "subtopic": "Instance Inventory and Lifecycle",
+   "jaccard": 0.545,
+   "containment": 0.75,
+   "dump_readme_line": 708
+  },
+  {
+   "id": "ace-dom5-032",
+   "source": "user",
+   "objective": "4.1",
+   "subtopic": "Role Types and Custom Roles",
+   "jaccard": 0.524,
+   "containment": 0.846,
+   "dump_readme_line": 1335
+  },
+  {
+   "id": "ace-dom4-034",
+   "source": "user",
+   "objective": "2.2",
+   "subtopic": "Database Selection",
+   "jaccard": 0.522,
+   "containment": 0.632,
+   "dump_readme_line": 1434
+  },
+  {
+   "id": "ace-dom1-049",
+   "source": "user",
+   "objective": "3.2",
+   "subtopic": "Storage Cost Estimation",
+   "jaccard": 0.519,
+   "containment": 0.737,
+   "dump_readme_line": 1177
+  },
+  {
+   "id": "ace-dom3-051",
+   "source": "user",
+   "objective": "3.1",
+   "subtopic": "Cloud Run Autoscaling",
+   "jaccard": 0.519,
+   "containment": 0.737,
+   "dump_readme_line": 1786
+  },
+  {
+   "id": "ace-dom1-023",
+   "source": "curated",
+   "objective": "1.2",
+   "subtopic": "Billing Export and Cost Attribution",
+   "jaccard": 0.5,
+   "containment": 0.762,
+   "dump_readme_line": 1587
+  },
+  {
+   "id": "ace-dom2-089",
+   "source": "user",
+   "objective": "3.2",
+   "subtopic": "Object Lifecycle",
+   "jaccard": 0.5,
+   "containment": 0.64,
+   "dump_readme_line": 1121
+  },
+  {
+   "id": "ace-dom5-035",
+   "source": "user",
+   "objective": "4.2",
+   "subtopic": "Service Accounts and Least Privilege",
+   "jaccard": 0.5,
+   "containment": 0.7,
+   "dump_readme_line": 1804
+  },
+  {
+   "id": "ace-dom2-093",
+   "source": "user",
+   "objective": "2.1",
+   "subtopic": "GKE Cluster Configurations",
+   "jaccard": 0.48,
+   "containment": 0.75,
+   "dump_readme_line": 1187
+  },
+  {
+   "id": "ace-dom2-101",
+   "source": "user",
+   "objective": "2.1",
+   "subtopic": "Managed Instance Groups",
+   "jaccard": 0.48,
+   "containment": 0.632,
+   "dump_readme_line": 420
+  },
+  {
+   "id": "ace-dom5-031",
+   "source": "user",
+   "objective": "4.2",
+   "subtopic": "Creating Service Accounts",
+   "jaccard": 0.478,
+   "containment": 0.579,
+   "dump_readme_line": 1272
+  },
+  {
+   "id": "ace-dom2-091",
+   "source": "user",
+   "objective": "3.2",
+   "subtopic": "Object Lifecycle",
+   "jaccard": 0.471,
+   "containment": 0.667,
+   "dump_readme_line": 1704
+  },
+  {
+   "id": "ace-dom4-036",
+   "source": "user",
+   "objective": "3.3",
+   "subtopic": "Cloud DNS and Cloud NAT",
+   "jaccard": 0.457,
+   "containment": 0.727,
+   "dump_readme_line": 1777
+  },
+  {
+   "id": "ace-dom1-050",
+   "source": "user",
+   "objective": "1.1",
+   "subtopic": "gcloud CLI and Configurations",
+   "jaccard": 0.444,
+   "containment": 0.857,
+   "dump_readme_line": 1560
+  },
+  {
+   "id": "ace-dom3-047",
+   "source": "user",
+   "objective": "3.1",
+   "subtopic": "Kubernetes Resources",
+   "jaccard": 0.444,
+   "containment": 0.706,
+   "dump_readme_line": 926
+  },
+  {
+   "id": "ace-dom2-082",
+   "source": "user",
+   "objective": "2.1",
+   "subtopic": "Launching Instances",
+   "jaccard": 0.44,
+   "containment": 0.733,
+   "dump_readme_line": 573
+  },
+  {
+   "id": "ace-dom2-098",
+   "source": "user",
+   "objective": "3.2",
+   "subtopic": "Querying Data",
+   "jaccard": 0.439,
+   "containment": 0.692,
+   "dump_readme_line": 1632
+  },
+  {
+   "id": "ace-dom2-097",
+   "source": "user",
+   "objective": "2.2",
+   "subtopic": "Database Selection",
+   "jaccard": 0.421,
+   "containment": 0.857,
+   "dump_readme_line": 1569
+  },
+  {
+   "id": "ace-dom2-086",
+   "source": "user",
+   "objective": "3.2",
+   "subtopic": "Securing Cloud Storage Objects",
+   "jaccard": 0.415,
+   "containment": 0.773,
+   "dump_readme_line": 762
+  },
+  {
+   "id": "ace-dom2-094",
+   "source": "user",
+   "objective": "2.2",
+   "subtopic": "Database Selection",
+   "jaccard": 0.367,
+   "containment": 0.647,
+   "dump_readme_line": 1196
+  },
+  {
+   "id": "ace-dom5-033",
+   "source": "user",
+   "objective": "4.1",
+   "subtopic": "Role Types and Custom Roles",
+   "jaccard": 0.345,
+   "containment": 0.455,
+   "dump_readme_line": 1380
+  },
+  {
+   "id": "ace-dom1-053",
+   "source": "user",
+   "objective": "1.1",
+   "subtopic": "gcloud CLI and Configurations",
+   "jaccard": 0.304,
+   "containment": 0.467,
+   "dump_readme_line": 825
+  },
+  {
+   "id": "ace-dom2-115",
+   "source": "user",
+   "objective": "2.1",
+   "subtopic": "GPUs or TPUs",
+   "jaccard": 0.25,
+   "containment": 0.364,
+   "dump_readme_line": 1533
+  },
+  {
+   "id": "ace-dom2-117",
+   "source": "user",
+   "objective": "2.1",
+   "subtopic": "Managed Instance Groups",
+   "jaccard": 0.25,
+   "containment": 0.571,
+   "dump_readme_line": 411
+  },
+  {
+   "id": "ace-s4-056",
+   "source": "curated",
+   "objective": "4.2",
+   "subtopic": "Service Accounts and Least Privilege",
+   "jaccard": 0.25,
+   "containment": 0.625,
+   "dump_readme_line": 636
+  },
+  {
+   "id": "ace-dom4-032",
+   "source": "user",
+   "objective": "2.1",
+   "subtopic": "Managed Instance Groups",
+   "jaccard": 0.225,
+   "containment": 0.533,
+   "dump_readme_line": 807
+  },
+  {
+   "id": "ace-dom2-118",
+   "source": "user",
+   "objective": "2.1",
+   "subtopic": "Managed Instance Groups",
+   "jaccard": 0.208,
+   "containment": 0.625,
+   "dump_readme_line": 1407
+  },
+  {
+   "id": "ace-dom1-056",
+   "source": "user",
+   "objective": "2.1",
+   "subtopic": "kubectl Setup",
+   "jaccard": 0.179,
+   "containment": 0.278,
+   "dump_readme_line": 1398
+  },
+  {
+   "id": "ace-dom5-019",
+   "source": "user",
+   "objective": "3.2",
+   "subtopic": "Securing Cloud Storage Objects",
+   "jaccard": 0.179,
+   "containment": 0.412,
+   "dump_readme_line": 402
+  },
+  {
+   "id": "ace-dom2-116",
+   "source": "user",
+   "objective": "2.1",
+   "subtopic": "Managed Instance Groups",
+   "jaccard": 0.174,
+   "containment": 0.286,
+   "dump_readme_line": 1731
+  },
+  {
+   "id": "ace-dom1-000",
+   "source": "official-sample",
+   "objective": "1.1",
+   "subtopic": "Project IAM Grants",
+   "jaccard": 0.167,
+   "containment": 0.348,
+   "dump_readme_line": 1740
+  },
+  {
+   "id": "ace-dom1-057",
+   "source": "user",
+   "objective": "1.1",
+   "subtopic": "Cloud Identity and Users",
+   "jaccard": 0.163,
+   "containment": 0.25,
+   "dump_readme_line": 726
+  },
+  {
+   "id": "ace-dom3-071",
+   "source": "user",
+   "objective": "3.1",
+   "subtopic": "Snapshots and Images",
+   "jaccard": 0.158,
+   "containment": 0.429,
+   "dump_readme_line": 510
+  },
+  {
+   "id": "ace-dom3-073",
+   "source": "user",
+   "objective": "3.1",
+   "subtopic": "Instance Inventory and Lifecycle",
+   "jaccard": 0.158,
+   "containment": 0.429,
+   "dump_readme_line": 986
+  },
+  {
+   "id": "ace-dom2-107",
+   "source": "user",
+   "objective": "2.2",
+   "subtopic": "Storage Products",
+   "jaccard": 0.156,
+   "containment": 0.2,
+   "dump_readme_line": 393
+  },
+  {
+   "id": "ace-dom5-000",
+   "source": "official-sample",
+   "objective": "4.1",
+   "subtopic": "Role Types and Custom Roles",
+   "jaccard": 0.15,
+   "containment": 0.24,
+   "dump_readme_line": 1921
+  },
+  {
+   "id": "ace-dom2-111",
+   "source": "user",
+   "objective": "3.3",
+   "subtopic": "Subnets, Addresses and Routes",
+   "jaccard": 0.143,
+   "containment": 0.188,
+   "dump_readme_line": 609
+  },
+  {
+   "id": "ace-dom1-058",
+   "source": "user",
+   "objective": "1.1",
+   "subtopic": "gcloud CLI and Configurations",
+   "jaccard": 0.136,
+   "containment": 0.214,
+   "dump_readme_line": 681
+  },
+  {
+   "id": "ace-dom1-061",
+   "source": "user",
+   "objective": "1.1",
+   "subtopic": "Regions and Zones",
+   "jaccard": 0.136,
+   "containment": 0.176,
+   "dump_readme_line": 798
+  },
+  {
+   "id": "ace-dom1-064",
+   "source": "user",
+   "objective": "1.2",
+   "subtopic": "Billing Accounts",
+   "jaccard": 0.129,
+   "containment": 0.211,
+   "dump_readme_line": 1425
+  },
+  {
+   "id": "ace-dom2-000",
+   "source": "official-sample",
+   "objective": "2.1",
+   "subtopic": "Serverless Deployment and Events",
+   "jaccard": 0.122,
+   "containment": 0.2,
+   "dump_readme_line": 1831
+  },
+  {
+   "id": "ace-dom5-040",
+   "source": "user",
+   "objective": "3.2",
+   "subtopic": "Securing Cloud Storage Objects",
+   "jaccard": 0.122,
+   "containment": 0.172,
+   "dump_readme_line": 816
+  },
+  {
+   "id": "ace-dom2-105",
+   "source": "user",
+   "objective": "2.2",
+   "subtopic": "Database Selection",
+   "jaccard": 0.12,
+   "containment": 0.167,
+   "dump_readme_line": 1085
+  },
+  {
+   "id": "ace-dom1-065",
+   "source": "user",
+   "objective": "1.2",
+   "subtopic": "Billing Export and Cost Attribution",
+   "jaccard": 0.116,
+   "containment": 0.192,
+   "dump_readme_line": 627
+  },
+  {
+   "id": "ace-dom1-066",
+   "source": "user",
+   "objective": "2.1",
+   "subtopic": "Spot and Custom Machine Types",
+   "jaccard": 0.115,
+   "containment": 0.25,
+   "dump_readme_line": 393
+  },
+  {
+   "id": "ace-dom3-063",
+   "source": "user",
+   "objective": "3.1",
+   "subtopic": "Snapshots and Images",
+   "jaccard": 0.115,
+   "containment": 0.167,
+   "dump_readme_line": 681
+  },
+  {
+   "id": "ace-dom2-104",
+   "source": "user",
+   "objective": "2.2",
+   "subtopic": "Data Pipelines and Messaging",
+   "jaccard": 0.114,
+   "containment": 0.148,
+   "dump_readme_line": 908
+  },
+  {
+   "id": "ace-dom3-064",
+   "source": "user",
+   "objective": "2.1",
+   "subtopic": "Launching Instances",
+   "jaccard": 0.114,
+   "containment": 0.25,
+   "dump_readme_line": 1479
+  },
+  {
+   "id": "ace-dom5-039",
+   "source": "user",
+   "objective": "3.2",
+   "subtopic": "Securing Cloud Storage Objects",
+   "jaccard": 0.114,
+   "containment": 0.174,
+   "dump_readme_line": 1840
+  },
+  {
+   "id": "ace-dom5-042",
+   "source": "user",
+   "objective": "2.1",
+   "subtopic": "Launching Instances",
+   "jaccard": 0.111,
+   "containment": 0.143,
+   "dump_readme_line": 1533
+  },
+  {
+   "id": "ace-dom5-043",
+   "source": "user",
+   "objective": "4.1",
+   "subtopic": "Role Types and Custom Roles",
+   "jaccard": 0.111,
+   "containment": 0.188,
+   "dump_readme_line": 1058
+  },
+  {
+   "id": "ace-dom2-108",
+   "source": "user",
+   "objective": "2.1",
+   "subtopic": "Storage for Compute Engine",
+   "jaccard": 0.108,
+   "containment": 0.154,
+   "dump_readme_line": 1506
+  },
+  {
+   "id": "ace-dom3-053",
+   "source": "user",
+   "objective": "2.1",
+   "subtopic": "Spot and Custom Machine Types",
+   "jaccard": 0.105,
+   "containment": 0.2,
+   "dump_readme_line": 627
+  },
+  {
+   "id": "ace-dom2-119",
+   "source": "user",
+   "objective": "2.1",
+   "subtopic": "Managed Instance Groups",
+   "jaccard": 0.103,
+   "containment": 0.16,
+   "dump_readme_line": 1022
+  },
+  {
+   "id": "ace-dom3-072",
+   "source": "user",
+   "objective": "3.1",
+   "subtopic": "Snapshots and Images",
+   "jaccard": 0.103,
+   "containment": 0.2,
+   "dump_readme_line": 1236
+  },
+  {
+   "id": "ace-dom1-067",
+   "source": "user",
+   "objective": "3.2",
+   "subtopic": "Storage Cost Estimation",
+   "jaccard": 0.1,
+   "containment": 0.188,
+   "dump_readme_line": 816
+  },
+  {
+   "id": "ace-dom3-076",
+   "source": "user",
+   "objective": "3.1",
+   "subtopic": "Instance Inventory and Lifecycle",
+   "jaccard": 0.095,
+   "containment": 0.133,
+   "dump_readme_line": 798
+  },
+  {
+   "id": "ace-dom3-057",
+   "source": "user",
+   "objective": "2.1",
+   "subtopic": "Launching Instances",
+   "jaccard": 0.091,
+   "containment": 0.167,
+   "dump_readme_line": 908
+  },
+  {
+   "id": "ace-dom2-110",
+   "source": "user",
+   "objective": "2.1",
+   "subtopic": "Spot and Custom Machine Types",
+   "jaccard": 0.089,
+   "containment": 0.138,
+   "dump_readme_line": 1668
+  },
+  {
+   "id": "ace-dom4-041",
+   "source": "user",
+   "objective": "3.1",
+   "subtopic": "Attaching Accelerators",
+   "jaccard": 0.086,
+   "containment": 0.25,
+   "dump_readme_line": 1157
+  },
+  {
+   "id": "ace-dom2-114",
+   "source": "user",
+   "objective": "2.4",
+   "subtopic": "Infrastructure as Code",
+   "jaccard": 0.073,
+   "containment": 0.115,
+   "dump_readme_line": 1168
+  },
+  {
+   "id": "ace-dom3-056",
+   "source": "user",
+   "objective": "1.1",
+   "subtopic": "Regions and Zones",
+   "jaccard": 0.07,
+   "containment": 0.176,
+   "dump_readme_line": 1515
+  }
+ ]
+}
