@@ -6,6 +6,22 @@ All notable changes to this project are recorded here. The format follows
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-11-04
+
+The five questions listed as unverified in 1.0.0 (`ace-s3-144` to `ace-s3-148`) have now been checked against the docs
+([#2](https://github.com/nirmata78/gcp-ace-simulator/issues/2)). All five answer keys stand. The other known limitations
+of 1.0.0 still apply.
+
+### Fixed
+
+- **`ace-s3-147`:** the scenario couldn't happen as written. A plain `age` rule also deletes noncurrent versions, so the
+  rule now has `isLive: true`, and the explanation no longer says a separate rule is always needed. Option D no longer
+  offers `numNewerVersions`, which wouldn't clear the newest noncurrent version.
+- **`ace-s3-144`, `ace-s3-145`, `ace-s3-146`, `ace-s3-148`:** corrected explanations: when automatic restart applies, the
+  permission an organization search needs, what `--lifecycle-file` does, and whether Standard is cheaper for short-lived
+  data. `ace-s3-148` now links to the worked early-deletion example.
+- **Theory:** added how lifecycle rules treat noncurrent versions, and that a stopped VM is listed as `TERMINATED`.
+
 ## [1.0.0] - 2026-11-04
 
 First release, built on Google's June 2026 Associate Cloud Engineer exam guide.
@@ -35,5 +51,6 @@ First release, built on Google's June 2026 Associate Cloud Engineer exam guide.
 - **The app needs internet at startup** unless `ACE_SKIP_NETWORK_CHECK=1` is set, even though the exam itself runs
   offline ([#3](https://github.com/nirmata78/gcp-ace-simulator/issues/3)).
 
-[Unreleased]: https://github.com/nirmata78/gcp-ace-simulator/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/nirmata78/gcp-ace-simulator/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/nirmata78/gcp-ace-simulator/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/nirmata78/gcp-ace-simulator/releases/tag/v1.0.0
