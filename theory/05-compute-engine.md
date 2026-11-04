@@ -110,7 +110,7 @@ gets the notice period to checkpoint. In a MIG, preempted VMs are recreated when
 > auto-restart.
 
 **Changing a running VM:** the machine type, service account and scopes can be changed <mark markdown="span">**only while the VM is
-stopped**</mark>; disks can be attached live; labels, tags and metadata change live. A **stopped** VM keeps its disks
+stopped**</mark>; disks can be attached live; labels, tags and metadata change live. A **stopped** VM, listed as `TERMINATED`, keeps its disks
 (billed) and loses an ephemeral external IP; a **suspended** VM also keeps its memory state.
 
 <a id="s5-4"></a>
