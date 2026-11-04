@@ -18,8 +18,8 @@ of 1.0.0 still apply.
   rule now has `isLive: true`, and the explanation no longer says a separate rule is always needed. Option D no longer
   offers `numNewerVersions`, which wouldn't clear the newest noncurrent version.
 - **`ace-s3-144`, `ace-s3-145`, `ace-s3-146`, `ace-s3-148`:** corrected explanations: when automatic restart applies, the
-  permission an organization search needs, and whether Standard is cheaper for short-lived data. `ace-s3-148` now links
-  to the worked early-deletion example.
+  permission an organization search needs, what `--lifecycle-file` does, and whether Standard is cheaper for short-lived
+  data. `ace-s3-148` now links to the worked early-deletion example.
 - **Theory:** added how lifecycle rules treat noncurrent versions, and that a stopped VM is listed as `TERMINATED`.
 
 ## [1.0.0] - 2026-11-04
