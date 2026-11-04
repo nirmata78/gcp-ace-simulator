@@ -29,6 +29,8 @@ If a release does more than one of these, the largest bump wins.
 - **Keep changes small.** One purpose per pull request; a refactor and a behaviour change go in separate ones.
 - **Every change gets a review** by someone other than its author. An AI-written change is reviewed by a person or by a
   separate session that didn't write it.
+  **Exception for the repository owner:** on the owner's own changes, an AI tool such as Claude Code counts as the
+  reviewer and may merge once CI is green, even if it also wrote the change.
 - **CI must be green** before merging: `pytest -q`, `python scripts/kb.py check` and `python scripts/kb.py blueprint --min 3 --strict`.
 - **Bug fixes and new behaviour come with a test.** If CI doesn't check it, it can break unnoticed.
 - **Treat coverage as a signal, not a goal.** Use it to find untested code, and don't chase a number

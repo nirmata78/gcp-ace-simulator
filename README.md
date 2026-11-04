@@ -208,7 +208,7 @@ gcp-ace-simulator/
 │   ├── kb.py                  # query / add / check / blueprint / reindex
 │   ├── check_network.py       # the startup connectivity check
 │   ├── retrospective.py       # remediation PDF for one attempt
-│   ├── recap.py, recap_content.py  # exam-eve recap PDF
+│   └── recap.py, recap_content.py  # exam-eve recap PDF
 ├── data/
 │   ├── sections/*.json        # the bank, source of truth, one file per guide section
 │   └── register.json          # generated index; rebuilt on every write
