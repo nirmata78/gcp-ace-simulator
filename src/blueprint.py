@@ -21,7 +21,7 @@ The guide gives no weights below section level. The sampler therefore splits
 each section's share across its objectives in proportion to their bullet
 counts — breadth is the only published signal of emphasis.
 
-Source: theory/exam-guide-2026-06-30.txt (text of Google's official PDF).
+Source: the June 2026 edition of Google's official guide, at ``GUIDE_URL`` below.
 """
 
 from __future__ import annotations

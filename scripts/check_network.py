@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Fail-fast connectivity validator.
 
-The LLM-backed features (``kb.py add --topic/--stem``, ``add_question.py``) are
+The LLM-backed features (``kb.py add --topic/--stem``) are
 useless without a reachable API, and a half-written question bank is worse than
 no run at all — so every entry point probes first and aborts on failure.
 
