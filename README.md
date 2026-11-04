@@ -4,6 +4,7 @@
 
 [![Theory](https://img.shields.io/badge/theory-GitHub%20Pages-blue)](https://nirmata78.github.io/gcp-ace-simulator/theory/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Release](https://img.shields.io/github/v/release/nirmata78/gcp-ace-simulator)](https://github.com/nirmata78/gcp-ace-simulator/blob/main/CHANGELOG.md)
 ![591 questions](https://img.shields.io/badge/questions-591-orange)
 ![Exam guide: June 2026](https://img.shields.io/badge/exam%20guide-June%202026-purple)
 ![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue)
@@ -208,7 +209,6 @@ gcp-ace-simulator/
 │   ├── check_network.py       # the startup connectivity check
 │   ├── retrospective.py       # remediation PDF for one attempt
 │   ├── recap.py, recap_content.py  # exam-eve recap PDF
-│   └── add_question.py        # deprecated shim → kb.py add
 ├── data/
 │   ├── sections/*.json        # the bank, source of truth, one file per guide section
 │   └── register.json          # generated index; rebuilt on every write
@@ -247,6 +247,11 @@ pull request, with `kb.py check` and the coverage gate.
 - **Port 8501 is in use.** Run `streamlit run app.py --server.port 8600`.
 
 ---
+
+## Releases
+
+The project uses [semantic versioning](https://github.com/nirmata78/gcp-ace-simulator/blob/main/RELEASE.md). See the [changelog](https://github.com/nirmata78/gcp-ace-simulator/blob/main/CHANGELOG.md) for what changed and for known
+limitations, and the [roadmap](https://github.com/nirmata78/gcp-ace-simulator/blob/main/RELEASE.md#roadmap) for what is next, starting with a one-command Docker launch.
 
 ## Contributing
 

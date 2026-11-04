@@ -58,7 +58,11 @@ relative_links:
 
 exclude:
   - app.py
+  - CHANGELOG.md
   - CLAUDE.md
+  - RELEASE.md
+  - VERSION
+  - docs/
   - LICENSE
   - requirements.txt
   - data/
