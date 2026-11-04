@@ -15,6 +15,11 @@ python scripts/kb.py blueprint --min 3 --strict  # every guide bullet has 3+ que
 python scripts/kb.py add --file newq.json      # add questions through validation
 ```
 
+## Releases
+
+`RELEASE.md` is the process and `VERSION` the source of truth, with semantic versioning. Add a line to `CHANGELOG.md` under
+`Unreleased` for anything a user would notice. Open work is in the GitHub issues; `docs/plans/` holds machine-readable plans.
+
 ## Map
 
 - `src/blueprint.py`: the exam guide as data, and the closed list of subtopics. A question must use one.

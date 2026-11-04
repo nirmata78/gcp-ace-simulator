@@ -72,6 +72,8 @@ changes, and link the new guide in the PR.
 
 ## Ground rules
 
+- **Follow the [release process](https://github.com/nirmata78/gcp-ace-simulator/blob/main/RELEASE.md).** Keep pull requests small, and add a line to `CHANGELOG.md` under
+  `Unreleased` for anything a user would notice.
 - **Never commit your own attempts.** `data/history.json`, `reports/` and `private/` are gitignored; don't force-add
   them.
 - **No real employer data** in scenarios. Use invented companies.
