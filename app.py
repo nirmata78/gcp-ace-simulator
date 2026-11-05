@@ -10,7 +10,6 @@ hidden so nothing on screen competes with the question.
 
 from __future__ import annotations
 
-import os
 import sys
 from pathlib import Path
 
@@ -27,27 +26,9 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# --------------------------------------------------------------------------
-# Fail-fast network policy
-# --------------------------------------------------------------------------
-# Checked before anything else. The exam engine itself runs offline, so the
-# escape hatch below exists for pure offline study; it is documented in README.
-
-from check_network import ABORT_MESSAGE, is_online  # noqa: E402
-
-if os.environ.get("ACE_SKIP_NETWORK_CHECK") != "1":
-    if not is_online():
-        print(ABORT_MESSAGE, file=sys.stderr)
-        sys.stderr.flush()
-        # os._exit terminates the Streamlit server itself with status 1;
-        # st.stop() would only halt this script run and leave the server up.
-        os._exit(1)
-
 from src.exam_engine import (  # noqa: E402
     ExamSession,
-    HISTORY_PATH,
     DATA_DIR,
-    REPORTS_DIR,
     filtered_pool,
     load_bank,
     load_history,
@@ -55,6 +36,7 @@ from src.exam_engine import (  # noqa: E402
     seen_question_ids,
     weighted_sample,
 )
+from src.paths import history_path, reports_dir  # noqa: E402
 from src.blueprint import GUIDE_DATE, OBJECTIVES, SECTION_LIST, objective_weights, objectives_in  # noqa: E402
 from src.models import (  # noqa: E402
     CERTIFYING_QUESTION_COUNT,
@@ -256,14 +238,17 @@ def submit_exam(expired: bool = False) -> None:
             attempt,
             sess.questions,
             candidate=st.session_state.candidate,
-            out_dir=REPORTS_DIR,
+            out_dir=reports_dir(),
             auto_open=True,
         )
         attempt.report_path = str(path)
     except Exception as exc:  # a PDF failure must never lose the score
         st.session_state.report_error = str(exc)
 
-    record_attempt(attempt, HISTORY_PATH)
+    try:
+        record_attempt(attempt, history_path())
+    except OSError as exc:  # a full or read-only disk must not lose the score either
+        st.session_state.history_error = f"{history_path()}: {exc}"
     st.session_state.attempt = attempt
     st.session_state.report = path
     st.session_state.report_opened = opened
@@ -318,7 +303,7 @@ def screen_home() -> None:
             f"guide's section weights (20 / 30 / 30 / 20), spread across its objectives, "
             f"{EXAM_DURATION_SECONDS // 60} minutes, deferred grading. As in the real delivery "
             "window, the item's topic is not shown while you sit. A PDF score report is produced "
-            "and opened in your browser on submission."
+            "on submission."
         )
         prefer_unseen = st.checkbox(
             "Prefer questions I have not answered in earlier attempts", value=True,
@@ -331,7 +316,7 @@ def screen_home() -> None:
         mins = c2.number_input("Minutes", 5, 240, EXAM_DURATION_SECONDS // 60, step=5)
         c3.markdown("<div style='height:1.85rem'></div>", unsafe_allow_html=True)
         if c3.button("▶  Begin examination", type="primary", use_container_width=True):
-            seen = seen_question_ids(HISTORY_PATH) if prefer_unseen else None
+            seen = seen_question_ids(history_path()) if prefer_unseen else None
             start_exam("certifying", weighted_sample(bank, int(n), seen=seen), int(mins) * 60)
             st.rerun()
 
@@ -378,7 +363,7 @@ def screen_home() -> None:
 
     # ---- history --------------------------------------------------------
     with tab_hist:
-        history = load_history(HISTORY_PATH)
+        history = load_history(history_path())
         if not history.attempts:
             st.info("No attempts recorded yet. Your results will appear here.")
         else:
@@ -395,7 +380,7 @@ def screen_home() -> None:
             st.dataframe(rows, use_container_width=True, hide_index=True)
 
             st.markdown("##### Rolling accuracy by section (all attempts)")
-            for d, ds in load_history(HISTORY_PATH).rolling_domain_accuracy().items():
+            for d, ds in load_history(history_path()).rolling_domain_accuracy().items():
                 colour = "var(--ace-pass)" if ds.pct >= PASS_THRESHOLD else "var(--ace-fail)"
                 st.markdown(
                     f"<div style='display:flex;gap:0.8rem;align-items:center;margin-bottom:0.4rem'>"
@@ -598,7 +583,7 @@ def confirm_submit(sess: ExamSession) -> None:
         st.warning(f"{sess.unanswered_count} question(s) will be marked incorrect.")
     if sess.flagged_count:
         st.info(f"{sess.flagged_count} question(s) are still flagged for review.")
-    st.caption("Submitting is final. A PDF report will be generated and opened in your browser.")
+    st.caption("Submitting is final. A PDF score report will be generated.")
 
     c1, c2 = st.columns(2)
     if c1.button("Return to exam", use_container_width=True):
@@ -648,16 +633,17 @@ def screen_results() -> None:
     c3.metric("Time used", f"{mins}m {secs:02d}s")
     c4.metric("Unanswered", sum(1 for a in attempt.answers if not a.is_answered))
 
+    if st.session_state.get("history_error"):
+        st.error("This attempt could not be saved to your history, so note your score: "
+                 f"{st.session_state.history_error}. Check ACE_STATE_DIR and its permissions.")
+
     # ---- report ---------------------------------------------------------
     report = st.session_state.report
     if report:
         if st.session_state.report_opened:
             st.success(f"Score report generated and opened in your browser: `{report.name}`")
         else:
-            st.info(
-                f"Score report generated: `{report}`. "
-                "The browser could not be launched automatically — open it from the link below."
-            )
+            st.info(f"Score report generated: `{report.name}`. Download it with the button below.")
         with open(report, "rb") as fh:
             st.download_button("⬇  Download PDF report", fh, file_name=report.name,
                                mime="application/pdf")

@@ -33,6 +33,7 @@ from reportlab.platypus import (
 )
 
 from .blueprint import OBJECTIVES
+from .paths import ensure_writable_dir, reports_dir
 from .models import (
     DOMAIN_SHORT,
     PASS_THRESHOLD,
@@ -48,9 +49,6 @@ BAND = colors.HexColor("#f2f5f8")
 PASS_C = colors.HexColor("#1a7f4b")
 FAIL_C = colors.HexColor("#b3261e")
 ACCENT = colors.HexColor("#1a56b0")
-
-REPORTS_DIR = Path(__file__).resolve().parent.parent / "reports"
-
 
 # --------------------------------------------------------------------------
 # Custom flowables
@@ -175,11 +173,11 @@ def build_report(
     attempt: Attempt,
     questions: List[Question],
     candidate: str = "Candidate",
-    out_dir: Path = REPORTS_DIR,
+    out_dir: Optional[Path] = None,
     include_review: bool = True,
 ) -> Path:
     """Render the score report and return its path."""
-    out_dir.mkdir(parents=True, exist_ok=True)
+    out_dir = ensure_writable_dir(out_dir or reports_dir())
     stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
     path = out_dir / f"ACE-report-{stamp}-{attempt.attempt_id}.pdf"
 
@@ -484,7 +482,7 @@ def generate_and_open(
     attempt: Attempt,
     questions: List[Question],
     candidate: str = "Candidate",
-    out_dir: Path = REPORTS_DIR,
+    out_dir: Optional[Path] = None,
     auto_open: bool = True,
 ) -> tuple[Path, bool]:
     """Build the report and (by default) launch it. Returns ``(path, opened)``."""

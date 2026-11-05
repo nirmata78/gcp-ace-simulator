@@ -49,7 +49,8 @@ from reportlab.platypus import (
     TableStyle,
 )
 
-from src.exam_engine import load_bank, HISTORY_PATH
+from src.exam_engine import load_bank
+from src.paths import ensure_writable_dir, history_path, reports_dir
 from src.models import DOMAIN_SHORT, DOMAINS, PASS_THRESHOLD
 
 # Authored notes are personal: they describe one person's attempts, so the file is gitignored.
@@ -774,10 +775,10 @@ def main() -> int:
     ap.add_argument("--open", action="store_true", help="open the PDF when done")
     args = ap.parse_args()
 
-    if not HISTORY_PATH.exists():
+    if not history_path().exists():
         print("No attempts yet: sit an exam in the simulator first.", file=sys.stderr)
         return 1
-    attempts = json.loads(HISTORY_PATH.read_text())["attempts"]
+    attempts = json.loads(history_path().read_text())["attempts"]
     certifying = [a for a in attempts if a["mode"] == "certifying"]
     if not args.attempt and not certifying:
         print("No certifying attempt yet: pass --attempt ID or sit one first.", file=sys.stderr)
@@ -803,7 +804,7 @@ def main() -> int:
 
     stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
     kind = "retrospective-full" if args.all else "retrospective"
-    out = ROOT / "reports" / f"ACE-{kind}-{stamp}-{att['attempt_id']}.pdf"
+    out = ensure_writable_dir(reports_dir()) / f"ACE-{kind}-{stamp}-{att['attempt_id']}.pdf"
     path, marks = build(att, questions, notes, args.candidate, out, args.all)
 
     pages = max(p for _, p in marks)

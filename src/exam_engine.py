@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Set
 
 from .blueprint import SECTION_LIST, objective_weights, objectives_in
+from .paths import DATA_DIR, history_path
 from .models import (
     CERTIFYING_QUESTION_COUNT,
     DOMAIN_WEIGHTS,
@@ -26,10 +27,6 @@ from .models import (
     QuestionBank,
 )
 
-ROOT = Path(__file__).resolve().parent.parent
-DATA_DIR = ROOT / "data"          # holds sections/ and register.json
-HISTORY_PATH = DATA_DIR / "history.json"
-REPORTS_DIR = ROOT / "reports"
 
 
 # --------------------------------------------------------------------------
@@ -327,16 +324,17 @@ def load_bank(data_dir: Path = DATA_DIR) -> QuestionBank:
     return QuestionBank.load(data_dir)
 
 
-def load_history(path: Path = HISTORY_PATH) -> History:
-    return History.load(path)
+def load_history(path: Optional[Path] = None) -> History:
+    return History.load(path or history_path())
 
 
-def seen_question_ids(path: Path = HISTORY_PATH) -> Set[str]:
+def seen_question_ids(path: Optional[Path] = None) -> Set[str]:
     """Every question id answered in any recorded attempt."""
-    return {a.question_id for att in History.load(path).attempts for a in att.answers}
+    return {a.question_id for att in History.load(path or history_path()).attempts for a in att.answers}
 
 
-def record_attempt(attempt: Attempt, path: Path = HISTORY_PATH) -> History:
+def record_attempt(attempt: Attempt, path: Optional[Path] = None) -> History:
+    path = path or history_path()
     history = History.load(path)
     history.append(attempt, path)
     return history

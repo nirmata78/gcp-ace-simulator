@@ -430,7 +430,8 @@ def _infer(bank: QuestionBank, brief: str, count: int, model: str,
     try:
         from anthropic import Anthropic
     except ImportError:
-        print("[ERROR] pip install anthropic", file=sys.stderr)
+        print("[ERROR] The anthropic package is missing. Use the Python install from the README; "
+              "the Docker image doesn't include it.", file=sys.stderr)
         sys.exit(1)
 
     scope = [q for q in bank.questions if domain is None or q.domain == domain]

@@ -42,6 +42,7 @@ from reportlab.platypus import (
 )
 
 from recap_content import PAGES, TITLE, SUBTITLE
+from src.paths import ensure_writable_dir, reports_dir
 
 # --------------------------------------------------------------------------
 # Palette — the simulator's report palette, unchanged so the three PDFs read
@@ -469,7 +470,7 @@ def main() -> int:
         return 0
 
     stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
-    out = ROOT / "reports" / f"ACE-exam-eve-recap-{stamp}.pdf"
+    out = ensure_writable_dir(reports_dir()) / f"ACE-exam-eve-recap-{stamp}.pdf"
     path, marks = build(out, args.candidate)
 
     theory = sum(1 for p in PAGES if p.get("part", "theory") == "theory")
