@@ -1,7 +1,8 @@
 """End-to-end tests of the container: pytest tests/container
 
-Needs Docker, the container-test extra and `playwright install chromium`. It uses its own compose project, port and
-volume, so it never touches your ace-state volume or a simulator already running on port 8501.
+Needs Docker, `pip install playwright` and `playwright install chromium`. It uses its own compose project, port and
+volume, so it never touches your ace-state volume or a simulator already running on port 8501. It does rebuild the
+:local image tag.
 """
 
 from __future__ import annotations
@@ -16,7 +17,10 @@ from collections.abc import Iterator
 from pathlib import Path
 
 import pytest
-from playwright.sync_api import Page, sync_playwright
+
+pytest.importorskip("playwright")
+
+from playwright.sync_api import Page, sync_playwright  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
 PROJECT = "ace-e2e"
@@ -51,7 +55,7 @@ def _exec(*args: str, check: bool = True) -> subprocess.CompletedProcess[str]:
 @pytest.fixture(scope="module")
 def stack() -> Iterator[None]:
     _compose("down", "-v", check=False)
-    _compose("up", "-d", "--wait", "--wait-timeout", "120")
+    _compose("up", "-d", "--build", "--wait", "--wait-timeout", "120")
     yield
     _compose("down", "-v", check=False)
 
@@ -105,6 +109,10 @@ def test_sc4_port_is_published_to_localhost_only(stack: None) -> None:
     assert _compose("port", "simulator", "8501").stdout.strip() == f"127.0.0.1:{PORT}"
 
 
+def test_port_in_startup_log_matches_published_port(stack: None) -> None:
+    assert f"localhost:{PORT}" in _compose("logs", "simulator").stdout
+
+
 def test_sc5_starts_with_no_network() -> None:
     _run("docker", "compose", "-p", PROJECT, "build")
     image = "ghcr.io/nirmata78/gcp-ace-simulator:local"
@@ -128,7 +136,8 @@ def test_sc3_planted_personal_files_stay_out_of_the_image(tmp_path: Path) -> Non
             target = tmp_path / name
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(source, target)
-    for name in ("data/history.json", "private/x", "reports/x.pdf", "scripts/retro_content.py", ".env", "notes.txt"):
+    for name in ("data/history.json", "private/x", "reports/x.pdf", "scripts/retro_content.py", ".env", "notes.txt",
+                 ".streamlit/secrets.toml"):
         target = tmp_path / name
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_text(MARKER)
@@ -139,7 +148,7 @@ def test_sc3_planted_personal_files_stay_out_of_the_image(tmp_path: Path) -> Non
         script = (
             f"grep -rl {MARKER} /app /state; "
             "ls -d /app/private /app/reports /app/data/history.json /app/scripts/retro_content.py "
-            "/app/.env /app/notes.txt /app/tests /app/theory 2>/dev/null; true"
+            "/app/.env /app/notes.txt /app/tests /app/theory /app/.streamlit/secrets.toml 2>/dev/null; true"
         )
         assert _run("docker", "run", "--rm", image, "sh", "-c", script).stdout.strip() == ""
     finally:

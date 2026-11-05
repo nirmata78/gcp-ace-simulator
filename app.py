@@ -245,7 +245,10 @@ def submit_exam(expired: bool = False) -> None:
     except Exception as exc:  # a PDF failure must never lose the score
         st.session_state.report_error = str(exc)
 
-    record_attempt(attempt, history_path())
+    try:
+        record_attempt(attempt, history_path())
+    except OSError as exc:  # a full or read-only disk must not lose the score either
+        st.session_state.history_error = f"{history_path()}: {exc}"
     st.session_state.attempt = attempt
     st.session_state.report = path
     st.session_state.report_opened = opened
@@ -629,6 +632,10 @@ def screen_results() -> None:
     c2.metric("Correct", f"{attempt.correct_count}/{attempt.question_count}")
     c3.metric("Time used", f"{mins}m {secs:02d}s")
     c4.metric("Unanswered", sum(1 for a in attempt.answers if not a.is_answered))
+
+    if st.session_state.get("history_error"):
+        st.error("This attempt could not be saved to your history, so note your score: "
+                 f"{st.session_state.history_error}. Check ACE_STATE_DIR and its permissions.")
 
     # ---- report ---------------------------------------------------------
     report = st.session_state.report

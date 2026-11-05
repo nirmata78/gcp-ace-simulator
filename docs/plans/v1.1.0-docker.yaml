@@ -97,6 +97,7 @@ delivery_notes:
       - "T13 ships before T04, so its workflow pins its own actions by SHA. It installs Playwright directly, not from a lock."
       - "T13 skips the excluded-question scan: the guard fixture from issue 1 doesn't exist yet. Add it when that issue lands."
       - "compose.yaml names the volume ace-state, so it matches the docker run form, and takes ACE_VOLUME, so tests can't touch a person's real history."
+      - "compose.yaml has no pull_policy build, because forcing a rebuild on every up could need the network. Updating takes docker compose up --build."
       - "README leads with docker compose up, not docker run with the GHCR image, because no image is published until T14. T15 stays open to make the switch."
     remaining: "T02, T03, T04, T07, T08, T09, T10, T14, T15 (image-based README and the clean-machine walkthrough) and T16."
 

@@ -25,8 +25,6 @@ dev = [
     "mypy>=1.11.0",
     "pyyaml>=6.0.0",
 ]
-# Only tests/container needs this, and it also needs Docker and `playwright install chromium`.
-container-test = ["playwright>=1.48.0"]
 
 [tool.setuptools]
 # An application, not a library: nothing here is installed as a package.

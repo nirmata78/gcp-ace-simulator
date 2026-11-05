@@ -112,3 +112,26 @@ def test_unwritable_state_dir_names_the_location(tmp_path: Path) -> None:
     blocker.write_text("")
     with pytest.raises(OSError, match="ACE_STATE_DIR"):
         paths.ensure_writable_dir(blocker / "reports")
+
+
+def test_unwritable_state_dir_keeps_the_score_on_submit(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    blocker = tmp_path / "a-file"
+    blocker.write_text("")
+    monkeypatch.setenv("ACE_STATE_DIR", str(blocker / "state"))
+    app = AppTest.from_file(str(ROOT / "app.py"), default_timeout=30).run()
+    app.number_input[0].set_value(10)
+    next(b for b in app.button if "Begin examination" in b.label).click()
+    app.run()
+    next(b for b in app.button if b.label == "Submit Exam").click()
+    app.run()
+    next(b for b in app.button if b.label == "Submit now").click()
+    app.run()
+    assert not app.exception
+    assert any("could not be saved" in e.value for e in app.error)
+    assert any("Performance by section" in m.value for m in app.markdown)
+
+
+def test_relative_state_dir_is_anchored(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("ACE_STATE_DIR", "state")
+    assert paths.history_path() == tmp_path.resolve() / "state" / "history.json"

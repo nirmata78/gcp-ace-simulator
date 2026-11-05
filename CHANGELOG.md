@@ -17,6 +17,7 @@ All notable changes to this project are recorded here. The format follows
 ### Changed
 
 - The results page no longer says the browser failed when a report can't open by itself. It points to the download button.
+- If your history can't be saved, for example on a full disk, the results page still shows your score and says what went wrong.
 
 ### Fixed
 

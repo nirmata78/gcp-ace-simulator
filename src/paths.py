@@ -20,7 +20,7 @@ DATA_DIR = ROOT / "data"  # holds sections/ and register.json
 def state_dir() -> Path | None:
     """The configured state directory, or None for the source-tree locations."""
     value = os.environ.get("ACE_STATE_DIR")
-    return Path(value) if value else None
+    return Path(value).expanduser().resolve() if value else None
 
 
 def history_path() -> Path:

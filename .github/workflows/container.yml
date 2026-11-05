@@ -2,7 +2,22 @@ name: container
 on:
   push:
     branches: [main]
+    paths: &image-inputs
+      - Dockerfile
+      - .dockerignore
+      - compose.yaml
+      - requirements.lock
+      - app.py
+      - src/**
+      - scripts/kb.py
+      - scripts/check_network.py
+      - data/sections/**
+      - data/register.json
+      - .streamlit/**
+      - tests/container/**
+      - .github/workflows/container.yml
   pull_request:
+    paths: *image-inputs
 permissions:
   contents: read
 jobs:

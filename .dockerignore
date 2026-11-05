@@ -5,7 +5,7 @@
 !VERSION
 !LICENSE
 !requirements.lock
-!.streamlit/
+!.streamlit/config.toml
 !src/
 !scripts/kb.py
 !scripts/check_network.py

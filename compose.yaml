@@ -1,13 +1,16 @@
-# docker compose up     builds the image from this clone and starts the simulator on http://localhost:8501
+# docker compose up     builds the image the first time and starts the simulator on http://localhost:8501
+# docker compose up --build   picks up changes after a git pull
 # docker compose down   stops it and keeps your history. Adding -v deletes your history.
 services:
   simulator:
     build: .
     image: ghcr.io/nirmata78/gcp-ace-simulator:local
-    pull_policy: build
     ports:
       # Localhost only: the app has no authentication.
       - "127.0.0.1:${ACE_PORT:-8501}:8501"
+    environment:
+      # So the URL in the startup log matches the published port.
+      STREAMLIT_BROWSER_SERVER_PORT: ${ACE_PORT:-8501}
     volumes:
       - ace-state:/state
     read_only: true

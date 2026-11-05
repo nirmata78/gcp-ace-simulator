@@ -1,12 +1,14 @@
 # The exam app and the read-only kb.py commands. LLM authoring stays on the venv path (see README).
 # Refresh the digest with: docker buildx imagetools inspect python:3.12-slim
-FROM python:3.12-slim@sha256:e695ab189fa2d082b1c61c69a6b888a5adeca61ceeccad107b1ed2a125721a9e AS builder
+ARG BASE_IMAGE=python:3.12-slim@sha256:e695ab189fa2d082b1c61c69a6b888a5adeca61ceeccad107b1ed2a125721a9e
+
+FROM ${BASE_IMAGE} AS builder
 WORKDIR /build
 COPY requirements.lock .
 RUN python -m venv /opt/venv \
     && /opt/venv/bin/pip install --no-cache-dir --require-hashes --no-deps -r requirements.lock
 
-FROM python:3.12-slim@sha256:e695ab189fa2d082b1c61c69a6b888a5adeca61ceeccad107b1ed2a125721a9e
+FROM ${BASE_IMAGE}
 ARG ACE_VERSION=dev
 LABEL org.opencontainers.image.title="gcp-ace-simulator" \
       org.opencontainers.image.version="${ACE_VERSION}" \
@@ -24,8 +26,10 @@ COPY data/sections ./data/sections
 COPY data/register.json ./data/register.json
 
 # Created before VOLUME, so a new named volume inherits the non-root owner.
+# chmod: COPY keeps host modes, and a clone made under a strict umask would be unreadable to that user.
 RUN useradd --uid 10001 --no-create-home --shell /usr/sbin/nologin ace \
-    && mkdir /state && chown ace:ace /state
+    && mkdir /state && chown ace:ace /state \
+    && chmod -R a+rX /app
 
 ENV PATH="/opt/venv/bin:$PATH" \
     ACE_STATE_DIR=/state \

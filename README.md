@@ -95,9 +95,9 @@ docker run --rm -i -v ace-state:/state "$IMAGE" sh -c 'cat > /state/history.json
 | To | Do this |
 |:--|:--|
 | Use another port | `ACE_PORT=8600 docker compose up`, then open `http://localhost:8600` |
-| Update | `git pull`, then `docker compose up`, which rebuilds the image. Your history stays |
+| Update | `git pull`, then `docker compose up --build`. Your history stays |
 | Query the bank | `docker compose exec simulator python scripts/kb.py stats`, while it's running. The read-only `kb.py` commands work |
-| Uninstall | `docker compose down -v --rmi all`, which **also deletes your history**, then delete this folder |
+| Uninstall | `docker compose down -v`, which **also deletes your history**, then `docker rmi ghcr.io/nirmata78/gcp-ace-simulator:local`, then delete this folder |
 
 **How it's locked down.** The container runs as a non-root user on a read-only filesystem with no extra Linux
 capabilities, and its port is published to `127.0.0.1` only, because the app has no login. Don't publish it to your
@@ -284,7 +284,7 @@ by hand, run `python scripts/kb.py reindex`.
 ## 8 · Testing
 
 ```bash
-pytest -q          # 99 tests; no Docker needed
+pytest -q          # 101 tests; no Docker needed
 ```
 
 They cover the schema and blueprint, bank integrity, the exact sampling split, navigation, flags, the timer, deferred
@@ -300,7 +300,7 @@ pytest tests/container
 
 They check that history survives re-creating the container, that planted personal files stay out of the image, that it
 runs non-root on a read-only filesystem with the port on localhost only, and that it starts with no network. They use
-their own volume and port, so they don't touch your `ace-state`.
+their own volume and port, so they don't touch your `ace-state`, but they do rebuild the `:local` image.
 
 ---
 
