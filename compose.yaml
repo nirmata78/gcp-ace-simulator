@@ -1,0 +1,25 @@
+# docker compose up     builds the image from this clone and starts the simulator on http://localhost:8501
+# docker compose down   stops it and keeps your history. Adding -v deletes your history.
+services:
+  simulator:
+    build: .
+    image: ghcr.io/nirmata78/gcp-ace-simulator:local
+    pull_policy: build
+    ports:
+      # Localhost only: the app has no authentication.
+      - "127.0.0.1:${ACE_PORT:-8501}:8501"
+    volumes:
+      - ace-state:/state
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    init: true
+
+volumes:
+  ace-state:
+    # A fixed name, so the history is the same whichever directory you start from.
+    name: ${ACE_VOLUME:-ace-state}

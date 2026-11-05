@@ -10,7 +10,7 @@ target_release: 1.1.0
 semver_rationale: >
   MINOR. Adds a new way to run the simulator and new configuration. The existing venv flow, the history file,
   the bank schema and the kb.py commands keep working.
-status: proposed # proposed | in_progress | done
+status: in_progress # proposed | in_progress | done
 created: 2026-11-04
 
 goal: >
@@ -84,6 +84,21 @@ baseline:
     - id: A3
       statement: A named volume mounted at /state is writable by the image's non-root user on first run.
       verify_in: T11
+
+delivery_notes:
+  - date: 2026-11-05
+    pull_request: "T01, T05, T06, T11, T12 and T13 shipped in one PR, with the parts of T15 that are true before an image is published. This departs from the one-task-one-PR rule because the owner asked for a single PR that gets Docker running."
+    assumptions_verified:
+      A1: "True. webbrowser.open returned False at once in the container."
+      A2: "True. Streamlit ran read-only with HOME=/tmp and /tmp on tmpfs; the end-to-end test sat a full exam."
+      A3: "True. A new named volume was writable by UID 10001."
+    image_size: "630 MB on disk, measured with du inside the container, under the 700 MB limit in T11. 480 MB is the virtualenv, of which pyarrow is 155 MB and pandas 84 MB; both are Streamlit requirements."
+    changed_from_plan:
+      - "T13 ships before T04, so its workflow pins its own actions by SHA. It installs Playwright directly, not from a lock."
+      - "T13 skips the excluded-question scan: the guard fixture from issue 1 doesn't exist yet. Add it when that issue lands."
+      - "compose.yaml names the volume ace-state, so it matches the docker run form, and takes ACE_VOLUME, so tests can't touch a person's real history."
+      - "README leads with docker compose up, not docker run with the GHCR image, because no image is published until T14. T15 stays open to make the switch."
+    remaining: "T02, T03, T04, T07, T08, T09, T10, T14, T15 (image-based README and the clean-machine walkthrough) and T16."
 
 decisions:
   - id: D1
@@ -178,7 +193,7 @@ phases:
 tasks:
   - id: T01
     title: Add pyproject.toml, split dependencies and lock them
-    status: todo
+    status: done
     size: M
     depends_on: []
     files: [pyproject.toml, requirements.txt, requirements.lock, requirements-dev.lock, CLAUDE.md]
@@ -237,7 +252,7 @@ tasks:
 
   - id: T05
     title: Stop the app refusing to start when offline
-    status: todo
+    status: done
     size: S
     depends_on: [T01]
     semver: user-visible fix
@@ -252,7 +267,7 @@ tasks:
 
   - id: T06
     title: Add one state-path resolver with ACE_STATE_DIR
-    status: todo
+    status: done
     size: S
     depends_on: [T01]
     files: [src/paths.py, src/exam_engine.py, src/pdf_generator.py, app.py, scripts/retrospective.py, scripts/recap.py, tests/, README.md]
@@ -322,7 +337,7 @@ tasks:
 
   - id: T11
     title: Write the Dockerfile
-    status: todo
+    status: done
     size: M
     depends_on: [T01, T05, T06]
     files: [Dockerfile, .dockerignore]
@@ -343,7 +358,7 @@ tasks:
 
   - id: T12
     title: Add compose.yaml
-    status: todo
+    status: done
     size: S
     depends_on: [T11]
     files: [compose.yaml]
@@ -358,7 +373,7 @@ tasks:
 
   - id: T13
     title: Test the container end to end in CI
-    status: todo
+    status: done
     size: M
     depends_on: [T12, T04]
     files: [tests/container/test_e2e.py, .github/workflows/container.yml]
