@@ -34,7 +34,23 @@ Everything runs locally and all state is plain JSON on disk. No account, no tele
 
 ## 1 · Start
 
-You need Python 3.11 or newer.
+### With Docker
+
+You need Docker with Compose, and nothing else: no Python and no account.
+
+```bash
+git clone https://github.com/nirmata78/gcp-ace-simulator.git
+cd gcp-ace-simulator
+docker compose up                                    # http://localhost:8501
+```
+
+Press Ctrl+C to stop it, or use `docker compose up -d` and `docker compose down` to run it in the background. After the
+first build it starts in seconds and needs no internet connection. [Using it with Docker](#using-it-with-docker) covers
+your data, updates and uninstalling.
+
+### With Python
+
+Use this to contribute, or to write questions with Claude. You need Python 3.11 or newer.
 
 ```bash
 git clone https://github.com/nirmata78/gcp-ace-simulator.git
@@ -44,17 +60,54 @@ pip install -r requirements.txt
 streamlit run app.py                                 # http://localhost:8501
 ```
 
-`app.py` checks for a network connection at startup and stops if there is none. To study offline:
-
-```bash
-ACE_SKIP_NETWORK_CHECK=1 streamlit run app.py
-```
+The exam needs no internet connection, and only `kb.py add --topic` and `--stem` do. `ACE_SKIP_NETWORK_CHECK`, which
+older versions needed for offline study, is still accepted and does nothing.
 
 **The intended loop:**
 
 1. Read a part of the [theory](https://nirmata78.github.io/gcp-ace-simulator/theory/).
 2. Drill it in **Learning mode**, filtered to that part's objectives.
 3. Sit a **Certifying** exam, and reread the parts where you scored under 70%.
+
+### Using it with Docker
+
+**Where your data lives.** Your history and PDF reports are in a Docker volume called `ace-state`, not in the image or
+this folder. They survive stopping, removing and rebuilding the container.
+
+> **`docker compose down -v` deletes that volume, and your history with it.** Plain `docker compose down` keeps it.
+
+An exam you're still sitting is held in memory, so it's lost if the container stops. Download reports from the results
+page. These commands all use the image that `docker compose up` built, so run that once first:
+
+```bash
+IMAGE=ghcr.io/nirmata78/gcp-ace-simulator:local
+
+# Back up your history and reports to a file in this folder
+docker run --rm -v ace-state:/state "$IMAGE" tar -C /state -cf - . > ace-state-backup.tar
+
+# Restore them, overwriting files with the same name
+docker run --rm -i -v ace-state:/state "$IMAGE" tar -C /state -xf - < ace-state-backup.tar
+
+# Move in the history from a Python install, replacing any history already in the volume
+docker run --rm -i -v ace-state:/state "$IMAGE" sh -c 'cat > /state/history.json' < data/history.json
+```
+
+| To | Do this |
+|:--|:--|
+| Use another port | `ACE_PORT=8600 docker compose up`, then open `http://localhost:8600` |
+| Update | `git pull`, then `docker compose up --build`. Your history stays |
+| Query the bank | `docker compose exec simulator python scripts/kb.py stats`, while it's running. The read-only `kb.py` commands work |
+| Uninstall | `docker compose down -v`, which **also deletes your history**, then `docker rmi ghcr.io/nirmata78/gcp-ace-simulator:local`, then delete this folder |
+
+**How it's locked down.** The container runs as a non-root user on a read-only filesystem with no extra Linux
+capabilities, and its port is published to `127.0.0.1` only, because the app has no login. Don't publish it to your
+network. The image holds only the app and the question bank: `.dockerignore` denies everything else, so your history,
+reports and `private/` can't get into it. It has no `anthropic` package, so writing questions with Claude needs the
+Python install.
+
+Keeping state outside the image is one setting, `ACE_STATE_DIR`. It also works with Python: history then goes to
+`$ACE_STATE_DIR/history.json` and reports to `$ACE_STATE_DIR/reports/`. Without it they stay in `data/history.json` and
+`reports/`.
 
 ---
 
@@ -186,11 +239,12 @@ command was checked against the SDK. It is not guaranteed: products get renamed 
 
 | Output | Produced by |
 |---|---|
-| `reports/ACE-report-….pdf` | Every submission: the verdict, section bars against the 70% line, performance by objective, the weakest subtopics and a full item review. It opens in your browser |
+| `reports/ACE-report-….pdf` | Every submission: the verdict, section bars against the 70% line, performance by objective, the weakest subtopics and a full item review. It opens in your browser with Python; with Docker, use the download button on the results page |
 | `reports/ACE-retrospective-….pdf` | `scripts/retrospective.py [--attempt ID] [--all]`: a remediation booklet for one attempt, with a summary page and then two pages per missed or flagged item. If you keep your own notes per question in `scripts/retro_content.py` (gitignored), they replace the bank's explanations |
 | `reports/ACE-exam-eve-recap-….pdf` | `scripts/recap.py`: one topic per page, for the night before |
 
-Your attempts are recorded in `data/history.json`. That file and `reports/` are gitignored.
+Your attempts are recorded in `data/history.json`. That file and `reports/` are gitignored. With Docker, both are in
+the [`ace-state` volume](#using-it-with-docker) instead, and `retrospective.py` and `recap.py` aren't in the image.
 
 ---
 
@@ -203,10 +257,11 @@ gcp-ace-simulator/
 │   ├── blueprint.py           # the June 2026 exam guide: sections, objectives, bullets, subtopics
 │   ├── models.py              # schemas, bank persistence, register, duplicate detection
 │   ├── exam_engine.py         # three-level sampling, timer, navigation, scoring (no Streamlit imports)
+│   ├── paths.py               # where history and reports go (ACE_STATE_DIR)
 │   └── pdf_generator.py       # score report
 ├── scripts/
 │   ├── kb.py                  # query / add / check / blueprint / reindex
-│   ├── check_network.py       # the startup connectivity check
+│   ├── check_network.py       # the connectivity check before LLM authoring
 │   ├── retrospective.py       # remediation PDF for one attempt
 │   └── recap.py, recap_content.py  # exam-eve recap PDF
 ├── data/
@@ -215,7 +270,9 @@ gcp-ace-simulator/
 ├── theory/                    # the site: one Markdown page per part
 │   ├── pdf/                   # optional local PDF build
 │   └── video/                 # sources of a narrated course (the videos are not in the repo)
-├── tests/test_simulator.py
+├── tests/                     # the default run; tests/container needs Docker
+├── Dockerfile, compose.yaml   # the container; .dockerignore allows only what the image needs
+├── pyproject.toml             # dependencies; requirements*.lock pin them with hashes
 └── _config.yml                # GitHub Pages (just-the-docs)
 ```
 
@@ -227,12 +284,23 @@ by hand, run `python scripts/kb.py reindex`.
 ## 8 · Testing
 
 ```bash
-pytest -q          # 89 tests
+pytest -q          # 101 tests; no Docker needed
 ```
 
 They cover the schema and blueprint, bank integrity, the exact sampling split, navigation, flags, the timer, deferred
-grading and objective scoring, reading older history, PDF generation and the network check. CI runs them on every
-pull request, with `kb.py check` and the coverage gate.
+grading and objective scoring, reading older history, PDF generation, running offline and `ACE_STATE_DIR`. CI runs them
+on every pull request, with `kb.py check` and `kb.py blueprint --min 3 --strict`.
+
+The container has its own tests, which sit an exam in a real browser against the hardened container:
+
+```bash
+pip install playwright && playwright install chromium
+pytest tests/container
+```
+
+They check that history survives re-creating the container, that planted personal files stay out of the image, that it
+runs non-root on a read-only filesystem with the port on localhost only, and that it starts with no network. They use
+their own volume and port, so they don't touch your `ace-state`, but they do rebuild the `:local` image.
 
 ---
 
@@ -242,16 +310,19 @@ pull request, with `kb.py check` and the coverage gate.
   Pick a subtopic that `kb.py topics` lists under the right objective.
 - **`duplicate question titles`.** Find them with `grep -h '"title"' data/sections/*.json | sort | uniq -d`.
 - **`ANTHROPIC_API_KEY is not set`.** Only LLM authoring needs a key. Use `kb.py add --file` instead.
-- **The PDF did not open.** No browser could be launched, which is common over SSH. The results screen shows the path
-  and offers a download button.
-- **Port 8501 is in use.** Run `streamlit run app.py --server.port 8600`.
+- **The PDF did not open.** No browser could be launched, which is normal in Docker and common over SSH. The results
+  screen offers a download button.
+- **Port 8501 is in use.** Run `ACE_PORT=8600 docker compose up`, or `streamlit run app.py --server.port 8600` with Python.
+- **`Cannot connect to the Docker daemon`.** Docker isn't running. Start Docker Desktop or the Docker service and try again.
+- **My history is gone after using Docker.** `docker compose down -v` or a Docker prune deleted the `ace-state` volume.
+  It can't be recovered without a [backup](#using-it-with-docker).
 
 ---
 
 ## Releases
 
 The project uses [semantic versioning](https://github.com/nirmata78/gcp-ace-simulator/blob/main/RELEASE.md). See the [changelog](https://github.com/nirmata78/gcp-ace-simulator/blob/main/CHANGELOG.md) for what changed and for known
-limitations, and the [roadmap](https://github.com/nirmata78/gcp-ace-simulator/blob/main/RELEASE.md#roadmap) for what is next, starting with a one-command Docker launch.
+limitations, and the [roadmap](https://github.com/nirmata78/gcp-ace-simulator/blob/main/RELEASE.md#roadmap) for what is next, starting with a ready-made Docker image.
 
 ## Contributing
 

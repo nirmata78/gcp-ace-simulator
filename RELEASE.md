@@ -9,9 +9,9 @@ and trunk-based development, testing and release discipline from [Software Engin
 `VERSION` is the single source of truth. The public API that semver protects is:
 
 1. **The question schema**: the fields and meaning of `data/sections/*.json`
-2. **The history format**: an existing `data/history.json` must keep loading
+2. **The history format**: an existing `history.json` must keep loading, in `data/` or in `ACE_STATE_DIR`
 3. **The `scripts/kb.py` commands**: their names, options and exit codes
-4. **How you launch it**: `streamlit run app.py` and the documented environment variables
+4. **How you launch it**: `streamlit run app.py`, `docker compose up`, the `ace-state` volume and the documented environment variables
 
 Internal Python modules in `src/` are not public API, so they can change in any release.
 
@@ -31,7 +31,7 @@ If a release does more than one of these, the largest bump wins.
   separate session that didn't write it.
   **Exception for the repository owner:** on the owner's own changes, an AI tool such as Claude Code counts as the
   reviewer and may merge once CI is green, even if it also wrote the change.
-- **CI must be green** before merging: `pytest -q`, `python scripts/kb.py check` and `python scripts/kb.py blueprint --min 3 --strict`.
+- **CI must be green** before merging: `pytest -q`, `python scripts/kb.py check`, `python scripts/kb.py blueprint --min 3 --strict` and, when the image's inputs change, `pytest tests/container`.
 - **Bug fixes and new behaviour come with a test.** If CI doesn't check it, it can break unnoticed.
 - **Treat coverage as a signal, not a goal.** Use it to find untested code, and don't chase a number
   ([Google's guidance](https://testing.googleblog.com/2020/08/code-coverage-best-practices.html)).
@@ -73,7 +73,7 @@ Only the latest release is supported.
 |---|---|---|
 | **1.0.0** | First release: the simulator, the question bank and the theory course | [Changelog](CHANGELOG.md) |
 | 1.0.1 | Corrections from verifying the five newest questions | [#2](https://github.com/nirmata78/gcp-ace-simulator/issues/2) |
-| 1.1.0 | One-command launch with Docker, and the tech debt that blocks it | [#3](https://github.com/nirmata78/gcp-ace-simulator/issues/3), [plan](docs/plans/v1.1.0-docker.yaml) |
+| 1.1.0 | One-command launch with Docker, a published image, and the tech debt that blocks it | [#3](https://github.com/nirmata78/gcp-ace-simulator/issues/3), [plan](docs/plans/v1.1.0-docker.yaml) |
 | Next MINOR | Rewritten questions from the provenance review | [#1](https://github.com/nirmata78/gcp-ace-simulator/issues/1) |
 
 The order of the last two can swap. Whichever lands first takes the next MINOR number.

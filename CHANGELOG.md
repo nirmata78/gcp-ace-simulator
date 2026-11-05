@@ -6,6 +6,24 @@ All notable changes to this project are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- **Run it with Docker:** `docker compose up` from a clone, with no Python needed. It runs as non-root on a read-only
+  filesystem, publishes its port to localhost only, and keeps your history in the `ace-state` volume
+  ([#3](https://github.com/nirmata78/gcp-ace-simulator/issues/3)). A ready-made image comes with the 1.1.0 release.
+- **`ACE_STATE_DIR`** moves your history and reports out of the source tree. Without it, nothing changes.
+- **Pinned dependencies:** `pyproject.toml` declares them, and `requirements.lock` and `requirements-dev.lock` pin them with hashes.
+
+### Changed
+
+- The results page no longer says the browser failed when a report can't open by itself. It points to the download button.
+- If your history can't be saved, for example on a full disk, the results page still shows your score and says what went wrong.
+
+### Fixed
+
+- **The app starts without an internet connection.** It no longer shuts down when offline, because it needs no network.
+  `ACE_SKIP_NETWORK_CHECK` is still accepted and does nothing. `kb.py add --topic` and `--stem` still stop when offline.
+
 ## [1.0.1] - 2026-11-04
 
 The five questions listed as unverified in 1.0.0 (`ace-s3-144` to `ace-s3-148`) have now been checked against the docs

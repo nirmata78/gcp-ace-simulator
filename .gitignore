@@ -41,3 +41,7 @@ __pycache__/
 *.swp
 .claude/
 .agents/
+
+# ── Python packaging ──
+*.egg-info/
+build/
