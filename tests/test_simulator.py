@@ -30,7 +30,7 @@ from src.models import (  # noqa: E402
     Question,
     QuestionBank,
 )
-from src.pdf_generator import build_report  # noqa: E402
+from src.retrospective import build_report  # noqa: E402
 
 DATA_DIR = ROOT / "data"
 
@@ -649,11 +649,11 @@ def test_pdf_handles_an_all_blank_exam(tmp_path: Path, session: ExamSession) -> 
 
 
 def test_pdf_escaping_handles_markup_and_code_spans() -> None:
-    from src.pdf_generator import _esc
-    assert _esc("a & b <c>") == "a &amp; b &lt;c&gt;"
-    assert _esc("run `kubectl logs`") == 'run <font face="Courier">kubectl logs</font>'
+    from src.retrospective import code
+    assert code("a & b <c>") == "a &amp; b &lt;c&gt;"
+    assert code("run `kubectl logs`") == 'run <font face="Courier">kubectl logs</font>'
     # escaping must happen before the code span is wrapped, not after
-    assert "&lt;" in _esc("`a<b>`")
+    assert "&lt;" in code("`a<b>`")
 
 
 def test_pdf_escapes_reportlab_markup(tmp_path: Path, small_bank: QuestionBank) -> None:

@@ -13,6 +13,8 @@ on:
       - scripts/check_network.py
       - data/sections/**
       - data/register.json
+      - data/study_links.json
+      - bin/**
       - .streamlit/**
       - tests/container/**
       - .github/workflows/container.yml

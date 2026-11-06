@@ -23,7 +23,7 @@ COPY .streamlit ./.streamlit
 COPY src ./src
 COPY scripts/kb.py scripts/check_network.py ./scripts/
 COPY data/sections ./data/sections
-COPY data/register.json ./data/register.json
+COPY data/register.json data/study_links.json ./data/
 
 # Created before VOLUME, so a new named volume inherits the non-root owner.
 # chmod: COPY keeps host modes, and a clone made under a strict umask would be unreadable to that user.
