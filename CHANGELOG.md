@@ -18,6 +18,9 @@ All notable changes to this project are recorded here. The format follows
   double-click resets it, and the browser remembers the width. Below 1000px the panel moves under the question; on a
   phone the navigation buttons show icons only.
 - Material 3 colours, shapes and type throughout, also set as the Streamlit theme.
+- Downloads are built when you download: a PDF removed from `reports/` is rebuilt, and a failed build shows its error
+  instead of an empty file. The review shows 10 questions at a time, with **Show more**.
+- Requires Streamlit 1.66.1 or later (`pyproject.toml`).
 - Type grows with the window, as browser zoom would: 16px on small screens, about 20px on a 1728px laptop, at most
   24px. Answer options are set at the stem's size, stay readable after **Check answer**, and the right option (and a
   wrong pick) is marked in the list.
@@ -31,6 +34,12 @@ All notable changes to this project are recorded here. The format follows
   `ace-dom2-057`, `ace-dom3-033`, `ace-dom3-037`, `ace-dom4-006`, `ace-dom5-017`. The options were swapped so each key
   now points at the right answer and the answer-letter spread is unchanged; a test now allows only the key to be
   called correct.
+- Attempts recorded before that fix are repaired once when history is read: the chosen letter for those twelve
+  questions is swapped the same way and the attempt re-scored, so a pick that was the right answer now counts as
+  correct (`Attempt.bank_fixes` records it, so it never applies twice).
+- The timing summary counted unanswered items as misses "answered in under 25 seconds". It now counts wrong answers
+  only and states the unanswered ones separately; the results screen shows **Answered wrongly** beside
+  **Unanswered** instead of counting unanswered items twice.
 - `ace-dom1-025` said accounts were "already provisioned" without saying where. It now says every employee already has
   a Cloud Identity account, which is what makes SAML SSO, not Workforce Identity Federation, the answer.
 

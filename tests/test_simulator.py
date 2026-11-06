@@ -808,3 +808,23 @@ def test_duplicate_detection_is_scoped_within_a_domain() -> None:
     same = QuestionBank.model_validate(
         {"questions": [make("a", "1.1", "Regions and Zones"), make("b", "1.1", "Resource Hierarchy")]})
     assert len(same.duplicate_pairs()) == 1
+
+
+def test_old_history_is_repaired_once_for_the_swapped_keys() -> None:
+    from src.models import Attempt
+    raw = {"attempt_id": "x", "mode": "learning", "started_at": "2026-11-06T17:00:00",
+           "finished_at": "2026-11-06T18:29:49", "duration_seconds": 60, "question_count": 2,
+           "correct_count": 0,
+           "answers": [  # A was the right text, recorded as wrong against the old key B
+               {"question_id": "ace-dom5-017", "domain": "d", "subtopic": "s", "selected": "A", "correct_answer": "B"},
+               {"question_id": "ace-s4-040", "domain": "d", "subtopic": "s", "selected": "B", "correct_answer": "C"}]}
+    att = Attempt.model_validate(raw)
+    assert att.answers[0].selected == "B" and att.answers[0].is_correct
+    assert att.answers[1].selected == "B" and not att.answers[1].is_correct  # untouched
+    assert att.correct_count == 1
+    again = Attempt.model_validate(att.model_dump(mode="json"))  # saved, then loaded: no second swap
+    assert again.answers[0].selected == "B" and again.correct_count == 1
+    from src.exam_engine import ExamSession
+    from src.exam_engine import load_bank
+    fresh = ExamSession(load_bank().questions[:2], mode="learning").build_attempt()
+    assert fresh.bank_fixes  # new attempts are born repaired

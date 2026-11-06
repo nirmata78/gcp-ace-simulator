@@ -500,11 +500,13 @@ SPLITTER_JS = r"""
       var top = Math.max(panel.getBoundingClientRect().top, hdr + 16);
       d.documentElement.style.setProperty("--ace-panel-max", Math.max(240, innerHeight - top - nav - 16) + "px");
     }
-    function queue() { if (!queued) { queued = true; requestAnimationFrame(fit); } }
+    // Streamlit mutates the DOM constantly (the clock ticks every second), so the observer
+    // only queues one attach-and-fit per frame, and both return at once without a panel.
+    function queue() { if (!queued) { queued = true; requestAnimationFrame(function () { attach(); fit(); }); } }
     apply(v, false);
     attach();
     fit();
-    new MutationObserver(function () { attach(); queue(); }).observe(d.body, { childList: true, subtree: true });
+    new MutationObserver(queue).observe(d.body, { childList: true, subtree: true });
     d.addEventListener("scroll", queue, true);
     addEventListener("resize", queue);
   } + ")();";
@@ -538,7 +540,8 @@ def start_exam(mode: str, questions, duration: int) -> None:
     st.session_state.session = ExamSession(questions, mode=mode, duration_seconds=duration)
     st.session_state.attempt = None
     st.session_state.report = None
-    st.session_state.report_full_cache = {}
+    st.session_state.report_caches = {}
+    st.session_state.review_limit = REVIEW_PAGE
     st.session_state.report_error = None
     st.session_state.history_error = None
     st.session_state.show_submit_confirm = False
@@ -1049,17 +1052,30 @@ def _links_html(sections, counts=None) -> str:
     return f"<ul class='ace-links'>{''.join(items)}</ul>"
 
 
-def _full_report_pdf(attempt, questions, candidate: str, cache: dict):
-    """A download callable for the every-question PDF, built on first download only.
+REVIEW_PAGE = 10  # reviewed questions rendered per page on the results screen
+
+
+def _report_pdf(attempt, questions, candidate: str, cache: dict, all_items: bool):
+    """A download callable for a report PDF, read or built only when someone downloads it.
 
     Streamlit runs it from a server thread, outside the script, so it must not touch
-    st.session_state: everything it needs is bound here, and ``cache`` keeps the path.
+    st.session_state: everything it needs is bound here. ``cache`` keeps the path, and the
+    error of a failed build, which the next rerun of the results screen shows; a failed
+    build isn't retried on every click.
     """
     def build() -> bytes:
-        if cache.get("path") is None:
-            cache["path"] = build_report(attempt, questions, candidate=candidate,
-                                         out_dir=reports_dir(), all_items=True)
-        return Path(cache["path"]).read_bytes()
+        if cache.get("error"):
+            raise RuntimeError(cache["error"])
+        path = cache.get("path")
+        if path is None or not Path(path).exists():  # never built, or removed from reports/
+            try:
+                path = build_report(attempt, questions, candidate=candidate,
+                                    out_dir=reports_dir(), all_items=all_items)
+            except Exception as exc:
+                cache["error"] = str(exc)
+                raise
+            cache["path"] = path
+        return Path(path).read_bytes()
     return build
 
 
@@ -1093,11 +1109,11 @@ def render_report_summary(attempt, att: dict) -> None:
         st.warning("Time expired — the exam was submitted automatically.")
 
     answers = attempt.answers
-    missed = sum(1 for a in answers if not a.is_correct)
+    wrong = sum(1 for a in answers if a.is_answered and not a.is_correct)
     flagged_ok = sum(1 for a in answers if a.flagged and a.is_correct)
     mins, secs = divmod(int(attempt.duration_seconds), 60)
     stats = [(f"{attempt.correct_count}/{attempt.question_count}", "Correct"),
-             (str(missed), "Missed"),
+             (str(wrong), "Answered wrongly"),
              (str(sum(1 for a in answers if not a.is_answered)), "Unanswered"),
              (str(flagged_ok), "Flagged, correct"),
              (f"{mins}m {secs:02d}s", "Time used")]
@@ -1118,8 +1134,8 @@ def render_report_summary(attempt, att: dict) -> None:
     study = ""
     if weak:
         ranked = study_links.rank_sections(weak)[:6]
-        study = (f"<div class='ace-card'><h3>Where to study next</h3>"
-                 f"<div class='ace-meta'>The theory behind your misses and flags, most first.</div>"
+        study = ("<div class='ace-card'><h3>Where to study next</h3>"
+                 "<div class='ace-meta'>The theory behind your misses and flags, most first.</div>"
                  + _links_html([s for s, _ in ranked], {s.key: n for s, n in ranked})
                  + f"<div class='ace-meta'>Whole course: <a href='{study_links.video_url()}' "
                    f"target='_blank'>{html.escape(study_links.video_title())}</a></div></div>")
@@ -1242,30 +1258,39 @@ def screen_results() -> None:
     all_items = scope == "Every question"
     with bar[1].container(horizontal_alignment="right"):
         report = st.session_state.report
-        if all_items and report is not None:
-            cache = st.session_state.setdefault("report_full_cache", {})
-            data = _full_report_pdf(attempt, list(sess.questions), st.session_state.candidate, cache)
-            st.download_button("Download PDF report", data, icon=":material/download:",
-                               file_name=f"ACE-report-full-{attempt.attempt_id}.pdf",
-                               mime="application/pdf", on_click="ignore")
-        elif report is not None:
-            st.download_button("Download PDF report", Path(report).read_bytes(),
-                               icon=":material/download:", file_name=Path(report).name,
-                               mime="application/pdf", on_click="ignore")
-        elif st.session_state.get("report_error"):
+        caches = st.session_state.setdefault("report_caches", {})
+        cache = caches.setdefault("full" if all_items else "short",
+                                  {} if all_items else {"path": report})
+        if cache.get("error"):
+            st.error(f"The PDF could not be generated: {cache['error']}")
+        elif st.session_state.get("report_error") and not all_items:
             st.error(f"The PDF could not be generated: {st.session_state.report_error}")
+        else:
+            kind = "report-full" if all_items else "report"
+            st.download_button(
+                "Download PDF report",
+                _report_pdf(attempt, list(sess.questions), st.session_state.candidate, cache, all_items),
+                icon=":material/download:", file_name=f"ACE-{kind}-{attempt.attempt_id}.pdf",
+                mime="application/pdf", on_click="rerun")  # the rerun shows a failed build
     if report is not None:
         st.caption(f"A copy of the missed-and-flagged PDF is saved as `{Path(report).name}` "
                    f"in your reports folder.")
 
     qmap = {q.id: q for q in sess.questions}
     shown = [(n, rec) for n, rec in enumerate(attempt.answers, start=1)
-             if rec.question_id in qmap and in_review(att["answers"][n - 1], all_items)]
+             if rec.question_id in qmap and (all_items or rec.flagged or not rec.is_correct)]
     if not shown:
         st.success("Nothing to review: every answer was correct and none was flagged. "
                    "Choose **Every question** to go through the reasoning anyway.")
-    for i, (n, rec) in enumerate(shown):
+    # Expanders render their contents even when closed, so a long review is paged.
+    limit = st.session_state.setdefault("review_limit", REVIEW_PAGE)
+    for i, (n, rec) in enumerate(shown[:limit]):
         render_review_item(n, rec, qmap[rec.question_id], expanded=i == 0)
+    if len(shown) > limit:
+        if st.button(f"Show {min(REVIEW_PAGE, len(shown) - limit)} more of {len(shown) - limit} remaining",
+                     icon=":material/expand_more:"):
+            st.session_state.review_limit = limit + REVIEW_PAGE
+            st.rerun()
 
     st.divider()
     if st.button("Return to start", icon=":material/home:", type="primary"):

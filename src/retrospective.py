@@ -46,7 +46,7 @@ from reportlab.platypus import (
 
 from . import study_links
 from .exam_engine import load_bank
-from .models import DOMAIN_SHORT, DOMAINS, PASS_THRESHOLD, Attempt, Question
+from .models import DOMAIN_SHORT, DOMAINS, PASS_THRESHOLD, Attempt, History, Question
 from .paths import ensure_writable_dir, history_path, reports_dir
 
 # Authored notes are personal: they describe one person's attempts, so the file is gitignored
@@ -706,16 +706,22 @@ def timing_facts(att: Dict[str, Any]) -> str:
     answers = att["answers"]
     total_q = att["question_count"]
     mins = int(att["duration_seconds"] // 60)
-    missed = [a for a in answers if a["selected"] != a["correct_answer"]]
+    # Only answered misses: an untouched item says nothing about the pace of answering.
+    missed = [a for a in answers if a["selected"] and a["selected"] != a["correct_answer"]]
+    skipped = sum(1 for a in answers if not a["selected"])
     fast = [a for a in missed if a["seconds_spent"] < 25]
     ok_t = [a["seconds_spent"] for a in answers if a["selected"] == a["correct_answer"]]
     bad_t = [a["seconds_spent"] for a in missed]
-    avg = lambda xs: sum(xs) / len(xs) if xs else 0.0
+
+    def avg(xs: List[float]) -> float:
+        return sum(xs) / len(xs) if xs else 0.0
+
     per = att["duration_seconds"] / total_q if total_q else 0.0
-    return (f'<b>{len(fast)} of your {len(missed)} misses were answered in under 25 seconds.</b> '
-            f'You used {mins} minute{"s" if mins != 1 else ""} for {total_q} items ({per:.0f}s per item). '
-            f'Average time on a correct answer was {avg(ok_t):.0f}s; on a miss, '
-            f'{avg(bad_t):.0f}s. ')
+    left = f' {skipped} left unanswered.' if skipped else ''
+    return (f'<b>{len(fast)} of your {len(missed)} wrong answers were given in under 25 seconds.</b>'
+            f'{left} You used {mins} minute{"s" if mins != 1 else ""} for {total_q} items '
+            f'({per:.0f}s per item). Average time on a correct answer was {avg(ok_t):.0f}s; '
+            f'on a wrong one, {avg(bad_t):.0f}s. ')
 
 
 def summary_page(att: Dict[str, Any], items: List[Dict[str, Any]], notes: Dict[str, Any],
@@ -1015,7 +1021,8 @@ def main() -> int:
     if not history_path().exists():
         print("No attempts yet: sit an exam in the simulator first.", file=sys.stderr)
         return 1
-    attempts = json.loads(history_path().read_text())["attempts"]
+    # Through the model, so older records get the bank's answer-key repairs (models.BANK_KEY_FIXES).
+    attempts = [a.model_dump(mode="json") for a in History.load(history_path()).attempts]
     certifying = [a for a in attempts if a["mode"] == "certifying"]
     if not args.attempt and not certifying:
         print("No certifying attempt yet: pass --attempt ID or sit one first.", file=sys.stderr)
