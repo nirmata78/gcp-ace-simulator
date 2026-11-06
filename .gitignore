@@ -45,3 +45,8 @@ __pycache__/
 # ── Python packaging ──
 *.egg-info/
 build/
+
+# ── bin/start.sh and bin/stop.sh ──
+.ace-lock/
+data/history.json.bak
+data/history.json.sync.*

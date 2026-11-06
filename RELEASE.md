@@ -11,7 +11,8 @@ and trunk-based development, testing and release discipline from [Software Engin
 1. **The question schema**: the fields and meaning of `data/sections/*.json`
 2. **The history format**: an existing `history.json` must keep loading, in `data/` or in `ACE_STATE_DIR`
 3. **The `scripts/kb.py` commands**: their names, options and exit codes
-4. **How you launch it**: `streamlit run app.py`, `docker compose up`, the `ace-state` volume and the documented environment variables
+4. **How you launch it**: `streamlit run app.py`, `docker compose up`, `bin/start.sh` and `bin/stop.sh` with their
+   options, the `ace-state` volume and the documented environment variables
 
 Internal Python modules in `src/` are not public API, so they can change in any release.
 
@@ -73,7 +74,8 @@ Only the latest release is supported.
 |---|---|---|
 | **1.0.0** | First release: the simulator, the question bank and the theory course | [Changelog](CHANGELOG.md) |
 | 1.0.1 | Corrections from verifying the five newest questions | [#2](https://github.com/nirmata78/gcp-ace-simulator/issues/2) |
-| 1.1.0 | One-command launch with Docker, a published image, and the tech debt that blocks it | [#3](https://github.com/nirmata78/gcp-ace-simulator/issues/3), [plan](docs/plans/v1.1.0-docker.yaml) |
+| **1.1.0** | Docker from a clone with `bin/start.sh`, the review report with theory and video links, the study panel | [Changelog](CHANGELOG.md) |
+| 1.2.0 | A published image anyone can pull in one line, and the rest of the tech debt | [#7](https://github.com/nirmata78/gcp-ace-simulator/issues/7), [#3](https://github.com/nirmata78/gcp-ace-simulator/issues/3), [plan](docs/plans/v1.1.0-docker.yaml) |
 | Next MINOR | Rewritten questions from the provenance review | [#1](https://github.com/nirmata78/gcp-ace-simulator/issues/1) |
 
 The order of the last two can swap. Whichever lands first takes the next MINOR number.
