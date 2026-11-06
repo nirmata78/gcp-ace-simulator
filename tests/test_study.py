@@ -155,3 +155,47 @@ def test_study_panel_choice_lasts_between_sessions(practice: AppTest) -> None:
     next(b for b in practice.button if b.label == "Submit now").click()
     practice.run()
     assert practice.session_state.study_panel_pref is False
+
+
+def test_margin_and_timing_helpers_match_the_pass_line() -> None:
+    from src.retrospective import margin_lede, timing_facts
+    assert "exactly the 70% threshold" in margin_lede(7, 10)
+    assert "2 marks to spare" in margin_lede(9, 10)
+    assert "1 mark below" in margin_lede(6, 10)
+    att = {"question_count": 2, "duration_seconds": 60, "answers": [
+        {"selected": "A", "correct_answer": "A", "seconds_spent": 40},
+        {"selected": "B", "correct_answer": "A", "seconds_spent": 10}]}
+    assert "1 of your 1 misses" in timing_facts(att)
+
+
+def test_practice_mode_installs_the_splitter(practice: AppTest) -> None:
+    frames = [str(e.proto) for e in practice.get("iframe")]
+    assert any("ace-splitter-js" in f and "--ace-split" in f for f in frames)
+
+
+@pytest.fixture
+def results(practice: AppTest) -> AppTest:
+    right = practice.session_state.session.current.correct_answer
+    practice.radio[0].set_value("B" if right == "A" else "A").run()  # a miss, so there's a review
+    next(b for b in practice.button if b.label == "End & Score").click()
+    practice.run()
+    next(b for b in practice.button if b.label == "Submit now").click()
+    return practice.run()
+
+
+def test_results_show_the_report_in_the_app(results: AppTest) -> None:
+    assert not results.exception
+    text = " ".join(m.value for m in results.markdown)
+    assert "Performance by section" in text and "Where to study next" in text
+    assert "youtu.be/wXKv62ONQUw?t=" in text and "Spot it next time" in text
+    labels = [e.label for e in results.expander]
+    assert any("Q1 ·" in lb for lb in labels)
+
+
+def test_results_review_scope_switches_to_every_question(results: AppTest) -> None:
+    def reviewed(app: AppTest) -> int:
+        return sum(1 for e in app.expander if " · Q" in f" {e.label}" or "**Q" in e.label)
+    short = reviewed(results)
+    results.segmented_control(key="review_scope").set_value("Every question").run()
+    assert not results.exception
+    assert reviewed(results) == results.session_state.attempt.question_count >= short

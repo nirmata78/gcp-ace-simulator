@@ -681,6 +681,43 @@ THEME_COLORS = {
 }
 
 
+def in_review(a: Dict[str, Any], all_items: bool = False) -> bool:
+    """Whether an answer is reviewed: missed or flagged, or every answer with ``all_items``."""
+    return all_items or a["flagged"] or a["selected"] != a["correct_answer"]
+
+
+def margin_lede(correct: int, total_q: int) -> str:
+    """Where the score sits against the pass line, as one sentence with <b> marks."""
+    # The pass line is a fraction of the paper, so the mark needed is rounded up.
+    cut = math.ceil(PASS_THRESHOLD * total_q - 1e-9)
+    margin = correct - cut
+    if margin == 0:
+        return (f'You scored <b>exactly the {int(PASS_THRESHOLD*100)}% threshold</b> — '
+                f'{correct} of {total_q}, with no mark to spare.')
+    if margin > 0:
+        return (f'You passed with <b>{margin} mark{"s" if margin != 1 else ""} to spare</b> '
+                f'over the {cut}-of-{total_q} line.')
+    return (f'You finished <b>{abs(margin)} mark{"s" if margin != -1 else ""} below</b> '
+            f'the {cut}-of-{total_q} line.')
+
+
+def timing_facts(att: Dict[str, Any]) -> str:
+    """How the time went on misses and on correct answers, with <b> marks."""
+    answers = att["answers"]
+    total_q = att["question_count"]
+    mins = int(att["duration_seconds"] // 60)
+    missed = [a for a in answers if a["selected"] != a["correct_answer"]]
+    fast = [a for a in missed if a["seconds_spent"] < 25]
+    ok_t = [a["seconds_spent"] for a in answers if a["selected"] == a["correct_answer"]]
+    bad_t = [a["seconds_spent"] for a in missed]
+    avg = lambda xs: sum(xs) / len(xs) if xs else 0.0
+    per = att["duration_seconds"] / total_q if total_q else 0.0
+    return (f'<b>{len(fast)} of your {len(missed)} misses were answered in under 25 seconds.</b> '
+            f'You used {mins} minutes for {total_q} items ({per:.0f}s per item). '
+            f'Average time on a correct answer was {avg(ok_t):.0f}s; on a miss, '
+            f'{avg(bad_t):.0f}s. ')
+
+
 def summary_page(att: Dict[str, Any], items: List[Dict[str, Any]], notes: Dict[str, Any],
                  candidate: str, st, all_items: bool = False) -> List[Any]:
     out: List[Any] = []
@@ -728,18 +765,7 @@ def summary_page(att: Dict[str, Any], items: List[Dict[str, Any]], notes: Dict[s
     out.append(ScoreBar(pct, CONTENT_W))
     out.append(Spacer(1, 6))
 
-    # The pass line is a fraction of the paper, so the mark needed is rounded up.
-    cut = math.ceil(PASS_THRESHOLD * total_q - 1e-9)
-    margin = correct - cut
-    if margin == 0:
-        lede = (f'You scored <b>exactly the {int(PASS_THRESHOLD*100)}% threshold</b> — '
-                f'{correct} of {total_q}, with no mark to spare.')
-    elif margin > 0:
-        lede = (f'You passed with <b>{margin} mark{"s" if margin != 1 else ""} to spare</b> '
-                f'over the {cut}-of-{total_q} line.')
-    else:
-        lede = (f'You finished <b>{abs(margin)} mark{"s" if margin != -1 else ""} below</b> '
-                f'the {cut}-of-{total_q} line.')
+    lede = margin_lede(correct, total_q)
     out.append(panel(f'{lede} {rich(notes["margin"])}', st, bg=BLUE_BG, border=BLUE,
                      label="WHERE THE MARGIN ACTUALLY SITS", pad=7))
     out.append(Spacer(1, 6))
@@ -755,8 +781,7 @@ def summary_page(att: Dict[str, Any], items: List[Dict[str, Any]], notes: Dict[s
         ok = sum(1 for a in ds if a["selected"] == a["correct_answer"])
         p = ok / len(ds)
         col = GREEN if p >= PASS_THRESHOLD else RED
-        here = sum(1 for a in ds
-                   if all_items or a["flagged"] or a["selected"] != a["correct_answer"])
+        here = sum(1 for a in ds if in_review(a, all_items))
         rows.append([
             f'<b>{esc(DOMAIN_SHORT[d])}</b>',
             str(len(ds)), str(ok),
@@ -830,14 +855,7 @@ def summary_page(att: Dict[str, Any], items: List[Dict[str, Any]], notes: Dict[s
         out.append(Spacer(1, 3))
 
     # -- timing ------------------------------------------------------------
-    fast = [a for a in missed if a["seconds_spent"] < 25]
-    ok_t = [a["seconds_spent"] for a in answers if a["selected"] == a["correct_answer"]]
-    bad_t = [a["seconds_spent"] for a in missed]
-    avg = lambda xs: sum(xs) / len(xs) if xs else 0.0
-    facts = (f'<b>{len(fast)} of your {len(missed)} misses were answered in under 25 seconds.</b> '
-             f'You used {mins} minutes for {total_q} items ({att["duration_seconds"] / total_q:.0f}s '
-             f'per item). Average time on a correct answer was {avg(ok_t):.0f}s; on a miss, '
-             f'{avg(bad_t):.0f}s. ')
+    facts = timing_facts(att)
     out.append(Spacer(1, 3))
     out.append(panel(facts + rich(notes["timing"]), st, bg=AMBER_BG, border=AMBER,
                      label="TIMING — AND THE ONE HABIT TO CHANGE", pad=7))
@@ -899,7 +917,7 @@ def build(att: Dict[str, Any], questions: Dict[str, Any], notes: Dict[str, Any],
 
     items: List[Dict[str, Any]] = []
     for n, a in enumerate(att["answers"], 1):
-        if all_items or a["flagged"] or a["selected"] != a["correct_answer"]:
+        if in_review(a, all_items):
             rec = dict(a)
             rec["_n"] = n
             items.append({"rec": rec, "q": questions[a["question_id"]]})

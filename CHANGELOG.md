@@ -6,6 +6,19 @@ All notable changes to this project are recorded here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- The score report opens in the app instead of a browser tab: your score against the pass line, sections, timing,
+  where to study next, then each reviewed question with every option explained, the course's theory, the command,
+  the tell to spot next time and links to read and rewatch. **Missed and flagged** or **Every question**, with
+  **Download PDF report** for the same review as a PDF. A PDF copy is still saved to `reports/` on submission.
+- The layout fills the window. The header and the navigation bar have fixed heights, so nothing is clipped, and the
+  study panel fits between them and scrolls on its own.
+- Learning mode: drag the divider between the question and the study panel to resize it. Arrow keys work, a
+  double-click resets it, and the browser remembers the width. Below 1000px the panel moves under the question; on a
+  phone the navigation buttons show icons only.
+- Material 3 colours, shapes and type throughout, also set as the Streamlit theme.
+
 ## [1.1.0] - 2026-11-06
 
 Docker from a clone, a report that tells you what to study and where, and theory beside every practice question.
