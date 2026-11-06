@@ -6,6 +6,43 @@ All notable changes to this project are recorded here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- The score report opens in the app instead of a browser tab: your score against the pass line, sections, timing,
+  where to study next, then each reviewed question with every option explained, the course's theory, the command,
+  the tell to spot next time and links to read and rewatch. **Missed and flagged** or **Every question**, with
+  **Download PDF report** for the same review as a PDF. A PDF copy is still saved to `reports/` on submission.
+- The layout fills the window. The header and the navigation bar have fixed heights, so nothing is clipped, and the
+  study panel fits between them and scrolls on its own.
+- Learning mode: drag the divider between the question and the study panel to resize it. Arrow keys work, a
+  double-click resets it, and the browser remembers the width. Below 1000px the panel moves under the question; on a
+  phone the navigation buttons show icons only.
+- Material 3 colours, shapes and type throughout, also set as the Streamlit theme.
+- Downloads are built when you download: a PDF removed from `reports/` is rebuilt, and a failed build shows its error
+  instead of an empty file. The review shows 10 questions at a time, with **Show more**.
+- Requires Streamlit 1.66.1 or later (`pyproject.toml`).
+- Type grows with the window, as browser zoom would: 16px on small screens, about 20px on a 1728px laptop, at most
+  24px. Answer options are set at the stem's size, stay readable after **Check answer**, and the right option (and a
+  wrong pick) is marked in the list.
+- Buttons: white on blue for the main action and blue on white for the others, with readable hover, pressed, focus
+  and disabled states. The bottom bar's buttons are centred in it, with space between them.
+
+### Fixed
+
+- Twelve questions had the answer key on a distractor whose explanation contradicted it ("Correct." on two options):
+  `ace-dom1-033`, `ace-dom1-043`, `ace-dom2-005`, `ace-dom2-007`, `ace-dom2-021`, `ace-dom2-043`, `ace-dom2-053`,
+  `ace-dom2-057`, `ace-dom3-033`, `ace-dom3-037`, `ace-dom4-006`, `ace-dom5-017`. The options were swapped so each key
+  now points at the right answer and the answer-letter spread is unchanged; a test now allows only the key to be
+  called correct.
+- Attempts recorded before that fix are repaired once when history is read: the chosen letter for those twelve
+  questions is swapped the same way and the attempt re-scored, so a pick that was the right answer now counts as
+  correct (`Attempt.bank_fixes` records it, so it never applies twice).
+- The timing summary counted unanswered items as misses "answered in under 25 seconds". It now counts wrong answers
+  only and states the unanswered ones separately; the results screen shows **Answered wrongly** beside
+  **Unanswered** instead of counting unanswered items twice.
+- `ace-dom1-025` said accounts were "already provisioned" without saying where. It now says every employee already has
+  a Cloud Identity account, which is what makes SAML SSO, not Workforce Identity Federation, the answer.
+
 ## [1.1.0] - 2026-11-06
 
 Docker from a clone, a report that tells you what to study and where, and theory beside every practice question.

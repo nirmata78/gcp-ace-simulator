@@ -1,2 +1,18 @@
 [browser]
 gatherUsageStats = false
+
+# Material 3 baseline colours and shapes; app.py's stylesheet uses the same tokens.
+[theme]
+base = "light"
+primaryColor = "#0b57d0"
+backgroundColor = "#ffffff"
+secondaryBackgroundColor = "#f0f4f9"
+textColor = "#1f1f1f"
+linkColor = "#0b57d0"
+borderColor = "#c4c7c5"
+baseRadius = "12px"
+buttonRadius = "full"
+redColor = "#b3261e"
+greenColor = "#146c2e"
+orangeColor = "#7c5800"
+blueColor = "#0b57d0"

@@ -504,6 +504,21 @@ class DomainScore(BaseModel):
         return (self.correct / self.total) if self.total else 0.0
 
 
+#: Answer-key repairs to the bank, applied once to attempts recorded before them.
+#: Twelve questions had the key on a distractor; the fix swapped two option texts so the
+#: key letter now names the right answer. An old record's letters still point at the
+#: old texts, so the chosen letter is swapped the same way. The correct letter stays, and
+#: the attempt is re-scored: a pick that was the right text now counts as correct.
+BANK_KEY_FIXES: Dict[str, Dict[str, tuple]] = {
+    "2026-11-06-swapped-keys": {
+        "ace-dom1-033": ("A", "B"), "ace-dom1-043": ("B", "D"), "ace-dom2-005": ("A", "B"),
+        "ace-dom2-007": ("A", "D"), "ace-dom2-021": ("A", "B"), "ace-dom2-043": ("C", "D"),
+        "ace-dom2-053": ("A", "B"), "ace-dom2-057": ("B", "C"), "ace-dom3-033": ("A", "B"),
+        "ace-dom3-037": ("A", "B"), "ace-dom4-006": ("A", "C"), "ace-dom5-017": ("A", "B"),
+    },
+}
+
+
 class Attempt(BaseModel):
     """A completed exam, appended to ``data/history.json``."""
 
@@ -517,6 +532,26 @@ class Attempt(BaseModel):
     correct_count: int
     answers: List[AnswerRecord] = Field(default_factory=list)
     report_path: Optional[str] = None
+    #: Which BANK_KEY_FIXES this record already reflects, so a repair is never applied twice.
+    #: New attempts are recorded against the repaired bank and start with all of them.
+    bank_fixes: List[str] = Field(default_factory=lambda: list(BANK_KEY_FIXES))
+
+    @model_validator(mode="before")
+    @classmethod
+    def _apply_bank_fixes(cls, data):
+        if not isinstance(data, dict) or "bank_fixes" in data:
+            return data
+        data = dict(data)  # a record from before the field existed: repair it once
+        answers = [dict(a) if isinstance(a, dict) else a.model_dump() for a in data.get("answers", [])]
+        for swaps in BANK_KEY_FIXES.values():
+            for a in answers:
+                pair = swaps.get(a.get("question_id"))
+                if pair and a.get("selected") in pair:
+                    a["selected"] = pair[1] if a["selected"] == pair[0] else pair[0]
+        data["answers"] = answers
+        data["correct_count"] = sum(1 for a in answers if a.get("selected") == a.get("correct_answer"))
+        data["bank_fixes"] = list(BANK_KEY_FIXES)
+        return data
 
     @property
     def score_pct(self) -> float:
