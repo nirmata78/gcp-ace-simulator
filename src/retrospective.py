@@ -718,8 +718,9 @@ def timing_facts(att: Dict[str, Any]) -> str:
 
     per = att["duration_seconds"] / total_q if total_q else 0.0
     left = f' {skipped} left unanswered.' if skipped else ''
-    return (f'<b>{len(fast)} of your {len(missed)} wrong answers were given in under 25 seconds.</b>'
-            f'{left} You used {mins} minute{"s" if mins != 1 else ""} for {total_q} items '
+    lede = (f'<b>{len(fast)} of your {len(missed)} wrong answers were given in under 25 seconds.</b>'
+            if missed else '<b>No wrong answers among the ones you gave.</b>')
+    return (f'{lede}{left} You used {mins} minute{"s" if mins != 1 else ""} for {total_q} items '
             f'({per:.0f}s per item). Average time on a correct answer was {avg(ok_t):.0f}s; '
             f'on a wrong one, {avg(bad_t):.0f}s. ')
 
