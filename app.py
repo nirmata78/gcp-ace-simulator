@@ -503,8 +503,7 @@ def start_exam(mode: str, questions, duration: int) -> None:
     st.session_state.session = ExamSession(questions, mode=mode, duration_seconds=duration)
     st.session_state.attempt = None
     st.session_state.report = None
-    st.session_state.report_full = None
-    st.session_state.report_full_error = None
+    st.session_state.report_full_cache = {}
     st.session_state.report_error = None
     st.session_state.history_error = None
     st.session_state.show_submit_confirm = False
@@ -1007,15 +1006,18 @@ def _links_html(sections, counts=None) -> str:
     return f"<ul class='ace-links'>{''.join(items)}</ul>"
 
 
-def _full_report_pdf() -> bytes:
-    """Built on the first download only, then reused."""
-    path = st.session_state.get("report_full")
-    if path is None:
-        path = build_report(st.session_state.attempt, st.session_state.session.questions,
-                            candidate=st.session_state.candidate, out_dir=reports_dir(),
-                            all_items=True)
-        st.session_state.report_full = path
-    return Path(path).read_bytes()
+def _full_report_pdf(attempt, questions, candidate: str, cache: dict):
+    """A download callable for the every-question PDF, built on first download only.
+
+    Streamlit runs it from a server thread, outside the script, so it must not touch
+    st.session_state: everything it needs is bound here, and ``cache`` keeps the path.
+    """
+    def build() -> bytes:
+        if cache.get("path") is None:
+            cache["path"] = build_report(attempt, questions, candidate=candidate,
+                                         out_dir=reports_dir(), all_items=True)
+        return Path(cache["path"]).read_bytes()
+    return build
 
 
 def render_report_summary(attempt, att: dict) -> None:
@@ -1198,7 +1200,9 @@ def screen_results() -> None:
     with bar[1].container(horizontal_alignment="right"):
         report = st.session_state.report
         if all_items and report is not None:
-            st.download_button("Download PDF report", _full_report_pdf, icon=":material/download:",
+            cache = st.session_state.setdefault("report_full_cache", {})
+            data = _full_report_pdf(attempt, list(sess.questions), st.session_state.candidate, cache)
+            st.download_button("Download PDF report", data, icon=":material/download:",
                                file_name=f"ACE-report-full-{attempt.attempt_id}.pdf",
                                mime="application/pdf", on_click="ignore")
         elif report is not None:

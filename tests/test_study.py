@@ -199,3 +199,25 @@ def test_results_review_scope_switches_to_every_question(results: AppTest) -> No
     results.segmented_control(key="review_scope").set_value("Every question").run()
     assert not results.exception
     assert reviewed(results) == results.session_state.attempt.question_count >= short
+
+
+def test_full_pdf_download_runs_outside_the_script(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    # Streamlit calls deferred download data from a server thread, with no session state.
+    import threading
+    monkeypatch.setenv("ACE_STATE_DIR", str(tmp_path))
+    src = (ROOT / "app.py").read_text()
+    fn = src[src.index("def _full_report_pdf("):src.index("def render_report_summary(")]
+    from src.paths import reports_dir
+    from src.retrospective import build_report
+    ns: dict = {"Path": Path, "build_report": build_report, "reports_dir": reports_dir}
+    exec(fn, ns)
+    bank = load_bank().questions[:4]
+    attempt = ExamSession(bank, mode="certifying").build_attempt()
+    cache: dict = {}
+    data = ns["_full_report_pdf"](attempt, bank, "T", cache)
+    out: list = []
+    t = threading.Thread(target=lambda: out.append(data()))
+    t.start()
+    t.join()
+    assert out[0].startswith(b"%PDF") and cache["path"].name.startswith("ACE-report-full-")
+    assert data() == out[0]  # built once, then reused

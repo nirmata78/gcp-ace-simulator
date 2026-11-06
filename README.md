@@ -315,7 +315,7 @@ by hand, run `python scripts/kb.py reindex`.
 ## 8 · Testing
 
 ```bash
-pytest -q          # 125 tests; no Docker needed
+pytest -q          # 126 tests; no Docker needed
 ```
 
 They cover the schema and blueprint, bank integrity, the exact sampling split, navigation, flags, the timer, deferred
