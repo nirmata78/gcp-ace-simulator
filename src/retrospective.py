@@ -311,10 +311,17 @@ def data_table(spec: Dict[str, Any], st, width: float = CONTENT_W) -> Table:
 PAGE_BODY_H = PAGE_H - TM - BM
 
 
+_MD_LINK = re.compile(r"\[([^\]]+)\]\((https?://[^)\s]+)\)")
+
+
 def md_inline(t: str) -> str:
     """The theory's inline Markdown, as ReportLab mini-HTML."""
-    t = esc(t)
-    t = re.sub(r"\[([^\]]+)\]\((https?://[^)\s]+)\)", lambda m: link(m.group(2), m.group(1)), t)
+    # Links are cut out before escaping, so link() escapes their text and URL exactly once.
+    parts, last = [], 0
+    for m in _MD_LINK.finditer(t):
+        parts += [esc(t[last:m.start()]), link(m.group(2), m.group(1))]
+        last = m.end()
+    t = "".join(parts) + esc(t[last:])
     t = re.sub(r"`([^`]+)`", r'<font face="Courier">\1</font>', t)
     t = re.sub(r"\*\*([^*]+)\*\*", r"<b>\1</b>", t)
     return re.sub(r"(?<![*\w])\*([^*\s][^*]*)\*(?!\w)", r"<i>\1</i>", t)
@@ -402,13 +409,15 @@ def theory_excerpt(sec: study_links.Section, st, budget: float) -> List[Any]:
                 continue
             rows = payload["rows"]
             cand: List[Any] = []
-            for n in range(len(rows), 1, -1):
+            for n in range(len(rows), 0, -1):
                 spec = {"head": [md_inline(h) for h in payload["head"]],
                         "rows": [[md_inline(c) for c in r[:len(payload["head"])]] for r in rows[:n]]}
                 cand = [Spacer(1, 2), data_table(spec, st), Spacer(1, 5)]
                 if used + _height(cand) <= budget:
                     break
                 cand = []
+            if not cand:
+                continue  # a table that won't fit is skipped; later prose may still fit
         elif kind == "h":
             cand = [Paragraph(f"<b>{md_inline(payload)}</b>", st["bodyc"])]
         elif kind == "quote":
@@ -948,15 +957,20 @@ def build_report(attempt: Attempt, questions: Iterable[Question], candidate: str
 
     ``all_items`` reviews every question; otherwise only missed and flagged ones.
     """
-    att = attempt.model_dump(mode="json")
-    qmap = {q.id: q for q in questions}
+    path, _ = _write(attempt.model_dump(mode="json"), {q.id: q for q in questions}, candidate,
+                     out_dir, all_items)
+    return path
+
+
+def _write(att: Dict[str, Any], qmap: Dict[str, Any], candidate: str, out_dir: Optional[Path],
+           all_items: bool) -> tuple[Path, List[tuple]]:
+    """One naming scheme for the app and the script: ACE-report[-full]-<stamp>-<attempt>.pdf."""
     out_dir = ensure_writable_dir(out_dir or reports_dir())
     stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
     kind = "report-full" if all_items else "report"
-    out = out_dir / f"ACE-{kind}-{stamp}-{attempt.attempt_id}.pdf"
-    notes = ATTEMPTS.get(attempt.attempt_id, EMPTY_ATTEMPT_NOTES)
-    path, _ = build(att, qmap, notes, candidate, out, all_items)
-    return path
+    out = out_dir / f"ACE-{kind}-{stamp}-{att['attempt_id']}.pdf"
+    notes = ATTEMPTS.get(att["attempt_id"], EMPTY_ATTEMPT_NOTES)
+    return build(att, qmap, notes, candidate, out, all_items)
 
 
 def open_in_browser(path: Path) -> bool:
@@ -988,8 +1002,14 @@ def main() -> int:
     if not args.attempt and not certifying:
         print("No certifying attempt yet: pass --attempt ID or sit one first.", file=sys.stderr)
         return 1
-    att = (next(a for a in attempts if a["attempt_id"] == args.attempt)
-           if args.attempt else certifying[-1])
+    if args.attempt:
+        matches = [a for a in attempts if a["attempt_id"] == args.attempt]
+        if not matches:
+            print(f"No attempt {args.attempt!r} in {history_path()}.", file=sys.stderr)
+            return 1
+        att = matches[0]
+    else:
+        att = certifying[-1]
 
     questions = {q.id: q for q in load_bank().questions}
     reviewed = [a["question_id"] for a in att["answers"]
@@ -1005,12 +1025,7 @@ def main() -> int:
               file=sys.stderr)
         return 1
 
-    notes = ATTEMPTS.get(att["attempt_id"], EMPTY_ATTEMPT_NOTES)
-
-    stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
-    kind = "retrospective-full" if args.all else "retrospective"
-    out = ensure_writable_dir(reports_dir()) / f"ACE-{kind}-{stamp}-{att['attempt_id']}.pdf"
-    path, marks = build(att, questions, notes, args.candidate, out, args.all)
+    path, marks = _write(att, questions, args.candidate, None, args.all)
 
     pages = max(p for _, p in marks)
     problems = verify(marks, n_items)

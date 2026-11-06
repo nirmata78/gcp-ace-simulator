@@ -228,7 +228,7 @@ def init_state() -> None:
     st.session_state.setdefault("report_opened", False)
     st.session_state.setdefault("candidate", "Candidate")
     st.session_state.setdefault("show_submit_confirm", False)
-    st.session_state.setdefault("study_panel", True)
+    st.session_state.setdefault("study_panel_pref", True)  # not a widget key, so it outlives the exam screen
 
 
 def start_exam(mode: str, questions, duration: int) -> None:
@@ -236,6 +236,7 @@ def start_exam(mode: str, questions, duration: int) -> None:
     st.session_state.attempt = None
     st.session_state.report = None
     st.session_state.report_full = None
+    st.session_state.report_full_error = None
     st.session_state.report_opened = False
     st.session_state.report_error = None
     st.session_state.history_error = None
@@ -538,7 +539,7 @@ def render_question(sess: ExamSession) -> None:
                 + f"</h4>{q.explanation.summary}</div>",
                 unsafe_allow_html=True,
             )
-            if st.session_state.get("study_panel", True):
+            if st.session_state.study_panel_pref:
                 return  # the study panel carries the option analysis, command and links
             items = "".join(
                 f"<li><b>{k}.</b> {q.explanation.option_breakdown[k]}</li>"
@@ -615,8 +616,15 @@ def confirm_submit(sess: ExamSession) -> None:
 
 def _md(text: str) -> str:
     """Theory Markdown for st.markdown, which would otherwise read $ as LaTeX."""
-    text = re.sub(r"^#{1,6} +(.+)$", r"**\1**", text, flags=re.M)  # headings would dwarf the panel
-    return text.replace("$", "\\$")
+    out, fenced = [], False
+    for line in text.split("\n"):
+        if line.lstrip().startswith("```"):
+            fenced = not fenced
+        elif not fenced:  # code blocks are shown as written
+            line = re.sub(r"^#{1,6} +(.+)$", r"**\1**", line)  # headings would dwarf the panel
+            line = line.replace("$", "\\$")
+        out.append(line)
+    return "\n".join(out)
 
 
 def _section_links(sec: study_links.Section) -> str:
@@ -687,9 +695,10 @@ def screen_exam() -> None:
         render_question(sess)
         render_nav(sess)
     else:
-        st.toggle("Study panel", key="study_panel",
-                  help="Theory recall for this question, and after checking, the full explanation.")
-        if st.session_state.study_panel:
+        st.session_state.study_panel_pref = st.toggle(
+            "Study panel", value=st.session_state.study_panel_pref,
+            help="Theory recall for this question, and after checking, the full explanation.")
+        if st.session_state.study_panel_pref:
             main, side = st.columns([3, 2], gap="large")
             with main:
                 render_question(sess)
@@ -738,6 +747,8 @@ def screen_results() -> None:
     if report:
         if st.session_state.report_opened:
             st.success(f"Report generated and opened in your browser: `{report.name}`")
+        else:
+            st.info(f"Report generated: `{report.name}`. Download it with the button below.")
         scope = st.radio(
             "The report reviews",
             ["Missed and flagged questions", "Every question"],
@@ -746,7 +757,8 @@ def screen_results() -> None:
                  "reviewed question gets two pages: every option explained, then the theory, "
                  "with links to the theory site and the course video.",
         )
-        if scope == "Every question" and not st.session_state.get("report_full"):
+        if (scope == "Every question" and not st.session_state.get("report_full")
+                and not st.session_state.get("report_full_error")):
             try:
                 with st.spinner("Building the full report…"):
                     st.session_state.report_full = build_report(
@@ -754,7 +766,9 @@ def screen_results() -> None:
                         candidate=st.session_state.candidate, out_dir=reports_dir(),
                         all_items=True)
             except Exception as exc:
-                st.error(f"The full report could not be generated: {exc}")
+                st.session_state.report_full_error = str(exc)  # don't rebuild on every rerun
+        if scope == "Every question" and st.session_state.get("report_full_error"):
+            st.error(f"The full report could not be generated: {st.session_state.report_full_error}")
         chosen = st.session_state.get("report_full") if scope == "Every question" else report
         if chosen:
             with open(chosen, "rb") as fh:

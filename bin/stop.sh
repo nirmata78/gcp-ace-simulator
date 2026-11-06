@@ -23,8 +23,8 @@ take_lock
 
 if running; then
   confirm "Stop the simulator? An exam in progress is lost."
+  docker compose down  # first, so the app can't write history while it's being synced
   volume_exists && sync_state
-  docker compose down
   say "Stopped. Your history is kept; bin/start.sh brings it back."
 else
   volume_exists && sync_state

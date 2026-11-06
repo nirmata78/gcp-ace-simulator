@@ -51,11 +51,15 @@ confirm() {
   die "$1 Run again with --yes to confirm."
 }
 
-# Merge the volume's history with the Python install's, so both see every attempt, and copy
+# Merge the volume's history (only while the app is stopped, so it can't race the app's own write) with the Python install's, so both see every attempt, and copy
 # reports made in the container into reports/. Adds only; never deletes or overwrites.
 sync_state() {
   [ "$SYNC" = 1 ] || { say "Skipping the history sync (--no-sync)."; return 0; }
   image_exists || return 0
+  if ! docker run --rm "$IMAGE" test -f src/history_sync.py; then
+    say "Warning: this image predates the history sync, so history wasn't synced. Rebuild it to sync."
+    return 0
+  fi
   mkdir -p "$(dirname "$LOCAL_HISTORY")" "$LOCAL_REPORTS"
   local input=/dev/null tmp result
   [ -f "$LOCAL_HISTORY" ] && input="$LOCAL_HISTORY"
@@ -71,7 +75,11 @@ Fix or move $LOCAL_HISTORY, or run with --no-sync."
   to_state="$(sed -n 's/.*to_state=\([0-9]*\).*/\1/p' <<<"$result")"
   total="$(sed -n 's/.*total=\([0-9]*\).*/\1/p' <<<"$result")"
   if [ "${to_local:-0}" -gt 0 ]; then
-    [ -f "$LOCAL_HISTORY" ] && cp -p "$LOCAL_HISTORY" "$LOCAL_HISTORY.bak"
+    if [ -f "$LOCAL_HISTORY" ]; then
+      cp -p "$LOCAL_HISTORY" "$LOCAL_HISTORY.bak"
+      # Keep the file's permissions: mktemp creates it 0600. GNU stat first, then BSD/macOS.
+      chmod "$(stat -c %a "$LOCAL_HISTORY" 2>/dev/null || stat -f %Lp "$LOCAL_HISTORY")" "$tmp"
+    fi
     mv "$tmp" "$LOCAL_HISTORY"
   else
     rm -f "$tmp"

@@ -262,7 +262,7 @@ command was checked against the SDK. It is not guaranteed: products get renamed 
 | Output | Produced by |
 |---|---|
 | `reports/ACE-report-….pdf` | Every submission. Page 1 has your score, your sections, the timing, and **where to study next**: the theory sections behind your misses and flags, most first, each linked to the theory site and to its chapter in the course video. Then two pages per missed or flagged question: every option explained, then the course's own theory for it, the command, the tell to spot next time, and links to read and rewatch. On the results page you can choose **every question** instead (`ACE-report-full-….pdf`). It opens in your browser with Python; with Docker, use the download button |
-| `reports/ACE-retrospective-….pdf` | `scripts/retrospective.py [--attempt ID] [--all]`: the same report rebuilt from history. If you keep your own notes per question in `scripts/retro_content.py` (gitignored), they replace the bank's explanations |
+| `scripts/retrospective.py [--attempt ID] [--all]` | The same report, rebuilt from history for any attempt. If you keep your own notes per question in `scripts/retro_content.py` (gitignored), they replace the bank's explanations |
 | `reports/ACE-exam-eve-recap-….pdf` | `scripts/recap.py`: one topic per page, for the night before |
 
 Your attempts are recorded in `data/history.json`. That file and `reports/` are gitignored. With Docker, both are in
@@ -312,7 +312,7 @@ by hand, run `python scripts/kb.py reindex`.
 ## 8 · Testing
 
 ```bash
-pytest -q          # 116 tests; no Docker needed
+pytest -q          # 121 tests; no Docker needed
 ```
 
 They cover the schema and blueprint, bank integrity, the exact sampling split, navigation, flags, the timer, deferred

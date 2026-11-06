@@ -38,13 +38,10 @@ if ! docker compose build --quiet; then
   say "Warning: the build failed, so the existing image is used. Your latest code changes aren't in it."
 fi
 
+# Stop first, so an exam submitted right now can't race the sync's write to the same file.
+[ "$RESTART" = 1 ] && docker compose stop
 sync_state
-
-if [ "$RESTART" = 1 ]; then
-  docker compose up -d --wait --force-recreate
-else
-  docker compose up -d --wait
-fi
+docker compose up -d --wait --force-recreate
 
 URL="http://localhost:$ACE_PORT"
 say "The simulator is running at $URL. Stop it with bin/stop.sh."

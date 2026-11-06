@@ -69,6 +69,7 @@ def test_start_imports_history_and_stop_brings_new_attempts_and_reports_back(env
     local = Path(env["ACE_LOCAL_HISTORY"])
     local.parent.mkdir(parents=True)
     local.write_text(_history(["from-python"]))
+    local.chmod(0o644)
 
     started = _script("start.sh", env, "--no-open")
     assert started.returncode == 0, started.stderr
@@ -88,6 +89,7 @@ def test_start_imports_history_and_stop_brings_new_attempts_and_reports_back(env
     assert stopped.returncode == 0, stopped.stderr
     assert [a["attempt_id"] for a in json.loads(local.read_text())["attempts"]] == ["from-python", "from-docker"]
     assert local.with_suffix(".json.bak").exists()
+    assert local.stat().st_mode & 0o777 == 0o644  # the sync keeps the file's permissions
     assert (Path(env["ACE_LOCAL_REPORTS"]) / "ACE-report-x.pdf").exists()
     ps = subprocess.run(["docker", "compose", "ps", "-q"], cwd=ROOT, env=env, capture_output=True, text=True)
     assert ps.stdout.strip() == ""

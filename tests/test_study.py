@@ -110,3 +110,48 @@ def test_study_panel_can_be_closed(practice: AppTest) -> None:
     practice.toggle[0].set_value(False).run()
     assert not practice.exception
     assert "📘 Quick recall" not in [t.label for t in practice.tabs]
+
+
+def test_links_are_escaped_once() -> None:
+    out = md_inline("[IAM & Admin](https://e.com/?a=1&b=2)")
+    assert 'href="https://e.com/?a=1&amp;b=2"' in out and ">IAM &amp; Admin<" in out
+
+
+def test_a_one_row_table_is_used_and_an_oversized_one_skipped() -> None:
+    from src.retrospective import styles, theory_excerpt
+    sec = study_links.Section("9.9", "T", 9, SITE, 1, "Intro.\n\n| a | b |\n|--|--|\n| 1 | 2 |\n\nAfter.")
+    kinds = [type(f).__name__ for f in theory_excerpt(sec, styles(), 10_000)]
+    assert "Table" in kinds and kinds.count("Paragraph") >= 3
+    # Room for the heading and one line, not for any table: the table is skipped, the prose kept.
+    tight = study_links.Section("9.9", "T", 9, SITE, 1, "| a | b |\n|--|--|\n| x | y |\n\nAfter.")
+    kinds = [type(f).__name__ for f in theory_excerpt(tight, styles(), 40)]
+    assert "Table" not in kinds and kinds.count("Paragraph") == 2
+
+
+def test_panel_markdown_leaves_code_blocks_alone() -> None:
+    import importlib.util
+    src = (ROOT / "app.py").read_text()
+    fn = src[src.index("def _md("):src.index("def _section_links")]
+    ns: dict = {"re": __import__("re")}
+    exec(fn, ns)
+    out = ns["_md"]("## Head\ncost $5\n```\n# comment\necho $HOME\n```")
+    assert out.splitlines() == ["**Head**", "cost \\$5", "```", "# comment", "echo $HOME", "```"]
+
+
+def test_unknown_attempt_is_a_clear_error(tmp_path: Path) -> None:
+    from src.models import History
+    History(attempts=[ExamSession(load_bank().questions[:2], mode="certifying").build_attempt()]).save(
+        tmp_path / "history.json")
+    r = subprocess.run([sys.executable, str(ROOT / "scripts" / "retrospective.py"), "--attempt", "typo"],
+                       env={**__import__("os").environ, "ACE_STATE_DIR": str(tmp_path)},
+                       capture_output=True, text=True)
+    assert r.returncode == 1 and "No attempt 'typo'" in r.stderr
+
+
+def test_study_panel_choice_lasts_between_sessions(practice: AppTest) -> None:
+    practice.toggle[0].set_value(False).run()
+    next(b for b in practice.button if b.label == "End & Score").click()
+    practice.run()
+    next(b for b in practice.button if b.label == "Submit now").click()
+    practice.run()
+    assert practice.session_state.study_panel_pref is False
