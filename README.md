@@ -20,7 +20,7 @@ This project has three parts:
 - **A question bank of 591 items.** Each one names the guide section, objective and subtopic it tests, explains all
   four options, and links to the documentation behind the answer.
 - **An exam shell** that imitates the delivery window: 50 questions sampled at the guide's weights, 120 minutes, a
-  question palette, deferred grading, and a PDF score report broken down by objective.
+  question palette, deferred grading, and a score report you read in the app, with a PDF to download.
 
 Everything runs locally and all state is plain JSON on disk. No account, no telemetry, no API key.
 
@@ -144,7 +144,9 @@ Keeping state outside the image is one setting, `ACE_STATE_DIR`. It also works w
 
 Untimed. Filter by section, objective and subtopic, or tick **Only topics introduced by the June 2026 guide**.
 
-A **study panel** slides in on the right; switch it off with the toggle above the question.
+A **study panel** slides in on the right; switch it off with the toggle above the question. Drag the divider between
+the question and the panel to resize it (arrow keys work too, and a double-click resets it); your browser remembers the
+width. On a narrow window the panel moves under the question.
 
 - **Quick recall** shows the theory section behind the question, straight from the course, with links to that section
   on the [theory site](https://nirmata78.github.io/gcp-ace-simulator/theory/) and to its chapter in the
@@ -261,7 +263,8 @@ command was checked against the SDK. It is not guaranteed: products get renamed 
 
 | Output | Produced by |
 |---|---|
-| `reports/ACE-report-….pdf` | Every submission. Page 1 has your score, your sections, the timing, and **where to study next**: the theory sections behind your misses and flags, most first, each linked to the theory site and to its chapter in the course video. Then two pages per missed or flagged question: every option explained, then the course's own theory for it, the command, the tell to spot next time, and links to read and rewatch. On the results page you can choose **every question** instead (`ACE-report-full-….pdf`). It opens in your browser with Python; with Docker, use the download button |
+| Results screen | After every submission the score report opens in the app: your score against the pass line, your sections, the timing, **where to study next**, then each missed or flagged question with every option explained, the course's theory for it, the command, the tell to spot next time, and links to read and rewatch. Switch to **Every question** to review them all. **Download PDF report** saves the same review as a PDF |
+| `reports/ACE-report-….pdf` | Every submission keeps a PDF copy here. Page 1 has your score, your sections, the timing, and **where to study next**: the theory sections behind your misses and flags, most first, each linked to the theory site and to its chapter in the course video. Then two pages per missed or flagged question: every option explained, then the course's own theory for it, the command, the tell to spot next time, and links to read and rewatch. With **Every question** chosen, the download builds the full review (`ACE-report-full-….pdf`) |
 | `scripts/retrospective.py [--attempt ID] [--all]` | The same report, rebuilt from history for any attempt. If you keep your own notes per question in `scripts/retro_content.py` (gitignored), they replace the bank's explanations |
 | `reports/ACE-exam-eve-recap-….pdf` | `scripts/recap.py`: one topic per page, for the night before |
 
@@ -312,11 +315,11 @@ by hand, run `python scripts/kb.py reindex`.
 ## 8 · Testing
 
 ```bash
-pytest -q          # 121 tests; no Docker needed
+pytest -q          # 130 tests; no Docker needed
 ```
 
 They cover the schema and blueprint, bank integrity, the exact sampling split, navigation, flags, the timer, deferred
-grading and objective scoring, reading older history, the PDF report and its layout, the study links and the study panel,
+grading and objective scoring, reading older history, the PDF report and its layout, the in-app report, the study links, the study panel and its splitter,
 merging histories, running offline and `ACE_STATE_DIR`. CI runs them
 on every pull request, with `kb.py check` and `kb.py blueprint --min 3 --strict`.
 
@@ -340,8 +343,6 @@ file, so they don't touch your simulator or your history, but they do rebuild th
   Pick a subtopic that `kb.py topics` lists under the right objective.
 - **`duplicate question titles`.** Find them with `grep -h '"title"' data/sections/*.json | sort | uniq -d`.
 - **`ANTHROPIC_API_KEY is not set`.** Only LLM authoring needs a key. Use `kb.py add --file` instead.
-- **The PDF did not open.** No browser could be launched, which is normal in Docker and common over SSH. The results
-  screen offers a download button.
 - **Port 8501 is in use.** Run `ACE_PORT=8600 docker compose up`, or `streamlit run app.py --server.port 8600` with Python.
 - **`Cannot connect to the Docker daemon`.** Docker isn't running. Start Docker Desktop or the Docker service and try again.
 - **`another bin/start.sh or bin/stop.sh is running`.** If none is, a previous run was killed: delete `.ace-lock`.

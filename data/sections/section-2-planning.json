@@ -1,7 +1,7 @@
 {
   "domain": "Section 2: Planning and implementing a cloud solution",
   "version": 2,
-  "updated_at": "2026-11-03T18:24:03+00:00",
+  "updated_at": "2026-11-06T18:34:51+00:00",
   "count": 220,
   "questions": [
     {
@@ -146,17 +146,17 @@
       "source": "curated",
       "question": "A containerised internal tool is used only when an operator opens it, and finance objects to paying for idle capacity between uses. Which platform should you choose?",
       "options": {
-        "A": "A Cloud Run service with minimum instances set to 0.",
-        "B": "A GKE Autopilot cluster running the container.",
+        "A": "A GKE Autopilot cluster running the container.",
+        "B": "A Cloud Run service with minimum instances set to 0.",
         "C": "An e2-micro VM running the container all month.",
         "D": "A Cloud Run service with minimum instances set to 1 to avoid cold starts."
       },
       "correct_answer": "B",
       "explanation": {
-        "summary": "Autopilot bills Pod requests while Pods run, and a Deployment keeps its Pods running between uses unless someone scales it to zero by hand.",
+        "summary": "With no minimum instances, Cloud Run scales to zero and charges nothing between uses.",
         "option_breakdown": {
-          "A": "Correct. With no minimum instances, Cloud Run scales to zero and charges nothing between uses.",
-          "B": "Correct. Autopilot bills Pod requests while Pods run, and a Deployment keeps its Pods running between uses unless someone scales it to zero by hand.",
+          "A": "Autopilot bills Pod requests while Pods run, and a Deployment keeps its Pods running between uses unless someone scales it to zero by hand.",
+          "B": "Correct. With no minimum instances, Cloud Run scales to zero and charges nothing between uses.",
           "C": "A VM bills for every hour it runs, used or not.",
           "D": "A minimum instance keeps an instance warm — and billed — between uses, which is exactly what finance objects to."
         },
@@ -210,19 +210,19 @@
       "source": "curated",
       "question": "A cost-sensitive workload must run on Spot capacity with a custom shape of 6 vCPUs and 40 GB of memory, which no predefined machine type provides. Which platform should you choose?",
       "options": {
-        "A": "An N2 custom machine type (6 vCPUs, 40 GB) created with the Spot provisioning model.",
+        "A": "A sole-tenant node sized for the workload.",
         "B": "An e2-standard-8 Spot VM, the nearest predefined type above the requirement.",
         "C": "Cloud Run with 6 vCPUs and 40 GiB of memory per instance.",
-        "D": "A sole-tenant node sized for the workload."
+        "D": "An N2 custom machine type (6 vCPUs, 40 GB) created with the Spot provisioning model."
       },
       "correct_answer": "D",
       "explanation": {
-        "summary": "Sole tenancy is for physical isolation and licensing; it is the most expensive option, not a Spot discount.",
+        "summary": "Custom machine types set vCPU and memory independently, and Spot is a provisioning model on the same VM — the two combine on Compute Engine.",
         "option_breakdown": {
-          "A": "Correct. Custom machine types set vCPU and memory independently, and Spot is a provisioning model on the same VM — the two combine on Compute Engine.",
+          "A": "Sole tenancy is for physical isolation and licensing; it is the most expensive option, not a Spot discount.",
           "B": "e2-standard-8 has 8 vCPUs and 32 GB: it wastes CPU and still lacks memory.",
           "C": "Cloud Run caps an instance well below 40 GiB and has no Spot provisioning model.",
-          "D": "Correct. Sole tenancy is for physical isolation and licensing; it is the most expensive option, not a Spot discount."
+          "D": "Correct. Custom machine types set vCPU and memory independently, and Spot is a provisioning model on the same VM — the two combine on Compute Engine."
         },
         "gcloud_command": "gcloud compute instances create batch --custom-cpu=6 --custom-memory=40GB \\\n  --provisioning-model=SPOT --zone=us-central1-a",
         "doc_ref": "https://cloud.google.com/compute/docs/instances/creating-instance-with-custom-machine-type"
@@ -659,17 +659,17 @@
       "source": "curated",
       "question": "Backup images are written nightly, restored roughly once a month during recovery drills, and deleted after 90 days. Which storage class minimises cost without an early-deletion charge?",
       "options": {
-        "A": "A bucket with the Nearline default class and a lifecycle rule deleting objects at 90 days.",
-        "B": "A bucket with the Coldline default class and a lifecycle rule deleting objects at 90 days.",
+        "A": "A bucket with the Coldline default class and a lifecycle rule deleting objects at 90 days.",
+        "B": "A bucket with the Nearline default class and a lifecycle rule deleting objects at 90 days.",
         "C": "A bucket with the Standard default class, moved to Archive after 30 days.",
         "D": "Autoclass on the bucket, which picks each object's class for you."
       },
       "correct_answer": "B",
       "explanation": {
-        "summary": "Coldline's 90-day minimum is only just met, and it is designed for quarterly access: monthly restores make its higher retrieval fees outweigh the storage saving.",
+        "summary": "Monthly reads suit Nearline, and deletion at 90 days is well past its 30-day minimum, so no early-deletion charge applies.",
         "option_breakdown": {
-          "A": "Correct. Monthly reads suit Nearline, and deletion at 90 days is well past its 30-day minimum, so no early-deletion charge applies.",
-          "B": "Correct. Coldline's 90-day minimum is only just met, and it is designed for quarterly access: monthly restores make its higher retrieval fees outweigh the storage saving.",
+          "A": "Coldline's 90-day minimum is only just met, and it is designed for quarterly access: monthly restores make its higher retrieval fees outweigh the storage saving.",
+          "B": "Correct. Monthly reads suit Nearline, and deletion at 90 days is well past its 30-day minimum, so no early-deletion charge applies.",
           "C": "Archive has a 365-day minimum: deleting at 90 days is billed as if kept a year, and its retrieval fees are the highest.",
           "D": "Autoclass suits unknown access patterns; here the pattern is known and a fixed class is cheaper to reason about."
         },
@@ -1365,17 +1365,17 @@
       "options": {
         "A": "A GKE Standard cluster with those features enabled at creation.",
         "B": "A GKE Standard cluster with an organisation policy on the node pool machine type.",
-        "C": "A GKE Autopilot cluster.",
-        "D": "A GKE Standard cluster on the Stable release channel."
+        "C": "A GKE Standard cluster on the Stable release channel.",
+        "D": "A GKE Autopilot cluster."
       },
       "correct_answer": "D",
       "explanation": {
-        "summary": "A release channel controls the pace of upgrades; it enforces none of the other defaults.",
+        "summary": "Autopilot enables these hardening defaults as part of the mode and does not let you turn them off.",
         "option_breakdown": {
           "A": "On Standard the features can be enabled, but the team can also disable them later.",
           "B": "A machine-type restriction does not enforce Workload Identity, Shielded nodes or auto-upgrade.",
-          "C": "Correct. Autopilot enables these hardening defaults as part of the mode and does not let you turn them off.",
-          "D": "Correct. A release channel controls the pace of upgrades; it enforces none of the other defaults."
+          "C": "A release channel controls the pace of upgrades; it enforces none of the other defaults.",
+          "D": "Correct. Autopilot enables these hardening defaults as part of the mode and does not let you turn them off."
         },
         "gcloud_command": "gcloud container clusters create-auto secure --region=us-central1",
         "doc_ref": "https://cloud.google.com/kubernetes-engine/docs/concepts/autopilot-security"
@@ -1683,17 +1683,17 @@
       "source": "curated",
       "question": "A new version must be exposed on only 10% of the group's instances first, so it can be observed before a full rollout. What should you configure?",
       "options": {
-        "A": "gcloud compute instance-groups managed rolling-action start-update with --version=template=v1 --canary-version=template=v2,target-size=10%.",
-        "B": "Create a second managed instance group from the v2 template and scale it by hand.",
+        "A": "Create a second managed instance group from the v2 template and scale it by hand.",
+        "B": "gcloud compute instance-groups managed rolling-action start-update with --version=template=v1 --canary-version=template=v2,target-size=10%.",
         "C": "Edit the existing instance template to use the v2 image on 10% of instances.",
         "D": "gcloud compute instance-groups managed rolling-action replace on 10% of the instances."
       },
       "correct_answer": "B",
       "explanation": {
-        "summary": "A separate group works only with extra load-balancer wiring and manual proportioning — the assembled version of a built-in feature.",
+        "summary": "A canary is a second version with a target size on the same MIG; the updater keeps 10% of instances on v2 and the rest on v1 until you promote.",
         "option_breakdown": {
-          "A": "Correct. A canary is a second version with a target size on the same MIG; the updater keeps 10% of instances on v2 and the rest on v1 until you promote.",
-          "B": "Correct. A separate group works only with extra load-balancer wiring and manual proportioning — the assembled version of a built-in feature.",
+          "A": "A separate group works only with extra load-balancer wiring and manual proportioning — the assembled version of a built-in feature.",
+          "B": "Correct. A canary is a second version with a target size on the same MIG; the updater keeps 10% of instances on v2 and the rest on v1 until you promote.",
           "C": "Instance templates are immutable; you create a new template rather than editing one.",
           "D": "replace recreates instances from the current template; it does not introduce a new version."
         },
@@ -1812,17 +1812,17 @@
       "question": "An existing Dedicated Interconnect must have an encrypted backup path that can carry production traffic if the circuit fails, taking over only on failure. What should you deploy?",
       "options": {
         "A": "A second Dedicated Interconnect circuit in the same facility, unencrypted.",
-        "B": "Partner Interconnect as the only backup.",
-        "C": "HA VPN tunnels over the internet, with Cloud Router advertising their routes at a lower priority than the Interconnect's.",
+        "B": "HA VPN tunnels over the internet, with Cloud Router advertising their routes at a lower priority than the Interconnect's.",
+        "C": "Partner Interconnect as the only backup.",
         "D": "Cloud NAT on the Interconnect's region."
       },
       "correct_answer": "B",
       "explanation": {
-        "summary": "Partner Interconnect, like Dedicated, is not encrypted by default.",
+        "summary": "HA VPN is IPsec-encrypted, and BGP route priorities (MED) make it carry traffic only when the Interconnect is down.",
         "option_breakdown": {
           "A": "A second circuit adds capacity but not encryption, and it shares the facility's failure domain.",
-          "B": "Correct. Partner Interconnect, like Dedicated, is not encrypted by default.",
-          "C": "Correct. HA VPN is IPsec-encrypted, and BGP route priorities (MED) make it carry traffic only when the Interconnect is down.",
+          "B": "Correct. HA VPN is IPsec-encrypted, and BGP route priorities (MED) make it carry traffic only when the Interconnect is down.",
+          "C": "Partner Interconnect, like Dedicated, is not encrypted by default.",
           "D": "Cloud NAT gives private VMs outbound internet access; it connects nothing to on-premises."
         },
         "gcloud_command": "gcloud compute routers update cr-1 --region=us-central1  # set advertised route priority on the VPN peer",
@@ -2771,17 +2771,17 @@
       "source": "curated",
       "question": "Linux SSH access must be granted and revoked through the same IAM identities used everywhere else, and access must disappear when an employee is offboarded. What should you do?",
       "options": {
-        "A": "Enable OS Login with enable-oslogin=TRUE and grant roles/compute.osLogin to the engineers' group.",
-        "B": "Add each engineer's public key to project-wide metadata.",
+        "A": "Add each engineer's public key to project-wide metadata.",
+        "B": "Enable OS Login with enable-oslogin=TRUE and grant roles/compute.osLogin to the engineers' group.",
         "C": "Give each engineer a service-account key for SSH.",
         "D": "Share one Linux account's private key among the team through Secret Manager."
       },
       "correct_answer": "B",
       "explanation": {
-        "summary": "Metadata keys stay valid until someone removes them by hand; offboarding does not touch them.",
+        "summary": "OS Login creates Linux accounts from Google identities, so SSH access is an IAM grant: remove the grant or suspend the user and access ends everywhere.",
         "option_breakdown": {
-          "A": "Correct. OS Login creates Linux accounts from Google identities, so SSH access is an IAM grant: remove the grant or suspend the user and access ends everywhere.",
-          "B": "Correct. Metadata keys stay valid until someone removes them by hand; offboarding does not touch them.",
+          "A": "Metadata keys stay valid until someone removes them by hand; offboarding does not touch them.",
+          "B": "Correct. OS Login creates Linux accounts from Google identities, so SSH access is an IAM grant: remove the grant or suspend the user and access ends everywhere.",
           "C": "Service-account keys are not SSH credentials and are exactly the long-lived secret to avoid.",
           "D": "A shared key cannot be revoked for one person and leaves no per-user audit trail."
         },
