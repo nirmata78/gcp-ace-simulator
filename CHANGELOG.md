@@ -18,6 +18,21 @@ All notable changes to this project are recorded here. The format follows
   double-click resets it, and the browser remembers the width. Below 1000px the panel moves under the question; on a
   phone the navigation buttons show icons only.
 - Material 3 colours, shapes and type throughout, also set as the Streamlit theme.
+- Type grows with the window, as browser zoom would: 16px on small screens, about 20px on a 1728px laptop, at most
+  24px. Answer options are set at the stem's size, stay readable after **Check answer**, and the right option (and a
+  wrong pick) is marked in the list.
+- Buttons: white on blue for the main action and blue on white for the others, with readable hover, pressed, focus
+  and disabled states. The bottom bar's buttons are centred in it, with space between them.
+
+### Fixed
+
+- Twelve questions had the answer key on a distractor whose explanation contradicted it ("Correct." on two options):
+  `ace-dom1-033`, `ace-dom1-043`, `ace-dom2-005`, `ace-dom2-007`, `ace-dom2-021`, `ace-dom2-043`, `ace-dom2-053`,
+  `ace-dom2-057`, `ace-dom3-033`, `ace-dom3-037`, `ace-dom4-006`, `ace-dom5-017`. The options were swapped so each key
+  now points at the right answer and the answer-letter spread is unchanged; a test now allows only the key to be
+  called correct.
+- `ace-dom1-025` said accounts were "already provisioned" without saying where. It now says every employee already has
+  a Cloud Identity account, which is what makes SAML SSO, not Workforce Identity Federation, the answer.
 
 ## [1.1.0] - 2026-11-06
 

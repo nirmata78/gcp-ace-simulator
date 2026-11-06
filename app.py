@@ -103,14 +103,39 @@ BASE_CSS = """
     --ace-fail: var(--md-error);
     --ace-flag: var(--md-warning);
 
-    /* Fixed bar heights: the page, the sticky panel and the splitter all lay out from these. */
-    --ace-hdr: 64px;
-    --ace-nav: 72px;
+    /* Bar heights in rem, so they grow with the type. The page and the panel lay out from these. */
+    --ace-hdr: 4rem;
+    --ace-nav: 4.75rem;
     --ace-gutter: clamp(16px, 2.5vw, 40px);
   }
 
-  .stApp { background: var(--md-surface); }
-  html, body, [class*="st-"] { color: var(--ace-ink); }
+  /* Type scales with the window, as browser zoom would: 16px up to ~1300px wide, about 20px
+     on a 1728px laptop screen, at most 24px. Streamlit sizes in rem, so everything follows. */
+  html { font-size: clamp(16px, calc(4px + 0.93vw), 24px) !important; }
+  .stApp { background: var(--md-surface); color: var(--md-on-surface); }
+
+  /* Buttons: Material filled (primary) and outlined (secondary), with legible hover,
+     pressed, focus and disabled states. Streamlit's own hover darkens text into the fill. */
+  [data-testid^="stBaseButton"] { transition: background-color .15s, box-shadow .15s, border-color .15s; }
+  [data-testid^="stBaseButton"] p { color: inherit !important; font-weight: 600; }
+  [data-testid="stBaseButton-primary"] {
+    background: var(--md-primary) !important; color: var(--md-on-primary) !important;
+    border: 1px solid var(--md-primary) !important; }
+  [data-testid="stBaseButton-primary"]:hover {
+    background: #0842a0 !important; border-color: #0842a0 !important; color: #fff !important;
+    box-shadow: var(--md-elev-1); }
+  [data-testid="stBaseButton-primary"]:active { background: #062e6f !important; color: #fff !important; }
+  [data-testid="stBaseButton-secondary"] {
+    background: var(--md-surface) !important; color: var(--md-primary) !important;
+    border: 1px solid var(--md-outline) !important; }
+  [data-testid="stBaseButton-secondary"]:hover {
+    background: #e8effa !important; color: #0842a0 !important; border-color: var(--md-primary) !important; }
+  [data-testid="stBaseButton-secondary"]:active { background: var(--md-primary-container) !important; }
+  [data-testid^="stBaseButton"]:focus-visible {
+    outline: 3px solid var(--md-primary-container) !important; outline-offset: 2px; }
+  [data-testid^="stBaseButton"]:disabled, [data-testid^="stBaseButton"][disabled] {
+    background: rgba(31,31,31,.06) !important; color: rgba(31,31,31,.42) !important;
+    border-color: rgba(31,31,31,.14) !important; box-shadow: none !important; }
 
   /* Fill the window. Reading width is kept by the layout, not by an empty margin. */
   .block-container {
@@ -124,7 +149,7 @@ BASE_CSS = """
   .st-key-examheader {
     position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
     height: var(--ace-hdr); box-sizing: border-box; overflow: hidden;
-    display: flex; align-items: center; justify-content: center;
+    display: flex; flex-direction: column; justify-content: center;
     background: var(--md-surface-container); color: var(--md-on-surface);
     border-bottom: 1px solid var(--md-outline-variant);
     padding: 0 var(--ace-gutter);
@@ -135,7 +160,7 @@ BASE_CSS = """
     display: flex; align-items: center; justify-content: space-between;
     gap: 1.5rem; font-size: 0.875rem; line-height: 1.25; width: 100%;
   }
-  .ace-hdr .who { font-weight: 600; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ace-hdr .who { font-weight: 600; font-size: 1rem; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .ace-hdr .who small {
     display: block; font-weight: 500; color: var(--md-on-surface-variant); font-size: 0.6875rem;
     letter-spacing: 0.06em; text-transform: uppercase; overflow: hidden; text-overflow: ellipsis;
@@ -163,15 +188,17 @@ BASE_CSS = """
   .st-key-examnav {
     position: fixed; bottom: 0; left: 0; right: 0; z-index: 1000;
     height: var(--ace-nav); box-sizing: border-box;
-    display: flex; align-items: center;
+    /* A column flex box: justify-content is what centres the row vertically. */
+    display: flex; flex-direction: column; justify-content: center;
     background: var(--md-surface-container); border-top: 1px solid var(--md-outline-variant);
     padding: 0 var(--ace-gutter);
   }
   .st-key-examnav > div { width: 100%; }
-  .st-key-examnav [data-testid="stHorizontalBlock"] { flex-wrap: nowrap !important; align-items: center; }
+  .st-key-examnav [data-testid="stHorizontalBlock"] { flex-wrap: nowrap !important; align-items: center; gap: 0.75rem !important; }
+  .st-key-examnav .stButton > button { min-height: 2.75rem; }
   .st-key-examnav [data-testid="stColumn"] { min-width: 0 !important; }
   .st-key-examnav .stButton > button { width: 100%; font-weight: 600; white-space: nowrap; }
-  .ace-progress { font-size: 0.8125rem; color: var(--md-on-surface-variant); }
+  .ace-progress { font-size: 0.8125rem; color: var(--md-on-surface-variant); padding: 0 0.5rem; }
 
   /* --- question body --- */
   .ace-qmeta {
@@ -187,10 +214,17 @@ BASE_CSS = """
     display: inline-block; background: var(--md-warning-container); color: #261a00;
     border-radius: 8px; padding: 0.1rem 0.6rem; font-size: 0.75rem; font-weight: 600;
   }
+  /* Answer options read at the stem's size, each a full-width target. */
+  div[role="radiogroup"] { gap: 0.25rem; width: 100%; }
+  div[role="radiogroup"] > div { width: 100%; }
   div[role="radiogroup"] label {
-    padding: 0.5rem 0.75rem; border-radius: 12px; line-height: 1.5;
-    border: 1px solid transparent; margin-bottom: 0.15rem;
+    padding: 0.6rem 0.85rem; border-radius: 12px; line-height: 1.55; width: 100%;
+    border: 1px solid transparent; margin-bottom: 0.1rem;
   }
+  div[role="radiogroup"] label p, div[role="radiogroup"] label div { font-size: 1.0625rem !important; line-height: 1.55; }
+  /* Revealed options are disabled, but must stay readable rather than greyed out. */
+  div[role="radiogroup"] label { opacity: 1 !important; }
+  div[role="radiogroup"] label p { color: var(--md-on-surface) !important; }
   div[role="radiogroup"] label:hover { background: var(--md-surface-container); }
 
   /* --- palette --- */
@@ -460,9 +494,10 @@ SPLITTER_JS = r"""
       queued = false;
       var panel = d.querySelector(".st-key-studypanel");
       if (!panel) { return; }
-      var cs = getComputedStyle(d.documentElement);
-      var nav = parseFloat(cs.getPropertyValue("--ace-nav")) || 72;
-      var top = Math.max(panel.getBoundingClientRect().top, parseFloat(cs.getPropertyValue("--ace-hdr")) + 16);
+      var navEl = d.querySelector(".st-key-examnav"), hdrEl = d.querySelector(".st-key-examheader");
+      var nav = navEl ? navEl.getBoundingClientRect().height : 0;
+      var hdr = hdrEl ? hdrEl.getBoundingClientRect().height : 0;
+      var top = Math.max(panel.getBoundingClientRect().top, hdr + 16);
       d.documentElement.style.setProperty("--ace-panel-max", Math.max(240, innerHeight - top - nav - 16) + "px");
     }
     function queue() { if (!queued) { queued = true; requestAnimationFrame(fit); } }
@@ -779,6 +814,14 @@ def render_question(sess: ExamSession) -> None:
     if choice and choice != current:
         sess.answer(choice, q.id)
         st.rerun()
+    if revealed:  # mark the answer, and a wrong pick, in the list itself
+        marks = {q.correct_answer: ("#e7f6ec", "var(--md-success)")}
+        if choice and choice != q.correct_answer:
+            marks[choice] = ("#fcecea", "var(--md-error)")
+        st.markdown("<style>" + "".join(
+            f".st-key-radio_{q.id} div[role='radiogroup'] > :nth-child({OPTION_KEYS.index(k) + 1}) label"
+            f" {{ background: {bg}; border-color: {line} !important; }}"
+            for k, (bg, line) in marks.items()) + "</style>", unsafe_allow_html=True)
 
     # ---- learning-mode feedback ----------------------------------------
     if not sess.is_timed:

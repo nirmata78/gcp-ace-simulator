@@ -108,6 +108,17 @@ def test_correct_option_is_marked_correct_in_breakdown(bank: QuestionBank) -> No
         assert q.explanation.option_breakdown[q.correct_answer].startswith("Correct")
 
 
+def test_only_the_key_is_called_correct(bank: QuestionBank) -> None:
+    # Twelve questions once had the key on a distractor whose analysis was given a "Correct."
+    # prefix and copied into the summary, so the explanation contradicted the key.
+    bad = [q.id for q in bank.questions
+           if [k for k, v in q.explanation.option_breakdown.items() if v.startswith("Correct")]
+           != [q.correct_answer]]
+    assert bad == []
+    for q in bank.questions:
+        assert not q.explanation.summary.startswith("Correct"), q.id
+
+
 def test_doc_refs_point_at_google_cloud(bank: QuestionBank) -> None:
     for q in bank.questions:
         if q.explanation.doc_ref:

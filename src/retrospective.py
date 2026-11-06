@@ -713,7 +713,7 @@ def timing_facts(att: Dict[str, Any]) -> str:
     avg = lambda xs: sum(xs) / len(xs) if xs else 0.0
     per = att["duration_seconds"] / total_q if total_q else 0.0
     return (f'<b>{len(fast)} of your {len(missed)} misses were answered in under 25 seconds.</b> '
-            f'You used {mins} minutes for {total_q} items ({per:.0f}s per item). '
+            f'You used {mins} minute{"s" if mins != 1 else ""} for {total_q} items ({per:.0f}s per item). '
             f'Average time on a correct answer was {avg(ok_t):.0f}s; on a miss, '
             f'{avg(bad_t):.0f}s. ')
 

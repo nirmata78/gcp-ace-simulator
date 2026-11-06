@@ -1,7 +1,7 @@
 {
   "domain": "Section 3: Ensuring the successful operation of a cloud solution",
   "version": 2,
-  "updated_at": "2026-11-04T09:38:42+00:00",
+  "updated_at": "2026-11-06T18:34:51+00:00",
   "count": 212,
   "questions": [
     {
@@ -850,17 +850,17 @@
       "source": "curated",
       "question": "A Windows instance with no external IP must be reachable over RDP by a small group of administrators. What should you do?",
       "options": {
-        "A": "gcloud compute start-iap-tunnel on port 3389, with a firewall rule allowing 35.235.240.0/20 and roles/iap.tunnelResourceAccessor for the administrators.",
-        "B": "Enable OS Login on the Windows instance.",
+        "A": "Enable OS Login on the Windows instance.",
+        "B": "gcloud compute start-iap-tunnel on port 3389, with a firewall rule allowing 35.235.240.0/20 and roles/iap.tunnelResourceAccessor for the administrators.",
         "C": "Temporarily attach an external IP whenever an administrator needs access.",
         "D": "Enable the interactive serial console for the administrators."
       },
       "correct_answer": "B",
       "explanation": {
-        "summary": "OS Login is for Linux accounts, and it is not a network path.",
+        "summary": "IAP TCP forwarding tunnels any TCP port — here RDP's 3389 — to an instance without a public address, authorised per user by IAM.",
         "option_breakdown": {
-          "A": "Correct. IAP TCP forwarding tunnels any TCP port — here RDP's 3389 — to an instance without a public address, authorised per user by IAM.",
-          "B": "Correct. OS Login is for Linux accounts, and it is not a network path.",
+          "A": "OS Login is for Linux accounts, and it is not a network path.",
+          "B": "Correct. IAP TCP forwarding tunnels any TCP port — here RDP's 3389 — to an instance without a public address, authorised per user by IAM.",
           "C": "An external IP exposes RDP to the internet whenever it is attached.",
           "D": "The serial console is for recovery; it is not a way to run RDP sessions."
         },
@@ -1106,18 +1106,18 @@
       "source": "curated",
       "question": "A team wants to be notified when a Cloud Run service's request latency at the 95th percentile exceeds one second. What should you configure?",
       "options": {
-        "A": "An alerting policy on run.googleapis.com/request_latencies with a 95th-percentile aligner, a 1,000 ms threshold and a notification channel.",
+        "A": "An uptime check against the service URL with a 1-second timeout.",
         "B": "A dashboard chart of p95 latency that the team checks each morning.",
-        "C": "An uptime check against the service URL with a 1-second timeout.",
+        "C": "An alerting policy on run.googleapis.com/request_latencies with a 95th-percentile aligner, a 1,000 ms threshold and a notification channel.",
         "D": "A log-based metric extracting latency from request logs, with no alerting policy."
       },
       "correct_answer": "C",
       "explanation": {
-        "summary": "An uptime check measures reachability from probe locations, not the service's own p95 across all requests.",
+        "summary": "Cloud Run already reports request latency as a distribution; aligning it to the 95th percentile gives the condition, and only an alerting policy notifies anyone.",
         "option_breakdown": {
-          "A": "Correct. Cloud Run already reports request latency as a distribution; aligning it to the 95th percentile gives the condition, and only an alerting policy notifies anyone.",
+          "A": "An uptime check measures reachability from probe locations, not the service's own p95 across all requests.",
           "B": "A dashboard shows the problem to whoever looks; it notifies nobody.",
-          "C": "Correct. An uptime check measures reachability from probe locations, not the service's own p95 across all requests.",
+          "C": "Correct. Cloud Run already reports request latency as a distribution; aligning it to the 95th percentile gives the condition, and only an alerting policy notifies anyone.",
           "D": "The metric already exists, and a metric without an alerting policy never notifies."
         },
         "gcloud_command": "gcloud alpha monitoring policies create --policy-from-file=latency-p95.yaml",
@@ -2034,17 +2034,17 @@
       "source": "curated",
       "question": "Compliance requires that the key protecting Persistent Disks be rotated every 90 days on an automatic schedule under the customer's control. What should you configure?",
       "options": {
-        "A": "Create the disks with a Cloud KMS key that has a 90-day rotation period (CMEK).",
-        "B": "Rotate the Google-managed encryption keys every 90 days from the console.",
+        "A": "Rotate the Google-managed encryption keys every 90 days from the console.",
+        "B": "Create the disks with a Cloud KMS key that has a 90-day rotation period (CMEK).",
         "C": "Supply a new customer-supplied encryption key with each disk operation every 90 days.",
         "D": "Re-create every disk every 90 days so it gets a new default key."
       },
       "correct_answer": "B",
       "explanation": {
-        "summary": "Google-managed keys are rotated by Google; the customer has no rotation setting to control.",
+        "summary": "A Cloud KMS key's rotation period creates a new primary version on schedule, under the customer's control, and Compute Engine uses it for new encryption.",
         "option_breakdown": {
-          "A": "Correct. A Cloud KMS key's rotation period creates a new primary version on schedule, under the customer's control, and Compute Engine uses it for new encryption.",
-          "B": "Correct. Google-managed keys are rotated by Google; the customer has no rotation setting to control.",
+          "A": "Google-managed keys are rotated by Google; the customer has no rotation setting to control.",
+          "B": "Correct. A Cloud KMS key's rotation period creates a new primary version on schedule, under the customer's control, and Compute Engine uses it for new encryption.",
           "C": "CSEK has no schedule: you would rotate and supply raw keys yourself on every call.",
           "D": "Re-creating disks is disruptive and still leaves the key under Google's control."
         },
