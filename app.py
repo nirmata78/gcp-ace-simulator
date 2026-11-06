@@ -10,6 +10,7 @@ hidden so nothing on screen competes with the question.
 
 from __future__ import annotations
 
+import re
 import sys
 from pathlib import Path
 
@@ -45,7 +46,8 @@ from src.models import (  # noqa: E402
     EXAM_DURATION_SECONDS,
     PASS_THRESHOLD,
 )
-from src.pdf_generator import generate_and_open  # noqa: E402
+from src.retrospective import build_report, open_in_browser, restates  # noqa: E402
+from src import study_links  # noqa: E402
 
 OPTION_KEYS = ["A", "B", "C", "D"]
 
@@ -175,6 +177,19 @@ BASE_CSS = """
   .ace-verdict .sub { color: var(--ace-muted); font-size: 0.98rem; margin-top: 0.35rem; }
   .ace-bar { background: #e6ebf0; border-radius: 3px; height: 9px; overflow: hidden; }
   .ace-bar > div { height: 100%; }
+
+  /* Learning mode: the study panel slides in from the right and scrolls on its own. */
+  @keyframes ace-slide-in { from { transform: translateX(48px); opacity: 0; } to { transform: none; opacity: 1; } }
+  .st-key-studypanel {
+    position: sticky; top: 0.5rem; max-height: calc(100vh - 1rem); overflow-y: auto;
+    background: var(--ace-band); border-left: 4px solid var(--ace-accent); border-radius: 6px;
+    padding: 0.9rem 1rem 1rem; animation: ace-slide-in 0.28s ease-out;
+  }
+  .st-key-studypanel p, .st-key-studypanel li { font-size: 0.92rem; }
+  .st-key-studypanel table { font-size: 0.8rem; }
+  .ace-panel-h { font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--ace-muted); font-weight: 700; margin-bottom: 0.2rem; }
+  .ace-panel-links { font-size: 0.85rem; margin: 0.1rem 0 0.4rem; }
 </style>
 """
 
@@ -213,13 +228,18 @@ def init_state() -> None:
     st.session_state.setdefault("report_opened", False)
     st.session_state.setdefault("candidate", "Candidate")
     st.session_state.setdefault("show_submit_confirm", False)
+    st.session_state.setdefault("study_panel_pref", True)  # not a widget key, so it outlives the exam screen
 
 
 def start_exam(mode: str, questions, duration: int) -> None:
     st.session_state.session = ExamSession(questions, mode=mode, duration_seconds=duration)
     st.session_state.attempt = None
     st.session_state.report = None
+    st.session_state.report_full = None
+    st.session_state.report_full_error = None
     st.session_state.report_opened = False
+    st.session_state.report_error = None
+    st.session_state.history_error = None
     st.session_state.show_submit_confirm = False
     st.session_state.screen = "exam"
 
@@ -234,13 +254,9 @@ def submit_exam(expired: bool = False) -> None:
     path = None
     opened = False
     try:
-        path, opened = generate_and_open(
-            attempt,
-            sess.questions,
-            candidate=st.session_state.candidate,
-            out_dir=reports_dir(),
-            auto_open=True,
-        )
+        path = build_report(attempt, sess.questions, candidate=st.session_state.candidate,
+                            out_dir=reports_dir())
+        opened = open_in_browser(path)
         attempt.report_path = str(path)
     except Exception as exc:  # a PDF failure must never lose the score
         st.session_state.report_error = str(exc)
@@ -302,7 +318,8 @@ def screen_home() -> None:
             f"**Timed examination.** {CERTIFYING_QUESTION_COUNT} questions sampled at the "
             f"guide's section weights (20 / 30 / 30 / 20), spread across its objectives, "
             f"{EXAM_DURATION_SECONDS // 60} minutes, deferred grading. As in the real delivery "
-            "window, the item's topic is not shown while you sit. A PDF score report is produced "
+            "window, the item's topic is not shown while you sit. A PDF report reviewing your "
+            "missed and flagged questions is produced "
             "on submission."
         )
         prefer_unseen = st.checkbox(
@@ -502,7 +519,7 @@ def render_question(sess: ExamSession) -> None:
 
     # ---- learning-mode feedback ----------------------------------------
     if not sess.is_timed:
-        c1, c2 = st.columns([1, 4])
+        c1, c2 = st.columns([1.4, 3])
         if not revealed:
             if c1.button("Check answer", type="primary", disabled=choice is None):
                 sess.reveal(q.id)
@@ -522,6 +539,8 @@ def render_question(sess: ExamSession) -> None:
                 + f"</h4>{q.explanation.summary}</div>",
                 unsafe_allow_html=True,
             )
+            if st.session_state.study_panel_pref:
+                return  # the study panel carries the option analysis, command and links
             items = "".join(
                 f"<li><b>{k}.</b> {q.explanation.option_breakdown[k]}</li>"
                 for k in OPTION_KEYS
@@ -595,14 +614,100 @@ def confirm_submit(sess: ExamSession) -> None:
         st.rerun()
 
 
+def _md(text: str) -> str:
+    """Theory Markdown for st.markdown, which would otherwise read $ as LaTeX."""
+    out, fenced = [], False
+    for line in text.split("\n"):
+        if line.lstrip().startswith("```"):
+            fenced = not fenced
+        elif not fenced:  # code blocks are shown as written
+            line = re.sub(r"^#{1,6} +(.+)$", r"**\1**", line)  # headings would dwarf the panel
+            line = line.replace("$", "\\$")
+        out.append(line)
+    return "\n".join(out)
+
+
+def _section_links(sec: study_links.Section) -> str:
+    links = f"<a href='{sec.url}' target='_blank'>Read on the theory site ↗</a>"
+    if sec.video_url:
+        links += (f" &nbsp;·&nbsp; <a href='{sec.video_url}' target='_blank'>"
+                  f"Watch from {sec.video_clock} ↗</a>")
+    return f"<div class='ace-panel-links'>{links}</div>"
+
+
+def render_study_panel(sess: ExamSession) -> None:
+    """Learning mode: quick theory recall, and after checking, why the answer is right."""
+    q = sess.current
+    sections = study_links.sections_for(q)
+    with st.container(key="studypanel"):
+        st.markdown(f"<div class='ace-panel-h'>Study panel</div><b>{q.subtopic}</b>",
+                    unsafe_allow_html=True)
+        # After checking, the explanation is what's wanted first.
+        if sess.is_revealed(q.id):
+            why, recall = st.tabs(["✅ Why it's right", "📘 Quick recall"])
+        else:
+            recall, why = st.tabs(["📘 Quick recall", "✅ Why it's right"])
+        with recall:
+            for i, sec in enumerate(sections):
+                with st.expander(sec.label, expanded=i == 0):
+                    st.markdown(_section_links(sec), unsafe_allow_html=True)
+                    st.markdown(_md(sec.text))
+            card = study_links.recall_card(sections[0].part) if sections else None
+            if card:
+                with st.expander(f"Part {card.part} recall card"):
+                    st.markdown(_section_links(card), unsafe_allow_html=True)
+                    st.markdown(_md(card.text))
+            st.caption(f"Whole course: [{study_links.video_title()}]({study_links.video_url()})")
+        with why:
+            if not sess.is_revealed(q.id):
+                st.info("Choose an answer and press **Check answer** to see why it is right "
+                        "or wrong. The recall tab doesn't give the answer away.")
+                return
+            k = q.correct_answer
+            st.markdown(f"**The answer is {k}.** {q.options[k]}")
+            if not restates(q.explanation.summary, q.explanation.option_breakdown[k]):
+                st.markdown(q.explanation.summary)
+            st.markdown(f"**Why {k} is right.** {q.explanation.option_breakdown[k]}")
+            st.markdown("**Why the others are wrong**")
+            st.markdown("\n".join(f"- **{o}.** {q.explanation.option_breakdown[o]}"
+                                   for o in OPTION_KEYS if o != k))
+            if q.explanation.gcloud_command:
+                st.markdown("**Command**")
+                st.code(q.explanation.gcloud_command, language="bash")
+            st.markdown(f"**Spot it next time.** {q.summary}")
+            if q.explanation.doc_ref:
+                st.markdown(f"📄 [Google Cloud documentation]({q.explanation.doc_ref})")
+            if sections:
+                st.markdown("**Rewatch**")
+                st.markdown("\n".join(
+                    f"- [{s.label}]({s.url})" + (f" · [video {s.video_clock}]({s.video_url})"
+                                                 if s.video_url else "")
+                    for s in sections))
+
+
 def screen_exam() -> None:
     sess: ExamSession = st.session_state.session
     st.markdown(palette_css(sess), unsafe_allow_html=True)
 
     render_header(sess)
     render_palette(sess)
-    render_question(sess)
-    render_nav(sess)
+    if sess.is_timed:
+        render_question(sess)
+        render_nav(sess)
+    else:
+        st.session_state.study_panel_pref = st.toggle(
+            "Study panel", value=st.session_state.study_panel_pref,
+            help="Theory recall for this question, and after checking, the full explanation.")
+        if st.session_state.study_panel_pref:
+            main, side = st.columns([3, 2], gap="large")
+            with main:
+                render_question(sess)
+                render_nav(sess)
+            with side:
+                render_study_panel(sess)
+        else:
+            render_question(sess)
+            render_nav(sess)
 
     if st.session_state.show_submit_confirm:
         confirm_submit(sess)
@@ -641,12 +746,34 @@ def screen_results() -> None:
     report = st.session_state.report
     if report:
         if st.session_state.report_opened:
-            st.success(f"Score report generated and opened in your browser: `{report.name}`")
+            st.success(f"Report generated and opened in your browser: `{report.name}`")
         else:
-            st.info(f"Score report generated: `{report.name}`. Download it with the button below.")
-        with open(report, "rb") as fh:
-            st.download_button("⬇  Download PDF report", fh, file_name=report.name,
-                               mime="application/pdf")
+            st.info(f"Report generated: `{report.name}`. Download it with the button below.")
+        scope = st.radio(
+            "The report reviews",
+            ["Missed and flagged questions", "Every question"],
+            horizontal=True,
+            help="Both start with your score, your sections and where to study next. Each "
+                 "reviewed question gets two pages: every option explained, then the theory, "
+                 "with links to the theory site and the course video.",
+        )
+        if (scope == "Every question" and not st.session_state.get("report_full")
+                and not st.session_state.get("report_full_error")):
+            try:
+                with st.spinner("Building the full report…"):
+                    st.session_state.report_full = build_report(
+                        attempt, st.session_state.session.questions,
+                        candidate=st.session_state.candidate, out_dir=reports_dir(),
+                        all_items=True)
+            except Exception as exc:
+                st.session_state.report_full_error = str(exc)  # don't rebuild on every rerun
+        if scope == "Every question" and st.session_state.get("report_full_error"):
+            st.error(f"The full report could not be generated: {st.session_state.report_full_error}")
+        chosen = st.session_state.get("report_full") if scope == "Every question" else report
+        if chosen:
+            with open(chosen, "rb") as fh:
+                st.download_button("⬇  Download PDF report", fh, file_name=chosen.name,
+                                   mime="application/pdf")
     elif st.session_state.get("report_error"):
         st.error(f"The PDF report could not be generated: {st.session_state.report_error}")
 

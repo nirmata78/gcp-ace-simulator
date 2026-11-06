@@ -23,7 +23,7 @@ from src.exam_engine import (  # noqa: E402
     seen_question_ids,
     weighted_sample,
 )
-from src.pdf_generator import generate_and_open  # noqa: E402
+from src.retrospective import build_report  # noqa: E402
 
 
 @pytest.fixture
@@ -54,9 +54,8 @@ def test_offline_exam_is_sampled_scored_and_reported(
     monkeypatch.setenv("ACE_STATE_DIR", str(tmp_path))
     session, questions = _sit_short_exam()
     attempt = session.build_attempt()
-    report, opened = generate_and_open(attempt, questions, auto_open=False)
+    report = build_report(attempt, questions)
     assert report.read_bytes().startswith(b"%PDF")
-    assert opened is False
     assert len(record_attempt(attempt).attempts) == 1
 
 
@@ -97,7 +96,7 @@ def test_full_attempt_writes_only_under_state_dir(tmp_path: Path, monkeypatch: p
 
     session, questions = _sit_short_exam()
     attempt = session.build_attempt()
-    report, _ = generate_and_open(attempt, questions, auto_open=False)
+    report = build_report(attempt, questions)
     record_attempt(attempt)
 
     assert {d: _tree(d) for d in tracked} == before
