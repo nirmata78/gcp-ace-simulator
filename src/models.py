@@ -21,7 +21,7 @@ import json
 import re
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, List, Literal, Optional
+from typing import Dict, Iterable, List, Literal, Optional
 
 from pydantic import BaseModel, Field, field_validator, model_validator
 
@@ -88,6 +88,8 @@ PASS_THRESHOLD = 0.70  # Google does not publish a cut score; 70% is the communi
 #: in one section must overlap below this Jaccard score, and two questions with the
 #: same correct answer may not share more than this many identical options.
 STEM_OVERLAP_LIMIT = 0.70
+#: Removed question ids, relative to the data directory. They are never reused.
+RETIRED_FILE = "retired.json"
 SHARED_OPTION_LIMIT = 2
 
 
@@ -312,18 +314,16 @@ class QuestionBank(BaseModel):
             or n in q.subtopic.casefold() or any(n in t for t in q.tags)
         ]
 
-    def next_id(self, domain: str) -> str:
-        """Mint the next free sequential id within a section (``ace-s2-007``)."""
+    def next_id(self, domain: str, retired: Iterable[str] = ()) -> str:
+        """Mint a new id in a section (``ace-s2-007``), above every id in use or retired.
+
+        Ids are never reused: attempt history refers to questions by id, so a gap left by a removed
+        question must stay a gap (``data/retired.json`` lists them).
+        """
         prefix = f"ace-{DOMAIN_SLUG[domain]}-"
-        used = {
-            int(q.id[len(prefix):])
-            for q in self.questions
-            if q.id.startswith(prefix) and q.id[len(prefix):].isdigit()
-        }
-        n = 1
-        while n in used:
-            n += 1
-        return f"{prefix}{n:03d}"
+        ids = [q.id for q in self.questions] + list(retired)
+        used = [int(i[len(prefix):]) for i in ids if i.startswith(prefix) and i[len(prefix):].isdigit()]
+        return f"{prefix}{max(used, default=0) + 1:03d}"
 
     # -- duplicate detection ----------------------------------------------
     #
@@ -408,6 +408,14 @@ class QuestionBank(BaseModel):
                 f"no questions found under {domains_dir}."
             )
         return cls(questions=questions)
+
+    @staticmethod
+    def retired_ids(root: Path | str) -> List[str]:
+        """Ids that were removed from the bank and must never be minted again (``data/retired.json``)."""
+        path = Path(root) / RETIRED_FILE
+        if not path.exists():
+            return []
+        return [r["id"] for r in json.loads(path.read_text(encoding="utf-8"))["retired"]]
 
     def save(self, root: Path) -> None:
         """Write one file per section, plus the register index."""
@@ -509,14 +517,39 @@ class DomainScore(BaseModel):
 #: key letter now names the right answer. An old record's letters still point at the
 #: old texts, so the chosen letter is swapped the same way. The correct letter stays, and
 #: the attempt is re-scored: a pick that was the right text now counts as correct.
-BANK_KEY_FIXES: Dict[str, Dict[str, tuple]] = {
-    "2026-11-06-swapped-keys": {
-        "ace-dom1-033": ("A", "B"), "ace-dom1-043": ("B", "D"), "ace-dom2-005": ("A", "B"),
-        "ace-dom2-007": ("A", "D"), "ace-dom2-021": ("A", "B"), "ace-dom2-043": ("C", "D"),
-        "ace-dom2-053": ("A", "B"), "ace-dom2-057": ("B", "C"), "ace-dom3-033": ("A", "B"),
-        "ace-dom3-037": ("A", "B"), "ace-dom4-006": ("A", "C"), "ace-dom5-017": ("A", "B"),
-    },
+_SWAPPED_KEYS = {
+    "ace-dom1-033": ("A", "B"), "ace-dom1-043": ("B", "D"), "ace-dom2-005": ("A", "B"),
+    "ace-dom2-007": ("A", "D"), "ace-dom2-021": ("A", "B"), "ace-dom2-043": ("C", "D"),
+    "ace-dom2-053": ("A", "B"), "ace-dom2-057": ("B", "C"), "ace-dom3-033": ("A", "B"),
+    "ace-dom3-037": ("A", "B"), "ace-dom4-006": ("A", "C"), "ace-dom5-017": ("A", "B"),
 }
+BANK_KEY_FIXES: Dict[str, Dict[str, tuple]] = {
+    "2026-11-06-swapped-keys": _SWAPPED_KEYS,
+    # Until 2026-11-07, new attempts were built without bank_fixes, so the repair above also
+    # ran on them and flipped answers that were recorded against the already-repaired bank.
+    # Swapping again restores those picks; it applies only to attempts finished after the
+    # first fix shipped (see BANK_FIX_SINCE).
+    "2026-11-07-undo-swap-on-new-attempts": _SWAPPED_KEYS,
+}
+#: A fix listed here applies only to attempts finished at or after this time (UTC, ISO 8601).
+BANK_FIX_SINCE: Dict[str, str] = {
+    "2026-11-07-undo-swap-on-new-attempts": "2026-11-06T19:03:01+00:00",
+}
+
+
+def _swap_picks(answers: List[dict], swaps: Dict[str, tuple]) -> None:
+    for a in answers:
+        pair = swaps.get(a.get("question_id"))
+        if pair and a.get("selected") in pair:
+            a["selected"] = pair[1] if a["selected"] == pair[0] else pair[0]
+
+
+def _parse_time(value: str) -> Optional[datetime]:
+    try:
+        t = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except (AttributeError, ValueError):
+        return None
+    return t if t.tzinfo else t.replace(tzinfo=timezone.utc)
 
 
 class Attempt(BaseModel):
@@ -539,15 +572,21 @@ class Attempt(BaseModel):
     @model_validator(mode="before")
     @classmethod
     def _apply_bank_fixes(cls, data):
-        if not isinstance(data, dict) or "bank_fixes" in data:
+        """Apply each repair this record does not list yet, once, and record that it did."""
+        if not isinstance(data, dict):
             return data
-        data = dict(data)  # a record from before the field existed: repair it once
+        done = list(data.get("bank_fixes", []))
+        pending = [name for name in BANK_KEY_FIXES if name not in done]
+        if not pending:
+            return data
+        data = dict(data)
         answers = [dict(a) if isinstance(a, dict) else a.model_dump() for a in data.get("answers", [])]
-        for swaps in BANK_KEY_FIXES.values():
-            for a in answers:
-                pair = swaps.get(a.get("question_id"))
-                if pair and a.get("selected") in pair:
-                    a["selected"] = pair[1] if a["selected"] == pair[0] else pair[0]
+        finished = _parse_time(data.get("finished_at", ""))
+        for name in pending:
+            since = BANK_FIX_SINCE.get(name)
+            if since is not None and (finished is None or finished < _parse_time(since)):
+                continue  # recorded before this bug existed: nothing to undo
+            _swap_picks(answers, BANK_KEY_FIXES[name])
         data["answers"] = answers
         data["correct_count"] = sum(1 for a in answers if a.get("selected") == a.get("correct_answer"))
         data["bank_fixes"] = list(BANK_KEY_FIXES)

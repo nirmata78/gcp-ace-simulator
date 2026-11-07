@@ -573,7 +573,7 @@ def cmd_add(args) -> int:
 
     flagged = 0
     for q in candidates:
-        q.id = bank.next_id(q.domain)
+        q.id = bank.next_id(q.domain, QuestionBank.retired_ids(args.data_dir))
         _preview(q)
         if _report_overlap(bank, q, args.threshold):
             flagged += 1

@@ -5,7 +5,7 @@
 [![Theory](https://img.shields.io/badge/theory-GitHub%20Pages-blue)](https://nirmata78.github.io/gcp-ace-simulator/theory/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Release](https://img.shields.io/github/v/release/nirmata78/gcp-ace-simulator)](https://github.com/nirmata78/gcp-ace-simulator/blob/main/CHANGELOG.md)
-![591 questions](https://img.shields.io/badge/questions-591-orange)
+![586 questions](https://img.shields.io/badge/questions-586-orange)
 ![Exam guide: June 2026](https://img.shields.io/badge/exam%20guide-June%202026-purple)
 ![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue)
 
@@ -17,7 +17,7 @@ This project has three parts:
 
 - **[A theory course](https://nirmata78.github.io/gcp-ace-simulator/theory/)** that teaches every bullet of the new
   guide, in dependency order, with a recall card per part. It is a website: nothing to install.
-- **A question bank of 591 items.** Each one names the guide section, objective and subtopic it tests, explains all
+- **A question bank of 586 items.** Each one names the guide section, objective and subtopic it tests, explains all
   four options, and links to the documentation behind the answer.
 - **An exam shell** that imitates the delivery window: 50 questions sampled at the guide's weights, 120 minutes, a
   question palette, deferred grading, and a score report you read in the app, with a PDF to download.
@@ -248,10 +248,17 @@ may not do is repeat each other. `kb.py check`, `kb.py add` and the test suite e
 The bank was written for this project with Claude, against the exam guide and Google Cloud's documentation. **No
 item is knowingly drawn from a real exam.**
 
-Before publishing, every stem was compared with a well-known public practice-test dump, and every question whose
-origin could not be shown to be original was removed, including everything that overlapped. That took out 104
-questions from the working bank. A comparison with one dump cannot prove there is no resemblance to any other: **if
-you recognise an item, [open an issue](https://github.com/nirmata78/gcp-ace-simulator/issues) and it will go.**
+Before publishing, every stem was compared with a well-known public practice-test dump, and the 104 questions whose
+origin could not be shown to be original were held out. In November 2026 the comparison was widened to three public
+question sets and Google's sample questions (`scripts/audit_overlap.py`, [issue #1](https://github.com/nirmata78/gcp-ace-simulator/issues/1)):
+34 more questions that shared a scenario with an earlier public question were removed, and new questions were written
+from the guide and the documentation where a topic needed depth. A test keeps removed questions from coming back. No
+comparison can prove there is no resemblance to anything else: **if you recognise an item,
+[open an issue](https://github.com/nirmata78/gcp-ace-simulator/issues) and it will go.**
+
+Every question is held to a written [question standard](docs/question-standard.md): one decision, a complete scenario,
+plausible distractors, exactly one right answer, an explanation for every option, fair form and original content.
+`python scripts/kb.py lint` checks what a machine can.
 
 Accuracy is held up by a schema, a link to documentation on every item, and a theory course whose every `gcloud`
 command was checked against the SDK. It is not guaranteed: products get renamed and limits change. Fixes are the

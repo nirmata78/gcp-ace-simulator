@@ -1,37 +1,37 @@
 {
   "version": 2,
-  "generated_at": "2026-11-07T13:24:11+00:00",
-  "total": 591,
+  "generated_at": "2026-11-07T14:36:24+00:00",
+  "total": 586,
   "guide": "Associate Cloud Engineer exam guide, live from 2026-06-30",
   "counts_by_domain": {
-    "S1 · Setup": 90,
-    "S2 · Plan & build": 220,
-    "S3 · Operate": 212,
-    "S4 · Access": 69
+    "S1 · Setup": 93,
+    "S2 · Plan & build": 217,
+    "S3 · Operate": 211,
+    "S4 · Access": 65
   },
   "counts_by_objective": {
-    "1.1": 73,
+    "1.1": 76,
     "1.2": 17,
-    "2.1": 82,
+    "2.1": 85,
     "2.2": 67,
-    "2.3": 51,
-    "2.4": 20,
-    "3.1": 85,
-    "3.2": 41,
-    "3.3": 27,
-    "3.4": 59,
-    "4.1": 19,
-    "4.2": 50
+    "2.3": 46,
+    "2.4": 19,
+    "3.1": 87,
+    "3.2": 44,
+    "3.3": 25,
+    "3.4": 55,
+    "4.1": 17,
+    "4.2": 48
   },
   "subtopics_by_domain": {
     "S1 · Setup": {
       "APIs and Quotas": 8,
-      "Asset Inventory and Gemini Cloud Assist": 11,
+      "Asset Inventory and Gemini Cloud Assist": 10,
       "Billing Accounts": 5,
       "Billing Export and Cost Attribution": 5,
       "Budgets and Alerts": 7,
       "Cloud Identity and Users": 6,
-      "Foundation Networking": 3,
+      "Foundation Networking": 4,
       "Observability Setup": 5,
       "Organization Policy": 9,
       "Project IAM Grants": 3,
@@ -39,79 +39,79 @@
       "Resource Hierarchy": 6,
       "Standalone Organizations": 4,
       "Workforce Identity Federation": 10,
-      "gcloud CLI and Configurations": 1
+      "gcloud CLI and Configurations": 4
     },
     "S2 · Plan & build": {
       "AI-assisted Planning": 10,
       "Cloud Storage Classes": 6,
-      "Compute Platform Selection": 13,
+      "Compute Platform Selection": 12,
       "Data Pipelines and Messaging": 5,
       "Database Selection": 12,
       "Deploying to GKE": 8,
-      "Firewall Rules and Policies": 11,
+      "Firewall Rules and Policies": 10,
       "GKE Cluster Configurations": 8,
       "GPUs or TPUs": 8,
-      "Hybrid Connectivity": 8,
-      "Infrastructure as Code": 10,
-      "Launching Instances": 5,
+      "Hybrid Connectivity": 7,
+      "Infrastructure as Code": 9,
+      "Launching Instances": 6,
       "Load Balancer Selection": 10,
       "Loading Data": 6,
       "Managed Instance Groups": 7,
       "Multi-region Redundancy": 30,
-      "Network Service Tiers": 5,
-      "OS Login": 4,
+      "Network Service Tiers": 4,
+      "OS Login": 5,
       "Secure Tags and Service Accounts in Rules": 8,
       "Serverless Deployment and Events": 8,
-      "Spot and Custom Machine Types": 4,
+      "Spot and Custom Machine Types": 5,
       "Storage Products": 8,
       "Storage for Compute Engine": 8,
       "VM Manager": 5,
-      "VPC Design": 9,
-      "kubectl Setup": 4
+      "VPC Design": 7,
+      "kubectl Setup": 5
     },
     "S3 · Operate": {
       "Agent Runtime": 8,
       "Artifact Registry Access": 6,
       "Attaching Accelerators": 8,
-      "Audit, Flow and Firewall Logs": 5,
+      "Audit, Flow and Firewall Logs": 6,
       "Autopilot Resource Requests": 7,
       "Backup and Restore": 7,
-      "CMEK and Key Management": 11,
-      "Cloud DNS and Cloud NAT": 6,
-      "Cloud Run Autoscaling": 4,
+      "CMEK and Key Management": 10,
+      "Cloud DNS and Cloud NAT": 4,
+      "Cloud Run Autoscaling": 5,
       "Cloud Run Releases": 4,
-      "Connecting to Instances": 3,
-      "Custom Metrics": 5,
-      "Database Center": 7,
+      "Connecting to Instances": 4,
+      "Custom Metrics": 4,
+      "Database Center": 6,
       "Developer Environments": 8,
-      "Diagnostic Tools": 6,
+      "Diagnostic Tools": 5,
       "Firewall Operations": 9,
       "GKE Inventory": 4,
       "GKE Node Pools": 4,
       "Gemini and Active Assist": 7,
-      "Instance Inventory and Lifecycle": 3,
+      "Instance Inventory and Lifecycle": 4,
       "Job Status": 3,
       "Kubernetes Resources": 6,
       "Log Buckets and Routing": 4,
       "Log Export": 4,
-      "Managed Prometheus": 5,
+      "Managed Prometheus": 4,
       "Notebooks": 8,
-      "Object Lifecycle": 3,
-      "Ops Agent": 4,
-      "Pod Autoscaling": 4,
-      "Querying Data": 4,
+      "Object Lifecycle": 4,
+      "Ops Agent": 3,
+      "Pod Autoscaling": 3,
+      "Querying Data": 5,
       "Resource Alerts": 7,
-      "Securing Cloud Storage Objects": 3,
+      "Securing Cloud Storage Objects": 5,
       "Service Health and Cloud Hub": 8,
       "Snapshots and Images": 4,
-      "Storage Cost Estimation": 3,
+      "Storage Cost Estimation": 4,
       "Subnets, Addresses and Routes": 12,
       "Traffic Splitting": 4,
-      "Viewing and Filtering Logs": 4
+      "Viewing and Filtering Logs": 3
     },
     "S4 · Access": {
-      "Creating Service Accounts": 7,
-      "IAM Policies and Inheritance": 14,
+      "Creating Service Accounts": 5,
+      "IAM Policies and Inheritance": 12,
       "Role Types and Custom Roles": 5,
       "Service Account Permissions and Impersonation": 8,
       "Service Accounts and Least Privilege": 7,
@@ -188,23 +188,6 @@
       "source": "curated",
       "fingerprint": "d00715774677",
       "file": "sections/section-1-setup.json"
-    },
-    {
-      "id": "ace-dom1-005",
-      "title": "Access to exactly one bucket",
-      "domain": "S4 · Access",
-      "objective": "4.1",
-      "subtopic": "IAM Policies and Inheritance",
-      "new_in_2026": false,
-      "summary": "IAM can bind directly on individual resources such as buckets — the only scope that exposes one bucket without the project.",
-      "tags": [
-        "cloud-storage",
-        "iam",
-        "least-privilege"
-      ],
-      "source": "curated",
-      "fingerprint": "894580fc7ad2",
-      "file": "sections/section-4-security.json"
     },
     {
       "id": "ace-dom1-006",
@@ -340,23 +323,6 @@
       ],
       "source": "curated",
       "fingerprint": "7180b8de6094",
-      "file": "sections/section-1-setup.json"
-    },
-    {
-      "id": "ace-dom1-014",
-      "title": "Read-only cost reporting",
-      "domain": "S1 · Setup",
-      "objective": "1.2",
-      "subtopic": "Billing Accounts",
-      "new_in_2026": false,
-      "summary": "Billing Account Viewer is read-only across the billing account, its cost data and its budgets.",
-      "tags": [
-        "billing",
-        "iam",
-        "reporting"
-      ],
-      "source": "curated",
-      "fingerprint": "27f291f2d471",
       "file": "sections/section-1-setup.json"
     },
     {
@@ -786,23 +752,6 @@
       "file": "sections/section-1-setup.json"
     },
     {
-      "id": "ace-dom1-041",
-      "title": "Detect an open firewall rule within seconds",
-      "domain": "S1 · Setup",
-      "objective": "1.1",
-      "subtopic": "Asset Inventory and Gemini Cloud Assist",
-      "new_in_2026": true,
-      "summary": "A real-time asset feed publishes each asset change to Pub/Sub as it happens.",
-      "tags": [
-        "asset-inventory",
-        "detection",
-        "pubsub"
-      ],
-      "source": "curated",
-      "fingerprint": "6173ca40e6e1",
-      "file": "sections/section-1-setup.json"
-    },
-    {
       "id": "ace-dom1-042",
       "title": "Who deleted the VM yesterday",
       "domain": "S3 · Operate",
@@ -854,23 +803,6 @@
       "file": "sections/section-1-setup.json"
     },
     {
-      "id": "ace-dom1-046",
-      "title": "Guest metrics missing from Monitoring",
-      "domain": "S1 · Setup",
-      "objective": "1.1",
-      "subtopic": "Observability Setup",
-      "new_in_2026": false,
-      "summary": "Guest-level metrics require an in-guest agent; the hypervisor cannot see them.",
-      "tags": [
-        "compute",
-        "monitoring",
-        "ops-agent"
-      ],
-      "source": "curated",
-      "fingerprint": "49ff5589b88a",
-      "file": "sections/section-1-setup.json"
-    },
-    {
       "id": "ace-dom1-047",
       "title": "Console access for an external workforce",
       "domain": "S1 · Setup",
@@ -886,23 +818,6 @@
       "source": "curated",
       "fingerprint": "e451d0ad6535",
       "file": "sections/section-1-setup.json"
-    },
-    {
-      "id": "ace-dom2-001",
-      "title": "Legacy app needing kernel-level control",
-      "domain": "S2 · Plan & build",
-      "objective": "2.1",
-      "subtopic": "Compute Platform Selection",
-      "new_in_2026": true,
-      "summary": "Only Compute Engine gives OS-level control; managed container platforms abstract the kernel away.",
-      "tags": [
-        "compute-engine",
-        "migration",
-        "platform-selection"
-      ],
-      "source": "curated",
-      "fingerprint": "aa9a64536448",
-      "file": "sections/section-2-planning.json"
     },
     {
       "id": "ace-dom2-002",
@@ -1348,23 +1263,6 @@
       "file": "sections/section-2-planning.json"
     },
     {
-      "id": "ace-dom2-028",
-      "title": "Central network team, many app projects",
-      "domain": "S2 · Plan & build",
-      "objective": "2.3",
-      "subtopic": "VPC Design",
-      "new_in_2026": false,
-      "summary": "Shared VPC separates network ownership (host project) from workload ownership (service projects).",
-      "tags": [
-        "governance",
-        "shared-vpc",
-        "vpc"
-      ],
-      "source": "curated",
-      "fingerprint": "554604c4e729",
-      "file": "sections/section-2-planning.json"
-    },
-    {
       "id": "ace-dom2-029",
       "title": "Private traffic between two organisations",
       "domain": "S2 · Plan & build",
@@ -1447,23 +1345,6 @@
       ],
       "source": "curated",
       "fingerprint": "37f1b0caba98",
-      "file": "sections/section-2-planning.json"
-    },
-    {
-      "id": "ace-dom2-034",
-      "title": "All backends unhealthy behind a new LB",
-      "domain": "S2 · Plan & build",
-      "objective": "2.3",
-      "subtopic": "Firewall Rules and Policies",
-      "new_in_2026": true,
-      "summary": "Health check probes come from Google's dedicated ranges and must be explicitly allowed.",
-      "tags": [
-        "firewall",
-        "health-checks",
-        "load-balancing"
-      ],
-      "source": "curated",
-      "fingerprint": "1a5e71966eb6",
       "file": "sections/section-2-planning.json"
     },
     {
@@ -1804,23 +1685,6 @@
       ],
       "source": "curated",
       "fingerprint": "d4a3dad501c7",
-      "file": "sections/section-2-planning.json"
-    },
-    {
-      "id": "ace-dom2-055",
-      "title": "20 Gbps with predictable latency",
-      "domain": "S2 · Plan & build",
-      "objective": "2.3",
-      "subtopic": "Hybrid Connectivity",
-      "new_in_2026": false,
-      "summary": "Dedicated Interconnect provides 10/100 Gbps circuits with deterministic performance.",
-      "tags": [
-        "bandwidth",
-        "hybrid",
-        "interconnect"
-      ],
-      "source": "curated",
-      "fingerprint": "f9373e9810d9",
       "file": "sections/section-2-planning.json"
     },
     {
@@ -2196,23 +2060,6 @@
       "source": "curated",
       "fingerprint": "ffb722b2f945",
       "file": "sections/section-2-planning.json"
-    },
-    {
-      "id": "ace-dom3-001",
-      "title": "Smoke-test a revision before any traffic",
-      "domain": "S3 · Operate",
-      "objective": "3.1",
-      "subtopic": "Cloud Run Releases",
-      "new_in_2026": false,
-      "summary": "Deploying with --tag and --no-traffic publishes a revision at a dedicated URL.",
-      "tags": [
-        "canary",
-        "cloud-run",
-        "deployment"
-      ],
-      "source": "curated",
-      "fingerprint": "5c5cc6ba9057",
-      "file": "sections/section-3-operations.json"
     },
     {
       "id": "ace-dom3-002",
@@ -2657,23 +2504,6 @@
       "file": "sections/section-3-operations.json"
     },
     {
-      "id": "ace-dom3-028",
-      "title": "Golden hardened base for every new VM",
-      "domain": "S3 · Operate",
-      "objective": "3.1",
-      "subtopic": "Snapshots and Images",
-      "new_in_2026": false,
-      "summary": "A custom image bakes the configuration into a bootable template.",
-      "tags": [
-        "compute-engine",
-        "hardening",
-        "images"
-      ],
-      "source": "curated",
-      "fingerprint": "4548e876af58",
-      "file": "sections/section-3-operations.json"
-    },
-    {
       "id": "ace-dom3-029",
       "title": "Six-hourly backups retained two weeks",
       "domain": "S3 · Operate",
@@ -2827,23 +2657,6 @@
       "file": "sections/section-3-operations.json"
     },
     {
-      "id": "ace-dom3-038",
-      "title": "Build, push and deploy on merge to main",
-      "domain": "S3 · Operate",
-      "objective": "3.1",
-      "subtopic": "Cloud Run Releases",
-      "new_in_2026": false,
-      "summary": "A Cloud Build trigger runs build, push and deploy under a service account inside Google Cloud.",
-      "tags": [
-        "ci-cd",
-        "cloud-build",
-        "cloud-run"
-      ],
-      "source": "curated",
-      "fingerprint": "1792a4ddf483",
-      "file": "sections/section-3-operations.json"
-    },
-    {
       "id": "ace-dom3-039",
       "title": "Promotion with an approval before production",
       "domain": "S3 · Operate",
@@ -2892,23 +2705,6 @@
       ],
       "source": "curated",
       "fingerprint": "ddc57b5cecf8",
-      "file": "sections/section-3-operations.json"
-    },
-    {
-      "id": "ace-dom4-002",
-      "title": "Memory and disk metrics missing from VMs",
-      "domain": "S3 · Operate",
-      "objective": "3.4",
-      "subtopic": "Ops Agent",
-      "new_in_2026": false,
-      "summary": "Guest-level metrics need an in-guest agent; the hypervisor cannot observe them.",
-      "tags": [
-        "compute-engine",
-        "monitoring",
-        "ops-agent"
-      ],
-      "source": "curated",
-      "fingerprint": "12e0413bc2b0",
       "file": "sections/section-3-operations.json"
     },
     {
@@ -3184,23 +2980,6 @@
       "file": "sections/section-3-operations.json"
     },
     {
-      "id": "ace-dom4-019",
-      "title": "Age logs to Coldline then delete",
-      "domain": "S3 · Operate",
-      "objective": "3.2",
-      "subtopic": "Object Lifecycle",
-      "new_in_2026": false,
-      "summary": "Object lifecycle management applies age-based class changes and deletions automatically.",
-      "tags": [
-        "cloud-storage",
-        "cost",
-        "lifecycle"
-      ],
-      "source": "curated",
-      "fingerprint": "ec849819cb5d",
-      "file": "sections/section-3-operations.json"
-    },
-    {
       "id": "ace-dom4-020",
       "title": "Recover an overwritten object",
       "domain": "S3 · Operate",
@@ -3283,23 +3062,6 @@
       ],
       "source": "curated",
       "fingerprint": "5a62f1a3f4a2",
-      "file": "sections/section-3-operations.json"
-    },
-    {
-      "id": "ace-dom4-025",
-      "title": "Which of six services is slow",
-      "domain": "S3 · Operate",
-      "objective": "3.4",
-      "subtopic": "Diagnostic Tools",
-      "new_in_2026": false,
-      "summary": "Cloud Trace breaks a request into spans per service, attributing end-to-end latency.",
-      "tags": [
-        "cloud-trace",
-        "diagnostics",
-        "latency"
-      ],
-      "source": "curated",
-      "fingerprint": "4f51f5feb2f4",
       "file": "sections/section-3-operations.json"
     },
     {
@@ -3402,23 +3164,6 @@
       ],
       "source": "curated",
       "fingerprint": "1d7300a1f7ed",
-      "file": "sections/section-4-security.json"
-    },
-    {
-      "id": "ace-dom5-002",
-      "title": "Access expiring at quarter end",
-      "domain": "S4 · Access",
-      "objective": "4.1",
-      "subtopic": "IAM Policies and Inheritance",
-      "new_in_2026": false,
-      "summary": "IAM conditions express expiry and resource-name predicates on the binding itself.",
-      "tags": [
-        "iam",
-        "iam-conditions",
-        "temporary-access"
-      ],
-      "source": "curated",
-      "fingerprint": "d34573284276",
       "file": "sections/section-4-security.json"
     },
     {
@@ -3763,23 +3508,6 @@
       "file": "sections/section-1-setup.json"
     },
     {
-      "id": "ace-s1-007",
-      "title": "Adding one binding without disturbing the rest",
-      "domain": "S1 · Setup",
-      "objective": "1.1",
-      "subtopic": "Project IAM Grants",
-      "new_in_2026": false,
-      "summary": "add-iam-policy-binding adds a single binding safely; set-iam-policy replaces the whole policy.",
-      "tags": [
-        "gcloud",
-        "iam",
-        "projects"
-      ],
-      "source": "curated",
-      "fingerprint": "e96e78641a0a",
-      "file": "sections/section-1-setup.json"
-    },
-    {
       "id": "ace-s1-008",
       "title": "Letting a team deploy Cloud Run in one project",
       "domain": "S1 · Setup",
@@ -4066,23 +3794,6 @@
       ],
       "source": "curated",
       "fingerprint": "88caad676d72",
-      "file": "sections/section-1-setup.json"
-    },
-    {
-      "id": "ace-s1-025",
-      "title": "Cost of each individual VM",
-      "domain": "S1 · Setup",
-      "objective": "1.2",
-      "subtopic": "Billing Export and Cost Attribution",
-      "new_in_2026": false,
-      "summary": "Only the detailed usage cost export carries resource-level rows such as which VM incurred a cost.",
-      "tags": [
-        "bigquery",
-        "billing-export",
-        "cost-attribution"
-      ],
-      "source": "curated",
-      "fingerprint": "3be6009632bc",
       "file": "sections/section-1-setup.json"
     },
     {
@@ -4457,6 +4168,134 @@
       ],
       "source": "curated",
       "fingerprint": "0e21d8a280b1",
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-048",
+      "title": "Removing one person's grant from a busy policy",
+      "domain": "S1 · Setup",
+      "objective": "1.1",
+      "subtopic": "Project IAM Grants",
+      "new_in_2026": false,
+      "summary": "remove-iam-policy-binding takes out exactly one member–role pair and leaves every other binding alone.",
+      "tags": [
+        "gcloud",
+        "iam"
+      ],
+      "source": "curated",
+      "fingerprint": "5be1f8995d92",
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-049",
+      "title": "Default region and zone for every gcloud command",
+      "domain": "S1 · Setup",
+      "objective": "1.1",
+      "subtopic": "gcloud CLI and Configurations",
+      "new_in_2026": false,
+      "summary": "gcloud properties compute/region and compute/zone set the defaults that commands use when no location flag is given.",
+      "tags": [
+        "configuration",
+        "gcloud"
+      ],
+      "source": "curated",
+      "fingerprint": "f9d84489a10b",
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-050",
+      "title": "One command against a different project",
+      "domain": "S1 · Setup",
+      "objective": "1.1",
+      "subtopic": "gcloud CLI and Configurations",
+      "new_in_2026": false,
+      "summary": "The --project flag runs a single command against another project without changing the active configuration.",
+      "tags": [
+        "configuration",
+        "gcloud"
+      ],
+      "source": "curated",
+      "fingerprint": "605805b113c8",
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-051",
+      "title": "gcloud components update is refused",
+      "domain": "S1 · Setup",
+      "objective": "1.1",
+      "subtopic": "gcloud CLI and Configurations",
+      "new_in_2026": false,
+      "summary": "When the Google Cloud CLI was installed with a system package manager, it is updated through that package manager, not gcloud components.",
+      "tags": [
+        "gcloud",
+        "installation"
+      ],
+      "source": "curated",
+      "fingerprint": "b5f3680c26cf",
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-052",
+      "title": "Separate network hosts for production and the rest",
+      "domain": "S1 · Setup",
+      "objective": "1.1",
+      "subtopic": "Foundation Networking",
+      "new_in_2026": false,
+      "summary": "A foundation usually has separate Shared VPC host projects for production and non-production, so the environments are isolated by design.",
+      "tags": [
+        "foundation",
+        "shared-vpc"
+      ],
+      "source": "curated",
+      "fingerprint": "c48c9febd4f4",
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-053",
+      "title": "A project whose billing account was closed",
+      "domain": "S1 · Setup",
+      "objective": "1.2",
+      "subtopic": "Billing Accounts",
+      "new_in_2026": false,
+      "summary": "A project without an active billing account has billing disabled; linking it to an active account restores paid services.",
+      "tags": [
+        "billing"
+      ],
+      "source": "curated",
+      "fingerprint": "36af32d8e44b",
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-054",
+      "title": "Cost per Kubernetes namespace",
+      "domain": "S1 · Setup",
+      "objective": "1.2",
+      "subtopic": "Billing Export and Cost Attribution",
+      "new_in_2026": false,
+      "summary": "GKE cost allocation adds namespace and Kubernetes label data to the detailed billing export.",
+      "tags": [
+        "billing",
+        "cost-allocation",
+        "gke"
+      ],
+      "source": "curated",
+      "fingerprint": "9469bf7dc1bc",
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-055",
+      "title": "Incident logs gone before the review",
+      "domain": "S1 · Setup",
+      "objective": "1.1",
+      "subtopic": "Observability Setup",
+      "new_in_2026": false,
+      "summary": "The _Default log bucket keeps logs for 30 days by default, and its retention can be changed.",
+      "tags": [
+        "logging",
+        "retention"
+      ],
+      "source": "curated",
+      "fingerprint": "fe0cd85d20a5",
       "file": "sections/section-1-setup.json"
     },
     {
@@ -5162,23 +5001,6 @@
       "file": "sections/section-2-planning.json"
     },
     {
-      "id": "ace-s2-042",
-      "title": "A global load balancer in a Standard Tier project",
-      "domain": "S2 · Plan & build",
-      "objective": "2.3",
-      "subtopic": "Network Service Tiers",
-      "new_in_2026": false,
-      "summary": "Global external load balancers and global anycast IPs require Premium Tier.",
-      "tags": [
-        "load-balancing",
-        "network-tiers",
-        "premium-tier"
-      ],
-      "source": "curated",
-      "fingerprint": "2c3f1178a1fe",
-      "file": "sections/section-2-planning.json"
-    },
-    {
       "id": "ace-s2-043",
       "title": "Standard Tier for every new resource in a project",
       "domain": "S2 · Plan & build",
@@ -5329,23 +5151,6 @@
       ],
       "source": "curated",
       "fingerprint": "10c43d89fafb",
-      "file": "sections/section-2-planning.json"
-    },
-    {
-      "id": "ace-s2-052",
-      "title": "A service project team may use only its own subnet",
-      "domain": "S2 · Plan & build",
-      "objective": "2.3",
-      "subtopic": "VPC Design",
-      "new_in_2026": false,
-      "summary": "Grant compute.networkUser on individual subnets of the host project for least privilege.",
-      "tags": [
-        "least-privilege",
-        "network-user",
-        "shared-vpc"
-      ],
-      "source": "curated",
-      "fingerprint": "99b153defef2",
       "file": "sections/section-2-planning.json"
     },
     {
@@ -6658,23 +6463,6 @@
       "file": "sections/section-2-planning.json"
     },
     {
-      "id": "ace-s2-130",
-      "title": "Terraform state for a team, not a laptop",
-      "domain": "S2 · Plan & build",
-      "objective": "2.4",
-      "subtopic": "Infrastructure as Code",
-      "new_in_2026": false,
-      "summary": "Store Terraform state in a Cloud Storage backend, which also provides state locking.",
-      "tags": [
-        "cloud-storage",
-        "state",
-        "terraform"
-      ],
-      "source": "curated",
-      "fingerprint": "f890be254de9",
-      "file": "sections/section-2-planning.json"
-    },
-    {
       "id": "ace-s2-131",
       "title": "Turning a console form into gcloud or Terraform",
       "domain": "S2 · Plan & build",
@@ -6689,6 +6477,71 @@
       ],
       "source": "curated",
       "fingerprint": "69233f192f70",
+      "file": "sections/section-2-planning.json"
+    },
+    {
+      "id": "ace-s2-132",
+      "title": "OS Login with sudo",
+      "domain": "S2 · Plan & build",
+      "objective": "2.1",
+      "subtopic": "OS Login",
+      "new_in_2026": false,
+      "summary": "Compute OS Admin Login grants SSH access with sudo; Compute OS Login grants SSH without it.",
+      "tags": [
+        "iam",
+        "os-login",
+        "ssh"
+      ],
+      "source": "curated",
+      "fingerprint": "8af1a43fb38b",
+      "file": "sections/section-2-planning.json"
+    },
+    {
+      "id": "ace-s2-133",
+      "title": "Saving work when a Spot VM is reclaimed",
+      "domain": "S2 · Plan & build",
+      "objective": "2.1",
+      "subtopic": "Spot and Custom Machine Types",
+      "new_in_2026": false,
+      "summary": "Before preempting a Spot VM, Compute Engine sends a short notice during which a shutdown script can run.",
+      "tags": [
+        "compute-engine",
+        "spot"
+      ],
+      "source": "curated",
+      "fingerprint": "cc010082b52d",
+      "file": "sections/section-2-planning.json"
+    },
+    {
+      "id": "ace-s2-134",
+      "title": "kubectl too far behind the cluster",
+      "domain": "S2 · Plan & build",
+      "objective": "2.1",
+      "subtopic": "kubectl Setup",
+      "new_in_2026": false,
+      "summary": "kubectl is supported within one minor version of the cluster's control plane, so an old client should be updated.",
+      "tags": [
+        "gke",
+        "kubectl"
+      ],
+      "source": "curated",
+      "fingerprint": "16f766d875bf",
+      "file": "sections/section-2-planning.json"
+    },
+    {
+      "id": "ace-s2-135",
+      "title": "A VM that must stay up through host maintenance",
+      "domain": "S2 · Plan & build",
+      "objective": "2.1",
+      "subtopic": "Launching Instances",
+      "new_in_2026": false,
+      "summary": "Standard VMs live-migrate during host maintenance by default; TERMINATE stops them instead.",
+      "tags": [
+        "compute-engine",
+        "maintenance"
+      ],
+      "source": "curated",
+      "fingerprint": "a24524d378e1",
       "file": "sections/section-2-planning.json"
     },
     {
@@ -6899,23 +6752,6 @@
       "file": "sections/section-3-operations.json"
     },
     {
-      "id": "ace-s3-013",
-      "title": "Running instances across every zone, as a table",
-      "domain": "S3 · Operate",
-      "objective": "3.1",
-      "subtopic": "Instance Inventory and Lifecycle",
-      "new_in_2026": false,
-      "summary": "gcloud compute instances list covers all zones; --filter and --format shape the result.",
-      "tags": [
-        "compute-engine",
-        "gcloud",
-        "inventory"
-      ],
-      "source": "curated",
-      "fingerprint": "da1d2e46f3b0",
-      "file": "sections/section-3-operations.json"
-    },
-    {
       "id": "ace-s3-014",
       "title": "Reading recent rows from Bigtable by key prefix",
       "domain": "S3 · Operate",
@@ -7032,24 +6868,6 @@
       ],
       "source": "curated",
       "fingerprint": "d5e427f314a8",
-      "file": "sections/section-3-operations.json"
-    },
-    {
-      "id": "ace-s3-021",
-      "title": "Fleet-wide database risks across many projects",
-      "domain": "S3 · Operate",
-      "objective": "3.2",
-      "subtopic": "Database Center",
-      "new_in_2026": true,
-      "summary": "Database Center gives one view of the database fleet across projects and flags issues like missing backups.",
-      "tags": [
-        "alloydb",
-        "cloud-sql",
-        "database-center",
-        "fleet-management"
-      ],
-      "source": "curated",
-      "fingerprint": "9fa46091cc83",
       "file": "sections/section-3-operations.json"
     },
     {
@@ -7173,23 +6991,6 @@
       "file": "sections/section-3-operations.json"
     },
     {
-      "id": "ace-s3-029",
-      "title": "Only the errors from one Cloud Run service",
-      "domain": "S3 · Operate",
-      "objective": "3.4",
-      "subtopic": "Viewing and Filtering Logs",
-      "new_in_2026": false,
-      "summary": "The logging query language filters on resource type, labels and severity together.",
-      "tags": [
-        "cloud-run",
-        "logging-query-language",
-        "logs-explorer"
-      ],
-      "source": "curated",
-      "fingerprint": "4dd9a9e037c1",
-      "file": "sections/section-3-operations.json"
-    },
-    {
       "id": "ace-s3-030",
       "title": "Who made a call, and from which address",
       "domain": "S3 · Operate",
@@ -7289,23 +7090,6 @@
       ],
       "source": "curated",
       "fingerprint": "2497d997aa9a",
-      "file": "sections/section-3-operations.json"
-    },
-    {
-      "id": "ace-s3-036",
-      "title": "Scraping an application's /metrics endpoint on GKE",
-      "domain": "S3 · Operate",
-      "objective": "3.4",
-      "subtopic": "Managed Prometheus",
-      "new_in_2026": false,
-      "summary": "With managed collection, a PodMonitoring resource tells Managed Service for Prometheus which Pods to scrape.",
-      "tags": [
-        "gke",
-        "managed-prometheus",
-        "podmonitoring"
-      ],
-      "source": "curated",
-      "fingerprint": "240ba61c8b8a",
       "file": "sections/section-3-operations.json"
     },
     {
@@ -7479,23 +7263,6 @@
       "file": "sections/section-3-operations.json"
     },
     {
-      "id": "ace-s3-047",
-      "title": "Stopping a streaming pipeline without losing data",
-      "domain": "S3 · Operate",
-      "objective": "3.2",
-      "subtopic": "Job Status",
-      "new_in_2026": false,
-      "summary": "Draining a Dataflow job finishes in-flight data before stopping; cancelling drops it.",
-      "tags": [
-        "dataflow",
-        "drain",
-        "streaming"
-      ],
-      "source": "curated",
-      "fingerprint": "42b234058b51",
-      "file": "sections/section-3-operations.json"
-    },
-    {
       "id": "ace-s3-048",
       "title": "Which databases would not survive a zone failure",
       "domain": "S3 · Operate",
@@ -7581,23 +7348,6 @@
       "file": "sections/section-3-operations.json"
     },
     {
-      "id": "ace-s3-053",
-      "title": "Cloud VMs resolving on-premises names",
-      "domain": "S3 · Operate",
-      "objective": "3.3",
-      "subtopic": "Cloud DNS and Cloud NAT",
-      "new_in_2026": false,
-      "summary": "A Cloud DNS forwarding zone sends queries for an on-premises domain to on-premises resolvers.",
-      "tags": [
-        "cloud-dns",
-        "forwarding",
-        "hybrid"
-      ],
-      "source": "curated",
-      "fingerprint": "83467ccd820c",
-      "file": "sections/section-3-operations.json"
-    },
-    {
       "id": "ace-s3-054",
       "title": "On-premises servers resolving a Cloud private zone",
       "domain": "S3 · Operate",
@@ -7612,23 +7362,6 @@
       ],
       "source": "curated",
       "fingerprint": "6af966b1557b",
-      "file": "sections/section-3-operations.json"
-    },
-    {
-      "id": "ace-s3-055",
-      "title": "A fixed egress address for a partner's allow-list",
-      "domain": "S3 · Operate",
-      "objective": "3.3",
-      "subtopic": "Cloud DNS and Cloud NAT",
-      "new_in_2026": false,
-      "summary": "Cloud NAT with manually assigned static IP addresses gives private VMs a fixed egress address.",
-      "tags": [
-        "cloud-nat",
-        "egress",
-        "static-ip"
-      ],
-      "source": "curated",
-      "fingerprint": "186dfb935254",
       "file": "sections/section-3-operations.json"
     },
     {
@@ -7697,23 +7430,6 @@
       ],
       "source": "curated",
       "fingerprint": "2555706ad6cb",
-      "file": "sections/section-3-operations.json"
-    },
-    {
-      "id": "ace-s3-060",
-      "title": "Prometheus metrics from an application on a VM",
-      "domain": "S3 · Operate",
-      "objective": "3.4",
-      "subtopic": "Custom Metrics",
-      "new_in_2026": false,
-      "summary": "The Ops Agent's Prometheus receiver scrapes an application's /metrics endpoint on a VM.",
-      "tags": [
-        "custom-metrics",
-        "ops-agent",
-        "prometheus"
-      ],
-      "source": "curated",
-      "fingerprint": "3b745aae40d8",
       "file": "sections/section-3-operations.json"
     },
     {
@@ -8652,23 +8368,6 @@
       "file": "sections/section-3-operations.json"
     },
     {
-      "id": "ace-s3-116",
-      "title": "Scaling workers on a Pub/Sub backlog",
-      "domain": "S3 · Operate",
-      "objective": "3.1",
-      "subtopic": "Pod Autoscaling",
-      "new_in_2026": false,
-      "summary": "An HPA on an external metric such as a subscription's undelivered messages scales queue consumers.",
-      "tags": [
-        "external-metrics",
-        "hpa",
-        "pubsub"
-      ],
-      "source": "curated",
-      "fingerprint": "7c9606ce595e",
-      "file": "sections/section-3-operations.json"
-    },
-    {
       "id": "ace-s3-117",
       "title": "Docker Hub rate limits breaking deployments",
       "domain": "S3 · Operate",
@@ -8716,7 +8415,7 @@
         "kubectl"
       ],
       "source": "curated",
-      "fingerprint": "d2dd7558aa9c",
+      "fingerprint": "dafc07caa98f",
       "file": "sections/section-3-operations.json"
     },
     {
@@ -8734,23 +8433,6 @@
       ],
       "source": "curated",
       "fingerprint": "36a7f6961f44",
-      "file": "sections/section-3-operations.json"
-    },
-    {
-      "id": "ace-s3-121",
-      "title": "Undoing a key destruction request",
-      "domain": "S3 · Operate",
-      "objective": "3.2",
-      "subtopic": "CMEK and Key Management",
-      "new_in_2026": true,
-      "summary": "Destroyed key versions stay in 'scheduled for destruction' (30 days by default) and can be restored meanwhile.",
-      "tags": [
-        "cmek",
-        "key-destruction",
-        "recovery"
-      ],
-      "source": "curated",
-      "fingerprint": "7416c53891e6",
       "file": "sections/section-3-operations.json"
     },
     {
@@ -8802,23 +8484,6 @@
       ],
       "source": "curated",
       "fingerprint": "2140f80c4314",
-      "file": "sections/section-3-operations.json"
-    },
-    {
-      "id": "ace-s3-125",
-      "title": "Paying for compressed bytes in BigQuery storage",
-      "domain": "S3 · Operate",
-      "objective": "3.2",
-      "subtopic": "Storage Cost Estimation",
-      "new_in_2026": false,
-      "summary": "Switching a dataset to the physical storage billing model bills compressed bytes, often far cheaper.",
-      "tags": [
-        "bigquery",
-        "cost",
-        "storage-billing"
-      ],
-      "source": "curated",
-      "fingerprint": "e6901ab91c3a",
       "file": "sections/section-3-operations.json"
     },
     {
@@ -9213,6 +8878,266 @@
       "file": "sections/section-3-operations.json"
     },
     {
+      "id": "ace-s3-149",
+      "title": "New revisions that never receive traffic",
+      "domain": "S3 · Operate",
+      "objective": "3.1",
+      "subtopic": "Cloud Run Releases",
+      "new_in_2026": false,
+      "summary": "Once traffic is pinned to a named revision, new deployments get no traffic until it is sent to the latest revision again.",
+      "tags": [
+        "cloud-run",
+        "traffic"
+      ],
+      "source": "curated",
+      "fingerprint": "26c76d9abda0",
+      "file": "sections/section-3-operations.json"
+    },
+    {
+      "id": "ace-s3-150",
+      "title": "Changing an environment variable on Cloud Run",
+      "domain": "S3 · Operate",
+      "objective": "3.1",
+      "subtopic": "Cloud Run Releases",
+      "new_in_2026": false,
+      "summary": "Any configuration change to a Cloud Run service, such as an environment variable, creates a new revision.",
+      "tags": [
+        "cloud-run",
+        "revisions"
+      ],
+      "source": "curated",
+      "fingerprint": "31425de435b0",
+      "file": "sections/section-3-operations.json"
+    },
+    {
+      "id": "ace-s3-151",
+      "title": "Clearing out abandoned multipart uploads",
+      "domain": "S3 · Operate",
+      "objective": "3.2",
+      "subtopic": "Object Lifecycle",
+      "new_in_2026": false,
+      "summary": "The AbortIncompleteMultipartUpload lifecycle action removes multipart uploads left unfinished for a set number of days.",
+      "tags": [
+        "cloud-storage",
+        "lifecycle"
+      ],
+      "source": "curated",
+      "fingerprint": "f978be956dba",
+      "file": "sections/section-3-operations.json"
+    },
+    {
+      "id": "ace-s3-152",
+      "title": "A lifecycle rule that has not acted yet",
+      "domain": "S3 · Operate",
+      "objective": "3.2",
+      "subtopic": "Object Lifecycle",
+      "new_in_2026": false,
+      "summary": "Lifecycle actions are asynchronous; after you add or change a rule, it can take up to 24 hours to take effect.",
+      "tags": [
+        "cloud-storage",
+        "lifecycle"
+      ],
+      "source": "curated",
+      "fingerprint": "4ddc9598aed7",
+      "file": "sections/section-3-operations.json"
+    },
+    {
+      "id": "ace-s3-153",
+      "title": "Pausing a VM with its memory kept",
+      "domain": "S3 · Operate",
+      "objective": "3.1",
+      "subtopic": "Instance Inventory and Lifecycle",
+      "new_in_2026": false,
+      "summary": "Suspending a VM saves its memory to storage and lets it resume where it left off; stopping discards memory.",
+      "tags": [
+        "compute-engine",
+        "lifecycle"
+      ],
+      "source": "curated",
+      "fingerprint": "ebc26ff4a7a3",
+      "file": "sections/section-3-operations.json"
+    },
+    {
+      "id": "ace-s3-154",
+      "title": "Giving a running VM more vCPUs",
+      "domain": "S3 · Operate",
+      "objective": "3.1",
+      "subtopic": "Instance Inventory and Lifecycle",
+      "new_in_2026": false,
+      "summary": "A VM's machine type can be changed only while it is stopped.",
+      "tags": [
+        "compute-engine",
+        "machine-types"
+      ],
+      "source": "curated",
+      "fingerprint": "189a4afa8b37",
+      "file": "sections/section-3-operations.json"
+    },
+    {
+      "id": "ace-s3-155",
+      "title": "A BigQuery job that cannot be found",
+      "domain": "S3 · Operate",
+      "objective": "3.2",
+      "subtopic": "Job Status",
+      "new_in_2026": false,
+      "summary": "BigQuery jobs are tied to a location; looking one up needs the job's location as well as its ID.",
+      "tags": [
+        "bigquery",
+        "jobs"
+      ],
+      "source": "curated",
+      "fingerprint": "ba8cb464caa2",
+      "file": "sections/section-3-operations.json"
+    },
+    {
+      "id": "ace-s3-156",
+      "title": "A CI gate on bytes scanned",
+      "domain": "S3 · Operate",
+      "objective": "3.2",
+      "subtopic": "Storage Cost Estimation",
+      "new_in_2026": false,
+      "summary": "A BigQuery dry run reports the bytes a query would process without running it, which a CI check can compare with a limit.",
+      "tags": [
+        "bigquery",
+        "cost"
+      ],
+      "source": "curated",
+      "fingerprint": "803dc91882bb",
+      "file": "sections/section-3-operations.json"
+    },
+    {
+      "id": "ace-s3-157",
+      "title": "Tables nobody modifies any more",
+      "domain": "S3 · Operate",
+      "objective": "3.2",
+      "subtopic": "Storage Cost Estimation",
+      "new_in_2026": false,
+      "summary": "BigQuery bills tables or partitions unmodified for 90 consecutive days at the lower long-term storage price, automatically.",
+      "tags": [
+        "bigquery",
+        "cost"
+      ],
+      "source": "curated",
+      "fingerprint": "b701b9704e58",
+      "file": "sections/section-3-operations.json"
+    },
+    {
+      "id": "ace-s3-158",
+      "title": "One switch for object-level permissions",
+      "domain": "S3 · Operate",
+      "objective": "3.2",
+      "subtopic": "Securing Cloud Storage Objects",
+      "new_in_2026": false,
+      "summary": "Uniform bucket-level access disables ACLs so that access to every object is controlled by IAM alone.",
+      "tags": [
+        "acl",
+        "cloud-storage",
+        "iam"
+      ],
+      "source": "curated",
+      "fingerprint": "fed24377ca7b",
+      "file": "sections/section-3-operations.json"
+    },
+    {
+      "id": "ace-s3-159",
+      "title": "A one-hour download link for an outsider",
+      "domain": "S3 · Operate",
+      "objective": "3.2",
+      "subtopic": "Securing Cloud Storage Objects",
+      "new_in_2026": false,
+      "summary": "A signed URL grants time-limited access to one object to anyone who has the link, with no Google account needed.",
+      "tags": [
+        "cloud-storage",
+        "signed-url"
+      ],
+      "source": "curated",
+      "fingerprint": "a913c1e070da",
+      "file": "sections/section-3-operations.json"
+    },
+    {
+      "id": "ace-s3-160",
+      "title": "Sharing a custom image with another project",
+      "domain": "S3 · Operate",
+      "objective": "3.1",
+      "subtopic": "Snapshots and Images",
+      "new_in_2026": false,
+      "summary": "Granting Compute Image User on an image, or its project, lets principals elsewhere create VMs from it.",
+      "tags": [
+        "compute-engine",
+        "iam",
+        "images"
+      ],
+      "source": "curated",
+      "fingerprint": "0700b1a7da2b",
+      "file": "sections/section-3-operations.json"
+    },
+    {
+      "id": "ace-s3-161",
+      "title": "Credentials for a new Windows VM",
+      "domain": "S3 · Operate",
+      "objective": "3.1",
+      "subtopic": "Connecting to Instances",
+      "new_in_2026": false,
+      "summary": "gcloud compute reset-windows-password creates or resets a local Windows account and returns its password.",
+      "tags": [
+        "compute-engine",
+        "rdp",
+        "windows"
+      ],
+      "source": "curated",
+      "fingerprint": "83b0d3c78ccb",
+      "file": "sections/section-3-operations.json"
+    },
+    {
+      "id": "ace-s3-162",
+      "title": "A CPU-heavy service drowning in parallel requests",
+      "domain": "S3 · Operate",
+      "objective": "3.1",
+      "subtopic": "Cloud Run Autoscaling",
+      "new_in_2026": false,
+      "summary": "Lowering concurrency on a CPU-bound Cloud Run service makes it add instances instead of overloading each one.",
+      "tags": [
+        "cloud-run",
+        "concurrency"
+      ],
+      "source": "curated",
+      "fingerprint": "86f66650d7af",
+      "file": "sections/section-3-operations.json"
+    },
+    {
+      "id": "ace-s3-163",
+      "title": "Querying CSV files where they already are",
+      "domain": "S3 · Operate",
+      "objective": "3.2",
+      "subtopic": "Querying Data",
+      "new_in_2026": false,
+      "summary": "A BigQuery external table queries files in Cloud Storage in place, without loading them.",
+      "tags": [
+        "bigquery",
+        "cloud-storage",
+        "external-tables"
+      ],
+      "source": "curated",
+      "fingerprint": "36e5e2a37155",
+      "file": "sections/section-3-operations.json"
+    },
+    {
+      "id": "ace-s3-164",
+      "title": "Configuration-change records for three years",
+      "domain": "S3 · Operate",
+      "objective": "3.4",
+      "subtopic": "Audit, Flow and Firewall Logs",
+      "new_in_2026": false,
+      "summary": "Admin Activity logs stay 400 days in the _Required bucket; longer retention needs a sink to a destination you control.",
+      "tags": [
+        "audit-logs",
+        "retention"
+      ],
+      "source": "curated",
+      "fingerprint": "c381a1d8e2e5",
+      "file": "sections/section-3-operations.json"
+    },
+    {
       "id": "ace-s4-001",
       "title": "An inherited role that one project must not have",
       "domain": "S4 · Access",
@@ -9300,23 +9225,6 @@
       "file": "sections/section-4-security.json"
     },
     {
-      "id": "ace-s4-006",
-      "title": "A custom role needed in forty projects",
-      "domain": "S4 · Access",
-      "objective": "4.1",
-      "subtopic": "Role Types and Custom Roles",
-      "new_in_2026": false,
-      "summary": "A custom role created in a project can be granted only in that project; create it at the organisation to reuse it.",
-      "tags": [
-        "custom-roles",
-        "iam",
-        "organization"
-      ],
-      "source": "curated",
-      "fingerprint": "489f7b321491",
-      "file": "sections/section-4-security.json"
-    },
-    {
       "id": "ace-s4-007",
       "title": "Every binding that applies to a project, including inherited ones",
       "domain": "S4 · Access",
@@ -9382,23 +9290,6 @@
       ],
       "source": "curated",
       "fingerprint": "5f29905cc076",
-      "file": "sections/section-4-security.json"
-    },
-    {
-      "id": "ace-s4-011",
-      "title": "Stop new default service accounts receiving Editor",
-      "domain": "S4 · Access",
-      "objective": "4.2",
-      "subtopic": "Creating Service Accounts",
-      "new_in_2026": false,
-      "summary": "The iam.automaticIamGrantsForDefaultServiceAccounts constraint stops default service accounts getting Editor.",
-      "tags": [
-        "default-service-accounts",
-        "least-privilege",
-        "organization-policy"
-      ],
-      "source": "curated",
-      "fingerprint": "928a19b75a88",
       "file": "sections/section-4-security.json"
     },
     {
@@ -9722,23 +9613,6 @@
       ],
       "source": "curated",
       "fingerprint": "2ce8cbd318c2",
-      "file": "sections/section-4-security.json"
-    },
-    {
-      "id": "ace-s4-031",
-      "title": "Granting a key role to a service agent that does not exist yet",
-      "domain": "S4 · Access",
-      "objective": "4.2",
-      "subtopic": "Creating Service Accounts",
-      "new_in_2026": false,
-      "summary": "Force-create a service agent with gcloud beta services identity create before its first use.",
-      "tags": [
-        "cmek",
-        "gcloud",
-        "service-agents"
-      ],
-      "source": "curated",
-      "fingerprint": "8b0863a0eb5c",
       "file": "sections/section-4-security.json"
     },
     {
@@ -10181,6 +10055,23 @@
       ],
       "source": "curated",
       "fingerprint": "122e99f13f00",
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-059",
+      "title": "Read-only access to Cloud Run and nothing else",
+      "domain": "S4 · Access",
+      "objective": "4.1",
+      "subtopic": "Role Types and Custom Roles",
+      "new_in_2026": false,
+      "summary": "A product's predefined viewer role grants read-only access to that product only, unlike the basic Viewer role.",
+      "tags": [
+        "cloud-run",
+        "iam",
+        "predefined-roles"
+      ],
+      "source": "curated",
+      "fingerprint": "cfedc73d4d80",
       "file": "sections/section-4-security.json"
     }
   ]

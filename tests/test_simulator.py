@@ -20,6 +20,7 @@ from src.exam_engine import ExamSession, weighted_sample, filtered_pool  # noqa:
 from src.blueprint import BULLET_LIST, objective_weights, objectives_in  # noqa: E402
 from src.models import (  # noqa: E402
     BANK_DIR,
+    BANK_KEY_FIXES,
     DOMAIN_FILE,
     DOMAIN_WEIGHTS,
     DOMAINS,
@@ -764,12 +765,15 @@ def test_next_id_is_unique_and_domain_scoped(bank: QuestionBank) -> None:
     assert new_id not in {q.id for q in bank.questions}
 
 
-def test_next_id_fills_a_gap(bank: QuestionBank) -> None:
+def test_next_id_never_reuses_a_gap(bank: QuestionBank) -> None:
+    """A gap is a removed question, and history may still refer to its id."""
     subset = QuestionBank(questions=[
         q for q in bank.questions
         if q.id.startswith("ace-s1-") and not q.id.endswith(("002", "003"))
     ])
-    assert subset.next_id(DOMAINS[0]) == "ace-s1-002"
+    top = max(int(q.id.rsplit("-", 1)[1]) for q in subset.questions)
+    assert subset.next_id(DOMAINS[0]) == f"ace-s1-{top + 1:03d}"
+    assert subset.next_id(DOMAINS[0], retired=[f"ace-s1-{top + 5:03d}"]) == f"ace-s1-{top + 6:03d}"
 
 
 def test_register_carries_a_row_per_question(bank: QuestionBank) -> None:
@@ -828,3 +832,39 @@ def test_old_history_is_repaired_once_for_the_swapped_keys() -> None:
     from src.exam_engine import load_bank
     fresh = ExamSession(load_bank().questions[:2], mode="learning").build_attempt()
     assert fresh.bank_fixes  # new attempts are born repaired
+
+
+def _record(qid: str, selected: str, correct: str, finished: str, fixes=None) -> dict:
+    raw = {"attempt_id": "t", "mode": "certifying", "started_at": finished, "finished_at": finished,
+           "duration_seconds": 1.0, "question_count": 1, "correct_count": int(selected == correct),
+           "answers": [{"question_id": qid, "domain": DOMAINS[1], "selected": selected,
+                        "correct_answer": correct, "flagged": False, "subtopic": "Managed Instance Groups"}]}
+    if fixes is not None:
+        raw["bank_fixes"] = fixes
+    return raw
+
+
+def test_a_new_attempt_keeps_the_answers_as_given(session: ExamSession) -> None:
+    """Building an attempt must not run the history repairs on it (the 2026-11-07 bug)."""
+    for q in session.questions:
+        session.answer(q.correct_answer, q.id)
+    attempt = session.build_attempt()
+    assert attempt.correct_count == attempt.question_count
+    assert attempt.bank_fixes == list(BANK_KEY_FIXES)
+
+
+def test_attempts_wrongly_swapped_by_the_bug_are_restored() -> None:
+    # Recorded after the first fix shipped: the stored A was really a B, which is correct.
+    bad = Attempt.model_validate(_record("ace-dom2-053", "A", "B", "2026-11-07T12:35:57+00:00",
+                                         ["2026-11-06-swapped-keys"]))
+    assert bad.answers[0].selected == "B" and bad.correct_count == 1
+    # Recorded before it: the first repair was right and must not be undone.
+    old = Attempt.model_validate(_record("ace-dom2-053", "A", "B", "2026-09-18T08:17:15+00:00",
+                                         ["2026-11-06-swapped-keys"]))
+    assert old.answers[0].selected == "A"
+    # A record from before the field existed gets the first repair only.
+    legacy = Attempt.model_validate(_record("ace-dom2-053", "A", "B", "2026-09-18T08:17:15+00:00"))
+    assert legacy.answers[0].selected == "B" and legacy.bank_fixes == list(BANK_KEY_FIXES)
+    # Repairs are applied once: loading the repaired record again changes nothing.
+    again = Attempt.model_validate(bad.model_dump())
+    assert again.answers[0].selected == "B"

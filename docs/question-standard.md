@@ -87,7 +87,8 @@ its items: the no-exam-content rule in [CONTRIBUTING.md](../CONTRIBUTING.md) com
 - **Keep the id when the decision tested and the correct option stay the same, under the same letter.** Wording,
   constraints, distractors, rationales, the command and the doc link may all change.
 - **Mint a new id when the decision or the correct option changes.** Retire the old id rather than reusing it, so
-  attempt history never points at a different question. Retired ids are listed in `data/retired.json`.
+  attempt history never points at a different question. Retired ids are listed in `data/retired.json`, and `kb.py add`
+  never mints one of them.
 - A question that cannot be fixed without becoming a different question is removed, and the subtopic is checked
   against `kb.py blueprint --min 3 --strict`.
 
@@ -98,7 +99,7 @@ Every reviewed question gets one entry in the ledger:
 ```json
 {
   "id": "ace-dom2-018",
-  "verdict": "pass | revised | replaced | removed",
+  "verdict": "pass | revised | removed | new",
   "ac": {"AC1": "pass", "AC2": "fail", "AC3": "pass", "AC4": "fail", "AC5": "pass", "AC6": "pass", "AC7": "pass"},
   "notes": "“Read once at the start of each month” also reads as one read per object, which makes Archive right.",
   "replacement_id": null

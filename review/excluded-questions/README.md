@@ -1,13 +1,18 @@
-# Excluded questions: under review, not part of the bank
+# Excluded questions: review record
 
-104 questions held out of the public bank before v1.0.0 because their origin can't be vouched for. They are here so
-they can be reviewed in [issue #1](https://github.com/nirmata78/gcp-ace-simulator/issues/1). **They are not served by
-the simulator, not part of any release, and not licensed for reuse.** The MIT licence on this repository is not a claim
-that their text is original.
+104 questions were held out of the public bank before v1.0.0 because their origin couldn't be vouched for. They were
+reviewed in [issue #1](https://github.com/nirmata78/gcp-ace-simulator/issues/1). **Their text is not in this directory
+any more and never reached a release.**
 
 | File | What it is |
 |---|---|
-| `questions.json` | The questions, unchanged from the pre-release bank |
-| `audit.json` | Each question's best overlap with one public practice-test dump, and the method |
+| `decisions.json` | One verdict per question (`drop` or `rewrite`), with the reason and, for a rewrite, the id of the new question |
+| `audit.json` | Each question's overlap with the audited public sources, the sources and their commits, the method, and the 2026-11-07 audit of the current bank |
 
-If you own text that appears here, open an issue and it will be removed. This branch is deleted when the review ends.
+A `rewrite` is a new question written from the guide bullet and current documentation without reading the old stem,
+options or scenario; it gets a new id. No question was kept. Removed and excluded ids are listed in
+[`data/retired.json`](../../data/retired.json) and are never reused. `tests/test_question_standard.py` keeps them out
+of the bank: it compares every stem with salted hashes of their tokens (`tests/fixtures/guarded_stems.json`).
+
+Rerun the audit with `scripts/audit_overlap.py`; keep the reference files locally, never commit them.
+If you own text that resembled a question here, open an issue.

@@ -34,7 +34,8 @@ bank from one of those sources, please open an issue. It will be removed.
 2. Write the JSON (format in the [README](README.md#adding-questions)). Every option needs its own rationale, and
    `doc_ref` should link to the page that proves the answer.
 3. `python scripts/kb.py add --file newq.json` previews it, checks overlap with the bank and validates it.
-4. Sit it once in Learning mode. Then check that `pytest -q` and `python scripts/kb.py check` are clean.
+4. Check it against the [question standard](docs/question-standard.md) and run `python scripts/kb.py lint`.
+5. Sit it once in Learning mode. Then check that `pytest -q` and `python scripts/kb.py check` are clean.
 
 A good item tests a decision, not a spelling. Every wrong option should be something a reasonable person might try,
 and should be wrong for a reason you can state. Avoid flag-name and console-label trivia.

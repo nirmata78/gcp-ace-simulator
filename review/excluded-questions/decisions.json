@@ -1,0 +1,626 @@
+[
+ {
+  "id": "ace-dom4-041",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.09, containment 0.25); dropped because the subtopic already has enough independent questions (8 questions in 'Attaching Accelerators').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom4-033",
+  "verdict": "rewrite",
+  "reason": "Subtopic 'Audit, Flow and Firewall Logs' was thin, so a new question was written from the guide bullet and current documentation without reading this item's stem, options or scenario. The new stem scores below both thresholds against every audited source (best overlap with the original dump: Jaccard 0.67, containment 0.78 for the old item).",
+  "replacement_id": "ace-s3-164"
+ },
+ {
+  "id": "ace-dom4-037",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.79, containment 0.92); dropped because the subtopic already has enough independent questions (7 questions in 'Backup and Restore').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom2-083",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.84, containment 1.00); dropped because the subtopic already has enough independent questions (7 questions in 'Backup and Restore').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom1-064",
+  "verdict": "rewrite",
+  "reason": "Subtopic 'Billing Accounts' was thin, so a new question was written from the guide bullet and current documentation without reading this item's stem, options or scenario. The new stem scores below both thresholds against every audited source (best overlap with the original dump: Jaccard 0.13, containment 0.21 for the old item).",
+  "replacement_id": "ace-s1-053"
+ },
+ {
+  "id": "ace-dom1-055",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.62, containment 0.77); dropped because the subtopic already has enough independent questions (5 questions in 'Billing Accounts').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom1-052",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.62, containment 0.78); dropped because the subtopic already has enough independent questions (5 questions in 'Billing Accounts').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom1-065",
+  "verdict": "rewrite",
+  "reason": "Subtopic 'Billing Export and Cost Attribution' was thin, so a new question was written from the guide bullet and current documentation without reading this item's stem, options or scenario. The new stem scores below both thresholds against every audited source (best overlap with the original dump: Jaccard 0.12, containment 0.19 for the old item).",
+  "replacement_id": "ace-s1-054"
+ },
+ {
+  "id": "ace-dom1-023",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (curated item, best overlap with the original dump: Jaccard 0.50, containment 0.76); dropped because the subtopic already has enough independent questions (5 questions in 'Billing Export and Cost Attribution').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom4-036",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.46, containment 0.73); dropped because the subtopic already has enough independent questions (4 questions in 'Cloud DNS and Cloud NAT').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom1-057",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.16, containment 0.25); dropped because the subtopic already has enough independent questions (6 questions in 'Cloud Identity and Users').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom3-051",
+  "verdict": "rewrite",
+  "reason": "Subtopic 'Cloud Run Autoscaling' was thin, so a new question was written from the guide bullet and current documentation without reading this item's stem, options or scenario. The new stem scores below both thresholds against every audited source (best overlap with the original dump: Jaccard 0.52, containment 0.74 for the old item).",
+  "replacement_id": "ace-s3-162"
+ },
+ {
+  "id": "ace-dom2-090",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.58, containment 0.82); dropped because the subtopic already has enough independent questions (6 questions in 'Cloud Storage Classes').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom2-095",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.68, containment 0.90); dropped because the subtopic already has enough independent questions (12 questions in 'Compute Platform Selection').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom3-048",
+  "verdict": "rewrite",
+  "reason": "Subtopic 'Connecting to Instances' was thin, so a new question was written from the guide bullet and current documentation without reading this item's stem, options or scenario. The new stem scores below both thresholds against every audited source (best overlap with the original dump: Jaccard 0.70, containment 0.88 for the old item).",
+  "replacement_id": "ace-s3-161"
+ },
+ {
+  "id": "ace-dom5-031",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.48, containment 0.58); dropped because the subtopic already has enough independent questions (5 questions in 'Creating Service Accounts').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom2-104",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.11, containment 0.15); dropped because the subtopic already has enough independent questions (5 questions in 'Data Pipelines and Messaging').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom2-105",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.12, containment 0.17); dropped because the subtopic already has enough independent questions (12 questions in 'Database Selection').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom2-094",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.37, containment 0.65); dropped because the subtopic already has enough independent questions (12 questions in 'Database Selection').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom2-097",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.42, containment 0.86); dropped because the subtopic already has enough independent questions (12 questions in 'Database Selection').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom4-034",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.52, containment 0.63); dropped because the subtopic already has enough independent questions (12 questions in 'Database Selection').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom2-079",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.61, containment 0.80); dropped because the subtopic already has enough independent questions (12 questions in 'Database Selection').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom1-054",
+  "verdict": "rewrite",
+  "reason": "Subtopic 'Foundation Networking' was thin, so a new question was written from the guide bullet and current documentation without reading this item's stem, options or scenario. The new stem scores below both thresholds against every audited source (best overlap with the original dump: Jaccard 0.59, containment 0.79 for the old item).",
+  "replacement_id": "ace-s1-052"
+ },
+ {
+  "id": "ace-dom2-093",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.48, containment 0.75); dropped because the subtopic already has enough independent questions (8 questions in 'GKE Cluster Configurations').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom2-102",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.71, containment 0.80); dropped because the subtopic already has enough independent questions (8 questions in 'GKE Cluster Configurations').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom2-115",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.25, containment 0.36); dropped because the subtopic already has enough independent questions (8 questions in 'GPUs or TPUs').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom2-084",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.64, containment 0.78); dropped because the subtopic already has enough independent questions (7 questions in 'Hybrid Connectivity').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom5-006",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (curated item, best overlap with the original dump: Jaccard 0.66, containment 0.91); dropped because the subtopic already has enough independent questions (12 questions in 'IAM Policies and Inheritance').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom5-030",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.75, containment 0.88); dropped because the subtopic already has enough independent questions (12 questions in 'IAM Policies and Inheritance').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom5-037",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.83, containment 0.94); dropped because the subtopic already has enough independent questions (12 questions in 'IAM Policies and Inheritance').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom2-114",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.07, containment 0.12); dropped because the subtopic already has enough independent questions (9 questions in 'Infrastructure as Code').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom2-062",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (curated item, best overlap with the original dump: Jaccard 0.67, containment 0.78); dropped because the subtopic already has enough independent questions (9 questions in 'Infrastructure as Code').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom3-000",
+  "verdict": "drop",
+  "reason": "From Google's sample form, which isn't ours to redistribute; dropped by default (best overlap with the original dump: Jaccard 0.71, containment 0.81).",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom3-076",
+  "verdict": "rewrite",
+  "reason": "Subtopic 'Instance Inventory and Lifecycle' was thin, so a new question was written from the guide bullet and current documentation without reading this item's stem, options or scenario. The new stem scores below both thresholds against every audited source (best overlap with the original dump: Jaccard 0.10, containment 0.13 for the old item).",
+  "replacement_id": "ace-s3-153"
+ },
+ {
+  "id": "ace-dom3-073",
+  "verdict": "rewrite",
+  "reason": "Subtopic 'Instance Inventory and Lifecycle' was thin, so a new question was written from the guide bullet and current documentation without reading this item's stem, options or scenario. The new stem scores below both thresholds against every audited source (best overlap with the original dump: Jaccard 0.16, containment 0.43 for the old item).",
+  "replacement_id": "ace-s3-154"
+ },
+ {
+  "id": "ace-dom3-044",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.55, containment 0.75); dropped because the subtopic already has enough independent questions (4 questions in 'Instance Inventory and Lifecycle').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom3-047",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.44, containment 0.71); dropped because the subtopic already has enough independent questions (6 questions in 'Kubernetes Resources').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom3-049",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.61, containment 0.79); dropped because the subtopic already has enough independent questions (6 questions in 'Kubernetes Resources').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom3-057",
+  "verdict": "rewrite",
+  "reason": "Subtopic 'Launching Instances' was thin, so a new question was written from the guide bullet and current documentation without reading this item's stem, options or scenario. The new stem scores below both thresholds against every audited source (best overlap with the original dump: Jaccard 0.09, containment 0.17 for the old item).",
+  "replacement_id": "ace-s2-135"
+ },
+ {
+  "id": "ace-dom5-042",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.11, containment 0.14); dropped because the subtopic already has enough independent questions (6 questions in 'Launching Instances').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom3-064",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.11, containment 0.25); dropped because the subtopic already has enough independent questions (6 questions in 'Launching Instances').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom2-082",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.44, containment 0.73); dropped because the subtopic already has enough independent questions (6 questions in 'Launching Instances').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom2-099",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.58, containment 0.79); dropped because the subtopic already has enough independent questions (6 questions in 'Launching Instances').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom3-050",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 1.00, containment 1.00); dropped because the subtopic already has enough independent questions (6 questions in 'Launching Instances').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom2-087",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.70, containment 0.89); dropped because the subtopic already has enough independent questions (6 questions in 'Loading Data').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom2-119",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.10, containment 0.16); dropped because the subtopic already has enough independent questions (7 questions in 'Managed Instance Groups').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom2-116",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.17, containment 0.29); dropped because the subtopic already has enough independent questions (7 questions in 'Managed Instance Groups').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom2-118",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.21, containment 0.62); dropped because the subtopic already has enough independent questions (7 questions in 'Managed Instance Groups').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom4-032",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.23, containment 0.53); dropped because the subtopic already has enough independent questions (7 questions in 'Managed Instance Groups').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom2-117",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.25, containment 0.57); dropped because the subtopic already has enough independent questions (7 questions in 'Managed Instance Groups').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom2-101",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.48, containment 0.63); dropped because the subtopic already has enough independent questions (7 questions in 'Managed Instance Groups').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom5-026",
+  "verdict": "rewrite",
+  "reason": "Subtopic 'OS Login' was thin, so a new question was written from the guide bullet and current documentation without reading this item's stem, options or scenario. The new stem scores below both thresholds against every audited source (best overlap with the original dump: Jaccard 0.69, containment 0.89 for the old item).",
+  "replacement_id": "ace-s2-132"
+ },
+ {
+  "id": "ace-dom5-018",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (curated item, best overlap with the original dump: Jaccard 0.70, containment 0.93); dropped because the subtopic already has enough independent questions (5 questions in 'OS Login').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom2-091",
+  "verdict": "rewrite",
+  "reason": "Subtopic 'Object Lifecycle' was thin, so a new question was written from the guide bullet and current documentation without reading this item's stem, options or scenario. The new stem scores below both thresholds against every audited source (best overlap with the original dump: Jaccard 0.47, containment 0.67 for the old item).",
+  "replacement_id": "ace-s3-151"
+ },
+ {
+  "id": "ace-dom2-089",
+  "verdict": "rewrite",
+  "reason": "Subtopic 'Object Lifecycle' was thin, so a new question was written from the guide bullet and current documentation without reading this item's stem, options or scenario. The new stem scores below both thresholds against every audited source (best overlap with the original dump: Jaccard 0.50, containment 0.64 for the old item).",
+  "replacement_id": "ace-s3-152"
+ },
+ {
+  "id": "ace-dom2-103",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.67, containment 0.82); dropped because the subtopic already has enough independent questions (4 questions in 'Object Lifecycle').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom1-044",
+  "verdict": "rewrite",
+  "reason": "Subtopic 'Observability Setup' was thin, so a new question was written from the guide bullet and current documentation without reading this item's stem, options or scenario. The new stem scores below both thresholds against every audited source (best overlap with the original dump: Jaccard 0.67, containment 0.86 for the old item).",
+  "replacement_id": "ace-s1-055"
+ },
+ {
+  "id": "ace-dom1-000",
+  "verdict": "drop",
+  "reason": "From Google's sample form, which isn't ours to redistribute; dropped by default (best overlap with the original dump: Jaccard 0.17, containment 0.35).",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom2-098",
+  "verdict": "rewrite",
+  "reason": "Subtopic 'Querying Data' was thin, so a new question was written from the guide bullet and current documentation without reading this item's stem, options or scenario. The new stem scores below both thresholds against every audited source (best overlap with the original dump: Jaccard 0.44, containment 0.69 for the old item).",
+  "replacement_id": "ace-s3-163"
+ },
+ {
+  "id": "ace-dom3-056",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.07, containment 0.18); dropped because the subtopic already has enough independent questions (7 questions in 'Regions and Zones').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom1-061",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.14, containment 0.18); dropped because the subtopic already has enough independent questions (7 questions in 'Regions and Zones').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom4-001",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (curated item, best overlap with the original dump: Jaccard 0.88, containment 0.94); dropped because the subtopic already has enough independent questions (7 questions in 'Resource Alerts').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom5-043",
+  "verdict": "rewrite",
+  "reason": "Subtopic 'Role Types and Custom Roles' was thin, so a new question was written from the guide bullet and current documentation without reading this item's stem, options or scenario. The new stem scores below both thresholds against every audited source (best overlap with the original dump: Jaccard 0.11, containment 0.19 for the old item).",
+  "replacement_id": "ace-s4-059"
+ },
+ {
+  "id": "ace-dom5-000",
+  "verdict": "drop",
+  "reason": "From Google's sample form, which isn't ours to redistribute; dropped by default (best overlap with the original dump: Jaccard 0.15, containment 0.24).",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom5-033",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.34, containment 0.46); dropped because the subtopic already has enough independent questions (5 questions in 'Role Types and Custom Roles').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom5-032",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.52, containment 0.85); dropped because the subtopic already has enough independent questions (5 questions in 'Role Types and Custom Roles').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom5-038",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.60, containment 0.91); dropped because the subtopic already has enough independent questions (5 questions in 'Role Types and Custom Roles').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom5-024",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.61, containment 0.61); dropped because the subtopic already has enough independent questions (5 questions in 'Role Types and Custom Roles').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom2-085",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.64, containment 0.80); dropped because the subtopic already has enough independent questions (5 questions in 'Role Types and Custom Roles').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom5-023",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.71, containment 0.75); dropped because the subtopic already has enough independent questions (5 questions in 'Role Types and Custom Roles').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom5-021",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.73, containment 0.73); dropped because the subtopic already has enough independent questions (5 questions in 'Role Types and Custom Roles').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom5-029",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.89, containment 0.94); dropped because the subtopic already has enough independent questions (5 questions in 'Role Types and Custom Roles').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom5-020",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 1.00, containment 1.00); dropped because the subtopic already has enough independent questions (5 questions in 'Role Types and Custom Roles').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom5-039",
+  "verdict": "rewrite",
+  "reason": "Subtopic 'Securing Cloud Storage Objects' was thin, so a new question was written from the guide bullet and current documentation without reading this item's stem, options or scenario. The new stem scores below both thresholds against every audited source (best overlap with the original dump: Jaccard 0.11, containment 0.17 for the old item).",
+  "replacement_id": "ace-s3-158"
+ },
+ {
+  "id": "ace-dom5-040",
+  "verdict": "rewrite",
+  "reason": "Subtopic 'Securing Cloud Storage Objects' was thin, so a new question was written from the guide bullet and current documentation without reading this item's stem, options or scenario. The new stem scores below both thresholds against every audited source (best overlap with the original dump: Jaccard 0.12, containment 0.17 for the old item).",
+  "replacement_id": "ace-s3-159"
+ },
+ {
+  "id": "ace-dom5-019",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.18, containment 0.41); dropped because the subtopic already has enough independent questions (5 questions in 'Securing Cloud Storage Objects').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom2-086",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.41, containment 0.77); dropped because the subtopic already has enough independent questions (5 questions in 'Securing Cloud Storage Objects').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom5-027",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.75, containment 0.83); dropped because the subtopic already has enough independent questions (5 questions in 'Securing Cloud Storage Objects').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom5-022",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.79, containment 0.88); dropped because the subtopic already has enough independent questions (5 questions in 'Securing Cloud Storage Objects').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom2-000",
+  "verdict": "drop",
+  "reason": "From Google's sample form, which isn't ours to redistribute; dropped by default (best overlap with the original dump: Jaccard 0.12, containment 0.20).",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-s4-056",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (curated item, best overlap with the original dump: Jaccard 0.25, containment 0.62); dropped because the subtopic already has enough independent questions (7 questions in 'Service Accounts and Least Privilege').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom5-035",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.50, containment 0.70); dropped because the subtopic already has enough independent questions (7 questions in 'Service Accounts and Least Privilege').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom5-036",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.61, containment 0.85); dropped because the subtopic already has enough independent questions (7 questions in 'Service Accounts and Least Privilege').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom5-034",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.67, containment 0.74); dropped because the subtopic already has enough independent questions (7 questions in 'Service Accounts and Least Privilege').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom5-025",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.94, containment 1.00); dropped because the subtopic already has enough independent questions (7 questions in 'Service Accounts and Least Privilege').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom3-072",
+  "verdict": "rewrite",
+  "reason": "Subtopic 'Snapshots and Images' was thin, so a new question was written from the guide bullet and current documentation without reading this item's stem, options or scenario. The new stem scores below both thresholds against every audited source (best overlap with the original dump: Jaccard 0.10, containment 0.20 for the old item).",
+  "replacement_id": "ace-s3-160"
+ },
+ {
+  "id": "ace-dom3-063",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.12, containment 0.17); dropped because the subtopic already has enough independent questions (4 questions in 'Snapshots and Images').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom3-071",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.16, containment 0.43); dropped because the subtopic already has enough independent questions (4 questions in 'Snapshots and Images').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom2-110",
+  "verdict": "rewrite",
+  "reason": "Subtopic 'Spot and Custom Machine Types' was thin, so a new question was written from the guide bullet and current documentation without reading this item's stem, options or scenario. The new stem scores below both thresholds against every audited source (best overlap with the original dump: Jaccard 0.09, containment 0.14 for the old item).",
+  "replacement_id": "ace-s2-133"
+ },
+ {
+  "id": "ace-dom3-053",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.10, containment 0.20); dropped because the subtopic already has enough independent questions (5 questions in 'Spot and Custom Machine Types').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom1-066",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.12, containment 0.25); dropped because the subtopic already has enough independent questions (5 questions in 'Spot and Custom Machine Types').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom1-067",
+  "verdict": "rewrite",
+  "reason": "Subtopic 'Storage Cost Estimation' was thin, so a new question was written from the guide bullet and current documentation without reading this item's stem, options or scenario. The new stem scores below both thresholds against every audited source (best overlap with the original dump: Jaccard 0.10, containment 0.19 for the old item).",
+  "replacement_id": "ace-s3-156"
+ },
+ {
+  "id": "ace-dom1-049",
+  "verdict": "rewrite",
+  "reason": "Subtopic 'Storage Cost Estimation' was thin, so a new question was written from the guide bullet and current documentation without reading this item's stem, options or scenario. The new stem scores below both thresholds against every audited source (best overlap with the original dump: Jaccard 0.52, containment 0.74 for the old item).",
+  "replacement_id": "ace-s3-157"
+ },
+ {
+  "id": "ace-dom1-051",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.82, containment 0.88); dropped because the subtopic already has enough independent questions (4 questions in 'Storage Cost Estimation').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom2-107",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.16, containment 0.20); dropped because the subtopic already has enough independent questions (8 questions in 'Storage Products').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom2-108",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.11, containment 0.15); dropped because the subtopic already has enough independent questions (8 questions in 'Storage for Compute Engine').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom4-035",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.67, containment 0.87); dropped because the subtopic already has enough independent questions (8 questions in 'Storage for Compute Engine').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom2-111",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.14, containment 0.19); dropped because the subtopic already has enough independent questions (12 questions in 'Subnets, Addresses and Routes').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom4-031",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.62, containment 0.67); dropped because the subtopic already has enough independent questions (12 questions in 'Subnets, Addresses and Routes').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom2-080",
+  "verdict": "drop",
+  "reason": "Origin can't be shown (user item, best overlap with the original dump: Jaccard 0.76, containment 0.96); dropped because the subtopic already has enough independent questions (7 questions in 'VPC Design').",
+  "replacement_id": null
+ },
+ {
+  "id": "ace-dom1-058",
+  "verdict": "rewrite",
+  "reason": "Subtopic 'gcloud CLI and Configurations' was thin, so a new question was written from the guide bullet and current documentation without reading this item's stem, options or scenario. The new stem scores below both thresholds against every audited source (best overlap with the original dump: Jaccard 0.14, containment 0.21 for the old item).",
+  "replacement_id": "ace-s1-049"
+ },
+ {
+  "id": "ace-dom1-053",
+  "verdict": "rewrite",
+  "reason": "Subtopic 'gcloud CLI and Configurations' was thin, so a new question was written from the guide bullet and current documentation without reading this item's stem, options or scenario. The new stem scores below both thresholds against every audited source (best overlap with the original dump: Jaccard 0.30, containment 0.47 for the old item).",
+  "replacement_id": "ace-s1-050"
+ },
+ {
+  "id": "ace-dom1-050",
+  "verdict": "rewrite",
+  "reason": "Subtopic 'gcloud CLI and Configurations' was thin, so a new question was written from the guide bullet and current documentation without reading this item's stem, options or scenario. The new stem scores below both thresholds against every audited source (best overlap with the original dump: Jaccard 0.44, containment 0.86 for the old item).",
+  "replacement_id": "ace-s1-051"
+ },
+ {
+  "id": "ace-dom1-056",
+  "verdict": "rewrite",
+  "reason": "Subtopic 'kubectl Setup' was thin, so a new question was written from the guide bullet and current documentation without reading this item's stem, options or scenario. The new stem scores below both thresholds against every audited source (best overlap with the original dump: Jaccard 0.18, containment 0.28 for the old item).",
+  "replacement_id": "ace-s2-134"
+ }
+]

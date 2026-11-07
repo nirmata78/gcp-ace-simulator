@@ -1,8 +1,8 @@
 {
   "domain": "Section 3: Ensuring the successful operation of a cloud solution",
   "version": 2,
-  "updated_at": "2026-11-07T13:24:11+00:00",
-  "count": 212,
+  "updated_at": "2026-11-07T14:36:24+00:00",
+  "count": 211,
   "questions": [
     {
       "id": "ace-dom1-042",
@@ -34,38 +34,6 @@
         },
         "gcloud_command": "gcloud logging read 'protoPayload.methodName=\"v1.compute.instances.delete\"' \\\n  --limit=20 --freshness=2d",
         "doc_ref": "https://cloud.google.com/logging/docs/audit"
-      }
-    },
-    {
-      "id": "ace-dom3-001",
-      "title": "Smoke-test a revision before any traffic",
-      "objective": "3.1",
-      "subtopic": "Cloud Run Releases",
-      "summary": "Deploying with --tag and --no-traffic publishes a revision at a dedicated URL.",
-      "tags": [
-        "canary",
-        "cloud-run",
-        "deployment"
-      ],
-      "source": "curated",
-      "question": "A new Cloud Run revision must be smoke-tested by QA on its own URL before any production traffic reaches it. What should you do?",
-      "options": {
-        "A": "Update the service's traffic split across revisions by percentage.",
-        "B": "Deploy the new revision with a tag and no traffic, then shift traffic explicitly.",
-        "C": "Route 100% of traffic back to the previously known-good revision.",
-        "D": "Set the container concurrency on the service."
-      },
-      "correct_answer": "B",
-      "explanation": {
-        "summary": "Deploying with --tag and --no-traffic publishes the revision at a dedicated tagged URL while production continues on the current revision.",
-        "option_breakdown": {
-          "A": "Any percentage sends some production traffic to the revision before QA has tested it.",
-          "B": "Correct. Deploying with --tag and --no-traffic publishes the revision at a dedicated tagged URL while production continues on the current revision.",
-          "C": "Rolling back is for after a bad release; here nothing has been released yet.",
-          "D": "Concurrency sets how many requests an instance handles at once; it doesn't control which revision gets traffic."
-        },
-        "gcloud_command": "gcloud run deploy api --image=IMAGE:v2 --region=us-central1 --tag=canary --no-traffic",
-        "doc_ref": "https://cloud.google.com/run/docs/rollouts-rollbacks-traffic-migration"
       }
     },
     {
@@ -677,38 +645,6 @@
       }
     },
     {
-      "id": "ace-dom3-028",
-      "title": "Golden hardened base for every new VM",
-      "objective": "3.1",
-      "subtopic": "Snapshots and Images",
-      "summary": "A custom image bakes the configuration into a bootable template.",
-      "tags": [
-        "compute-engine",
-        "hardening",
-        "images"
-      ],
-      "source": "curated",
-      "question": "A hardened, fully patched configuration must be the starting point for every new instance the team creates, so that instances are identical from first boot. What should you create?",
-      "options": {
-        "A": "Create a custom image from the configured disk.",
-        "B": "A snapshot of the configured disk",
-        "C": "An instance template that uses the public base image",
-        "D": "A startup script that hardens each VM at boot"
-      },
-      "correct_answer": "A",
-      "explanation": {
-        "summary": "A custom image bakes the configuration into a bootable template, so every instance created from it starts identical and already hardened.",
-        "option_breakdown": {
-          "A": "Correct. A custom image, ideally in an image family, bakes the hardened configuration into a bootable image, so every VM created from it starts identical.",
-          "B": "You can boot from a snapshot, but snapshots are backups; custom images, with image families and sharing, are the artefact for creating many identical VMs.",
-          "C": "The public base image isn't hardened, so each VM would start unpatched.",
-          "D": "Each VM runs unhardened until the script finishes, and results can differ if a package changes between boots."
-        },
-        "gcloud_command": "gcloud compute images create hardened-base-v3 --source-disk=build-disk \\\n  --source-disk-zone=us-central1-a --family=hardened-base",
-        "doc_ref": "https://cloud.google.com/compute/docs/images/create-custom"
-      }
-    },
-    {
       "id": "ace-dom3-029",
       "title": "Six-hourly backups retained two weeks",
       "objective": "3.1",
@@ -869,38 +805,6 @@
       }
     },
     {
-      "id": "ace-dom3-038",
-      "title": "Build, push and deploy on merge to main",
-      "objective": "3.1",
-      "subtopic": "Cloud Run Releases",
-      "summary": "A Cloud Build trigger runs build, push and deploy under a service account inside Google Cloud.",
-      "tags": [
-        "ci-cd",
-        "cloud-build",
-        "cloud-run"
-      ],
-      "source": "curated",
-      "question": "Every merge to main must build a container image, push it to Artifact Registry and deploy the new revision to Cloud Run, with no credentials on any developer machine. What should you configure?",
-      "options": {
-        "A": "Use Cloud Deploy to promote the release through a delivery pipeline.",
-        "B": "Run terraform plan and then terraform apply from the pipeline.",
-        "C": "Define the steps in a Cloud Build configuration and trigger it from the repository.",
-        "D": "A developer runs the build and the deploy from their machine after each merge."
-      },
-      "correct_answer": "C",
-      "explanation": {
-        "summary": "Cloud Build triggers on repository events and runs the build, push and deploy steps in one configuration under a service account inside Google Cloud, so no credentials live on a developer machine.",
-        "option_breakdown": {
-          "A": "Cloud Deploy manages progressive promotion of a release across targets; it does not build images or provision infrastructure.",
-          "B": "Terraform applies declared infrastructure; it is not a container build system or an application release mechanism.",
-          "C": "Correct. Cloud Build triggers on repository events and runs the build, push and deploy steps in one configuration under a service account inside Google Cloud, so no credentials live on a developer machine.",
-          "D": "That puts deploy credentials on a developer's machine, and it depends on someone remembering."
-        },
-        "gcloud_command": "gcloud builds triggers create github --repo-name=app --repo-owner=example \\\n  --branch-pattern='^main$' --build-config=cloudbuild.yaml",
-        "doc_ref": "https://cloud.google.com/build/docs/automating-builds/create-manage-triggers"
-      }
-    },
-    {
       "id": "ace-dom3-039",
       "title": "Promotion with an approval before production",
       "objective": "3.1",
@@ -962,38 +866,6 @@
         },
         "gcloud_command": "gcloud workstations configs create dev-cfg --cluster=dev-cluster \\\n  --region=us-central1 --machine-type=e2-standard-4",
         "doc_ref": "https://cloud.google.com/workstations/docs/overview"
-      }
-    },
-    {
-      "id": "ace-dom4-002",
-      "title": "Memory and disk metrics missing from VMs",
-      "objective": "3.4",
-      "subtopic": "Ops Agent",
-      "summary": "Guest-level metrics need an in-guest agent; the hypervisor cannot observe them.",
-      "tags": [
-        "compute-engine",
-        "monitoring",
-        "ops-agent"
-      ],
-      "source": "curated",
-      "question": "Memory utilisation and free disk space inside your Compute Engine VMs do not appear in Cloud Monitoring, although CPU and network do. What should you do?",
-      "options": {
-        "A": "Enable the Cloud Monitoring API on the project.",
-        "B": "Deploy Google Cloud Managed Service for Prometheus.",
-        "C": "Install and configure the Ops Agent on the instances.",
-        "D": "Create a log-based metric from the VMs' syslog."
-      },
-      "correct_answer": "C",
-      "explanation": {
-        "summary": "Guest-level metrics such as memory and filesystem usage are not visible to the hypervisor; the Ops Agent must run inside the VM to report them.",
-        "option_breakdown": {
-          "A": "The API is already on, since CPU and network metrics arrive.",
-          "B": "Managed Service for Prometheus collects Prometheus-format metrics that workloads expose; it doesn't read a VM's memory or disk.",
-          "C": "Correct. Memory and filesystem usage aren't visible to the hypervisor; the Ops Agent must run inside the VM to report them.",
-          "D": "Syslog doesn't report memory and disk usage, and counting log lines isn't a gauge of either."
-        },
-        "gcloud_command": "sudo bash add-google-cloud-ops-agent-repo.sh --also-install",
-        "doc_ref": "https://cloud.google.com/monitoring/agent/ops-agent"
       }
     },
     {
@@ -1509,38 +1381,6 @@
       }
     },
     {
-      "id": "ace-dom4-019",
-      "title": "Age logs to Coldline then delete",
-      "objective": "3.2",
-      "subtopic": "Object Lifecycle",
-      "summary": "Object lifecycle management applies age-based class changes and deletions automatically.",
-      "tags": [
-        "cloud-storage",
-        "cost",
-        "lifecycle"
-      ],
-      "source": "curated",
-      "question": "Log objects in a bucket must move to Coldline after 30 days and be deleted after one year, with no scripts to maintain. What should you configure?",
-      "options": {
-        "A": "Enable object versioning on the bucket.",
-        "B": "Apply a bucket retention policy and lock it.",
-        "C": "Enable Autoclass on the bucket.",
-        "D": "Configure an object lifecycle management rule on the bucket."
-      },
-      "correct_answer": "D",
-      "explanation": {
-        "summary": "Object lifecycle management applies age-based SetStorageClass and Delete actions automatically inside Cloud Storage.",
-        "option_breakdown": {
-          "A": "Versioning keeps old versions; it moves and deletes nothing by age.",
-          "B": "A locked retention policy prevents deletion, which is the opposite of deleting at one year.",
-          "C": "Autoclass moves objects by how they are accessed, not at a fixed age, and it never deletes them.",
-          "D": "Correct. Object lifecycle management applies age-based SetStorageClass and Delete actions automatically inside Cloud Storage."
-        },
-        "gcloud_command": "gcloud storage buckets update gs://logs --lifecycle-file=lifecycle.json",
-        "doc_ref": "https://cloud.google.com/storage/docs/lifecycle"
-      }
-    },
-    {
       "id": "ace-dom4-020",
       "title": "Recover an overwritten object",
       "objective": "3.2",
@@ -1701,38 +1541,6 @@
       }
     },
     {
-      "id": "ace-dom4-025",
-      "title": "Which of six services is slow",
-      "objective": "3.4",
-      "subtopic": "Diagnostic Tools",
-      "summary": "Cloud Trace breaks a request into spans per service, attributing end-to-end latency.",
-      "tags": [
-        "cloud-trace",
-        "diagnostics",
-        "latency"
-      ],
-      "source": "curated",
-      "question": "An API request takes four seconds end to end, and the team must find which of the six downstream services is responsible. Which tool should you use?",
-      "options": {
-        "A": "Cloud Profiler",
-        "B": "Cloud Trace",
-        "C": "Query Insights",
-        "D": "Error Reporting"
-      },
-      "correct_answer": "B",
-      "explanation": {
-        "summary": "Cloud Trace breaks a request into spans per service, which is the only way to attribute end-to-end latency across a call graph.",
-        "option_breakdown": {
-          "A": "Profiler shows where one process spends CPU and memory; it doesn't follow a request across services.",
-          "B": "Correct. Cloud Trace breaks a request into spans per service, which shows where the four seconds go across the call graph.",
-          "C": "Query Insights covers database queries only, not six application services.",
-          "D": "Error Reporting groups exceptions; a slow request needn't raise any."
-        },
-        "gcloud_command": "gcloud trace list-traces --filter='LATENCY>3s'",
-        "doc_ref": "https://cloud.google.com/trace/docs/overview"
-      }
-    },
-    {
       "id": "ace-dom4-026",
       "title": "Which functions burn the CPU",
       "objective": "3.4",
@@ -1857,7 +1665,7 @@
           "D": "Trace shows latency per request, not grouped exceptions."
         },
         "gcloud_command": "gcloud beta error-reporting events list --service=api",
-        "doc_ref": "https://cloud.google.com/error-reporting/docs/setup/overview"
+        "doc_ref": "https://docs.cloud.google.com/error-reporting/docs"
       }
     },
     {
@@ -2440,38 +2248,6 @@
       }
     },
     {
-      "id": "ace-s3-013",
-      "title": "Running instances across every zone, as a table",
-      "objective": "3.1",
-      "subtopic": "Instance Inventory and Lifecycle",
-      "summary": "gcloud compute instances list covers all zones; --filter and --format shape the result.",
-      "tags": [
-        "compute-engine",
-        "gcloud",
-        "inventory"
-      ],
-      "source": "curated",
-      "question": "You need a list of only the running Compute Engine VMs in the current project, across all zones, showing each VM's name, zone and machine type. What should you run?",
-      "options": {
-        "A": "A describe of each instance, one at a time.",
-        "B": "An instance list per zone, combined by hand.",
-        "C": "A list of the project's managed instance groups.",
-        "D": "One instance list, with a status filter and a table format."
-      },
-      "correct_answer": "D",
-      "explanation": {
-        "summary": "instances list already spans every zone unless restricted. --filter selects on any field, and --format chooses the columns.",
-        "option_breakdown": {
-          "A": "describe shows one named instance at a time, which is slow and needs the names first.",
-          "B": "It works, but instances list already covers every zone by default.",
-          "C": "Instance groups miss standalone VMs and don't show each VM's status.",
-          "D": "Correct. gcloud compute instances list --filter='status=RUNNING' --format='table(name,zone,machineType)' covers every zone in one call."
-        },
-        "gcloud_command": "gcloud compute instances list --filter='status=RUNNING' --format='table(name,zone,machineType)'",
-        "doc_ref": "https://cloud.google.com/sdk/gcloud/reference/compute/instances/list"
-      }
-    },
-    {
       "id": "ace-s3-014",
       "title": "Reading recent rows from Bigtable by key prefix",
       "objective": "3.2",
@@ -2693,39 +2469,6 @@
         },
         "gcloud_command": "bq show -j --location=EU JOB_ID",
         "doc_ref": "https://cloud.google.com/bigquery/docs/managing-jobs"
-      }
-    },
-    {
-      "id": "ace-s3-021",
-      "title": "Fleet-wide database risks across many projects",
-      "objective": "3.2",
-      "subtopic": "Database Center",
-      "summary": "Database Center gives one view of the database fleet across projects and flags issues like missing backups.",
-      "tags": [
-        "alloydb",
-        "cloud-sql",
-        "database-center",
-        "fleet-management"
-      ],
-      "source": "curated",
-      "question": "A company runs about 200 Cloud SQL, AlloyDB and Spanner instances across 60 projects. The security lead wants one place to see which instances have no automated backups, have a public IP, or are not highly available. What should you use?",
-      "options": {
-        "A": "Query Insights on each instance.",
-        "B": "A Cloud Monitoring dashboard per project.",
-        "C": "The billing export, grouped by SKU.",
-        "D": "Database Center."
-      },
-      "correct_answer": "D",
-      "explanation": {
-        "summary": "Database Center is the fleet view for Google Cloud databases: an inventory across projects and engines, with health issues such as missing backups, public IP exposure or lack of high availability, and recommendations to fix them.",
-        "option_breakdown": {
-          "A": "Query Insights diagnoses query performance on a single instance.",
-          "B": "Per-project dashboards show metrics, not configuration risks across the fleet.",
-          "C": "Billing rows do not describe backup or network configuration.",
-          "D": "Correct. One inventory with the health issues surfaced."
-        },
-        "gcloud_command": "# Console > Database Center (filter by issue: no automated backups, public IP, not HA)",
-        "doc_ref": "https://cloud.google.com/database-center/docs/overview"
       }
     },
     {
@@ -2954,38 +2697,6 @@
       }
     },
     {
-      "id": "ace-s3-029",
-      "title": "Only the errors from one Cloud Run service",
-      "objective": "3.4",
-      "subtopic": "Viewing and Filtering Logs",
-      "summary": "The logging query language filters on resource type, labels and severity together.",
-      "tags": [
-        "cloud-run",
-        "logging-query-language",
-        "logs-explorer"
-      ],
-      "source": "curated",
-      "question": "In the Logs Explorer you want to see only entries of severity ERROR or worse from the Cloud Run service named `api`. Which query should you use?",
-      "options": {
-        "A": "resource.type=\"cloud_run_revision\" AND textPayload:\"api\" AND severity=ERROR",
-        "B": "resource.type=\"cloud_run_revision\" AND logName=\"api\" AND severity>=ERROR",
-        "C": "`resource.type=\"cloud_run_revision\" AND resource.labels.service_name=\"api\" AND severity>=ERROR`",
-        "D": "resource.type=\"gce_instance\" AND resource.labels.service_name=\"api\" AND severity>=ERROR"
-      },
-      "correct_answer": "C",
-      "explanation": {
-        "summary": "Cloud Run entries carry resource.type cloud_run_revision with the service name as a resource label. Severity is ordered, so >= ERROR includes CRITICAL, ALERT and EMERGENCY.",
-        "option_breakdown": {
-          "A": "Text matching on \"api\" catches any message containing the word, and = ERROR misses CRITICAL and worse.",
-          "B": "A log name identifies a log, not the Cloud Run service.",
-          "C": "Correct. Resource, service and severity in the query language.",
-          "D": "Cloud Run entries use the cloud_run_revision resource type, not gce_instance."
-        },
-        "gcloud_command": "gcloud logging read 'resource.type=\"cloud_run_revision\" AND resource.labels.service_name=\"api\" AND severity>=ERROR' --limit=50",
-        "doc_ref": "https://cloud.google.com/logging/docs/view/logging-query-language"
-      }
-    },
-    {
       "id": "ace-s3-030",
       "title": "Who made a call, and from which address",
       "objective": "3.4",
@@ -3046,7 +2757,7 @@
           "D": "Trace shows that the database call is slow, not which index would help."
         },
         "gcloud_command": "# Console > Cloud SQL > instance > Query insights > Index advisor",
-        "doc_ref": "https://cloud.google.com/sql/docs/postgres/using-index-advisor"
+        "doc_ref": "https://docs.cloud.google.com/sql/docs/postgres/use-index-advisor"
       }
     },
     {
@@ -3078,7 +2789,7 @@
           "D": "Spend has no relationship to incidents."
         },
         "gcloud_command": "# Console > Service Health > Configure alerts (product: Cloud SQL, location: europe-west1)",
-        "doc_ref": "https://cloud.google.com/service-health/docs/alerts"
+        "doc_ref": "https://docs.cloud.google.com/service-health/docs/overview"
       }
     },
     {
@@ -3175,38 +2886,6 @@
         },
         "gcloud_command": "sudo systemctl restart google-cloud-ops-agent   # after adding receivers: app: {type: files, include_paths: [...]}",
         "doc_ref": "https://cloud.google.com/logging/docs/agent/ops-agent/configuration"
-      }
-    },
-    {
-      "id": "ace-s3-036",
-      "title": "Scraping an application's /metrics endpoint on GKE",
-      "objective": "3.4",
-      "subtopic": "Managed Prometheus",
-      "summary": "With managed collection, a PodMonitoring resource tells Managed Service for Prometheus which Pods to scrape.",
-      "tags": [
-        "gke",
-        "managed-prometheus",
-        "podmonitoring"
-      ],
-      "source": "curated",
-      "question": "Managed collection for Google Cloud Managed Service for Prometheus is enabled on a GKE cluster. A new Deployment exposes Prometheus metrics on port 9090 at /metrics, but none of its metrics appear in Cloud Monitoring. What should you add?",
-      "options": {
-        "A": "A PodMonitoring resource for the Pods' metrics port.",
-        "B": "The Ops Agent, installed on every node through a DaemonSet.",
-        "C": "A self-managed Prometheus server with remote write to BigQuery.",
-        "D": "A log-based metric parsing the /metrics output from container logs."
-      },
-      "correct_answer": "A",
-      "explanation": {
-        "summary": "Managed collection runs the collectors for you, but scraping is opt-in per workload: a PodMonitoring (or ClusterPodMonitoring) resource names the label selector, port and path to scrape.",
-        "option_breakdown": {
-          "A": "Correct. It declares what the managed collectors should scrape.",
-          "B": "The Ops Agent is for Compute Engine VMs; GKE uses managed collection for Prometheus metrics.",
-          "C": "Running your own server is what the managed service replaces, and BigQuery is not a Prometheus backend.",
-          "D": "Metrics are scraped over HTTP, not parsed from logs."
-        },
-        "gcloud_command": "kubectl apply -f podmonitoring.yaml   # kind: PodMonitoring, selector app=orders, endpoints: port 9090, path /metrics",
-        "doc_ref": "https://cloud.google.com/stackdriver/docs/managed-prometheus/setup-managed"
       }
     },
     {
@@ -3530,38 +3209,6 @@
       }
     },
     {
-      "id": "ace-s3-047",
-      "title": "Stopping a streaming pipeline without losing data",
-      "objective": "3.2",
-      "subtopic": "Job Status",
-      "summary": "Draining a Dataflow job finishes in-flight data before stopping; cancelling drops it.",
-      "tags": [
-        "dataflow",
-        "drain",
-        "streaming"
-      ],
-      "source": "curated",
-      "question": "A streaming Dataflow job reads from Pub/Sub and must be stopped so an incompatible new version can replace it. No message already read by the job may be lost. What should you do to the running job?",
-      "options": {
-        "A": "Cancel it, then start the new job.",
-        "B": "Update it in place with the new pipeline code.",
-        "C": "Drain it, then start the new job on the same subscription.",
-        "D": "Delete the Pub/Sub subscription to stop input."
-      },
-      "correct_answer": "C",
-      "explanation": {
-        "summary": "Drain stops reading new input and finishes processing what is in flight before the job stops; unread messages stay in the subscription for the new job.",
-        "option_breakdown": {
-          "A": "Cancel stops immediately and loses in-flight data.",
-          "B": "An in-place update needs a compatible pipeline graph, which this one is not.",
-          "C": "Correct. Drain stops reading new input and finishes processing what is in flight before the job stops; unread messages stay in the subscription for the new job.",
-          "D": "Deleting the subscription discards its backlog of unacknowledged messages."
-        },
-        "gcloud_command": "gcloud dataflow jobs drain JOB_ID --region=REGION",
-        "doc_ref": "https://cloud.google.com/dataflow/docs/guides/stopping-a-pipeline"
-      }
-    },
-    {
       "id": "ace-s3-048",
       "title": "Which databases would not survive a zone failure",
       "objective": "3.2",
@@ -3722,38 +3369,6 @@
       }
     },
     {
-      "id": "ace-s3-053",
-      "title": "Cloud VMs resolving on-premises names",
-      "objective": "3.3",
-      "subtopic": "Cloud DNS and Cloud NAT",
-      "summary": "A Cloud DNS forwarding zone sends queries for an on-premises domain to on-premises resolvers.",
-      "tags": [
-        "cloud-dns",
-        "forwarding",
-        "hybrid"
-      ],
-      "source": "curated",
-      "question": "VMs in a VPC connected to the data centre over HA VPN must resolve names in corp.internal, which are served only by on-premises DNS servers at 192.168.10.53 and 192.168.10.54. What should you configure?",
-      "options": {
-        "A": "A private Cloud DNS forwarding zone for corp.internal.",
-        "B": "A public Cloud DNS zone for corp.internal with copies of the records.",
-        "C": "An inbound DNS server policy on the VPC.",
-        "D": "Hard-coded /etc/hosts entries on each VM."
-      },
-      "correct_answer": "A",
-      "explanation": {
-        "summary": "A forwarding zone makes the VPC's resolver send queries for corp.internal to the on-premises servers over the hybrid connection.",
-        "option_breakdown": {
-          "A": "Correct. A forwarding zone makes the VPC's resolver send queries for corp.internal to the on-premises servers over the hybrid connection.",
-          "B": "A public zone would publish internal names on the internet and go stale.",
-          "C": "An inbound policy is for the opposite direction: on-premises clients resolving Cloud names.",
-          "D": "Hosts files are per VM and drift immediately."
-        },
-        "gcloud_command": "gcloud dns managed-zones create corp-fwd --dns-name=corp.internal. --visibility=private \\\n  --networks=vpc-prod --forwarding-targets=192.168.10.53,192.168.10.54 --description=\"to on-prem\"",
-        "doc_ref": "https://cloud.google.com/dns/docs/zones/forwarding-zones"
-      }
-    },
-    {
       "id": "ace-s3-054",
       "title": "On-premises servers resolving a Cloud private zone",
       "objective": "3.3",
@@ -3783,38 +3398,6 @@
         },
         "gcloud_command": "gcloud dns policies create onprem-inbound --networks=vpc-prod --enable-inbound-forwarding \\\n  --description=\"on-prem resolves private zones\"",
         "doc_ref": "https://cloud.google.com/dns/docs/server-policies-overview"
-      }
-    },
-    {
-      "id": "ace-s3-055",
-      "title": "A fixed egress address for a partner's allow-list",
-      "objective": "3.3",
-      "subtopic": "Cloud DNS and Cloud NAT",
-      "summary": "Cloud NAT with manually assigned static IP addresses gives private VMs a fixed egress address.",
-      "tags": [
-        "cloud-nat",
-        "egress",
-        "static-ip"
-      ],
-      "source": "curated",
-      "question": "Private VMs with no external IPs call a partner's API, and the partner will only accept traffic from two fixed addresses it can allow-list. The VMs are recreated frequently by their instance group. What should you configure?",
-      "options": {
-        "A": "Give each VM a static external IP address.",
-        "B": "Cloud NAT with two static external IPs, assigned manually.",
-        "C": "Cloud NAT with automatic IP allocation.",
-        "D": "Private Google Access on the subnet."
-      },
-      "correct_answer": "B",
-      "explanation": {
-        "summary": "Manual NAT IP assignment makes all of the subnet's egress leave from reserved addresses that never change, however often the VMs are recreated.",
-        "option_breakdown": {
-          "A": "Static IPs per VM break as the group recreates VMs, and expose the VMs to inbound traffic.",
-          "B": "Correct. Manual NAT IP assignment makes all of the subnet's egress leave from reserved addresses that never change, however often the VMs are recreated.",
-          "C": "Automatic allocation can change or add addresses, which breaks an allow-list.",
-          "D": "Private Google Access reaches Google APIs, not a partner's API."
-        },
-        "gcloud_command": "gcloud compute addresses create nat-1 nat-2 --region=REGION\ngcloud compute routers nats create nat-cfg --router=nat-router --region=REGION \\\n  --nat-all-subnet-ip-ranges --nat-external-ip-pool=nat-1,nat-2",
-        "doc_ref": "https://cloud.google.com/nat/docs/overview"
       }
     },
     {
@@ -3943,38 +3526,6 @@
         },
         "gcloud_command": "gcloud logging metrics create req-latency --config-from-file=latency-metric.yaml\n# valueExtractor: EXTRACT(jsonPayload.latency_ms), metricKind DELTA, valueType DISTRIBUTION",
         "doc_ref": "https://cloud.google.com/logging/docs/logs-based-metrics/distribution-metrics"
-      }
-    },
-    {
-      "id": "ace-s3-060",
-      "title": "Prometheus metrics from an application on a VM",
-      "objective": "3.4",
-      "subtopic": "Custom Metrics",
-      "summary": "The Ops Agent's Prometheus receiver scrapes an application's /metrics endpoint on a VM.",
-      "tags": [
-        "custom-metrics",
-        "ops-agent",
-        "prometheus"
-      ],
-      "source": "curated",
-      "question": "An application on Compute Engine VMs already exposes Prometheus metrics at localhost:9100/metrics. The team wants those metrics in Cloud Monitoring without running a Prometheus server. The Ops Agent is installed. What should it do?",
-      "options": {
-        "A": "A prometheus receiver in the Ops Agent's configuration.",
-        "B": "Rewrite the metrics as log lines and create log-based metrics.",
-        "C": "Deploy a Prometheus server on another VM and point Grafana at it.",
-        "D": "Enable Managed Service for Prometheus managed collection on the project."
-      },
-      "correct_answer": "A",
-      "explanation": {
-        "summary": "The Ops Agent can scrape Prometheus endpoints on the VM and send the metrics to Cloud Monitoring, where they are queryable with PromQL.",
-        "option_breakdown": {
-          "A": "Correct. The Ops Agent can scrape Prometheus endpoints on the VM and send the metrics to Cloud Monitoring, where they are queryable with PromQL.",
-          "B": "Logging metrics as text and parsing them back is a lossy detour.",
-          "C": "Running Prometheus yourself is the server the team wants to avoid.",
-          "D": "Managed collection runs on GKE clusters; on VMs, the Ops Agent is the collector."
-        },
-        "gcloud_command": "# /etc/google-cloud-ops-agent/config.yaml\nmetrics:\n  receivers:\n    app:\n      type: prometheus\n      config:\n        scrape_configs:\n        - job_name: app\n          static_configs: [{targets: ['localhost:9100']}]\n  service:\n    pipelines:\n      app: {receivers: [app]}",
-        "doc_ref": "https://cloud.google.com/stackdriver/docs/solutions/agents/ops-agent/prometheus"
       }
     },
     {
@@ -4294,7 +3845,7 @@
           "D": "Correct. The idle-resource recommenders include unattached persistent disks, with an estimated monthly saving for each."
         },
         "gcloud_command": "gcloud recommender recommendations list --project=P --location=ZONE \\\n  --recommender=google.compute.disk.IdleResourceRecommender",
-        "doc_ref": "https://cloud.google.com/compute/docs/disks/viewing-idle-disks-recommendations"
+        "doc_ref": "https://docs.cloud.google.com/recommender/docs/recommenders"
       }
     },
     {
@@ -5738,38 +5289,6 @@
       }
     },
     {
-      "id": "ace-s3-116",
-      "title": "Scaling workers on a Pub/Sub backlog",
-      "objective": "3.1",
-      "subtopic": "Pod Autoscaling",
-      "summary": "An HPA on an external metric such as a subscription's undelivered messages scales queue consumers.",
-      "tags": [
-        "external-metrics",
-        "hpa",
-        "pubsub"
-      ],
-      "source": "curated",
-      "question": "Worker Pods on GKE pull from a Pub/Sub subscription. CPU stays low even when the backlog grows to millions of messages, so a CPU-based HPA never scales. What should the HPA use instead?",
-      "options": {
-        "A": "Average memory utilisation of the worker Pods.",
-        "B": "A higher maximum replica count on the CPU-based HPA.",
-        "C": "The node pool's cluster autoscaler.",
-        "D": "An external metric: the subscription's undelivered messages."
-      },
-      "correct_answer": "D",
-      "explanation": {
-        "summary": "Queue depth measures the work waiting. An HPA on that external metric adds workers as the backlog grows and removes them as it drains.",
-        "option_breakdown": {
-          "A": "Memory, like CPU, does not reflect the backlog.",
-          "B": "The maximum does not matter if the metric never triggers scaling.",
-          "C": "The cluster autoscaler adds nodes for pending Pods; it does not add Pods.",
-          "D": "Correct. Queue depth measures the work waiting. An HPA on that external metric adds workers as the backlog grows and removes them as it drains."
-        },
-        "gcloud_command": "metrics:\n- type: External\n  external:\n    metric:\n      name: pubsub.googleapis.com|subscription|num_undelivered_messages\n      selector: { matchLabels: { resource.labels.subscription_id: orders-sub } }\n    target: { type: AverageValue, averageValue: \"100\" }",
-        "doc_ref": "https://docs.cloud.google.com/kubernetes-engine/docs/tutorials/autoscaling-metrics"
-      }
-    },
-    {
       "id": "ace-s3-117",
       "title": "Docker Hub rate limits breaking deployments",
       "objective": "3.1",
@@ -5845,7 +5364,7 @@
         "kubectl"
       ],
       "source": "curated",
-      "question": "After a node pool problem, you need a list of every Pod in a GKE cluster that is still Pending, in any namespace. What should you list?",
+      "question": "A node pool outage is over, but some workloads may not have recovered. You want one listing, across every namespace of the GKE cluster, of the Pods whose phase is still Pending. What should you list?",
       "options": {
         "A": "The cluster's nodes, with their details.",
         "B": "Pods in every namespace, filtered on phase Pending.",
@@ -5895,38 +5414,6 @@
         },
         "gcloud_command": "gcloud storage objects update gs://records/** \\\n  --encryption-key=projects/P/locations/eu/keyRings/data/cryptoKeys/bucket-key",
         "doc_ref": "https://docs.cloud.google.com/kms/docs/re-encrypt-data"
-      }
-    },
-    {
-      "id": "ace-s3-121",
-      "title": "Undoing a key destruction request",
-      "objective": "3.2",
-      "subtopic": "CMEK and Key Management",
-      "summary": "Destroyed key versions stay in 'scheduled for destruction' (30 days by default) and can be restored meanwhile.",
-      "tags": [
-        "cmek",
-        "key-destruction",
-        "recovery"
-      ],
-      "source": "curated",
-      "question": "An administrator scheduled the only key version protecting a production database's CMEK key for destruction yesterday, by mistake. What should you do?",
-      "options": {
-        "A": "Restore the key version while it is scheduled for destruction.",
-        "B": "Nothing can be done; destruction is immediate.",
-        "C": "Create a new key with the same name and re-encrypt the database from it.",
-        "D": "Ask Google Cloud support to recover the destroyed key material after the period ends."
-      },
-      "correct_answer": "A",
-      "explanation": {
-        "summary": "A version scheduled for destruction is kept for the destruction delay (30 days by default). During that time it can be restored; afterwards its material is gone for good.",
-        "option_breakdown": {
-          "A": "Correct. A version scheduled for destruction is kept for the destruction delay (30 days by default). During that time it can be restored; afterwards its material is gone for good.",
-          "B": "Destruction is delayed precisely so mistakes can be undone.",
-          "C": "A new key has different material and cannot decrypt the data.",
-          "D": "After destruction, not even Google can recover the key material."
-        },
-        "gcloud_command": "gcloud kms keys versions restore 1 --key=db-key --keyring=data --location=europe-west1\ngcloud kms keys versions enable 1 --key=db-key --keyring=data --location=europe-west1",
-        "doc_ref": "https://docs.cloud.google.com/kms/docs/destroy-restore"
       }
     },
     {
@@ -6023,38 +5510,6 @@
         },
         "gcloud_command": "SELECT o.*, s.segment FROM EXTERNAL_QUERY('P.us.orders-conn',\n  'SELECT id, customer_id, total FROM orders WHERE created_at::date = current_date') o\nJOIN crm.segments s USING (customer_id);",
         "doc_ref": "https://docs.cloud.google.com/bigquery/docs/cloud-sql-federated-queries"
-      }
-    },
-    {
-      "id": "ace-s3-125",
-      "title": "Paying for compressed bytes in BigQuery storage",
-      "objective": "3.2",
-      "subtopic": "Storage Cost Estimation",
-      "summary": "Switching a dataset to the physical storage billing model bills compressed bytes, often far cheaper.",
-      "tags": [
-        "bigquery",
-        "cost",
-        "storage-billing"
-      ],
-      "source": "curated",
-      "question": "A BigQuery dataset holds 400 TB of logical data that compresses about 8:1, and it is rarely updated. Storage is the largest line on the bill. What change is most likely to cut storage cost?",
-      "options": {
-        "A": "Move the dataset to a multi-region location.",
-        "B": "Switch the dataset to physical-bytes storage billing.",
-        "C": "Turn on table snapshots.",
-        "D": "Set a custom daily query quota."
-      },
-      "correct_answer": "B",
-      "explanation": {
-        "summary": "Under the physical billing model you pay for compressed bytes (at a higher unit price), which is usually much cheaper for data that compresses well.",
-        "option_breakdown": {
-          "A": "Location does not reduce the bytes billed.",
-          "B": "Correct. Under the physical billing model you pay for compressed bytes (at a higher unit price), which is usually much cheaper for data that compresses well.",
-          "C": "Snapshots add storage.",
-          "D": "Query quotas limit query spend, not storage."
-        },
-        "gcloud_command": "ALTER SCHEMA logs SET OPTIONS(storage_billing_model = 'PHYSICAL');",
-        "doc_ref": "https://docs.cloud.google.com/bigquery/docs/datasets-intro#dataset_storage_billing_models"
       }
     },
     {
@@ -6310,7 +5765,7 @@
           "D": "Instance details do not include firewall rules."
         },
         "gcloud_command": "gcloud compute instances network-interfaces get-effective-firewalls app-1 --zone=us-central1-a",
-        "doc_ref": "https://docs.cloud.google.com/firewall/docs/firewall-policies-troubleshooting"
+        "doc_ref": "https://docs.cloud.google.com/firewall/docs/network-firewall-policies"
       }
     },
     {
@@ -6374,7 +5829,7 @@
           "D": "Retention has nothing to do with understanding the entry."
         },
         "gcloud_command": "# Logs Explorer > expand the entry > Explain this log entry",
-        "doc_ref": "https://docs.cloud.google.com/logging/docs/view/explain-log-entry"
+        "doc_ref": "https://docs.cloud.google.com/logging/docs/view/logs-explorer-interface"
       }
     },
     {
@@ -6502,7 +5957,7 @@
           "D": "Tracing shows latency of real requests; it does not test flows."
         },
         "gcloud_command": "# Monitoring > Synthetic monitoring > Create synthetic monitor > Mocha/Puppeteer template, every 5 min",
-        "doc_ref": "https://docs.cloud.google.com/monitoring/docs/synthetic-monitoring"
+        "doc_ref": "https://docs.cloud.google.com/monitoring/uptime-checks/introduction"
       }
     },
     {
@@ -6598,7 +6053,7 @@
           "D": "Log parsing loses the structured metrics and traces."
         },
         "gcloud_command": "# collector config: receivers: otlp; exporters: googlecloud (traces), googlemanagedprometheus (metrics)",
-        "doc_ref": "https://docs.cloud.google.com/stackdriver/google-built-otel"
+        "doc_ref": "https://docs.cloud.google.com/trace/docs/otlp"
       }
     },
     {
@@ -6791,6 +6246,506 @@
         },
         "gcloud_command": "# Pricing Calculator > Cloud Storage: compare Coldline and Nearline for objects kept 30 days",
         "doc_ref": "https://cloud.google.com/storage/pricing-examples#early-delete"
+      }
+    },
+    {
+      "id": "ace-s3-149",
+      "title": "New revisions that never receive traffic",
+      "objective": "3.1",
+      "subtopic": "Cloud Run Releases",
+      "summary": "Once traffic is pinned to a named revision, new deployments get no traffic until it is sent to the latest revision again.",
+      "tags": [
+        "cloud-run",
+        "traffic"
+      ],
+      "source": "curated",
+      "question": "Months ago, an engineer sent 100% of a Cloud Run service's traffic to revision api-00041 during an incident. Since then, every deployment succeeds, but users still reach api-00041 and the new revisions serve nothing. What should you do?",
+      "options": {
+        "A": "Send traffic to the latest revision, so future deployments receive it automatically.",
+        "B": "Delete revision api-00041 so that Cloud Run is forced to move traffic.",
+        "C": "Raise the service's minimum instances so the new revisions start.",
+        "D": "Redeploy the same image with a new tag on every release."
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "Pinning traffic to a specific revision stops new revisions from receiving it. Routing traffic to the latest revision again makes each new deployment serve traffic.",
+        "option_breakdown": {
+          "A": "Correct. update-traffic --to-latest sends traffic to the newest ready revision, and future deployments follow automatically.",
+          "B": "A revision that is serving traffic can't be deleted, and deleting revisions isn't how traffic is routed.",
+          "C": "Minimum instances keep instances warm; they don't route traffic to a revision.",
+          "D": "A tag gives a revision its own URL; it sends it no production traffic."
+        },
+        "gcloud_command": "gcloud run services update-traffic api --region=REGION --to-latest",
+        "doc_ref": "https://docs.cloud.google.com/run/docs/rollouts-rollbacks-traffic-migration"
+      }
+    },
+    {
+      "id": "ace-s3-150",
+      "title": "Changing an environment variable on Cloud Run",
+      "objective": "3.1",
+      "subtopic": "Cloud Run Releases",
+      "summary": "Any configuration change to a Cloud Run service, such as an environment variable, creates a new revision.",
+      "tags": [
+        "cloud-run",
+        "revisions"
+      ],
+      "source": "curated",
+      "question": "You change the LOG_LEVEL environment variable of a running Cloud Run service from info to debug, without changing its container image. Traffic is set to follow the latest revision. What happens?",
+      "options": {
+        "A": "Running instances pick up the new value within a minute, with no new revision.",
+        "B": "Nothing happens until the image is rebuilt and pushed again.",
+        "C": "The change is saved and applies the next time the service scales from zero.",
+        "D": "A new revision is created with the new value, and it receives the traffic."
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "Revisions are immutable. Changing configuration such as an environment variable deploys a new revision, and with traffic following the latest revision, it serves the requests.",
+        "option_breakdown": {
+          "A": "Revisions are immutable, so running instances keep the configuration they started with.",
+          "B": "Configuration changes don't need a new image; the existing image is reused.",
+          "C": "There is no deferred configuration; the change takes effect as a new revision immediately.",
+          "D": "Correct. The service gets a new revision with LOG_LEVEL=debug, and traffic moves to it."
+        },
+        "gcloud_command": "gcloud run services update api --region=REGION --update-env-vars=LOG_LEVEL=debug",
+        "doc_ref": "https://docs.cloud.google.com/run/docs/configuring/services/environment-variables"
+      }
+    },
+    {
+      "id": "ace-s3-151",
+      "title": "Clearing out abandoned multipart uploads",
+      "objective": "3.2",
+      "subtopic": "Object Lifecycle",
+      "summary": "The AbortIncompleteMultipartUpload lifecycle action removes multipart uploads left unfinished for a set number of days.",
+      "tags": [
+        "cloud-storage",
+        "lifecycle"
+      ],
+      "source": "curated",
+      "question": "A backup tool uploads large files to a bucket through the XML API's multipart uploads. When it crashes, it leaves unfinished uploads whose parts are still stored and billed. You want those cleaned up automatically after seven days. What should you configure?",
+      "options": {
+        "A": "A Delete rule for objects older than seven days.",
+        "B": "An AbortIncompleteMultipartUpload rule with an age of seven days.",
+        "C": "A soft delete policy with a seven-day retention.",
+        "D": "Object Versioning, with a rule for noncurrent versions."
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "Parts of an unfinished multipart upload aren't objects yet, so object rules don't touch them. The AbortIncompleteMultipartUpload lifecycle action removes uploads left incomplete for the given age.",
+        "option_breakdown": {
+          "A": "A Delete rule acts on objects, and it would also delete the completed backups.",
+          "B": "Correct. The action aborts multipart uploads that stay incomplete for seven days, which deletes their parts.",
+          "C": "Soft delete keeps deleted objects for recovery; it doesn't remove unfinished uploads.",
+          "D": "Versioning keeps older generations of objects; unfinished uploads aren't versions."
+        },
+        "gcloud_command": "gcloud storage buckets update gs://backups --lifecycle-file=abort-mpu.json\n# {\"rule\":[{\"action\":{\"type\":\"AbortIncompleteMultipartUpload\"},\"condition\":{\"age\":7}}]}",
+        "doc_ref": "https://docs.cloud.google.com/storage/docs/lifecycle"
+      }
+    },
+    {
+      "id": "ace-s3-152",
+      "title": "A lifecycle rule that has not acted yet",
+      "objective": "3.2",
+      "subtopic": "Object Lifecycle",
+      "summary": "Lifecycle actions are asynchronous; after you add or change a rule, it can take up to 24 hours to take effect.",
+      "tags": [
+        "cloud-storage",
+        "lifecycle"
+      ],
+      "source": "curated",
+      "question": "An hour ago you added a lifecycle rule that deletes objects older than 30 days. Objects that are 200 days old are still listed in the bucket. The rule's JSON is correct. What is the most likely explanation?",
+      "options": {
+        "A": "Lifecycle rules apply only to objects created after the rule was added.",
+        "B": "The bucket must be in the Nearline class for Delete actions to run.",
+        "C": "Objects must carry a label naming the rule before it acts on them.",
+        "D": "Lifecycle changes can take up to 24 hours to take effect, and actions run asynchronously."
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "Cloud Storage evaluates lifecycle rules asynchronously. A new or changed configuration can take up to 24 hours to take effect, and objects are then acted on in the background.",
+        "option_breakdown": {
+          "A": "Rules apply to existing objects that meet the condition, not only new ones.",
+          "B": "Delete actions work in every storage class.",
+          "C": "Rules match on conditions such as age; no label is needed.",
+          "D": "Correct. The rule is fine; Cloud Storage hasn't applied it yet."
+        },
+        "gcloud_command": "gcloud storage buckets describe gs://BUCKET --format='default(lifecycle_config)'",
+        "doc_ref": "https://docs.cloud.google.com/storage/docs/lifecycle"
+      }
+    },
+    {
+      "id": "ace-s3-153",
+      "title": "Pausing a VM with its memory kept",
+      "objective": "3.1",
+      "subtopic": "Instance Inventory and Lifecycle",
+      "summary": "Suspending a VM saves its memory to storage and lets it resume where it left off; stopping discards memory.",
+      "tags": [
+        "compute-engine",
+        "lifecycle"
+      ],
+      "source": "curated",
+      "question": "A developer's VM runs a long interactive analysis that takes an hour to load into memory. Each evening they want to pause it so vCPUs aren't billed overnight, then continue next morning without reloading. What should they do each evening?",
+      "options": {
+        "A": "Stop the VM and start it again in the morning.",
+        "B": "Delete the VM and recreate it from a machine image.",
+        "C": "Suspend the VM and resume it in the morning.",
+        "D": "Resize the VM to an e2-micro machine type overnight."
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "Suspend preserves the guest's memory and device state, so the VM resumes where it left off. While suspended you pay for the preserved memory and the disks, not for vCPUs.",
+        "option_breakdown": {
+          "A": "Stopping shuts the guest down, so memory is lost and the analysis must reload.",
+          "B": "A machine image captures disks and configuration, not running memory.",
+          "C": "Correct. Suspend saves memory to storage, and resume restores the running state.",
+          "D": "Changing the machine type needs a stop, which loses memory too."
+        },
+        "gcloud_command": "gcloud compute instances suspend analysis-1 --zone=ZONE\ngcloud compute instances resume analysis-1 --zone=ZONE",
+        "doc_ref": "https://docs.cloud.google.com/compute/docs/instances/suspend-resume-instance"
+      }
+    },
+    {
+      "id": "ace-s3-154",
+      "title": "Giving a running VM more vCPUs",
+      "objective": "3.1",
+      "subtopic": "Instance Inventory and Lifecycle",
+      "summary": "A VM's machine type can be changed only while it is stopped.",
+      "tags": [
+        "compute-engine",
+        "machine-types"
+      ],
+      "source": "curated",
+      "question": "A standalone n2-standard-4 VM needs to become n2-standard-8, keeping its boot disk, IP addresses and metadata. What is the procedure?",
+      "options": {
+        "A": "Stop the VM, change its machine type, then start it.",
+        "B": "Change the machine type while it runs; vCPUs are hot-added.",
+        "C": "Create a snapshot and build a new VM of the larger type from it.",
+        "D": "Attach a second n2-standard-4 to the VM as an accelerator."
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "Compute Engine changes a VM's machine type only when the VM is stopped. The disks, addresses and metadata stay with the instance.",
+        "option_breakdown": {
+          "A": "Correct. Stop, set the new machine type, and start; the instance keeps its disks and configuration.",
+          "B": "vCPUs and memory can't be hot-added; the VM must be stopped.",
+          "C": "A new VM works, but it is a different instance with new settings to recreate, which is more work than needed.",
+          "D": "Machine types aren't accelerators and can't be attached to a VM."
+        },
+        "gcloud_command": "gcloud compute instances stop app-1 --zone=ZONE\ngcloud compute instances set-machine-type app-1 --zone=ZONE --machine-type=n2-standard-8\ngcloud compute instances start app-1 --zone=ZONE",
+        "doc_ref": "https://docs.cloud.google.com/compute/docs/instances/changing-machine-type-of-stopped-instance"
+      }
+    },
+    {
+      "id": "ace-s3-155",
+      "title": "A BigQuery job that cannot be found",
+      "objective": "3.2",
+      "subtopic": "Job Status",
+      "summary": "BigQuery jobs are tied to a location; looking one up needs the job's location as well as its ID.",
+      "tags": [
+        "bigquery",
+        "jobs"
+      ],
+      "source": "curated",
+      "question": "A load job ran in the europe-west3 location. When you look it up by its job ID from a session whose default location is US, BigQuery reports that the job was not found, although you have permission to see it. What should you do?",
+      "options": {
+        "A": "Wait an hour, until job metadata is replicated globally.",
+        "B": "Grant yourself BigQuery Admin on the project.",
+        "C": "Look it up in Cloud Logging, since BigQuery deletes job records after an hour.",
+        "D": "Look the job up again, giving its location, europe-west3."
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "BigQuery jobs exist in a location. A lookup without the right location searches the default one and reports the job as not found.",
+        "option_breakdown": {
+          "A": "Job metadata isn't replicated across locations; waiting changes nothing.",
+          "B": "The problem is the location, not your permissions.",
+          "C": "Job history is kept far longer than an hour; the job is in another location.",
+          "D": "Correct. bq show -j --location=europe-west3 JOB_ID finds the job and its status."
+        },
+        "gcloud_command": "bq show -j --location=europe-west3 JOB_ID",
+        "doc_ref": "https://docs.cloud.google.com/bigquery/docs/managing-jobs"
+      }
+    },
+    {
+      "id": "ace-s3-156",
+      "title": "A CI gate on bytes scanned",
+      "objective": "3.2",
+      "subtopic": "Storage Cost Estimation",
+      "summary": "A BigQuery dry run reports the bytes a query would process without running it, which a CI check can compare with a limit.",
+      "tags": [
+        "bigquery",
+        "cost"
+      ],
+      "source": "curated",
+      "question": "A team keeps its dashboard SQL in Git. A CI check must reject any pull request whose changed queries would scan more than 1 TB, without executing them. What should the check do for each query?",
+      "options": {
+        "A": "Submit it as a dry run and compare the bytes reported with 1 TB.",
+        "B": "Run it with LIMIT 10 and compare the bytes billed.",
+        "C": "Run it fully in a sandbox project and read the job's statistics.",
+        "D": "Compare the table's row count with a fixed row budget."
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "On-demand queries are billed by bytes processed. A dry run validates the query and returns the bytes it would process, at no charge, which gives the cost.",
+        "option_breakdown": {
+          "A": "Correct. A dry run validates the query and returns the bytes it would process, without running it or incurring charges.",
+          "B": "LIMIT doesn't reduce the bytes scanned for most queries, and the query still runs.",
+          "C": "Running every query costs what the check is meant to prevent.",
+          "D": "Row counts don't say which columns a query reads or how many bytes that is."
+        },
+        "gcloud_command": "bq query --use_legacy_sql=false --dry_run 'SELECT user_id FROM `p.ds.events` WHERE day = \"2026-10-01\"'",
+        "doc_ref": "https://docs.cloud.google.com/bigquery/docs/estimate-costs"
+      }
+    },
+    {
+      "id": "ace-s3-157",
+      "title": "Tables nobody modifies any more",
+      "objective": "3.2",
+      "subtopic": "Storage Cost Estimation",
+      "summary": "BigQuery bills tables or partitions unmodified for 90 consecutive days at the lower long-term storage price, automatically.",
+      "tags": [
+        "bigquery",
+        "cost"
+      ],
+      "source": "curated",
+      "question": "Most tables in a BigQuery dataset are loaded once and never modified, though they are queried every week. Finance wants the storage estimate for next year to reflect that. What should the estimate assume?",
+      "options": {
+        "A": "Queries reset the tables to active storage, so the full active price applies.",
+        "B": "The tables must be exported to Archive Storage to get any discount.",
+        "C": "After 90 days without modification, the long-term storage price applies automatically.",
+        "D": "Storage prices drop only after the dataset is moved to a multi-region."
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "A table or partition not modified for 90 consecutive days is billed at the long-term storage price, roughly half the active price. Reading it doesn't change that.",
+        "option_breakdown": {
+          "A": "Querying doesn't count as modifying a table, so long-term pricing still applies.",
+          "B": "Long-term pricing applies inside BigQuery, with no export and no loss of performance.",
+          "C": "Correct. Long-term pricing applies automatically to data unmodified for 90 days, even while it is queried.",
+          "D": "Location doesn't make data long-term; the 90 days without modification do."
+        },
+        "gcloud_command": "# Console > BigQuery > dataset > table > Details: Long-term storage bytes",
+        "doc_ref": "https://docs.cloud.google.com/bigquery/pricing#storage"
+      }
+    },
+    {
+      "id": "ace-s3-158",
+      "title": "One switch for object-level permissions",
+      "objective": "3.2",
+      "subtopic": "Securing Cloud Storage Objects",
+      "summary": "Uniform bucket-level access disables ACLs so that access to every object is controlled by IAM alone.",
+      "tags": [
+        "acl",
+        "cloud-storage",
+        "iam"
+      ],
+      "source": "curated",
+      "question": "An audit of a bucket finds thousands of objects with individual ACLs granting access to various users, which nobody can review. Security wants access to every object in the bucket decided by IAM alone. What should you do?",
+      "options": {
+        "A": "Enable uniform bucket-level access on the bucket.",
+        "B": "Set each object's ACL to private with a script.",
+        "C": "Enable Object Versioning so old ACLs are archived.",
+        "D": "Turn on soft delete with the longest retention."
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "With uniform bucket-level access, ACLs no longer grant access and only IAM policies apply to the bucket and its objects. It can be turned off again within 90 days.",
+        "option_breakdown": {
+          "A": "Correct. Uniform access makes IAM the only access control, so object ACLs stop mattering.",
+          "B": "A script fixes today's ACLs, but anyone with permission can add new ones tomorrow.",
+          "C": "Versioning keeps older object versions; it has no effect on who can read objects.",
+          "D": "Soft delete keeps deleted objects recoverable; it doesn't change access."
+        },
+        "gcloud_command": "gcloud storage buckets update gs://shared-docs --uniform-bucket-level-access",
+        "doc_ref": "https://docs.cloud.google.com/storage/docs/uniform-bucket-level-access"
+      }
+    },
+    {
+      "id": "ace-s3-159",
+      "title": "A one-hour download link for an outsider",
+      "objective": "3.2",
+      "subtopic": "Securing Cloud Storage Objects",
+      "summary": "A signed URL grants time-limited access to one object to anyone who has the link, with no Google account needed.",
+      "tags": [
+        "cloud-storage",
+        "signed-url"
+      ],
+      "source": "curated",
+      "question": "An auditor at an outside firm, who has no Google account, needs to fetch a single PDF from a private bucket this afternoon. The access must lapse by itself after sixty minutes and reveal nothing else. What should you send them?",
+      "options": {
+        "A": "An IAM grant of Storage Object Viewer to allUsers on the object.",
+        "B": "Storage Object Viewer on the bucket for the customer's email address.",
+        "C": "A signed URL for the object, valid for one hour.",
+        "D": "A copy of the report in a new public bucket, deleted later."
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "A signed URL carries its own time-limited authorisation for one object, so anyone with the link can download it until it expires, without a Google account.",
+        "option_breakdown": {
+          "A": "Public access never expires on its own and exposes the object to everyone.",
+          "B": "IAM needs a Google identity, which the customer doesn't have, and covers the whole bucket.",
+          "C": "Correct. The URL works for one object and stops working after an hour.",
+          "D": "A public bucket exposes the copy to everyone, and it depends on someone remembering to delete it."
+        },
+        "gcloud_command": "gcloud storage sign-url gs://reports/q3.pdf --duration=1h \\\n  --impersonate-service-account=signer@PROJECT_ID.iam.gserviceaccount.com",
+        "doc_ref": "https://docs.cloud.google.com/storage/docs/access-control/signed-urls"
+      }
+    },
+    {
+      "id": "ace-s3-160",
+      "title": "Sharing a custom image with another project",
+      "objective": "3.1",
+      "subtopic": "Snapshots and Images",
+      "summary": "Granting Compute Image User on an image, or its project, lets principals elsewhere create VMs from it.",
+      "tags": [
+        "compute-engine",
+        "iam",
+        "images"
+      ],
+      "source": "curated",
+      "question": "The platform team publishes a hardened custom image in project images-prod. Developers in project app-dev must be able to create VMs from it, but not change or delete it. What should you grant the developers' group?",
+      "options": {
+        "A": "Compute Instance Admin on images-prod.",
+        "B": "Storage Object Viewer on the image's Cloud Storage bucket.",
+        "C": "Owner on images-prod, limited by an IAM condition.",
+        "D": "Compute Image User on the image in images-prod."
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "Compute Image User allows using an image to create disks and VMs, without permission to modify or delete it. Granted on the image, it shares only that image.",
+        "option_breakdown": {
+          "A": "Instance Admin lets them manage VMs in images-prod, which isn't the need, and doesn't cover using the image from app-dev.",
+          "B": "Custom images aren't stored as objects you can grant access to.",
+          "C": "Owner allows changing and deleting everything, and conditions can't be used with basic roles.",
+          "D": "Correct. It lets the group use the image from their own project, and nothing more."
+        },
+        "gcloud_command": "gcloud compute images add-iam-policy-binding hardened-base-v4 --project=images-prod \\\n  --member='group:app-devs@example.com' --role='roles/compute.imageUser'",
+        "doc_ref": "https://docs.cloud.google.com/compute/docs/images/managing-access-custom-images"
+      }
+    },
+    {
+      "id": "ace-s3-161",
+      "title": "Credentials for a new Windows VM",
+      "objective": "3.1",
+      "subtopic": "Connecting to Instances",
+      "summary": "gcloud compute reset-windows-password creates or resets a local Windows account and returns its password.",
+      "tags": [
+        "compute-engine",
+        "rdp",
+        "windows"
+      ],
+      "source": "curated",
+      "question": "You've just created a Windows Server VM from a public image and can reach it over RDP. You don't have any Windows credentials for it yet. What should you do?",
+      "options": {
+        "A": "Use your Google account's password at the Windows sign-in.",
+        "B": "Add an SSH public key to the VM's metadata and use it for RDP.",
+        "C": "Generate a Windows password for a local account with gcloud or the console.",
+        "D": "Read the Administrator password from the serial port output."
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "For Windows VMs, Compute Engine can create a local user and set a password for it (gcloud compute reset-windows-password, or Set Windows password in the console), which you then use for RDP.",
+        "option_breakdown": {
+          "A": "Windows on the VM doesn't know your Google account; RDP needs a local or domain account.",
+          "B": "RDP doesn't use SSH keys.",
+          "C": "Correct. The command creates or resets the account and returns a generated password.",
+          "D": "The serial port output doesn't show an Administrator password; generating one is the supported route."
+        },
+        "gcloud_command": "gcloud compute reset-windows-password win-1 --zone=ZONE --user=ops-admin",
+        "doc_ref": "https://docs.cloud.google.com/compute/docs/instances/windows/generating-credentials"
+      }
+    },
+    {
+      "id": "ace-s3-162",
+      "title": "A CPU-heavy service drowning in parallel requests",
+      "objective": "3.1",
+      "subtopic": "Cloud Run Autoscaling",
+      "summary": "Lowering concurrency on a CPU-bound Cloud Run service makes it add instances instead of overloading each one.",
+      "tags": [
+        "cloud-run",
+        "concurrency"
+      ],
+      "source": "curated",
+      "question": "A Cloud Run service resizes images; each request uses a whole vCPU for about a second. With the default concurrency, latency climbs badly under load, although the service is far below its maximum instances. What should you change?",
+      "options": {
+        "A": "Lower the concurrency to about one request per vCPU.",
+        "B": "Raise the concurrency so each instance takes more requests.",
+        "C": "Set a request timeout of 60 minutes.",
+        "D": "Lower the maximum number of instances."
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "Cloud Run scales out when instances reach their concurrency. A CPU-bound handler can't serve many requests at once, so lower concurrency makes Cloud Run add instances instead of queueing work on busy CPUs.",
+        "option_breakdown": {
+          "A": "Correct. With concurrency near the vCPU count, requests spread across more instances.",
+          "B": "More concurrent requests per instance make the CPU contention worse.",
+          "C": "A longer timeout lets slow requests run longer; it doesn't make them faster.",
+          "D": "Fewer instances concentrate the load further."
+        },
+        "gcloud_command": "gcloud run services update resizer --region=REGION --concurrency=1 --cpu=1",
+        "doc_ref": "https://docs.cloud.google.com/run/docs/about-concurrency"
+      }
+    },
+    {
+      "id": "ace-s3-163",
+      "title": "Querying CSV files where they already are",
+      "objective": "3.2",
+      "subtopic": "Querying Data",
+      "summary": "A BigQuery external table queries files in Cloud Storage in place, without loading them.",
+      "tags": [
+        "bigquery",
+        "cloud-storage",
+        "external-tables"
+      ],
+      "source": "curated",
+      "question": "Partners drop CSV files into a Cloud Storage bucket every hour. Analysts want to query all of them with SQL in BigQuery, always including the newest files, without building a load pipeline. What should you create?",
+      "options": {
+        "A": "A load job scheduled every hour into a native table.",
+        "B": "A Dataflow pipeline that streams the files into BigQuery.",
+        "C": "A BigQuery external table over the bucket's CSV files.",
+        "D": "A Cloud SQL instance that imports the files."
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "An external table points BigQuery at files in Cloud Storage, so queries read whatever files match its URI pattern at query time, with no loading step.",
+        "option_breakdown": {
+          "A": "Scheduled loads are a pipeline to run, and results lag by up to an hour.",
+          "B": "Dataflow is a pipeline to build and pay for.",
+          "C": "Correct. New files matching the URI wildcard are included in the next query.",
+          "D": "Cloud SQL adds a database and an import process for data BigQuery can read directly."
+        },
+        "gcloud_command": "bq mk --external_table_definition=CSV=gs://partner-drop/*.csv partner.drops",
+        "doc_ref": "https://docs.cloud.google.com/bigquery/docs/external-data-cloud-storage"
+      }
+    },
+    {
+      "id": "ace-s3-164",
+      "title": "Configuration-change records for three years",
+      "objective": "3.4",
+      "subtopic": "Audit, Flow and Firewall Logs",
+      "summary": "Admin Activity logs stay 400 days in the _Required bucket; longer retention needs a sink to a destination you control.",
+      "tags": [
+        "audit-logs",
+        "retention"
+      ],
+      "source": "curated",
+      "question": "Auditors will ask for records of who changed which resource, going back three years. Today those records exist only where Google Cloud writes them by default, which keeps them for just over a year. What should you set up?",
+      "options": {
+        "A": "Raise the retention of the bucket where they are written by default.",
+        "B": "Create a sink that routes the audit logs to a bucket with three-year retention.",
+        "C": "Enable Data Access audit logs, which keep Admin Activity entries longer.",
+        "D": "Export the logs to a spreadsheet each quarter."
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "The _Required bucket keeps Admin Activity logs for 400 days, and that can't be changed. A sink can also route them to a log bucket, or a Cloud Storage bucket, with the retention you need.",
+        "option_breakdown": {
+          "A": "Admin Activity logs land in the _Required bucket, whose 400-day retention can't be changed.",
+          "B": "Correct. The sink sends a copy to a destination whose retention you set to three years.",
+          "C": "Data Access logs are different entries, and they don't extend anything's retention.",
+          "D": "Manual exports are error-prone and lose the logs' structure."
+        },
+        "gcloud_command": "gcloud logging sinks create audit-3y logging.googleapis.com/projects/P/locations/global/buckets/audit-3y \\\n  --log-filter='logName:\"cloudaudit.googleapis.com%2Factivity\"'",
+        "doc_ref": "https://docs.cloud.google.com/logging/docs/audit"
       }
     }
   ]

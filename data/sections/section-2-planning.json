@@ -1,41 +1,9 @@
 {
   "domain": "Section 2: Planning and implementing a cloud solution",
   "version": 2,
-  "updated_at": "2026-11-07T13:24:11+00:00",
-  "count": 220,
+  "updated_at": "2026-11-07T14:36:24+00:00",
+  "count": 217,
   "questions": [
-    {
-      "id": "ace-dom2-001",
-      "title": "Legacy app needing kernel-level control",
-      "objective": "2.1",
-      "subtopic": "Compute Platform Selection",
-      "summary": "Only Compute Engine gives OS-level control; managed container platforms abstract the kernel away.",
-      "tags": [
-        "compute-engine",
-        "migration",
-        "platform-selection"
-      ],
-      "source": "curated",
-      "question": "A licensed legacy application requires a specific kernel module, a MAC-addressed licence dongle emulator, and full root access to the operating system. Which compute platform should you choose?",
-      "options": {
-        "A": "Google Kubernetes Engine",
-        "B": "Compute Engine virtual machines",
-        "C": "Cloud Run",
-        "D": "Cloud Run functions"
-      },
-      "correct_answer": "B",
-      "explanation": {
-        "summary": "Only Compute Engine gives OS-level control and persistent VM identity; every managed container platform abstracts the kernel away.",
-        "option_breakdown": {
-          "A": "Containers share the node's kernel, and GKE manages the node images, so the app gets neither its own kernel module nor root on the OS.",
-          "B": "Correct. Only Compute Engine gives OS-level control and root on your own VM; every managed container platform abstracts the kernel away.",
-          "C": "Cloud Run runs containers in a sandbox with no access to the host kernel or OS.",
-          "D": "Functions run your code in a managed runtime with no OS access at all."
-        },
-        "gcloud_command": "gcloud compute instances create legacy-app --machine-type=n2-standard-4 --zone=us-central1-a",
-        "doc_ref": "https://cloud.google.com/compute/docs/instances"
-      }
-    },
     {
       "id": "ace-dom2-002",
       "title": "Forty interdependent microservices",
@@ -870,38 +838,6 @@
       }
     },
     {
-      "id": "ace-dom2-028",
-      "title": "Central network team, many app projects",
-      "objective": "2.3",
-      "subtopic": "VPC Design",
-      "summary": "Shared VPC separates network ownership (host project) from workload ownership (service projects).",
-      "tags": [
-        "governance",
-        "shared-vpc",
-        "vpc"
-      ],
-      "source": "curated",
-      "question": "Twelve application teams each own a project, but the network team must retain exclusive control of subnets, routes and firewall rules. What should you do?",
-      "options": {
-        "A": "Set up Shared VPC: one host project, with the app projects as service projects.",
-        "B": "Connect each team's VPC to a central VPC with VPC Network Peering.",
-        "C": "Give each team its own custom-mode VPC in its own project.",
-        "D": "Grant the network team Compute Network Admin in each of the twelve projects."
-      },
-      "correct_answer": "A",
-      "explanation": {
-        "summary": "Shared VPC is designed for exactly this separation: the host project owns the network objects while service projects deploy resources into subnets they cannot modify.",
-        "option_breakdown": {
-          "A": "Correct. Shared VPC separates the roles: the host project owns subnets, routes and firewall rules, while service projects deploy into subnets they can't modify.",
-          "B": "Each team would still own, and could change, its own VPC.",
-          "C": "Each team would control its own subnets and firewall rules, the opposite of what's required.",
-          "D": "The network team gets rights, but project owners keep theirs, so control is not exclusive."
-        },
-        "gcloud_command": "gcloud compute shared-vpc enable HOST_PROJECT\ngcloud compute shared-vpc associated-projects add SERVICE_PROJECT --host-project=HOST_PROJECT",
-        "doc_ref": "https://cloud.google.com/vpc/docs/shared-vpc"
-      }
-    },
-    {
       "id": "ace-dom2-029",
       "title": "Private traffic between two organisations",
       "objective": "2.3",
@@ -1059,38 +995,6 @@
         },
         "gcloud_command": "gcloud compute firewall-rules create allow-app-to-web --network=prod-vpc \\\n  --direction=INGRESS --action=ALLOW --rules=tcp:8080 \\\n  --target-service-accounts=web@PROJECT.iam.gserviceaccount.com \\\n  --source-service-accounts=app@PROJECT.iam.gserviceaccount.com",
         "doc_ref": "https://cloud.google.com/vpc/docs/firewalls"
-      }
-    },
-    {
-      "id": "ace-dom2-034",
-      "title": "All backends unhealthy behind a new LB",
-      "objective": "2.3",
-      "subtopic": "Firewall Rules and Policies",
-      "summary": "Health check probes come from Google's dedicated ranges and must be explicitly allowed.",
-      "tags": [
-        "firewall",
-        "health-checks",
-        "load-balancing"
-      ],
-      "source": "curated",
-      "question": "Backends behind a newly created load balancer are all marked unhealthy, even though the application responds correctly when tested from another VM inside the VPC. What should you configure?",
-      "options": {
-        "A": "Assign external IP addresses to the backend VMs.",
-        "B": "Allow ingress from 35.235.240.0/20, the IAP TCP forwarding range.",
-        "C": "Allow ingress from Google's health check ranges, 35.191.0.0/16 and 130.211.0.0/22.",
-        "D": "Allow egress from the backends to 0.0.0.0/0."
-      },
-      "correct_answer": "C",
-      "explanation": {
-        "summary": "Health check probes originate from Google's dedicated ranges; if those are not explicitly allowed to reach the backends, every instance fails its check regardless of application health.",
-        "option_breakdown": {
-          "A": "The load balancer reaches backends on their internal addresses; external IPs aren't needed.",
-          "B": "That range carries IAP TCP forwarding, such as SSH, not health check probes.",
-          "C": "Correct. Health check probes come from Google's dedicated ranges; unless an ingress rule allows them, every backend fails its check whatever the application's state.",
-          "D": "Egress is allowed by default, and probes are inbound connections."
-        },
-        "gcloud_command": "gcloud compute firewall-rules create allow-hc --network=prod-vpc \\\n  --direction=INGRESS --action=ALLOW --rules=tcp:80 \\\n  --source-ranges=35.191.0.0/16,130.211.0.0/22 --target-tags=web",
-        "doc_ref": "https://cloud.google.com/load-balancing/docs/health-check-concepts"
       }
     },
     {
@@ -1734,38 +1638,6 @@
       }
     },
     {
-      "id": "ace-dom2-055",
-      "title": "20 Gbps with predictable latency",
-      "objective": "2.3",
-      "subtopic": "Hybrid Connectivity",
-      "summary": "Dedicated Interconnect provides 10/100 Gbps circuits with deterministic performance.",
-      "tags": [
-        "bandwidth",
-        "hybrid",
-        "interconnect"
-      ],
-      "source": "curated",
-      "question": "A data-migration programme must sustain 20 Gbps between the data centre and Google Cloud with predictable latency. The company is already present in a Google colocation facility. Which option should you choose?",
-      "options": {
-        "A": "VPC Network Peering",
-        "B": "Cross-Cloud Interconnect",
-        "C": "HA VPN",
-        "D": "Dedicated Interconnect"
-      },
-      "correct_answer": "D",
-      "explanation": {
-        "summary": "Dedicated Interconnect provides 10 or 100 Gbps circuits with deterministic performance, and being present in a colocation facility is precisely its prerequisite.",
-        "option_breakdown": {
-          "A": "Peering connects two VPC networks; it can't reach a data centre.",
-          "B": "Cross-Cloud Interconnect connects Google Cloud to other cloud providers, not to your own data centre.",
-          "C": "Each HA VPN tunnel carries about 3 Gbps over the internet, so 20 Gbps means many tunnels, with internet latency.",
-          "D": "Correct. Dedicated Interconnect gives 10 or 100 Gbps circuits with predictable performance, and presence in a colocation facility is its prerequisite."
-        },
-        "gcloud_command": "gcloud compute interconnects create dc-link --customer-name='Example' \\\n  --interconnect-type=DEDICATED --link-type=LINK_TYPE_ETHERNET_10G_LR --requested-link-count=2",
-        "doc_ref": "https://cloud.google.com/network-connectivity/docs/interconnect/concepts/dedicated-overview"
-      }
-    },
-    {
       "id": "ace-dom2-056",
       "title": "1 Gbps without colocation presence",
       "objective": "2.3",
@@ -1922,7 +1794,7 @@
           "D": "Copies drift apart, which is what a single packaged definition avoids."
         },
         "gcloud_command": "helm upgrade --install app ./chart -f values-prod.yaml --namespace prod",
-        "doc_ref": "https://cloud.google.com/kubernetes-engine/docs/archive/helm-package-manager"
+        "doc_ref": "https://helm.sh/docs/topics/charts/"
       }
     },
     {
@@ -2018,7 +1890,7 @@
           "D": "Cloud Storage notifications report object changes in a bucket, not VM deletions."
         },
         "gcloud_command": "gcloud eventarc triggers create vm-delete --destination-run-service=auditor \\\n  --destination-run-region=us-central1 \\\n  --event-filters='type=google.cloud.audit.log.v1.written' \\\n  --event-filters='serviceName=compute.googleapis.com' \\\n  --event-filters='methodName=v1.compute.instances.delete'",
-        "doc_ref": "https://cloud.google.com/eventarc/docs/cloud-audit-logs"
+        "doc_ref": "https://docs.cloud.google.com/eventarc/docs/run/route-trigger-cloud-audit-logs"
       }
     },
     {
@@ -3236,7 +3108,7 @@
           "D": "DNS tricks are bypassed by any workload that connects to an IP address directly."
         },
         "gcloud_command": "gcloud compute network-firewall-policies rules create 100 --firewall-policy=egress-pol \\\n  --global-firewall-policy --direction=EGRESS --action=allow \\\n  --dest-fqdns=api.partner.example.com --layer4-configs=tcp:443",
-        "doc_ref": "https://cloud.google.com/firewall/docs/fqdn-addresses"
+        "doc_ref": "https://docs.cloud.google.com/firewall/docs/firewall-policies-rule-details"
       }
     },
     {
@@ -4171,38 +4043,6 @@
       }
     },
     {
-      "id": "ace-s2-042",
-      "title": "A global load balancer in a Standard Tier project",
-      "objective": "2.3",
-      "subtopic": "Network Service Tiers",
-      "summary": "Global external load balancers and global anycast IPs require Premium Tier.",
-      "tags": [
-        "load-balancing",
-        "network-tiers",
-        "premium-tier"
-      ],
-      "source": "curated",
-      "question": "A project's default network tier was set to Standard to save egress cost. The team now needs a global external Application Load Balancer with one anycast IP for users on three continents. What must they do?",
-      "options": {
-        "A": "Keep Standard Tier; global load balancers work with either tier.",
-        "B": "Use Premium Tier for the load balancer's IP address and forwarding rule.",
-        "C": "Create one regional load balancer per continent on Standard Tier with the same IP.",
-        "D": "Switch to Standard Tier's global mode on the forwarding rule."
-      },
-      "correct_answer": "B",
-      "explanation": {
-        "summary": "Global load balancing and global anycast IPs exist only on Premium Tier, which carries traffic on Google's backbone to the nearest edge; the tier can be set per resource even when the project default is Standard.",
-        "option_breakdown": {
-          "A": "Standard Tier is regional only and cannot front a global load balancer.",
-          "B": "Correct. Global load balancing and global anycast IPs exist only on Premium Tier, which carries traffic on Google's backbone to the nearest edge; the tier can be set per resource even when the project default is Standard.",
-          "C": "Regional load balancers each have their own regional IP; one IP cannot be shared across them.",
-          "D": "Standard Tier has no global mode."
-        },
-        "gcloud_command": "gcloud compute addresses create web-ip --global --network-tier=PREMIUM",
-        "doc_ref": "https://cloud.google.com/network-tiers/docs/overview"
-      }
-    },
-    {
       "id": "ace-s2-043",
       "title": "Standard Tier for every new resource in a project",
       "objective": "2.3",
@@ -4488,38 +4328,6 @@
         },
         "gcloud_command": "gcloud compute networks update legacy-net --switch-to-custom-subnet-mode",
         "doc_ref": "https://cloud.google.com/vpc/docs/create-modify-vpc-networks"
-      }
-    },
-    {
-      "id": "ace-s2-052",
-      "title": "A service project team may use only its own subnet",
-      "objective": "2.3",
-      "subtopic": "VPC Design",
-      "summary": "Grant compute.networkUser on individual subnets of the host project for least privilege.",
-      "tags": [
-        "least-privilege",
-        "network-user",
-        "shared-vpc"
-      ],
-      "source": "curated",
-      "question": "In a Shared VPC, the host project has subnets for five teams. Team A's developers must be able to create VMs in team A's subnet only, not in any other team's. What should you grant?",
-      "options": {
-        "A": "roles/compute.networkUser on the host project to team A's group.",
-        "B": "roles/compute.networkAdmin on the host project to team A's group.",
-        "C": "roles/compute.xpnAdmin on the organisation to team A's group.",
-        "D": "roles/compute.networkUser on team A's subnet to team A's group."
-      },
-      "correct_answer": "D",
-      "explanation": {
-        "summary": "Network User granted on a single subnet lets the group create resources in that subnet and no other.",
-        "option_breakdown": {
-          "A": "Project-level Network User covers every subnet in the host project.",
-          "B": "Network Admin lets the team change the network itself.",
-          "C": "Shared VPC Admin enables host projects and attaches service projects — far beyond the need.",
-          "D": "Correct. Network User granted on a single subnet lets the group create resources in that subnet and no other."
-        },
-        "gcloud_command": "gcloud compute networks subnets add-iam-policy-binding team-a --region=REGION \\\n  --project=HOST_PROJECT --member=group:team-a@example.com --role=roles/compute.networkUser",
-        "doc_ref": "https://cloud.google.com/vpc/docs/shared-vpc"
       }
     },
     {
@@ -5607,7 +5415,7 @@
           "D": "TPU node pools are for ML training and serving, not graphics."
         },
         "gcloud_command": "gcloud compute instances create cad-01 --zone=europe-west4-a --machine-type=g2-standard-8 \\\n  --maintenance-policy=TERMINATE --image-family=IMAGE_FAMILY --image-project=IMAGE_PROJECT",
-        "doc_ref": "https://docs.cloud.google.com/compute/docs/virtual-workstation/overview"
+        "doc_ref": "https://docs.cloud.google.com/compute/docs/gpus"
       }
     },
     {
@@ -6987,38 +6795,6 @@
       }
     },
     {
-      "id": "ace-s2-130",
-      "title": "Terraform state for a team, not a laptop",
-      "objective": "2.4",
-      "subtopic": "Infrastructure as Code",
-      "summary": "Store Terraform state in a Cloud Storage backend, which also provides state locking.",
-      "tags": [
-        "cloud-storage",
-        "state",
-        "terraform"
-      ],
-      "source": "curated",
-      "question": "Three engineers run Terraform against the same environment, and state files on their laptops have diverged, leading to conflicting changes. What should they configure?",
-      "options": {
-        "A": "A gcs backend in a versioned Cloud Storage bucket, with locking.",
-        "B": "Commit terraform.tfstate to the Git repository after every apply.",
-        "C": "Run terraform refresh before every plan.",
-        "D": "Give each engineer a separate workspace in the same local directory."
-      },
-      "correct_answer": "A",
-      "explanation": {
-        "summary": "A remote gcs backend gives one shared state with locking, so two applies cannot run at once; bucket versioning allows recovery of earlier state.",
-        "option_breakdown": {
-          "A": "Correct. A remote gcs backend gives one shared state with locking, so two applies cannot run at once; bucket versioning allows recovery of earlier state.",
-          "B": "State in Git is often stale, can conflict, and may contain secrets.",
-          "C": "Refresh updates state from real resources but does not share or lock it.",
-          "D": "Workspaces on one laptop do not share state across engineers."
-        },
-        "gcloud_command": "terraform {\n  backend \"gcs\" {\n    bucket = \"acme-tf-state\"\n    prefix = \"prod/network\"\n  }\n}",
-        "doc_ref": "https://developer.hashicorp.com/terraform/language/backend/gcs"
-      }
-    },
-    {
       "id": "ace-s2-131",
       "title": "Turning a console form into gcloud or Terraform",
       "objective": "2.4",
@@ -7048,6 +6824,131 @@
         },
         "gcloud_command": "# Console > Compute Engine > Create instance > Equivalent code > gcloud | Terraform | REST",
         "doc_ref": "https://docs.cloud.google.com/compute/docs/instances/create-start-instance"
+      }
+    },
+    {
+      "id": "ace-s2-132",
+      "title": "OS Login with sudo",
+      "objective": "2.1",
+      "subtopic": "OS Login",
+      "summary": "Compute OS Admin Login grants SSH access with sudo; Compute OS Login grants SSH without it.",
+      "tags": [
+        "iam",
+        "os-login",
+        "ssh"
+      ],
+      "source": "curated",
+      "question": "OS Login is enabled on a project. Junior engineers must be able to SSH to the VMs as normal users, while two senior engineers also need sudo. Which roles should you grant?",
+      "options": {
+        "A": "Compute Instance Admin to all engineers.",
+        "B": "Compute OS Login to the juniors, and Compute OS Admin Login to the seniors.",
+        "C": "Compute OS Login to everyone, plus sudoers entries added on each VM.",
+        "D": "Compute OS Admin Login to everyone, with a naming convention for root use."
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "With OS Login, sudo is an IAM decision: roles/compute.osAdminLogin gives administrator rights on the VM, and roles/compute.osLogin gives a normal login.",
+        "option_breakdown": {
+          "A": "Instance Admin manages VMs; it isn't the OS Login role that decides login and sudo.",
+          "B": "Correct. The roles separate normal and administrator logins, centrally and per person.",
+          "C": "Hand-edited sudoers files drift and bypass the IAM control OS Login provides.",
+          "D": "Everyone would get sudo, which is what must be avoided."
+        },
+        "gcloud_command": "gcloud projects add-iam-policy-binding P --member='user:senior@example.com' --role='roles/compute.osAdminLogin'",
+        "doc_ref": "https://docs.cloud.google.com/compute/docs/oslogin/set-up-oslogin"
+      }
+    },
+    {
+      "id": "ace-s2-133",
+      "title": "Saving work when a Spot VM is reclaimed",
+      "objective": "2.1",
+      "subtopic": "Spot and Custom Machine Types",
+      "summary": "Before preempting a Spot VM, Compute Engine sends a short notice during which a shutdown script can run.",
+      "tags": [
+        "compute-engine",
+        "spot"
+      ],
+      "source": "curated",
+      "question": "A render job on Spot VMs loses up to an hour of work when a VM is reclaimed. The job can write a checkpoint to Cloud Storage in about 15 seconds. How should it save its progress when Compute Engine reclaims the VM?",
+      "options": {
+        "A": "With a shutdown script that writes the checkpoint during the preemption notice.",
+        "B": "By enabling automatic restart, which resumes the job where it stopped.",
+        "C": "By setting the termination action to STOP, which keeps memory on disk.",
+        "D": "By subscribing to an email alert that Compute Engine sends before preemption."
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "Compute Engine gives a Spot VM a preemption notice of about 30 seconds and runs its shutdown script in that time, which is enough for a short checkpoint.",
+        "option_breakdown": {
+          "A": "Correct. The shutdown script runs when preemption begins, so the checkpoint is written before the VM stops.",
+          "B": "Spot VMs can't use automatic restart, and a restart wouldn't recover in-memory progress anyway.",
+          "C": "STOP keeps the VM and its disks, but memory is lost when it stops.",
+          "D": "There is no email for each preemption, and a person can't act within seconds."
+        },
+        "gcloud_command": "gcloud compute instances add-metadata render-1 --zone=ZONE --metadata-from-file=shutdown-script=checkpoint.sh",
+        "doc_ref": "https://docs.cloud.google.com/compute/docs/instances/spot"
+      }
+    },
+    {
+      "id": "ace-s2-134",
+      "title": "kubectl too far behind the cluster",
+      "objective": "2.1",
+      "subtopic": "kubectl Setup",
+      "summary": "kubectl is supported within one minor version of the cluster's control plane, so an old client should be updated.",
+      "tags": [
+        "gke",
+        "kubectl"
+      ],
+      "source": "curated",
+      "question": "A workstation's kubectl is three minor versions older than a GKE cluster's control plane, and some commands behave unexpectedly. What should you do?",
+      "options": {
+        "A": "Downgrade the cluster's control plane to match the client.",
+        "B": "Install a kubectl within one minor version of the control plane.",
+        "C": "Run get-credentials again, which upgrades kubectl.",
+        "D": "Switch the cluster to the Stable release channel."
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "Kubernetes supports kubectl within one minor version, older or newer, of the control plane. Installing a current kubectl, for example through gcloud components or the OS package, fixes the skew.",
+        "option_breakdown": {
+          "A": "GKE control planes can't be downgraded to an old minor version.",
+          "B": "Correct. A kubectl within the supported skew behaves as the cluster expects.",
+          "C": "get-credentials writes kubeconfig; it doesn't install or upgrade kubectl.",
+          "D": "A release channel controls future upgrades, not the client's version."
+        },
+        "gcloud_command": "gcloud components install kubectl   # or the matching OS package\nkubectl version",
+        "doc_ref": "https://docs.cloud.google.com/kubernetes-engine/docs/how-to/cluster-access-for-kubectl"
+      }
+    },
+    {
+      "id": "ace-s2-135",
+      "title": "A VM that must stay up through host maintenance",
+      "objective": "2.1",
+      "subtopic": "Launching Instances",
+      "summary": "Standard VMs live-migrate during host maintenance by default; TERMINATE stops them instead.",
+      "tags": [
+        "compute-engine",
+        "maintenance"
+      ],
+      "source": "curated",
+      "question": "A standard N2 VM without GPUs runs a service that must not reboot when Google performs maintenance on the host. Which host maintenance setting should it use?",
+      "options": {
+        "A": "TERMINATE, with automatic restart on.",
+        "B": "TERMINATE, with automatic restart off.",
+        "C": "Spot provisioning, to move to a newer host.",
+        "D": "MIGRATE, the default for standard VMs."
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "With onHostMaintenance=MIGRATE, Compute Engine live-migrates the VM to another host during maintenance without rebooting it. TERMINATE stops it instead.",
+        "option_breakdown": {
+          "A": "The VM would stop for maintenance and then restart, which is the reboot to avoid.",
+          "B": "The VM would stop and stay stopped.",
+          "C": "Spot VMs can be preempted at any time, which is less available, not more.",
+          "D": "Correct. Live migration keeps the VM running through host maintenance."
+        },
+        "gcloud_command": "gcloud compute instances set-scheduling app-1 --zone=ZONE --maintenance-policy=MIGRATE",
+        "doc_ref": "https://docs.cloud.google.com/compute/docs/instances/live-migration-process"
       }
     }
   ]

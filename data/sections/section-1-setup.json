@@ -1,8 +1,8 @@
 {
   "domain": "Section 1: Setting up a cloud solution environment",
   "version": 2,
-  "updated_at": "2026-11-07T13:24:11+00:00",
-  "count": 90,
+  "updated_at": "2026-11-07T14:36:24+00:00",
+  "count": 93,
   "questions": [
     {
       "id": "ace-dom1-001",
@@ -385,38 +385,6 @@
           "D": "It manages budgets and views costs, which breaks the policy, and it isn't the linking permission."
         },
         "gcloud_command": "gcloud billing accounts add-iam-policy-binding BILLING_ACCOUNT_ID \\\n  --member='user:lead@example.com' --role='roles/billing.user'",
-        "doc_ref": "https://cloud.google.com/billing/docs/how-to/billing-access"
-      }
-    },
-    {
-      "id": "ace-dom1-014",
-      "title": "Read-only cost reporting",
-      "objective": "1.2",
-      "subtopic": "Billing Accounts",
-      "summary": "Billing Account Viewer is read-only across the billing account, its cost data and its budgets.",
-      "tags": [
-        "billing",
-        "iam",
-        "reporting"
-      ],
-      "source": "curated",
-      "question": "A finance analyst needs to read cost and budget information for the whole billing account to build reports, but must not be able to change anything. Which role should you grant?",
-      "options": {
-        "A": "Project Billing Manager on each project",
-        "B": "Billing Account Costs Manager on the billing account",
-        "C": "Billing Account Viewer on the billing account",
-        "D": "Billing Account Administrator on the billing account"
-      },
-      "correct_answer": "C",
-      "explanation": {
-        "summary": "Billing Account Viewer grants read-only access to the billing account, its cost data and its budgets, which is exactly a reporting role.",
-        "option_breakdown": {
-          "A": "It changes which billing account a project uses, and it shows no billing account costs.",
-          "B": "It reads costs but can also create and change budgets, which the analyst must not do.",
-          "C": "Correct. Billing Account Viewer gives read-only access to the account's cost data and budgets, which is a reporting role.",
-          "D": "It can change everything on the account, far beyond read-only."
-        },
-        "gcloud_command": "gcloud billing accounts add-iam-policy-binding BILLING_ID \\\n  --member='user:analyst@example.com' --role='roles/billing.viewer'",
         "doc_ref": "https://cloud.google.com/billing/docs/how-to/billing-access"
       }
     },
@@ -1222,38 +1190,6 @@
       }
     },
     {
-      "id": "ace-dom1-041",
-      "title": "Detect an open firewall rule within seconds",
-      "objective": "1.1",
-      "subtopic": "Asset Inventory and Gemini Cloud Assist",
-      "summary": "A real-time asset feed publishes each asset change to Pub/Sub as it happens.",
-      "tags": [
-        "asset-inventory",
-        "detection",
-        "pubsub"
-      ],
-      "source": "curated",
-      "question": "The security team must be notified within seconds whenever a firewall rule allowing 0.0.0.0/0 is created anywhere in the organisation. What should you configure?",
-      "options": {
-        "A": "Search Cloud Asset Inventory for open firewall rules.",
-        "B": "A Cloud Asset Inventory feed that publishes firewall changes to Pub/Sub.",
-        "C": "A daily Cloud Asset Inventory export to BigQuery.",
-        "D": "Firewall Insights for the organisation's networks."
-      },
-      "correct_answer": "B",
-      "explanation": {
-        "summary": "A real-time asset feed publishes each asset change to Pub/Sub as it happens, which is the only option that meets a seconds-level detection requirement.",
-        "option_breakdown": {
-          "A": "A search answers when someone runs it; nobody is notified when a rule appears.",
-          "B": "Correct. A real-time asset feed publishes each firewall change to Pub/Sub as it happens, which meets a seconds-level requirement.",
-          "C": "A daily export finds the rule up to a day later.",
-          "D": "Firewall Insights analyses rule usage and overly permissive rules over time; it isn't a real-time change notification."
-        },
-        "gcloud_command": "gcloud asset feeds create fw-feed --organization=ORG_ID \\\n  --asset-types='compute.googleapis.com/Firewall' --content-type=resource \\\n  --pubsub-topic=projects/PROJECT_ID/topics/asset-changes",
-        "doc_ref": "https://cloud.google.com/asset-inventory/docs/monitoring-asset-changes"
-      }
-    },
-    {
       "id": "ace-dom1-043",
       "title": "Locate a bucket by partial name",
       "objective": "1.1",
@@ -1315,38 +1251,6 @@
         },
         "gcloud_command": "gcloud logging sinks create org-sink \\\n  logging.googleapis.com/projects/SEC_PROJECT/locations/global/buckets/central \\\n  --organization=ORG_ID --include-children",
         "doc_ref": "https://cloud.google.com/logging/docs/central-log-storage"
-      }
-    },
-    {
-      "id": "ace-dom1-046",
-      "title": "Guest metrics missing from Monitoring",
-      "objective": "1.1",
-      "subtopic": "Observability Setup",
-      "summary": "Guest-level metrics require an in-guest agent; the hypervisor cannot see them.",
-      "tags": [
-        "compute",
-        "monitoring",
-        "ops-agent"
-      ],
-      "source": "curated",
-      "question": "Memory utilisation and disk space inside your Compute Engine VMs are not visible in Cloud Monitoring, although CPU and network are. What should you do?",
-      "options": {
-        "A": "Enable the Cloud Monitoring API on the project.",
-        "B": "Create a log sink that routes the VMs' syslog to a log bucket.",
-        "C": "Install the Ops Agent on the VMs.",
-        "D": "Add the project to a metrics scope in another project."
-      },
-      "correct_answer": "C",
-      "explanation": {
-        "summary": "Guest-level metrics such as memory and filesystem usage are not visible to the hypervisor; the Ops Agent must run inside the VM to report them.",
-        "option_breakdown": {
-          "A": "Monitoring already works (CPU and network are visible), so the API is enabled.",
-          "B": "Routing logs doesn't create metrics, and memory and disk usage aren't in syslog by default.",
-          "C": "Correct. Memory and filesystem usage aren't visible to the hypervisor; the Ops Agent must run inside the VM to report them.",
-          "D": "A metrics scope shows metrics that already exist; these are never collected."
-        },
-        "gcloud_command": "curl -sSO https://dl.google.com/cloudagents/add-google-cloud-ops-agent-repo.sh \\\n  && sudo bash add-google-cloud-ops-agent-repo.sh --also-install",
-        "doc_ref": "https://cloud.google.com/monitoring/agent/ops-agent"
       }
     },
     {
@@ -1572,38 +1476,6 @@
         },
         "gcloud_command": "gcloud organizations add-iam-policy-binding ORG_ID \\\n  --member='user:eng@example.com' --role='roles/cloudasset.viewer'",
         "doc_ref": "https://cloud.google.com/asset-inventory/docs/searching-resources"
-      }
-    },
-    {
-      "id": "ace-s1-007",
-      "title": "Adding one binding without disturbing the rest",
-      "objective": "1.1",
-      "subtopic": "Project IAM Grants",
-      "summary": "add-iam-policy-binding adds a single binding safely; set-iam-policy replaces the whole policy.",
-      "tags": [
-        "gcloud",
-        "iam",
-        "projects"
-      ],
-      "source": "curated",
-      "question": "A script must give the group data-eng@example.com the BigQuery Data Viewer role on project analytics-prod. Several other teams edit that project's IAM policy through their own automation during the day. Which command should the script run?",
-      "options": {
-        "A": "Run set-iam-policy with a file that holds only the new binding.",
-        "B": "Run get-iam-policy and email the output to the project owner.",
-        "C": "Run add-iam-policy-binding for the group and the role.",
-        "D": "Create a custom role with the BigQuery viewer permissions."
-      },
-      "correct_answer": "C",
-      "explanation": {
-        "summary": "add-iam-policy-binding performs a read-modify-write of the policy for you and adds exactly one binding, leaving every other team's bindings untouched.",
-        "option_breakdown": {
-          "A": "set-iam-policy replaces the entire policy, so a file with one binding deletes every other binding in the project.",
-          "B": "Reading the policy grants nothing; a manual hand-off is not what a script is for.",
-          "C": "Correct. add-iam-policy-binding reads, modifies and writes the policy for you, adding exactly one binding and leaving other teams' bindings untouched.",
-          "D": "Creating a custom role grants it to nobody, and a predefined role already fits."
-        },
-        "gcloud_command": "gcloud projects add-iam-policy-binding analytics-prod \\\n  --member=group:data-eng@example.com --role=roles/bigquery.dataViewer",
-        "doc_ref": "https://cloud.google.com/sdk/gcloud/reference/projects/add-iam-policy-binding"
       }
     },
     {
@@ -2151,38 +2023,6 @@
       }
     },
     {
-      "id": "ace-s1-025",
-      "title": "Cost of each individual VM",
-      "objective": "1.2",
-      "subtopic": "Billing Export and Cost Attribution",
-      "summary": "Only the detailed usage cost export carries resource-level rows such as which VM incurred a cost.",
-      "tags": [
-        "bigquery",
-        "billing-export",
-        "cost-attribution"
-      ],
-      "source": "curated",
-      "question": "Finance already receives the standard usage cost export in BigQuery. They now need the monthly cost of each individual Compute Engine instance, identified by its resource name, not just per project and SKU. What should you enable?",
-      "options": {
-        "A": "The pricing export to BigQuery.",
-        "B": "Labels on each project with the project owner's name.",
-        "C": "A budget per instance with a threshold at 100%.",
-        "D": "The detailed usage cost export to BigQuery."
-      },
-      "correct_answer": "D",
-      "explanation": {
-        "summary": "The detailed usage cost export includes everything in the standard export plus resource-level rows, so costs can be grouped by individual instance.",
-        "option_breakdown": {
-          "A": "The pricing export contains list and contract prices, not usage.",
-          "B": "Project labels attribute cost per project, which finance already has.",
-          "C": "Budgets notify on thresholds; they do not produce per-resource cost data.",
-          "D": "Correct. The detailed usage cost export includes everything in the standard export plus resource-level rows, so costs can be grouped by individual instance."
-        },
-        "gcloud_command": "# Billing > Billing export > BigQuery export > Detailed usage cost > Edit settings",
-        "doc_ref": "https://cloud.google.com/billing/docs/how-to/export-data-bigquery-tables/detailed-usage"
-      }
-    },
-    {
       "id": "ace-s1-026",
       "title": "Comparing list prices with negotiated prices",
       "objective": "1.2",
@@ -2339,7 +2179,7 @@
           "D": "That searches IAM allow policies, not organisation policies."
         },
         "gcloud_command": "gcloud asset analyze-org-policies --scope=organizations/ORG_ID \\\n  --constraint=constraints/compute.vmExternalIpAccess",
-        "doc_ref": "https://docs.cloud.google.com/asset-inventory/docs/analyze-org-policies"
+        "doc_ref": "https://docs.cloud.google.com/policy-intelligence/docs/analyze-organization-policies"
       }
     },
     {
@@ -2371,7 +2211,7 @@
           "D": "That shows the folder's own bindings only, not the effect on the project."
         },
         "gcloud_command": "gcloud asset analyze-move --project=billing-api --destination-folder=PROD_FOLDER_ID",
-        "doc_ref": "https://docs.cloud.google.com/asset-inventory/docs/analyze-resource-moves"
+        "doc_ref": "https://docs.cloud.google.com/resource-manager/docs/project-migration"
       }
     },
     {
@@ -2884,6 +2724,254 @@
         },
         "gcloud_command": "# Console > Billing > Reports > Gemini Cloud Assist: \"Why did costs increase last month?\"",
         "doc_ref": "https://docs.cloud.google.com/billing/docs/how-to/gemini/set-up-gemini"
+      }
+    },
+    {
+      "id": "ace-s1-048",
+      "title": "Removing one person's grant from a busy policy",
+      "objective": "1.1",
+      "subtopic": "Project IAM Grants",
+      "summary": "remove-iam-policy-binding takes out exactly one member–role pair and leaves every other binding alone.",
+      "tags": [
+        "gcloud",
+        "iam"
+      ],
+      "source": "curated",
+      "question": "A contractor's engagement has ended, and their Viewer role on project ops-prod must be removed from the project's IAM policy. Other teams' automation edits the same policy throughout the day, and their bindings must not change. What should you do?",
+      "options": {
+        "A": "Write a policy file without the contractor and apply it with set-iam-policy.",
+        "B": "Add an IAM deny policy for the contractor on the project.",
+        "C": "Run remove-iam-policy-binding for the contractor and the Viewer role.",
+        "D": "Delete the contractor's Google account from the project's IAM page."
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "remove-iam-policy-binding reads, modifies and writes the policy for you, removing exactly one member from one role and leaving every other binding as it is.",
+        "option_breakdown": {
+          "A": "Replacing the whole policy from a file can overwrite changes other automation made after you read it.",
+          "B": "A deny policy blocks the permissions, but the grant stays in the allow policy, which isn't what was asked.",
+          "C": "Correct. It removes only that member–role pair, with the read-modify-write handled by gcloud.",
+          "D": "You can't delete someone's Google account from a project; you can only change the project's IAM bindings."
+        },
+        "gcloud_command": "gcloud projects remove-iam-policy-binding ops-prod \\\n  --member='user:contractor@example.com' --role='roles/viewer'",
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/granting-changing-revoking-access"
+      }
+    },
+    {
+      "id": "ace-s1-049",
+      "title": "Default region and zone for every gcloud command",
+      "objective": "1.1",
+      "subtopic": "gcloud CLI and Configurations",
+      "summary": "gcloud properties compute/region and compute/zone set the defaults that commands use when no location flag is given.",
+      "tags": [
+        "configuration",
+        "gcloud"
+      ],
+      "source": "curated",
+      "question": "An engineer works almost entirely in europe-west4-b and is tired of adding --zone to every Compute Engine command. What should they do so that commands use that zone unless told otherwise?",
+      "options": {
+        "A": "Export the CLOUDSDK_CONFIG variable with the zone name.",
+        "B": "Set the compute/zone and compute/region properties in the active configuration.",
+        "C": "Create the project's resources in that zone, which gcloud then remembers.",
+        "D": "Set the default zone on the project's billing account."
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "gcloud reads defaults such as compute/zone and compute/region from the active configuration, and a --zone flag on a command still overrides them.",
+        "option_breakdown": {
+          "A": "CLOUDSDK_CONFIG points gcloud at a configuration directory; it doesn't hold a zone.",
+          "B": "Correct. With these properties set, commands that need a location use them by default.",
+          "C": "gcloud doesn't infer defaults from where resources were created.",
+          "D": "Billing accounts have no location settings for the CLI."
+        },
+        "gcloud_command": "gcloud config set compute/region europe-west4\ngcloud config set compute/zone europe-west4-b",
+        "doc_ref": "https://docs.cloud.google.com/sdk/docs/properties"
+      }
+    },
+    {
+      "id": "ace-s1-050",
+      "title": "One command against a different project",
+      "objective": "1.1",
+      "subtopic": "gcloud CLI and Configurations",
+      "summary": "The --project flag runs a single command against another project without changing the active configuration.",
+      "tags": [
+        "configuration",
+        "gcloud"
+      ],
+      "source": "curated",
+      "question": "Your active gcloud configuration points at project shop-dev. You need to list the VMs in project shop-prod once, without changing what later commands use. What should you run?",
+      "options": {
+        "A": "gcloud config set project shop-prod, then list the instances.",
+        "B": "gcloud auth login as a user who owns shop-prod, then list the instances.",
+        "C": "A new gcloud configuration for shop-prod, activated for the command.",
+        "D": "gcloud compute instances list with --project=shop-prod."
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "Global flags such as --project override the configuration for one command only, leaving the active configuration unchanged.",
+        "option_breakdown": {
+          "A": "This changes the default for every later command, which the stem rules out.",
+          "B": "Logging in changes the account, not which project commands target.",
+          "C": "It works but is heavier than needed, and it changes the active configuration until you switch back.",
+          "D": "Correct. --project applies to that command alone."
+        },
+        "gcloud_command": "gcloud compute instances list --project=shop-prod",
+        "doc_ref": "https://docs.cloud.google.com/sdk/gcloud/reference"
+      }
+    },
+    {
+      "id": "ace-s1-051",
+      "title": "gcloud components update is refused",
+      "objective": "1.1",
+      "subtopic": "gcloud CLI and Configurations",
+      "summary": "When the Google Cloud CLI was installed with a system package manager, it is updated through that package manager, not gcloud components.",
+      "tags": [
+        "gcloud",
+        "installation"
+      ],
+      "source": "curated",
+      "question": "On an Ubuntu server, the Google Cloud CLI was installed from Google's apt repository. Running gcloud components update fails with a message that the component manager is disabled for this installation. How should you update the CLI?",
+      "options": {
+        "A": "Update it through apt, the package manager that installed it.",
+        "B": "Run gcloud components update with sudo.",
+        "C": "Delete ~/.config/gcloud and run the update again.",
+        "D": "Reinstall the CLI from a tarball on top of the apt installation."
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "Package-manager installations disable the component manager so that apt or yum stays in control; updates and extra components come from the same repository.",
+        "option_breakdown": {
+          "A": "Correct. apt-get update and an upgrade of google-cloud-cli (and its component packages) updates it.",
+          "B": "Root privileges don't re-enable a component manager that the installation disabled.",
+          "C": "That directory holds your configurations and credentials, not the installation's settings.",
+          "D": "Two installations side by side cause conflicts and confusion over which gcloud runs."
+        },
+        "gcloud_command": "sudo apt-get update && sudo apt-get install --only-upgrade google-cloud-cli",
+        "doc_ref": "https://docs.cloud.google.com/sdk/docs/install-sdk"
+      }
+    },
+    {
+      "id": "ace-s1-052",
+      "title": "Separate network hosts for production and the rest",
+      "objective": "1.1",
+      "subtopic": "Foundation Networking",
+      "summary": "A foundation usually has separate Shared VPC host projects for production and non-production, so the environments are isolated by design.",
+      "tags": [
+        "foundation",
+        "shared-vpc"
+      ],
+      "source": "curated",
+      "question": "A new organisation's foundation will use Shared VPC. Security requires that no misconfigured route or firewall rule in development or test can ever affect production traffic. How should the host projects be laid out?",
+      "options": {
+        "A": "One host project with one VPC, and one subnet per environment.",
+        "B": "One host project per application team, shared by all its environments.",
+        "C": "No Shared VPC: a separate VPC in every project, peered together.",
+        "D": "A production host project and a separate non-production host project."
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "Routes and firewall rules belong to a VPC. Separate host projects, each with its own VPC, mean a change in non-production can't reach production.",
+        "option_breakdown": {
+          "A": "Subnets in one VPC share its routes and firewall rules, so a mistake in one environment can affect another.",
+          "B": "Per-team hosts mix environments inside each team's network.",
+          "C": "Peering every project rebuilds the many-networks problem Shared VPC removes.",
+          "D": "Correct. Each environment's network is a separate VPC with its own routes and rules, administered centrally."
+        },
+        "gcloud_command": "gcloud compute shared-vpc enable net-host-prod\ngcloud compute shared-vpc enable net-host-nonprod",
+        "doc_ref": "https://docs.cloud.google.com/architecture/security-foundations/networking"
+      }
+    },
+    {
+      "id": "ace-s1-053",
+      "title": "A project whose billing account was closed",
+      "objective": "1.2",
+      "subtopic": "Billing Accounts",
+      "summary": "A project without an active billing account has billing disabled; linking it to an active account restores paid services.",
+      "tags": [
+        "billing"
+      ],
+      "source": "curated",
+      "question": "Finance closed an old billing account. A project that was still linked to it now has billing disabled, and its VMs have stopped. The project must keep running on the company's current billing account. What should you do?",
+      "options": {
+        "A": "Link the project to the active billing account.",
+        "B": "Reopen the closed account under a new name.",
+        "C": "Create a new project and move every resource into it.",
+        "D": "Ask support to transfer the old account's credit to the project."
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "A project needs an active billing account for paid services. Linking it to the current account re-enables billing; stopped resources can then be started again.",
+        "option_breakdown": {
+          "A": "Correct. Linking (for example with gcloud billing projects link) restores billing for the project.",
+          "B": "A closed account isn't the company's current account, and reopening it isn't the fix that was asked for.",
+          "C": "Projects can't be merged, and moving resources is far more work than relinking.",
+          "D": "Credit isn't the issue; the project has no active billing account."
+        },
+        "gcloud_command": "gcloud billing projects link PROJECT_ID --billing-account=ACTIVE_ACCOUNT_ID",
+        "doc_ref": "https://docs.cloud.google.com/billing/docs/how-to/modify-project"
+      }
+    },
+    {
+      "id": "ace-s1-054",
+      "title": "Cost per Kubernetes namespace",
+      "objective": "1.2",
+      "subtopic": "Billing Export and Cost Attribution",
+      "summary": "GKE cost allocation adds namespace and Kubernetes label data to the detailed billing export.",
+      "tags": [
+        "billing",
+        "cost-allocation",
+        "gke"
+      ],
+      "source": "curated",
+      "question": "Five teams share one GKE Standard cluster, each in its own namespace. Finance already has the detailed billing export in BigQuery but sees only node costs. It needs cost per namespace. What should you enable?",
+      "options": {
+        "A": "A label on each node pool with the team's name.",
+        "B": "A separate billing account for each team.",
+        "C": "GKE cost allocation on the cluster.",
+        "D": "A budget for each namespace in Cloud Billing."
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "With GKE cost allocation, the billing export breaks cluster costs down by namespace and Kubernetes labels, based on the resources each workload requests.",
+        "option_breakdown": {
+          "A": "The teams share node pools, so node pool labels can't separate their costs.",
+          "B": "Billing accounts attach to projects, not namespaces.",
+          "C": "Correct. Cost allocation adds namespace and label detail to the export rows.",
+          "D": "Budgets can't be scoped to a namespace, and they don't produce the cost breakdown."
+        },
+        "gcloud_command": "gcloud container clusters update shared --location=REGION --enable-cost-allocation",
+        "doc_ref": "https://docs.cloud.google.com/kubernetes-engine/docs/how-to/cost-allocations"
+      }
+    },
+    {
+      "id": "ace-s1-055",
+      "title": "Incident logs gone before the review",
+      "objective": "1.1",
+      "subtopic": "Observability Setup",
+      "summary": "The _Default log bucket keeps logs for 30 days by default, and its retention can be changed.",
+      "tags": [
+        "logging",
+        "retention"
+      ],
+      "source": "curated",
+      "question": "An SRE preparing a review of an incident from seven weeks ago finds that the application's entries for that week are no longer in Logs Explorer, though they were never excluded. Reviews happen up to 90 days later. What should be changed so this doesn't happen again?",
+      "options": {
+        "A": "The _Required bucket's retention, to 90 days.",
+        "B": "A sink to a Cloud Storage bucket kept for 90 days.",
+        "C": "Data Access audit logs, turned on for the project.",
+        "D": "The _Default bucket's retention, to 90 days."
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "Logs that aren't audit or system logs go to the _Default bucket, whose 30-day default retention can be set to a longer period.",
+        "option_breakdown": {
+          "A": "The _Required bucket holds audit and system logs, and its retention can't be changed.",
+          "B": "A sink exports a copy outside Cloud Logging, which the stem rules out.",
+          "C": "Data Access logs add new entries; they don't change retention.",
+          "D": "Correct. Updating the _Default bucket's retention keeps those logs for 90 days in place."
+        },
+        "gcloud_command": "gcloud logging buckets update _Default --location=global --retention-days=90",
+        "doc_ref": "https://docs.cloud.google.com/logging/docs/buckets"
       }
     }
   ]

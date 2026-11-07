@@ -1,41 +1,9 @@
 {
   "domain": "Section 4: Configuring access and security",
   "version": 2,
-  "updated_at": "2026-11-07T13:24:11+00:00",
-  "count": 69,
+  "updated_at": "2026-11-07T14:36:24+00:00",
+  "count": 65,
   "questions": [
-    {
-      "id": "ace-dom1-005",
-      "title": "Access to exactly one bucket",
-      "objective": "4.1",
-      "subtopic": "IAM Policies and Inheritance",
-      "summary": "IAM can bind directly on individual resources such as buckets — the only scope that exposes one bucket without the project.",
-      "tags": [
-        "cloud-storage",
-        "iam",
-        "least-privilege"
-      ],
-      "source": "curated",
-      "question": "A partner with a Google account needs to read the objects in exactly one Cloud Storage bucket and nothing else in the project that contains it. The bucket uses uniform bucket-level access. What should you do?",
-      "options": {
-        "A": "Grant the partner Storage Object Viewer on the project.",
-        "B": "Grant the partner Storage Object Viewer on the bucket.",
-        "C": "Add the partner to the bucket's access control list with read access.",
-        "D": "Generate a signed URL for each object and send the URLs to the partner."
-      },
-      "correct_answer": "B",
-      "explanation": {
-        "summary": "IAM roles can be granted on an individual bucket, so the partner can read that bucket's objects without any access to the rest of the project.",
-        "option_breakdown": {
-          "A": "A project grant is inherited by every bucket in the project, which exposes more than one bucket.",
-          "B": "Correct. A bucket-level grant of Storage Object Viewer covers that bucket's objects and nothing else.",
-          "C": "Uniform bucket-level access disables ACLs, so access is granted with IAM only.",
-          "D": "Signed URLs cover single objects, expire, and miss objects added later; they are not standing access to a bucket."
-        },
-        "gcloud_command": "gcloud storage buckets add-iam-policy-binding gs://BUCKET \\\n  --member='user:partner@example.com' --role='roles/storage.objectViewer'",
-        "doc_ref": "https://cloud.google.com/storage/docs/access-control/iam"
-      }
-    },
     {
       "id": "ace-dom5-001",
       "title": "No predefined role matches exactly",
@@ -66,38 +34,6 @@
         },
         "gcloud_command": "gcloud iam roles create instanceReader --project=PROJECT_ID \\\n  --permissions=compute.instances.list,compute.instances.get --stage=GA",
         "doc_ref": "https://cloud.google.com/iam/docs/creating-custom-roles"
-      }
-    },
-    {
-      "id": "ace-dom5-002",
-      "title": "Access expiring at quarter end",
-      "objective": "4.1",
-      "subtopic": "IAM Policies and Inheritance",
-      "summary": "IAM conditions express expiry and resource-name predicates on the binding itself.",
-      "tags": [
-        "iam",
-        "iam-conditions",
-        "temporary-access"
-      ],
-      "source": "curated",
-      "question": "A contractor needs Storage Object Viewer access, but only until the end of the quarter and only on buckets whose name begins with 'shared-'. What should you do?",
-      "options": {
-        "A": "Grant a basic role such as Owner, Editor or Viewer.",
-        "B": "Create an IAM deny policy.",
-        "C": "Add an IAM condition to the role binding.",
-        "D": "Grant an existing predefined role."
-      },
-      "correct_answer": "C",
-      "explanation": {
-        "summary": "IAM conditions express both the expiry date and a resource-name predicate on the binding itself, which no static role can do.",
-        "option_breakdown": {
-          "A": "A basic role spans every service in the project, never expires on its own, and can't be narrowed to the shared- buckets.",
-          "B": "Deny policies block permissions regardless of allow grants; they are a guardrail, not a way to grant access.",
-          "C": "Correct. IAM conditions express both the expiry date and a resource-name predicate on the binding itself, which no static role can do.",
-          "D": "Storage Object Viewer without a condition applies to every bucket in the project and never expires."
-        },
-        "gcloud_command": "gcloud projects add-iam-policy-binding PROJECT_ID \\\n  --member='user:contractor@example.com' --role='roles/storage.objectViewer' \\\n  --condition='title=shared-until-q4,expression=request.time < timestamp(\"2026-10-01T00:00:00Z\") && resource.name.startsWith(\"projects/_/buckets/shared-\")'",
-        "doc_ref": "https://cloud.google.com/iam/docs/conditions-overview"
       }
     },
     {
@@ -551,38 +487,6 @@
       }
     },
     {
-      "id": "ace-s4-006",
-      "title": "A custom role needed in forty projects",
-      "objective": "4.1",
-      "subtopic": "Role Types and Custom Roles",
-      "summary": "A custom role created in a project can be granted only in that project; create it at the organisation to reuse it.",
-      "tags": [
-        "custom-roles",
-        "iam",
-        "organization"
-      ],
-      "source": "curated",
-      "question": "Security designed a custom role for incident responders that must be granted in forty projects across the organisation, and it should be maintained in one place. Where should you create it?",
-      "options": {
-        "A": "In each of the forty projects, from the same YAML definition.",
-        "B": "In one project, then grant it in the other thirty-nine projects.",
-        "C": "In a folder, which then offers it to every project below.",
-        "D": "At the organisation, then grant it in each project."
-      },
-      "correct_answer": "D",
-      "explanation": {
-        "summary": "Custom roles can be defined at the organisation or at a project. A project-level custom role can only be used in that project; an organisation-level custom role can be granted on any resource in the organisation and is updated once.",
-        "option_breakdown": {
-          "A": "Forty copies drift and must be updated forty times.",
-          "B": "A project-level custom role cannot be granted in other projects.",
-          "C": "Custom roles cannot be defined on folders.",
-          "D": "Correct. One definition, grantable anywhere in the organisation."
-        },
-        "gcloud_command": "gcloud iam roles create incidentResponder --organization=ORG_ID --file=role.yaml",
-        "doc_ref": "https://cloud.google.com/iam/docs/creating-custom-roles"
-      }
-    },
-    {
       "id": "ace-s4-007",
       "title": "Every binding that applies to a project, including inherited ones",
       "objective": "4.1",
@@ -708,38 +612,6 @@
         },
         "gcloud_command": "gcloud iam service-accounts disable legacy-batch@PROJECT_ID.iam.gserviceaccount.com",
         "doc_ref": "https://cloud.google.com/iam/docs/service-accounts-disable-enable"
-      }
-    },
-    {
-      "id": "ace-s4-011",
-      "title": "Stop new default service accounts receiving Editor",
-      "objective": "4.2",
-      "subtopic": "Creating Service Accounts",
-      "summary": "The iam.automaticIamGrantsForDefaultServiceAccounts constraint stops default service accounts getting Editor.",
-      "tags": [
-        "default-service-accounts",
-        "least-privilege",
-        "organization-policy"
-      ],
-      "source": "curated",
-      "question": "When projects enable Compute Engine, the default compute service account is automatically granted the Editor role. Security wants that automatic grant to stop in every new project in the organisation. What should you do?",
-      "options": {
-        "A": "Enforce iam.automaticIamGrantsForDefaultServiceAccounts.",
-        "B": "Delete the default service account in every project after it is created.",
-        "C": "Add a deny policy on the Editor role for all service accounts.",
-        "D": "Enable Data Access audit logs so the grant is detected."
-      },
-      "correct_answer": "A",
-      "explanation": {
-        "summary": "This boolean constraint prevents default service accounts from receiving the Editor role automatically when they are created, so new projects start without that broad grant.",
-        "option_breakdown": {
-          "A": "Correct. The documented guardrail for exactly this automatic grant.",
-          "B": "Deleting it breaks workloads that expect it and does not change the default for future projects.",
-          "C": "Deny policies deny permissions, not roles, and a blanket rule on Editor's permissions would break legitimate users.",
-          "D": "Detection after the fact does not stop the grant."
-        },
-        "gcloud_command": "gcloud resource-manager org-policies enable-enforce iam.automaticIamGrantsForDefaultServiceAccounts \\\n  --organization=ORG_ID",
-        "doc_ref": "https://cloud.google.com/resource-manager/docs/organization-policy/restricting-service-accounts"
       }
     },
     {
@@ -1348,38 +1220,6 @@
         },
         "gcloud_command": "gcloud iam workload-identity-pools providers create-x509 onprem-ca --workload-identity-pool=onprem \\\n  --location=global --trust-store-config-path=trust_store.yaml \\\n  --attribute-mapping=\"google.subject=assertion.subject.dn.cn\"",
         "doc_ref": "https://cloud.google.com/iam/docs/workload-identity-federation-with-x509-certificates"
-      }
-    },
-    {
-      "id": "ace-s4-031",
-      "title": "Granting a key role to a service agent that does not exist yet",
-      "objective": "4.2",
-      "subtopic": "Creating Service Accounts",
-      "summary": "Force-create a service agent with gcloud beta services identity create before its first use.",
-      "tags": [
-        "cmek",
-        "gcloud",
-        "service-agents"
-      ],
-      "source": "curated",
-      "question": "Terraform must grant the Pub/Sub service agent access to a Cloud KMS key before the first CMEK-protected topic is created, but the agent does not exist yet in the new project, so the grant fails. What should the pipeline do first?",
-      "options": {
-        "A": "Provision the Pub/Sub service agent on demand first.",
-        "B": "Create a user-managed service account named like the Pub/Sub service agent.",
-        "C": "Grant the key role to the project's default Compute Engine service account instead.",
-        "D": "Wait 24 hours for the service agent to appear on its own."
-      },
-      "correct_answer": "A",
-      "explanation": {
-        "summary": "services identity create provisions the product's Google-managed service agent on demand, so it can be granted roles before the service first uses it.",
-        "option_breakdown": {
-          "A": "Correct. services identity create provisions the product's Google-managed service agent on demand, so it can be granted roles before the service first uses it.",
-          "B": "Service agents live in Google-managed domains; you cannot create one yourself.",
-          "C": "The Compute Engine account is not the identity Pub/Sub uses for the key.",
-          "D": "Agents are created on first use or on request, not after a delay."
-        },
-        "gcloud_command": "gcloud beta services identity create --service=pubsub.googleapis.com --project=P",
-        "doc_ref": "https://cloud.google.com/iam/docs/create-service-agents"
       }
     },
     {
@@ -2051,7 +1891,7 @@
           "D": "Keys should not be stored in buckets, and lifecycle rules do not revoke them."
         },
         "gcloud_command": "gcloud resource-manager org-policies allow iam.serviceAccountKeyExpiryHours 2160h --organization=ORG_ID",
-        "doc_ref": "https://docs.cloud.google.com/iam/docs/service-account-keys#key-expiry"
+        "doc_ref": "https://docs.cloud.google.com/resource-manager/docs/organization-policy/restricting-service-accounts"
       }
     },
     {
@@ -2212,6 +2052,38 @@
         },
         "gcloud_command": "permissions:\n  contents: read\n  id-token: write\nsteps:\n- uses: google-github-actions/auth@v2\n  with:\n    workload_identity_provider: projects/NUM/locations/global/workloadIdentityPools/github/providers/gh",
         "doc_ref": "https://github.com/google-github-actions/auth"
+      }
+    },
+    {
+      "id": "ace-s4-059",
+      "title": "Read-only access to Cloud Run and nothing else",
+      "objective": "4.1",
+      "subtopic": "Role Types and Custom Roles",
+      "summary": "A product's predefined viewer role grants read-only access to that product only, unlike the basic Viewer role.",
+      "tags": [
+        "cloud-run",
+        "iam",
+        "predefined-roles"
+      ],
+      "source": "curated",
+      "question": "An auditor must be able to see the configuration of the Cloud Run services in a project, and nothing about its other resources. Which role should you grant on the project?",
+      "options": {
+        "A": "The basic Viewer role.",
+        "B": "Cloud Run Viewer.",
+        "C": "Cloud Run Developer.",
+        "D": "Security Reviewer."
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "Predefined roles are scoped to one product. Cloud Run Viewer (roles/run.viewer) reads Cloud Run resources only.",
+        "option_breakdown": {
+          "A": "Basic Viewer reads nearly every resource in the project, far beyond Cloud Run.",
+          "B": "Correct. It grants read access to Cloud Run services and nothing else.",
+          "C": "Developer can deploy and change services, not just view them.",
+          "D": "Security Reviewer reads IAM policies across resources, not Cloud Run configuration."
+        },
+        "gcloud_command": "gcloud projects add-iam-policy-binding P --member='user:auditor@example.com' --role='roles/run.viewer'",
+        "doc_ref": "https://docs.cloud.google.com/run/docs/reference/iam/roles"
       }
     }
   ]
