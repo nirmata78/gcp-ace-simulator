@@ -32,19 +32,24 @@ If a release does more than one of these, the largest bump wins.
   separate session that didn't write it.
   **Exception for the repository owner:** on the owner's own changes, an AI tool such as Claude Code counts as the
   reviewer and may merge once CI is green, even if it also wrote the change.
-- **CI must be green** before merging: `pytest -q`, `python scripts/kb.py check`, `python scripts/kb.py blueprint --min 3 --strict` and, when the image's inputs change, `pytest tests/container`.
+- **CI must be green** before merging: `pytest -q`, `python scripts/kb.py check`, `python scripts/kb.py lint`,
+  `python scripts/kb.py blueprint --min 3 --strict` and, when the image's inputs change, `pytest tests/container`.
 - **Bug fixes and new behaviour come with a test.** If CI doesn't check it, it can break unnoticed.
 - **Treat coverage as a signal, not a goal.** Use it to find untested code, and don't chase a number
   ([Google's guidance](https://testing.googleblog.com/2020/08/code-coverage-best-practices.html)).
 - **Add a line to `CHANGELOG.md`** under `Unreleased` for anything a user would notice.
+- **Question changes follow [the question standard](docs/question-standard.md)**: a new question gets a new id
+  (`kb.py add` mints it, `ace-x-NNN` for a cross-domain one), a removed id goes to `data/retired.json` and is never
+  reused, and `kb.py lint` must report no errors.
 
 ## Cutting a release
 
 Start from an up-to-date `main` with CI green.
 
 1. **Pick the version** from the table above.
-2. **Open a pull request** that sets `VERSION` and moves `Unreleased` in `CHANGELOG.md` to a new dated heading. Merge it
-   once CI passes. A test fails if the two disagree.
+2. **Set the version** in a pull request: `VERSION`, and `Unreleased` in `CHANGELOG.md` moved to a new dated heading
+   with its compare link at the bottom. It can be the last commit of the feature pull request, or a pull request of
+   its own. Merge it once CI passes. A test fails if the two disagree.
 3. **Tag the merge commit and publish:**
 
    ```bash
@@ -57,6 +62,8 @@ Start from an up-to-date `main` with CI green.
    ```
 
 4. **Check it:** clone the tag somewhere fresh, run the tests and sit a short exam.
+5. **A version is released only when its tag and GitHub release exist.** A dated heading in the changelog without a
+   tag is not a release: tag the commit that set that version and publish it, as was done late for 1.1.0.
 
 ## If a release is bad
 
@@ -75,7 +82,5 @@ Only the latest release is supported.
 | **1.0.0** | First release: the simulator, the question bank and the theory course | [Changelog](CHANGELOG.md) |
 | 1.0.1 | Corrections from verifying the five newest questions | [#2](https://github.com/nirmata78/gcp-ace-simulator/issues/2) |
 | **1.1.0** | Docker from a clone with `bin/start.sh`, the review report with theory and video links, the study panel | [Changelog](CHANGELOG.md) |
-| 1.2.0 | A published image anyone can pull in one line, and the rest of the tech debt | [#7](https://github.com/nirmata78/gcp-ace-simulator/issues/7), [#3](https://github.com/nirmata78/gcp-ace-simulator/issues/3), [plan](docs/plans/v1.1.0-docker.yaml) |
-| Next MINOR | Rewritten questions from the provenance review | [#1](https://github.com/nirmata78/gcp-ace-simulator/issues/1) |
-
-The order of the last two can swap. Whichever lands first takes the next MINOR number.
+| **1.2.0** | The reviewed bank (question standard, the 104 settled), multiple-select and cross-domain questions, draws that avoid seen questions, the in-app score report | [#1](https://github.com/nirmata78/gcp-ace-simulator/issues/1), [Changelog](CHANGELOG.md) |
+| 1.3.0 | A published image anyone can pull in one line, and the rest of the tech debt | [#7](https://github.com/nirmata78/gcp-ace-simulator/issues/7), [#3](https://github.com/nirmata78/gcp-ace-simulator/issues/3), [plan](docs/plans/v1.1.0-docker.yaml) |

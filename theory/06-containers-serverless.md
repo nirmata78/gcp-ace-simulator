@@ -42,7 +42,7 @@ VMs running your Pods. The two modes differ in who owns those nodes.
 | **Private nodes** | Nodes have **internal IPs only** (`--enable-private-nodes`); they need **Cloud NAT** to pull images from the internet, and Private Google Access for Artifact Registry |
 | **Control-plane endpoint** | Public endpoint limited by **authorized networks**, a private endpoint only (`--enable-private-endpoint`), or the **DNS-based endpoint** secured by IAM |
 | **VPC-native** | Pods and Services take IPs from subnet **secondary ranges** (alias IPs) — the default |
-| **Release channel** | Rapid · **Regular** (default) · Stable · Extended; with maintenance windows and exclusions |
+| **Release channel** | Rapid · **Regular** (default) · Stable · Extended; with maintenance windows and exclusions. An exclusion's scope is *no upgrades*, *no minor upgrades* or *no minor or node upgrades* (control-plane patches still allowed); channel clusters can't turn off node auto-upgrade |
 
 {: .cmds }
 | Task | Command |
@@ -195,7 +195,7 @@ A **node pool** is a group of identically configured nodes — a managed instanc
 | Task | How |
 |:------------------------------------------|:----------------------------------------------------------------|
 | Add capacity of a **new kind** (GPUs, high memory, Spot, Arm) | `gcloud container node-pools create` with the new machine type and labels / taints |
-| Change machine type of existing nodes | **Create a new pool**, cordon and drain the old one, delete it — machine type is not editable in place |
+| Change machine type of existing nodes | `gcloud container node-pools update --machine-type` recreates the nodes with the pool's upgrade strategy (*verify*). To test first and keep a fallback, **create a new pool**, cordon and drain the old one, delete it later |
 | Resize | `gcloud container clusters resize CLUSTER --node-pool=POOL --num-nodes=N` |
 | Autoscale | `--enable-autoscaling --min-nodes --max-nodes` (per zone), or `--total-min-nodes` / `--total-max-nodes` |
 | Keep workloads on the right pool | **Node labels + `nodeSelector` / affinity**; **taints + tolerations** to keep everything else off |
@@ -316,9 +316,9 @@ idle.
 | **Ingress** | `all` · `internal` (VPC and some Google sources only) · `internal-and-cloud-load-balancing` |
 | **Egress to a VPC** | **Direct VPC egress** (recommended) or a Serverless VPC Access connector — for private IPs such as Cloud SQL or Memorystore |
 | **Static outbound IP** | Route all egress through the VPC and **Cloud NAT** with a static address |
-| **Custom domain / CDN / WAF** | A **global external Application LB with a serverless NEG** — then Cloud CDN, Cloud Armor, IAP |
+| **Custom domain / CDN / WAF** | A **global external Application LB with a serverless NEG** — then Cloud CDN, Cloud Armor, IAP (enable IAP on the backend service and grant users **IAP-secured Web App User**, `roles/iap.httpsResourceAccessor`; the same works for MIG backends) |
 | **Identity** | A **dedicated service account** per service, never the default Compute account |
-| **Secrets** | `--set-secrets=DB_PASS=db-password:latest` (env) or `/secrets/db=db-password:latest` (volume) ([§3.13](03-identity-access.md#s3-13)) |
+| **Secrets** | `--set-secrets=DB_PASS=db-password:latest` (env) or `/secrets/db=db-password:latest` (volume) ([§3.13](03-identity-access.md#s3-13)). An env var is resolved when the instance **starts**; a volume is read from Secret Manager **each time the file is read**, so it picks up rotation without a deploy. The runtime service account needs **Secret Accessor** on the secret |
 
 {: .tip }
 > *"Service A must call private service B"* — grant **B's `run.invoker` to A's service account**; A attaches an ID
@@ -473,7 +473,7 @@ Run, with promotion between targets, approvals and **canary** strategies.
 | 10% to v2 on GKE | **Gateway API HTTPRoute weights** |
 | More replicas on load | **HPA**; right-size requests: **VPA** |
 | Autopilot Pod got more memory than requested | **Minimum / ratio enforcement** on requests |
-| Change node machine type | **New node pool**, drain old |
+| Change node machine type | `node-pools update --machine-type` recreates nodes (upgrade strategy); to keep a fallback, **new node pool**, drain old |
 | `ImagePullBackOff` 403 from `pkg.dev` | Node SA needs **`artifactregistry.reader`** |
 | Pod reads a bucket, no key | **Workload Identity Federation for GKE** |
 | Source to URL, one command | `gcloud run deploy --source .` |

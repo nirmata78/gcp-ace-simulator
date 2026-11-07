@@ -161,6 +161,8 @@ transitions on that bucket.
 
 **Tools:** the **Pricing Calculator** before building; a BigQuery **dry run** before querying; **billing export**
 after; **Storage Insights** and Active Assist recommendations to find waste.
+To put a hard limit on BigQuery on-demand spend, set **custom quotas** on query usage per day, per project or per user:
+once reached, further queries fail until the next day. A budget only alerts.
 
 {: .cmds }
 | Task | Command |
@@ -375,7 +377,7 @@ Volume / usable bandwidth = days.  Acceptable?
 | Delivery types | **Pull** (StreamingPull), **push** to an HTTPS endpoint (with OIDC auth), or **export** straight into **BigQuery** or **Cloud Storage** |
 | Acknowledgement | At-least-once by default; **ack deadline** 10 s default, up to 600 s; **exactly-once** available for pull |
 | Retention | Unacked messages kept **7 days** by default (up to 31); topics can retain messages for replay |
-| Failure handling | Retry policy (immediate or exponential backoff); **dead-letter topic** after N delivery attempts |
+| Failure handling | Retry policy (immediate or exponential backoff); **dead-letter topic** after N delivery attempts. The **Pub/Sub service agent** forwards the messages, so it needs **Publisher** on the dead-letter topic and **Subscriber** on the source subscription |
 | Ordering | **Ordering keys** preserve order per key |
 | Replay | **Snapshots** and **seek** to a time |
 
