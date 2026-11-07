@@ -8,6 +8,23 @@ All notable changes to this project are recorded here. The format follows
 
 ### Changed
 
+- **Every question was reviewed** against a new [question standard](docs/question-standard.md); 461 were revised and
+  the review is recorded per question in `docs/reviews/2026-11-bank-review.json`. Answer options no longer give the
+  answer away by length (the longest option was the key in 60% of questions; now 26%, about chance). Stems name the
+  product they mean ("GKE cluster", not "cluster"), state the facts the answer depends on, and options describe a
+  decision instead of a command line to spell. Template questions that shared distractors now have their own.
+- **Answer keys corrected** where a second option was also right or the key was wrong, among them `ace-dom2-021`
+  (Coldline was cheaper than the keyed Nearline), `ace-dom2-040` and `ace-dom2-042` (Autopilot also met the stem),
+  `ace-dom2-018` (the access pattern read two ways), `ace-dom1-015` (the scenario was impossible) and `ace-dom4-011`
+  (BigQuery data-read logs are on by default).
+- **34 questions removed** because they shared a scenario with an earlier public question set, and **29 new
+  questions** added, written from the guide and current documentation (issue #1). The bank has 586 questions; every
+  guide bullet still has at least three. Removed ids are never reused (`data/retired.json`).
+- `python scripts/kb.py lint` checks questions against the standard; `scripts/audit_overlap.py` repeats the
+  provenance audit against local reference files.
+- Theory: GKE can now change a node pool's machine type in place (the nodes are recreated); a new pool and a drain is
+  still the way to keep a fallback.
+
 - The score report opens in the app instead of a browser tab: your score against the pass line, sections, timing,
   where to study next, then each reviewed question with every option explained, the course's theory, the command,
   the tell to spot next time and links to read and rewatch. **Missed and flagged** or **Every question**, with
@@ -28,6 +45,11 @@ All notable changes to this project are recorded here. The format follows
   and disabled states. The bottom bar's buttons are centred in it, with space between them.
 
 ### Fixed
+
+- **An answer was recorded wrongly in some new attempts.** Since the 2026-11-06 answer-key repair, a new attempt that
+  included one of the twelve repaired questions had that answer swapped when it was saved, as if it were an old record.
+  New attempts are now saved as answered, and affected attempts (finished after the repair shipped) are corrected once
+  when history is read.
 
 - Twelve questions had the answer key on a distractor whose explanation contradicted it ("Correct." on two options):
   `ace-dom1-033`, `ace-dom1-043`, `ace-dom2-005`, `ace-dom2-007`, `ace-dom2-021`, `ace-dom2-043`, `ace-dom2-053`,

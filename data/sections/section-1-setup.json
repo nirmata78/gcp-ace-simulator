@@ -1,8 +1,8 @@
 {
   "domain": "Section 1: Setting up a cloud solution environment",
   "version": 2,
-  "updated_at": "2026-11-06T18:34:51+00:00",
-  "count": 90,
+  "updated_at": "2026-11-07T14:36:24+00:00",
+  "count": 93,
   "questions": [
     {
       "id": "ace-dom1-001",
@@ -16,24 +16,24 @@
         "org-policy"
       ],
       "source": "curated",
-      "question": "A new security standard must apply to every project your company owns, including projects that will be created next year. You want to configure it once and not revisit it. At which level of the resource hierarchy should you act?",
+      "question": "A new organisation policy must apply to every project your company owns, including projects that will be created next year in folders that don't exist yet. You want to set it once and never revisit it. Where should you set the policy?",
       "options": {
-        "A": "Apply the configuration at the folder containing the affected projects.",
-        "B": "Apply the configuration at the organisation node.",
-        "C": "Apply the configuration on each individual project.",
-        "D": "Apply the configuration directly on the individual resource."
+        "A": "On each existing project, and in the script that creates new projects.",
+        "B": "On the organisation resource.",
+        "C": "On the folder that holds the production projects.",
+        "D": "On a tag that you bind to each project as it is created."
       },
       "correct_answer": "B",
       "explanation": {
-        "summary": "IAM policies and organisation policies are inherited down the hierarchy, so a binding at the organisation node automatically covers every current and future descendant.",
+        "summary": "Organisation policies set on the organisation resource are inherited by every folder and project under it, including ones created later, so one setting covers the whole estate.",
         "option_breakdown": {
-          "A": "A folder scopes the setting to one branch of the hierarchy — wrong when the requirement is company-wide, and wrong when it must apply to exactly one project.",
-          "B": "Correct. IAM policies and organisation policies are inherited down the hierarchy, so a binding at the organisation node automatically covers every current and future descendant.",
-          "C": "Per-project configuration does not inherit to projects created later, so it drifts as the estate grows and multiplies the administrative effort.",
-          "D": "Resource-level configuration is the narrowest scope available and cannot express an inheritance rule for a group of projects."
+          "A": "It works only while every future project goes through that script; a project created any other way is missed.",
+          "B": "Correct. A policy on the organisation resource is inherited by every folder and project beneath it, present and future.",
+          "C": "Projects in other folders, or directly under the organisation, don't inherit from that folder.",
+          "D": "A tag-conditioned policy still depends on someone binding the tag to each new project, which is the step to avoid."
         },
-        "gcloud_command": "gcloud organizations add-iam-policy-binding ORG_ID \\\n  --member='group:sec@example.com' --role='roles/iam.securityReviewer'",
-        "doc_ref": "https://cloud.google.com/resource-manager/docs/cloud-platform-resource-hierarchy"
+        "gcloud_command": "gcloud org-policies set-policy policy.yaml\n# policy.yaml names organizations/ORG_ID/policies/CONSTRAINT_NAME",
+        "doc_ref": "https://cloud.google.com/resource-manager/docs/organization-policy/overview"
       }
     },
     {
@@ -80,24 +80,24 @@
         "hierarchy"
       ],
       "source": "curated",
-      "question": "Workloads that process regulated data must be separated from the rest of the estate so a stricter set of controls can be inherited by every project holding that data, and so the compliance boundary is visible in the hierarchy itself. How should you structure this?",
+      "question": "Projects that hold regulated data must inherit a stricter set of IAM and organisation policies, and the compliance boundary must be visible in the resource hierarchy. New regulated projects are created every quarter. How should you structure this?",
       "options": {
-        "A": "Apply the configuration on each individual project.",
-        "B": "Apply the configuration directly on the individual resource.",
-        "C": "Apply the configuration at the organisation node.",
-        "D": "Apply the configuration at the folder containing the affected projects."
+        "A": "Label each regulated project regulated=true and target the policies at that label.",
+        "B": "Put the regulated workloads in their own VPC network inside the existing projects.",
+        "C": "Set the stricter policies on the organisation resource.",
+        "D": "Create a Regulated folder, set the policies there, and create those projects in it."
       },
       "correct_answer": "D",
       "explanation": {
-        "summary": "Grouping the regulated projects under a dedicated folder creates a single inheritance point for the stricter controls and makes the compliance boundary explicit in the hierarchy.",
+        "summary": "A folder is an inheritance point: policies set on it apply to every project inside it, now and later, and the folder makes the boundary visible in the hierarchy.",
         "option_breakdown": {
-          "A": "Per-project configuration does not inherit to projects created later, so it drifts as the estate grows and multiplies the administrative effort.",
-          "B": "Resource-level configuration is the narrowest scope available and cannot express an inheritance rule for a group of projects.",
-          "C": "The organisation node scopes a setting to every project the company owns, which is broader than a departmental or single-project requirement and awkward to carve exceptions out of.",
-          "D": "Correct. Grouping the regulated projects under a dedicated folder creates a single inheritance point for the stricter controls and makes the compliance boundary explicit in the hierarchy."
+          "A": "Labels organise billing and filtering; IAM and organisation policies are not inherited through labels.",
+          "B": "A separate network isolates traffic, not IAM or policy, and the regulated data still shares projects with everything else.",
+          "C": "Every project in the company would inherit the stricter policies, not only the regulated ones.",
+          "D": "Correct. Every project created in the folder inherits its policies, and the folder itself shows the compliance boundary."
         },
-        "gcloud_command": "gcloud resource-manager folders create --display-name='regulated' --organization=ORG_ID",
-        "doc_ref": "https://cloud.google.com/architecture/security-foundations"
+        "gcloud_command": "gcloud resource-manager folders create --display-name=Regulated --organization=ORG_ID",
+        "doc_ref": "https://cloud.google.com/resource-manager/docs/creating-managing-folders"
       }
     },
     {
@@ -112,24 +112,24 @@
         "sandbox"
       ],
       "source": "curated",
-      "question": "One sandbox project needs a permissive exception for experimentation. The exception must not reach any other project, now or in the future. Where should you configure it?",
+      "question": "The organisation denies external IP addresses on VMs through an organisation policy. One sandbox project needs that relaxed for experiments, and the exception must not reach any other project, now or in the future. Where should you set the exception?",
       "options": {
-        "A": "Apply the configuration on each individual project.",
-        "B": "Apply the configuration at the organisation node.",
-        "C": "Apply the configuration at the folder containing the affected projects.",
-        "D": "Apply the configuration directly on the individual resource."
+        "A": "On the sandbox project, overriding the inherited policy.",
+        "B": "On the folder that contains the sandbox project.",
+        "C": "On the organisation resource.",
+        "D": "On each VM in the sandbox project."
       },
       "correct_answer": "A",
       "explanation": {
-        "summary": "The project is the narrowest inheritance boundary that still carries IAM and organisation policy, so an exception scoped there cannot leak upward or sideways.",
+        "summary": "A policy set on a project can override the one it inherits, and it applies to that project only, so the exception cannot reach anything else.",
         "option_breakdown": {
-          "A": "Correct. The project is the narrowest inheritance boundary that still carries IAM and organisation policy, so an exception scoped there cannot leak upward or sideways.",
-          "B": "The organisation node scopes a setting to every project the company owns, which is broader than a departmental or single-project requirement and awkward to carve exceptions out of.",
-          "C": "A folder scopes the setting to one branch of the hierarchy — wrong when the requirement is company-wide, and wrong when it must apply to exactly one project.",
-          "D": "Resource-level configuration is the narrowest scope available and cannot express an inheritance rule for a group of projects."
+          "A": "Correct. A project-level policy overrides the inherited one for that project and nothing else.",
+          "B": "Every other project in that folder, and any added to it later, would inherit the relaxed policy.",
+          "C": "Relaxing it on the organisation resource removes the protection everywhere.",
+          "D": "Organisation policies are set on the organisation, folders and projects; there is no policy on an individual VM."
         },
-        "gcloud_command": "gcloud projects add-iam-policy-binding SANDBOX_ID \\\n  --member='user:dev@example.com' --role='roles/editor'",
-        "doc_ref": "https://cloud.google.com/resource-manager/docs/creating-managing-projects"
+        "gcloud_command": "gcloud org-policies set-policy sandbox-policy.yaml\n# name: projects/SANDBOX_ID/policies/compute.vmExternalIpAccess, with an allow-all rule",
+        "doc_ref": "https://cloud.google.com/resource-manager/docs/organization-policy/understanding-hierarchy"
       }
     },
     {
@@ -176,24 +176,24 @@
         "org-policy"
       ],
       "source": "curated",
-      "question": "Engineers keep attaching external IP addresses to development VMs. Security wants that blocked everywhere except in one bastion project, and wants the block enforced at creation time rather than caught in review. Which organisation policy constraint should you enforce?",
+      "question": "Engineers keep creating development VMs with external IP addresses. Security wants VM creation with an external IP to fail in every project except one bastion project. What should you do?",
       "options": {
-        "A": "constraints/iam.allowedPolicyMemberDomains",
-        "B": "constraints/iam.disableServiceAccountKeyCreation",
-        "C": "constraints/gcp.resourceLocations",
-        "D": "constraints/compute.vmExternalIpAccess"
+        "A": "Create a firewall rule in each project that denies ingress from 0.0.0.0/0.",
+        "B": "Enforce the constraint compute.skipDefaultNetworkCreation on the organisation.",
+        "C": "Remove the default network from every project except the bastion project.",
+        "D": "Enforce compute.vmExternalIpAccess on the organisation and override it in the bastion project."
       },
       "correct_answer": "D",
       "explanation": {
-        "summary": "compute.vmExternalIpAccess is a list constraint that denies external IPs by default and can allow-list specific instances, which is exactly the bastion exception pattern.",
+        "summary": "The compute.vmExternalIpAccess list constraint makes creating a VM with an external IP fail. Denied at the organisation and overridden on the bastion project, it blocks external IPs everywhere else.",
         "option_breakdown": {
-          "A": "Domain restricted sharing limits which identity domains may appear in IAM policies; it does not restrict how resources are configured.",
-          "B": "This constraint blocks creation of user-managed service account keys; it has no effect on networking, storage or location.",
-          "C": "Resource Location Restriction limits the regions in which resources may be created; it does not control identity or networking behaviour.",
-          "D": "Correct. compute.vmExternalIpAccess is a list constraint that denies external IPs by default and can allow-list specific instances, which is exactly the bastion exception pattern."
+          "A": "A firewall rule filters traffic; the VMs still get external IPs, and the rule must be repeated per project.",
+          "B": "It only stops new projects getting a default network; VMs on other networks can still have external IPs.",
+          "C": "Custom networks still allow external IPs, so removing the default network blocks nothing.",
+          "D": "Correct. The constraint rejects external IPs at creation time, and the project-level override exempts only the bastion project."
         },
-        "gcloud_command": "gcloud resource-manager org-policies deny compute.vmExternalIpAccess --organization=ORG_ID",
-        "doc_ref": "https://cloud.google.com/compute/docs/ip-addresses/reserve-static-external-ip-address"
+        "gcloud_command": "gcloud org-policies set-policy deny-external-ip.yaml\n# name: organizations/ORG_ID/policies/compute.vmExternalIpAccess, rules: - denyAll: true",
+        "doc_ref": "https://cloud.google.com/resource-manager/docs/organization-policy/org-policy-constraints"
       }
     },
     {
@@ -208,23 +208,23 @@
         "org-policy"
       ],
       "source": "curated",
-      "question": "An audit requires that IAM policies anywhere in the organisation never contain identities from outside the company's own Cloud Identity domain, and that attempts to add one are rejected rather than reported afterwards. Which constraint should you configure?",
+      "question": "An audit requires that IAM policies anywhere in the organisation never contain identities from outside the company's own Cloud Identity domain, and that attempts to add one are rejected rather than reported afterwards. What should you configure?",
       "options": {
-        "A": "constraints/iam.allowedPolicyMemberDomains",
-        "B": "constraints/gcp.resourceLocations",
-        "C": "constraints/compute.requireShieldedVm",
-        "D": "constraints/storage.publicAccessPrevention"
+        "A": "The constraint iam.allowedPolicyMemberDomains, set to the company's customer ID.",
+        "B": "A log-based alert on SetIamPolicy entries that add external members.",
+        "C": "A rule that only the security team holds Project IAM Admin.",
+        "D": "Workforce Identity Federation for the company's identity provider."
       },
       "correct_answer": "A",
       "explanation": {
-        "summary": "iam.allowedPolicyMemberDomains restricts policy members to the listed customer IDs, so any attempt to add an external account to an IAM policy is rejected at write time.",
+        "summary": "Domain restricted sharing (iam.allowedPolicyMemberDomains) limits IAM policy members to the listed customer IDs, so adding an external identity is rejected when the policy is written.",
         "option_breakdown": {
-          "A": "Correct. iam.allowedPolicyMemberDomains restricts policy members to the listed customer IDs, so any attempt to add an external account to an IAM policy is rejected at write time.",
-          "B": "Resource Location Restriction limits the regions in which resources may be created; it does not control identity or networking behaviour.",
-          "C": "This constraint forces Shielded VM features on new instances; it does not restrict addressing, identity or location.",
-          "D": "Public access prevention blocks anonymous and public access to Cloud Storage; it does not apply to Compute Engine or IAM."
+          "A": "Correct. The constraint rejects any IAM policy change that adds a member from outside the allowed customer IDs.",
+          "B": "An alert reports the change after it has happened; the requirement is to reject it.",
+          "C": "Fewer people can edit IAM, but those who can are still free to add external identities.",
+          "D": "Federation lets the company's own IdP users sign in; it does nothing to stop other domains being granted roles."
         },
-        "gcloud_command": "gcloud resource-manager org-policies set-policy policy.yaml --organization=ORG_ID",
+        "gcloud_command": "gcloud org-policies set-policy drs.yaml\n# name: organizations/ORG_ID/policies/iam.allowedPolicyMemberDomains, allowedValues: [CUSTOMER_ID]",
         "doc_ref": "https://cloud.google.com/resource-manager/docs/organization-policy/restricting-domains"
       }
     },
@@ -240,24 +240,24 @@
         "service-accounts"
       ],
       "source": "curated",
-      "question": "To push every team onto Workload Identity Federation, long-lived service account key files must no longer be creatable anywhere in the organisation. Which constraint should you enforce?",
+      "question": "To move every team onto keyless authentication, no one in the organisation may be able to create a downloadable service account key any more. Which control should you enforce?",
       "options": {
-        "A": "constraints/storage.publicAccessPrevention",
-        "B": "constraints/iam.disableServiceAccountKeyCreation",
-        "C": "constraints/compute.vmExternalIpAccess",
-        "D": "constraints/iam.allowedPolicyMemberDomains"
+        "A": "The constraint iam.disableServiceAccountKeyUpload.",
+        "B": "The constraint iam.disableServiceAccountKeyCreation.",
+        "C": "The constraint iam.serviceAccountKeyExpiryHours, set to 24 hours.",
+        "D": "Removal of the Service Account Key Admin role from every user."
       },
       "correct_answer": "B",
       "explanation": {
-        "summary": "iam.disableServiceAccountKeyCreation is the boolean constraint that removes the ability to mint downloadable service account keys, the root cause of most credential leaks.",
+        "summary": "iam.disableServiceAccountKeyCreation is the boolean constraint that stops anyone creating service account keys, wherever it is enforced.",
         "option_breakdown": {
-          "A": "Public access prevention blocks anonymous and public access to Cloud Storage; it does not apply to Compute Engine or IAM.",
-          "B": "Correct. iam.disableServiceAccountKeyCreation is the boolean constraint that removes the ability to mint downloadable service account keys, the root cause of most credential leaks.",
-          "C": "This constraint governs which VM instances may hold an external IP address; it says nothing about identity, storage or location.",
-          "D": "Domain restricted sharing limits which identity domains may appear in IAM policies; it does not restrict how resources are configured."
+          "A": "This blocks uploading your own public keys; Google-generated keys can still be created and downloaded.",
+          "B": "Correct. Enforced on the organisation, it stops service account key creation in every project.",
+          "C": "Keys can still be created; they just expire after a day.",
+          "D": "Owner, Editor and other roles also include iam.serviceAccountKeys.create, and a new grant could restore it."
         },
-        "gcloud_command": "gcloud resource-manager org-policies enable-enforce iam.disableServiceAccountKeyCreation --organization=ORG_ID",
-        "doc_ref": "https://cloud.google.com/iam/docs/best-practices-service-accounts"
+        "gcloud_command": "gcloud org-policies set-policy no-sa-keys.yaml\n# name: organizations/ORG_ID/policies/iam.disableServiceAccountKeyCreation, rules: - enforce: true",
+        "doc_ref": "https://cloud.google.com/iam/docs/keys-disable-enable"
       }
     },
     {
@@ -272,23 +272,23 @@
         "residency"
       ],
       "source": "curated",
-      "question": "Data residency rules require that all new resources be created only in European regions, enforced at creation rather than corrected later. Which constraint should you configure?",
+      "question": "Data residency rules require that all new resources in the organisation are created only in European locations, enforced at creation rather than corrected later. What should you configure?",
       "options": {
-        "A": "constraints/iam.allowedPolicyMemberDomains",
-        "B": "constraints/iam.disableServiceAccountKeyCreation",
-        "C": "constraints/gcp.resourceLocations",
-        "D": "constraints/compute.requireShieldedVm"
+        "A": "A default region of europe-west1 in every gcloud configuration.",
+        "B": "VPC subnets in European regions only.",
+        "C": "The constraint gcp.resourceLocations, allowing the in:eu-locations group.",
+        "D": "A budget alert for spend on non-European SKUs."
       },
       "correct_answer": "C",
       "explanation": {
-        "summary": "gcp.resourceLocations is the list constraint that restricts the locations in which resources may be created, enforcing residency at creation time rather than after the fact.",
+        "summary": "gcp.resourceLocations restricts where location-based resources can be created, so creation outside the allowed locations fails.",
         "option_breakdown": {
-          "A": "Domain restricted sharing limits which identity domains may appear in IAM policies; it does not restrict how resources are configured.",
-          "B": "This constraint blocks creation of user-managed service account keys; it has no effect on networking, storage or location.",
-          "C": "Correct. gcp.resourceLocations is the list constraint that restricts the locations in which resources may be created, enforcing residency at creation time rather than after the fact.",
-          "D": "This constraint forces Shielded VM features on new instances; it does not restrict addressing, identity or location."
+          "A": "A client default only fills in a missing flag; anyone can still pass another region.",
+          "B": "Subnets constrain VMs on that network, not buckets, datasets or other services.",
+          "C": "Correct. Creation in a location outside the allowed group is rejected.",
+          "D": "An alert reports spend after the resources exist; nothing is blocked."
         },
-        "gcloud_command": "gcloud resource-manager org-policies set-policy locations.yaml --organization=ORG_ID",
+        "gcloud_command": "gcloud org-policies set-policy locations.yaml\n# name: organizations/ORG_ID/policies/gcp.resourceLocations, allowedValues: [in:eu-locations]",
         "doc_ref": "https://cloud.google.com/resource-manager/docs/organization-policy/defining-locations"
       }
     },
@@ -304,23 +304,23 @@
         "org-policy"
       ],
       "source": "curated",
-      "question": "Every new Compute Engine instance must boot with secure boot, vTPM and integrity monitoring enabled, and instance creation should fail if they are not. Which constraint should you enforce?",
+      "question": "Every new Compute Engine VM in the organisation must boot with Secure Boot, vTPM and integrity monitoring, and VM creation must fail if it would not. What should you do?",
       "options": {
-        "A": "constraints/gcp.resourceLocations",
-        "B": "constraints/storage.publicAccessPrevention",
-        "C": "constraints/compute.vmExternalIpAccess",
-        "D": "constraints/compute.requireShieldedVm"
+        "A": "Publish only Shielded VM-capable images in the company's image project.",
+        "B": "Enforce the constraint compute.requireOsLogin on the organisation.",
+        "C": "Enable Confidential VM in every instance template.",
+        "D": "Enforce the constraint compute.requireShieldedVm on the organisation."
       },
       "correct_answer": "D",
       "explanation": {
-        "summary": "compute.requireShieldedVm forces instance creation to fail unless Shielded VM protections are enabled, making the hardening non-optional.",
+        "summary": "compute.requireShieldedVm makes VM creation fail unless the VM uses a Shielded VM image with Secure Boot, vTPM and integrity monitoring enabled.",
         "option_breakdown": {
-          "A": "Resource Location Restriction limits the regions in which resources may be created; it does not control identity or networking behaviour.",
-          "B": "Public access prevention blocks anonymous and public access to Cloud Storage; it does not apply to Compute Engine or IAM.",
-          "C": "This constraint governs which VM instances may hold an external IP address; it says nothing about identity, storage or location.",
-          "D": "Correct. compute.requireShieldedVm forces instance creation to fail unless Shielded VM protections are enabled, making the hardening non-optional."
+          "A": "Capable images allow Shielded VM, but a VM can still be created with the options turned off.",
+          "B": "OS Login controls SSH access, not how a VM boots.",
+          "C": "Confidential VM encrypts memory in use; it doesn't enforce Secure Boot, and templates don't stop other creation paths.",
+          "D": "Correct. The constraint rejects any new VM that would not boot with the Shielded VM protections."
         },
-        "gcloud_command": "gcloud resource-manager org-policies enable-enforce compute.requireShieldedVm --organization=ORG_ID",
+        "gcloud_command": "gcloud org-policies set-policy shielded.yaml\n# name: organizations/ORG_ID/policies/compute.requireShieldedVm, rules: - enforce: true",
         "doc_ref": "https://cloud.google.com/compute/shielded-vm/docs/shielded-vm"
       }
     },
@@ -336,23 +336,23 @@
         "public-access"
       ],
       "source": "curated",
-      "question": "No Cloud Storage bucket in the organisation may ever be made readable by allUsers or allAuthenticatedUsers, and project owners must not be able to opt out. Which constraint should you enforce?",
+      "question": "No Cloud Storage bucket in the organisation may ever be readable by allUsers or allAuthenticatedUsers, and project owners must not be able to opt out. What should you enforce?",
       "options": {
-        "A": "constraints/storage.publicAccessPrevention",
-        "B": "constraints/compute.vmExternalIpAccess",
-        "C": "constraints/iam.allowedPolicyMemberDomains",
-        "D": "constraints/iam.disableServiceAccountKeyCreation"
+        "A": "The constraint storage.publicAccessPrevention on the organisation.",
+        "B": "The constraint storage.uniformBucketLevelAccess on the organisation.",
+        "C": "Public access prevention on each existing bucket.",
+        "D": "An alert on audit log entries that add allUsers to a bucket."
       },
       "correct_answer": "A",
       "explanation": {
-        "summary": "storage.publicAccessPrevention enforces public access prevention on buckets across the scope it is applied to, blocking allUsers and allAuthenticatedUsers grants.",
+        "summary": "Enforcing storage.publicAccessPrevention on the organisation turns on public access prevention for every bucket under it, and project owners cannot turn it off.",
         "option_breakdown": {
-          "A": "Correct. storage.publicAccessPrevention enforces public access prevention on buckets across the scope it is applied to, blocking allUsers and allAuthenticatedUsers grants.",
-          "B": "This constraint governs which VM instances may hold an external IP address; it says nothing about identity, storage or location.",
-          "C": "Domain restricted sharing limits which identity domains may appear in IAM policies; it does not restrict how resources are configured.",
-          "D": "This constraint blocks creation of user-managed service account keys; it has no effect on networking, storage or location."
+          "A": "Correct. Inherited by every project, it blocks allUsers and allAuthenticatedUsers access to all buckets, current and new.",
+          "B": "Uniform access removes ACLs, but IAM can still grant allUsers.",
+          "C": "New buckets don't get it, and project owners can turn it off on their buckets.",
+          "D": "An alert reports a public bucket after it exists; nothing is prevented."
         },
-        "gcloud_command": "gcloud resource-manager org-policies enable-enforce storage.publicAccessPrevention --organization=ORG_ID",
+        "gcloud_command": "gcloud org-policies set-policy pap.yaml\n# name: organizations/ORG_ID/policies/storage.publicAccessPrevention, rules: - enforce: true",
         "doc_ref": "https://cloud.google.com/storage/docs/public-access-prevention"
       }
     },
@@ -368,55 +368,23 @@
         "least-privilege"
       ],
       "source": "curated",
-      "question": "A team lead must be able to attach newly created projects to the central billing account, but company policy says they must not be able to see the organisation's spend. Which role should you grant, following least privilege?",
+      "question": "A team lead creates new projects and is their owner. They must also be able to link those projects to the central billing account, but company policy says they must not see the organisation's spend. Which role should you grant on the billing account, following least privilege?",
       "options": {
-        "A": "Grant the Billing Account Administrator role on the billing account.",
-        "B": "Grant the Billing Account User role on the billing account.",
-        "C": "Grant the Billing Account Viewer role on the billing account.",
-        "D": "Grant the Project Billing Manager role on the project."
+        "A": "Billing Account Administrator",
+        "B": "Billing Account User",
+        "C": "Billing Account Viewer",
+        "D": "Billing Account Costs Manager"
       },
       "correct_answer": "B",
       "explanation": {
-        "summary": "Billing Account User is precisely the link-projects permission with no read access to cost data, which is the least-privilege answer for this task.",
+        "summary": "Linking a project needs permission on the project (which an owner has) and on the billing account. Billing Account User gives the billing-account side without access to cost data.",
         "option_breakdown": {
-          "A": "Billing Account Administrator can link and unlink projects, manage billing users and close the account — far more than a read-only or single-task need.",
-          "B": "Correct. Billing Account User is precisely the link-projects permission with no read access to cost data, which is the least-privilege answer for this task.",
-          "C": "Billing Account Viewer is read-only on billing data; it cannot link projects or change budgets, so it fails any requirement involving modification.",
-          "D": "Project Billing Manager lets a principal change which billing account a project uses, with no rights over the billing account's own data or settings."
+          "A": "It can link projects, but it also shows all costs and manages the account, which policy forbids.",
+          "B": "Correct. It allows linking projects to the account and nothing that reveals spend.",
+          "C": "It shows exactly the spend the lead must not see, and it can't link projects.",
+          "D": "It manages budgets and views costs, which breaks the policy, and it isn't the linking permission."
         },
-        "gcloud_command": "gcloud billing accounts add-iam-policy-binding BILLING_ID \\\n  --member='user:lead@example.com' --role='roles/billing.user'",
-        "doc_ref": "https://cloud.google.com/billing/docs/how-to/billing-access"
-      }
-    },
-    {
-      "id": "ace-dom1-014",
-      "title": "Read-only cost reporting",
-      "objective": "1.2",
-      "subtopic": "Billing Accounts",
-      "summary": "Billing Account Viewer is read-only across the billing account, its cost data and its budgets.",
-      "tags": [
-        "billing",
-        "iam",
-        "reporting"
-      ],
-      "source": "curated",
-      "question": "A finance analyst needs to read cost and budget information for the whole billing account to build reports, but must not be able to change anything. Which role should you grant?",
-      "options": {
-        "A": "Grant the Project Billing Manager role on the project.",
-        "B": "Grant the Billing Account Creator role at the organisation node.",
-        "C": "Grant the Billing Account Viewer role on the billing account.",
-        "D": "Grant the Billing Account Administrator role on the billing account."
-      },
-      "correct_answer": "C",
-      "explanation": {
-        "summary": "Billing Account Viewer grants read-only access to the billing account, its cost data and its budgets, which is exactly a reporting role.",
-        "option_breakdown": {
-          "A": "Project Billing Manager lets a principal change which billing account a project uses, with no rights over the billing account's own data or settings.",
-          "B": "Billing Account Creator only permits creating new billing accounts; it conveys nothing about existing accounts or projects.",
-          "C": "Correct. Billing Account Viewer grants read-only access to the billing account, its cost data and its budgets, which is exactly a reporting role.",
-          "D": "Billing Account Administrator can link and unlink projects, manage billing users and close the account — far more than a read-only or single-task need."
-        },
-        "gcloud_command": "gcloud billing accounts add-iam-policy-binding BILLING_ID \\\n  --member='user:analyst@example.com' --role='roles/billing.viewer'",
+        "gcloud_command": "gcloud billing accounts add-iam-policy-binding BILLING_ACCOUNT_ID \\\n  --member='user:lead@example.com' --role='roles/billing.user'",
         "doc_ref": "https://cloud.google.com/billing/docs/how-to/billing-access"
       }
     },
@@ -432,23 +400,23 @@
         "projects"
       ],
       "source": "curated",
-      "question": "A project owner must be able to move their own project between two existing billing accounts, without gaining any rights on either account. What should you grant?",
+      "question": "Finance has granted a team lead Billing Account User on both of the company's billing accounts. The lead is not an owner of the project, but must be able to move it from one billing account to the other. Which role should you grant the lead on the project, following least privilege?",
       "options": {
-        "A": "Grant the Billing Account Administrator role on the billing account.",
-        "B": "Grant the Billing Account Viewer role on the billing account.",
-        "C": "Grant the Billing Account User role on the billing account.",
-        "D": "Grant the Project Billing Manager role on the project."
+        "A": "Owner",
+        "B": "Billing Account Administrator",
+        "C": "Editor",
+        "D": "Project Billing Manager"
       },
       "correct_answer": "D",
       "explanation": {
-        "summary": "Project Billing Manager is scoped to the project and controls only the project-to-billing-account association, leaving the billing accounts themselves untouched.",
+        "summary": "Changing a project's billing account needs permission on the billing account (Billing Account User) and on the project. Project Billing Manager is the project-side role that does only that.",
         "option_breakdown": {
-          "A": "Billing Account Administrator can link and unlink projects, manage billing users and close the account — far more than a read-only or single-task need.",
-          "B": "Billing Account Viewer is read-only on billing data; it cannot link projects or change budgets, so it fails any requirement involving modification.",
-          "C": "Billing Account User only allows attaching projects to the billing account; it grants no visibility into costs and no administrative capability.",
-          "D": "Correct. Project Billing Manager is scoped to the project and controls only the project-to-billing-account association, leaving the billing accounts themselves untouched."
+          "A": "Owner includes the permission but also full control of every resource in the project.",
+          "B": "It is a billing-account role, not a project role, and it gives full control of the accounts.",
+          "C": "Editor does not include the permission to change a project's billing account.",
+          "D": "Correct. It lets the lead link and unlink the project's billing account and nothing else."
         },
-        "gcloud_command": "gcloud projects add-iam-policy-binding PROJECT_ID \\\n  --member='user:owner@example.com' --role='roles/billing.projectManager'",
+        "gcloud_command": "gcloud projects add-iam-policy-binding PROJECT_ID \\\n  --member='user:lead@example.com' --role='roles/billing.projectManager'\ngcloud billing projects link PROJECT_ID --billing-account=NEW_ACCOUNT_ID",
         "doc_ref": "https://cloud.google.com/billing/docs/how-to/modify-project"
       }
     },
@@ -464,21 +432,21 @@
         "organization"
       ],
       "source": "curated",
-      "question": "A newly formed subsidiary must be able to open its own billing account under the existing organisation, without being given rights on the parent's account. What should you grant?",
+      "question": "The finance team of a new subsidiary must be able to create the subsidiary's own billing account under the existing organisation, without being given any rights on the parent company's billing account. What should you grant them?",
       "options": {
-        "A": "Grant the Billing Account Creator role at the organisation node.",
-        "B": "Grant the Billing Account User role on the billing account.",
-        "C": "Grant the Project Billing Manager role on the project.",
-        "D": "Grant the Billing Account Administrator role on the billing account."
+        "A": "Billing Account Creator on the organisation.",
+        "B": "Billing Account Administrator on the parent's billing account.",
+        "C": "Project Creator on the organisation.",
+        "D": "Billing Account User on the parent's billing account."
       },
       "correct_answer": "A",
       "explanation": {
-        "summary": "Billing Account Creator at the organisation node is the role that permits creating new billing accounts, which is what standing up a subsidiary's billing requires.",
+        "summary": "Billing Account Creator, granted on the organisation, lets a principal create new billing accounts there; it grants nothing on existing accounts.",
         "option_breakdown": {
-          "A": "Correct. Billing Account Creator at the organisation node is the role that permits creating new billing accounts, which is what standing up a subsidiary's billing requires.",
-          "B": "Billing Account User only allows attaching projects to the billing account; it grants no visibility into costs and no administrative capability.",
-          "C": "Project Billing Manager lets a principal change which billing account a project uses, with no rights over the billing account's own data or settings.",
-          "D": "Billing Account Administrator can link and unlink projects, manage billing users and close the account — far more than a read-only or single-task need."
+          "A": "Correct. It allows creating billing accounts in the organisation and nothing on the parent's account.",
+          "B": "This gives full control of the parent's account, which is what must be avoided, and it can't create a new account.",
+          "C": "It creates projects, not billing accounts.",
+          "D": "It links projects to the parent's account, which is a right on that account, and creates nothing."
         },
         "gcloud_command": "gcloud organizations add-iam-policy-binding ORG_ID \\\n  --member='group:sub-finance@example.com' --role='roles/billing.creator'",
         "doc_ref": "https://cloud.google.com/billing/docs/how-to/billing-access"
@@ -496,23 +464,23 @@
         "iam"
       ],
       "source": "curated",
-      "question": "One person must own a billing account end to end: managing its users, its budgets, and which projects are linked to it. Which single role covers all of that?",
+      "question": "One person must manage a billing account end to end: who has access to it, its budgets, and which projects are linked to it. Which single role on the billing account covers all of that?",
       "options": {
-        "A": "Grant the Billing Account Viewer role on the billing account.",
-        "B": "Grant the Billing Account Administrator role on the billing account.",
-        "C": "Grant the Billing Account User role on the billing account.",
-        "D": "Grant the Project Billing Manager role on the project."
+        "A": "Billing Account Costs Manager",
+        "B": "Billing Account Administrator",
+        "C": "Billing Account User",
+        "D": "Billing Account Viewer"
       },
       "correct_answer": "B",
       "explanation": {
-        "summary": "Billing Account Administrator is the full-control role on a billing account and is the only option covering user management, budgets and project linkage together.",
+        "summary": "Billing Account Administrator is the full-control role on a billing account: it manages access, budgets and linked projects.",
         "option_breakdown": {
-          "A": "Billing Account Viewer is read-only on billing data; it cannot link projects or change budgets, so it fails any requirement involving modification.",
-          "B": "Correct. Billing Account Administrator is the full-control role on a billing account and is the only option covering user management, budgets and project linkage together.",
-          "C": "Billing Account User only allows attaching projects to the billing account; it grants no visibility into costs and no administrative capability.",
-          "D": "Project Billing Manager lets a principal change which billing account a project uses, with no rights over the billing account's own data or settings."
+          "A": "It manages budgets and cost data, but not who has access or which projects are linked.",
+          "B": "Correct. It covers access management, budgets and project links on the account.",
+          "C": "It can link projects to the account, but it can't manage access or budgets.",
+          "D": "It is read-only."
         },
-        "gcloud_command": "gcloud billing accounts add-iam-policy-binding BILLING_ID \\\n  --member='user:cfo@example.com' --role='roles/billing.admin'",
+        "gcloud_command": "gcloud billing accounts add-iam-policy-binding BILLING_ACCOUNT_ID \\\n  --member='user:cfo@example.com' --role='roles/billing.admin'",
         "doc_ref": "https://cloud.google.com/billing/docs/how-to/billing-access"
       }
     },
@@ -528,23 +496,23 @@
         "budgets"
       ],
       "source": "curated",
-      "question": "Finance wants to be emailed when monthly spend on the analytics project reaches 50%, 90% and 100% of its allocation. What should you configure?",
+      "question": "Finance wants an email when monthly spend on the analytics project reaches 50%, 90% and 100% of a fixed amount. No automated action is needed. What should you configure, with the least setup?",
       "options": {
-        "A": "Create a Cloud Billing budget that publishes threshold notifications to a Pub/Sub topic consumed by a Cloud Run function.",
-        "B": "Enable Cloud Billing export to BigQuery and query it.",
-        "C": "Create a Cloud Billing budget with threshold rules that notify by email.",
-        "D": "Apply labels to resources and group costs by label in billing reports."
+        "A": "A cost anomaly alert on the billing account.",
+        "B": "A billing export to BigQuery with a scheduled query that emails the totals.",
+        "C": "A budget for the project with threshold rules at 50%, 90% and 100%.",
+        "D": "A budget that publishes to Pub/Sub, with a Cloud Run function that sends email."
       },
       "correct_answer": "C",
       "explanation": {
-        "summary": "A Cloud Billing budget scoped to the project with multiple threshold rules sends exactly these percentage-based notifications to the billing account's email recipients.",
+        "summary": "A Cloud Billing budget scoped to the project, with threshold rules at each percentage, sends email notifications when actual or forecasted spend crosses them.",
         "option_breakdown": {
-          "A": "Routing to Pub/Sub is only warranted when an automated reaction is required; it is unnecessary complexity when people simply need to be told.",
-          "B": "Billing export gives detailed after-the-fact analysis with hours of latency; it is not an alerting mechanism.",
-          "C": "Correct. A Cloud Billing budget scoped to the project with multiple threshold rules sends exactly these percentage-based notifications to the billing account's email recipients.",
-          "D": "Labels make cost attribution possible but generate no notification and enforce no threshold."
+          "A": "Anomaly alerts fire on unusual deviations from history, not at fixed percentages of an amount.",
+          "B": "It works, but needs an export, a query and a mailer, and the export lags; a budget does this directly.",
+          "C": "Correct. Each threshold rule triggers an email when spend crosses it, with no code.",
+          "D": "Pub/Sub is for automated reactions; writing a function to send mail is more setup than a budget's built-in email."
         },
-        "gcloud_command": "gcloud billing budgets create --billing-account=BILLING_ID --display-name='analytics' \\\n  --budget-amount=5000USD --threshold-rule=percent=0.5 \\\n  --threshold-rule=percent=0.9 --threshold-rule=percent=1.0",
+        "gcloud_command": "gcloud billing budgets create --billing-account=BILLING_ACCOUNT_ID --display-name=analytics \\\n  --filter-projects=projects/analytics-prod --budget-amount=5000USD \\\n  --threshold-rule=percent=0.5 --threshold-rule=percent=0.9 --threshold-rule=percent=1.0",
         "doc_ref": "https://cloud.google.com/billing/docs/how-to/budgets"
       }
     },
@@ -561,23 +529,23 @@
         "pubsub"
       ],
       "source": "curated",
-      "question": "When a sandbox project passes its budget, the company wants automation to shut down its VMs rather than simply send an email to someone who may be asleep. How should you wire this?",
+      "question": "When a sandbox project passes its monthly budget, the company wants its VMs stopped automatically rather than an email sent to someone who may be asleep. How should you set this up?",
       "options": {
-        "A": "Apply labels to resources and group costs by label in billing reports.",
-        "B": "Reduce the project's quotas to cap consumption.",
-        "C": "Create a Cloud Billing budget with threshold rules that notify by email.",
-        "D": "Create a Cloud Billing budget that publishes threshold notifications to a Pub/Sub topic consumed by a Cloud Run function."
+        "A": "A budget with email notifications to the on-call engineer.",
+        "B": "Lower the project's CPU quota to what the budget buys.",
+        "C": "Cost anomaly detection with notifications for the project.",
+        "D": "A budget that publishes to Pub/Sub, and a Cloud Run function that stops the VMs."
       },
       "correct_answer": "D",
       "explanation": {
-        "summary": "Budget notifications published to Pub/Sub can trigger a Cloud Run function that calls the Compute Engine API, which is the supported pattern for automated cost response.",
+        "summary": "Budgets only notify; they never stop spending. Publishing budget notifications to Pub/Sub lets a function react, for example by stopping the project's VMs.",
         "option_breakdown": {
-          "A": "Labels make cost attribution possible but generate no notification and enforce no threshold.",
-          "B": "Quotas limit how many resources can exist, not how much they cost, and lowering them breaks legitimate scaling rather than tracking spend.",
-          "C": "Email threshold notifications inform people but take no action, so they cannot satisfy a requirement to react programmatically.",
-          "D": "Correct. Budget notifications published to Pub/Sub can trigger a Cloud Run function that calls the Compute Engine API, which is the supported pattern for automated cost response."
+          "A": "Email informs a person and takes no action, which is the gap described.",
+          "B": "Quotas limit how much can exist, not what it costs; it would also block legitimate use below the budget.",
+          "C": "Anomaly notifications report unusual spend; they take no action either.",
+          "D": "Correct. The function receives each budget notification and stops the VMs when spend exceeds the amount."
         },
-        "gcloud_command": "gcloud billing budgets create --billing-account=BILLING_ID --display-name='sandbox' \\\n  --budget-amount=200USD \\\n  --all-updates-rule-pubsub-topic=projects/PROJECT_ID/topics/budget-alerts",
+        "gcloud_command": "gcloud billing budgets create --billing-account=BILLING_ACCOUNT_ID --display-name=sandbox \\\n  --budget-amount=200USD --notifications-rule-pubsub-topic=projects/PROJECT_ID/topics/budget-alerts",
         "doc_ref": "https://cloud.google.com/billing/docs/how-to/notify"
       }
     },
@@ -625,23 +593,23 @@
         "finops"
       ],
       "source": "curated",
-      "question": "The FinOps team needs per-SKU cost rows joined against resource labels so they can build a chargeback model per business unit, covering the last twelve months. What should you enable?",
+      "question": "From now on, the FinOps team needs per-SKU cost rows, with each resource's labels, in a form they can join with their own ownership table to build a chargeback model per business unit. What should you enable?",
       "options": {
-        "A": "Apply labels to resources and group costs by label in billing reports.",
-        "B": "Enable Cloud Billing export to BigQuery and query it.",
-        "C": "Reduce the project's quotas to cap consumption.",
-        "D": "Create a Cloud Billing budget with threshold rules that notify by email."
+        "A": "Cost table reports in the Cloud Billing console, grouped by label.",
+        "B": "Detailed usage cost export from Cloud Billing to BigQuery.",
+        "C": "A budget per business unit, filtered by label.",
+        "D": "Cloud Asset Inventory export of every resource's labels to BigQuery."
       },
       "correct_answer": "B",
       "explanation": {
-        "summary": "Detailed billing export to BigQuery is the only source that carries per-SKU, per-resource cost rows with labels attached, which is what a chargeback model needs.",
+        "summary": "Detailed usage cost export writes per-SKU, per-resource cost rows with labels to a BigQuery dataset, where they can be joined with other tables.",
         "option_breakdown": {
-          "A": "Labels make cost attribution possible but generate no notification and enforce no threshold.",
-          "B": "Correct. Detailed billing export to BigQuery is the only source that carries per-SKU, per-resource cost rows with labels attached, which is what a chargeback model needs.",
-          "C": "Quotas limit how many resources can exist, not how much they cost, and lowering them breaks legitimate scaling rather than tracking spend.",
-          "D": "Email threshold notifications inform people but take no action, so they cannot satisfy a requirement to react programmatically."
+          "A": "Console reports can group by label, but they can't be joined with another table.",
+          "B": "Correct. The export gives queryable cost rows with labels that can be joined with the ownership table.",
+          "C": "Budgets track spend against an amount; they don't produce cost rows.",
+          "D": "This exports resource metadata and labels, not what anything cost."
         },
-        "gcloud_command": "bq query --use_legacy_sql=false \\\n  'SELECT service.description, SUM(cost) FROM `p.billing.gcp_billing_export_v1_X` GROUP BY 1'",
+        "gcloud_command": "# Console > Billing > Billing export > BigQuery export > Detailed usage cost > Edit settings",
         "doc_ref": "https://cloud.google.com/billing/docs/how-to/export-data-bigquery"
       }
     },
@@ -657,23 +625,23 @@
         "labels"
       ],
       "source": "curated",
-      "question": "Several teams run their workloads in a single shared project, and costs must be attributable to the owning team without splitting the project apart. What should you do?",
+      "question": "Several teams run workloads in one shared project. Each team's costs must be attributable to it in the billing reports, without splitting the project. What should you do?",
       "options": {
-        "A": "Create a Cloud Billing budget with threshold rules that notify by email.",
-        "B": "Create a Cloud Billing budget that publishes threshold notifications to a Pub/Sub topic consumed by a Cloud Run function.",
-        "C": "Apply labels to resources and group costs by label in billing reports.",
-        "D": "Enable Cloud Billing export to BigQuery and query it."
+        "A": "Give each team's VMs their own network tag.",
+        "B": "Put each team's resources in its own subnet.",
+        "C": "Apply a team label to each team's resources.",
+        "D": "Run each team's workloads under its own service account."
       },
       "correct_answer": "C",
       "explanation": {
-        "summary": "Labels applied to resources flow through to the billing data, which is what makes per-team cost grouping possible inside a shared project.",
+        "summary": "Labels on resources are carried into Cloud Billing data, so costs can be filtered and grouped by team inside one project.",
         "option_breakdown": {
-          "A": "Email threshold notifications inform people but take no action, so they cannot satisfy a requirement to react programmatically.",
-          "B": "Routing to Pub/Sub is only warranted when an automated reaction is required; it is unnecessary complexity when people simply need to be told.",
-          "C": "Correct. Labels applied to resources flow through to the billing data, which is what makes per-team cost grouping possible inside a shared project.",
-          "D": "Billing export gives detailed after-the-fact analysis with hours of latency; it is not an alerting mechanism."
+          "A": "Network tags drive firewall rules and routes; they don't appear in billing data.",
+          "B": "Subnets separate addresses, not costs.",
+          "C": "Correct. Billing reports and the export can group costs by the team label.",
+          "D": "The identity a workload runs as isn't a cost attribute in billing reports."
         },
-        "gcloud_command": "gcloud compute instances add-labels INSTANCE --labels=team=payments,env=prod",
+        "gcloud_command": "gcloud compute instances add-labels INSTANCE --zone=ZONE --labels=team=payments",
         "doc_ref": "https://cloud.google.com/resource-manager/docs/creating-managing-labels"
       }
     },
@@ -691,19 +659,19 @@
       "source": "curated",
       "question": "Your organisation keeps its authoritative employee list in on-premises Active Directory and wants to keep it that way, while having full control over the Google accounts employees use for all Google services. The same users and groups must exist in Cloud Identity and stay updated as staff change. What should you do?",
       "options": {
-        "A": "Use Google Cloud Directory Sync to provision users and groups from the on-premises directory.",
-        "B": "Configure SAML-based single sign-on between the external identity provider and Cloud Identity.",
-        "C": "Create the accounts manually in the Google Admin console.",
-        "D": "Configure Workforce Identity Federation so users access Google Cloud with their existing identity provider credentials."
+        "A": "Run Google Cloud Directory Sync from Active Directory on a schedule.",
+        "B": "Configure SAML single sign-on between Active Directory and Cloud Identity.",
+        "C": "Create the accounts by hand in the Google Admin console.",
+        "D": "Configure Workforce Identity Federation with Active Directory."
       },
       "correct_answer": "A",
       "explanation": {
-        "summary": "Google Cloud Directory Sync reads Active Directory or LDAP on a schedule and creates, updates and suspends the matching Cloud Identity users and groups, keeping the directory authoritative on-premises while the accounts stay fully managed.",
+        "summary": "Google Cloud Directory Sync reads Active Directory on a schedule and creates, updates and suspends the matching Cloud Identity users and groups, so the directory stays authoritative.",
         "option_breakdown": {
-          "A": "Correct. Google Cloud Directory Sync reads Active Directory or LDAP on a schedule and creates, updates and suspends the matching Cloud Identity users and groups, keeping the directory authoritative on-premises while the accounts stay fully managed.",
-          "B": "SSO governs authentication only. It creates no accounts and keeps no group membership in step, so on its own it cannot solve a provisioning problem.",
-          "C": "Manual account creation does not scale, drifts from the source of truth, and leaves deprovisioning to human memory.",
-          "D": "Workforce Identity Federation grants access to external identities without Cloud Identity accounts at all; it does not populate a directory or manage licences."
+          "A": "Correct. GCDS keeps Cloud Identity users and groups in step with Active Directory, and the accounts are fully managed Google accounts.",
+          "B": "SSO changes how users sign in; it creates no users or groups, so Cloud Identity would not follow the directory.",
+          "C": "Hand-made accounts drift from Active Directory, and joiners and leavers depend on someone remembering.",
+          "D": "Federation avoids Google accounts altogether, so there would be no managed accounts for other Google services."
         },
         "gcloud_command": "./sync-cmd -a -c config.xml   # scheduled; GCDS is configured with Configuration Manager",
         "doc_ref": "https://support.google.com/a/answer/106368"
@@ -755,19 +723,19 @@
       "source": "curated",
       "question": "Several thousand contractors from a partner organisation need short-lived access to Google Cloud. Provisioning and paying for a Cloud Identity account for each of them is unacceptable. What should you configure?",
       "options": {
-        "A": "Use Google Cloud Directory Sync to provision users and groups from the on-premises directory.",
-        "B": "Configure SAML-based single sign-on between the external identity provider and Cloud Identity.",
-        "C": "Configure Workforce Identity Federation so users access Google Cloud with their existing identity provider credentials.",
-        "D": "Create the accounts manually in the Google Admin console."
+        "A": "Sync the partner's directory into Cloud Identity with Google Cloud Directory Sync.",
+        "B": "Set up SAML single sign-on from the partner's identity provider.",
+        "C": "Set up Workforce Identity Federation with the partner's identity provider.",
+        "D": "Share one service account key with the partner's administrators."
       },
       "correct_answer": "C",
       "explanation": {
         "summary": "Workforce Identity Federation grants Google Cloud access directly to external workforce identities through a workforce pool, with no per-user Cloud Identity account to create or pay for.",
         "option_breakdown": {
-          "A": "Directory Sync provisions accounts from an existing LDAP or Active Directory; it is the wrong answer when no such directory exists, or when the need is federated sign-in rather than provisioning.",
-          "B": "SSO governs authentication only. It creates no accounts and keeps no group membership in step, so on its own it cannot solve a provisioning problem.",
+          "A": "Syncing creates a Cloud Identity account per contractor, which is exactly what is unacceptable.",
+          "B": "SSO signs users in to Cloud Identity accounts, so each contractor would still need one.",
           "C": "Correct. Workforce Identity Federation grants Google Cloud access directly to external workforce identities through a workforce pool, with no per-user Cloud Identity account to create or pay for.",
-          "D": "Manual account creation does not scale, drifts from the source of truth, and leaves deprovisioning to human memory."
+          "D": "A shared, long-lived key gives no per-person identity or audit trail and is easy to leak."
         },
         "gcloud_command": "gcloud iam workforce-pools create partner-pool --organization=ORG_ID --location=global",
         "doc_ref": "https://cloud.google.com/iam/docs/workforce-identity-federation"
@@ -787,10 +755,10 @@
       "source": "curated",
       "question": "When an employee leaves, their Google Cloud access must disappear as a consequence of the existing HR offboarding process, which updates Active Directory. No separate cloud step may be required. What should you do?",
       "options": {
-        "A": "Ask HR to also remove each leaver from every Google group by hand.",
-        "B": "Create each employee's Cloud Identity account manually when they join.",
-        "C": "Enable 2-step verification for every Cloud Identity account.",
-        "D": "Run Google Cloud Directory Sync on a schedule so accounts follow Active Directory, suspending those removed there."
+        "A": "Ask HR to remove each leaver from every Google group by hand.",
+        "B": "Create each new employee's Cloud Identity account by hand.",
+        "C": "Turn on 2-step verification for every Cloud Identity account.",
+        "D": "Run Google Cloud Directory Sync from Active Directory on a schedule."
       },
       "correct_answer": "D",
       "explanation": {
@@ -819,19 +787,19 @@
       "source": "curated",
       "question": "An audit finds that before Cloud Identity was adopted, employees created personal Google accounts using their company email addresses. These accounts sit outside the organisation and cannot be governed. What should you do?",
       "options": {
-        "A": "Use the transfer tool to bring existing unmanaged accounts under the organisation.",
-        "B": "Use Google Cloud Directory Sync to provision users and groups from the on-premises directory.",
-        "C": "Configure SAML-based single sign-on between the external identity provider and Cloud Identity.",
-        "D": "Create the accounts manually in the Google Admin console."
+        "A": "Use the transfer tool for unmanaged users.",
+        "B": "Create managed accounts for the same addresses with Directory Sync.",
+        "C": "Set up SAML single sign-on for the domain.",
+        "D": "Ask employees to delete their personal accounts."
       },
       "correct_answer": "A",
       "explanation": {
         "summary": "These are unmanaged accounts; the transfer tool for unmanaged users brings them under the organisation so they can be governed, audited and suspended like any other account.",
         "option_breakdown": {
-          "A": "Correct. These are unmanaged accounts; the transfer tool for unmanaged users brings them under the organisation so they can be governed, audited and suspended like any other account.",
-          "B": "Directory Sync provisions accounts from an existing LDAP or Active Directory; it is the wrong answer when no such directory exists, or when the need is federated sign-in rather than provisioning.",
-          "C": "SSO governs authentication only. It creates no accounts and keeps no group membership in step, so on its own it cannot solve a provisioning problem.",
-          "D": "Manual account creation does not scale, drifts from the source of truth, and leaves deprovisioning to human memory."
+          "A": "Correct. These are unmanaged accounts; the transfer tool invites their owners to move them under the organisation, where they can be governed, audited and suspended.",
+          "B": "Creating a managed account for an address that has an unmanaged account leaves the user with a conflicting account; the existing account and its data are not brought in.",
+          "C": "SSO applies to managed accounts; these accounts sit outside the organisation, so it doesn't reach them.",
+          "D": "Nothing enforces it, and the employees lose whatever the accounts hold."
         },
         "gcloud_command": "# Admin console > Account > Account settings > Transfer tool for unmanaged users",
         "doc_ref": "https://support.google.com/cloudidentity/answer/7062710"
@@ -851,19 +819,19 @@
       "source": "curated",
       "question": "A deployment into a brand new project fails with 'API [compute.googleapis.com] not enabled on project'. What should you do?",
       "options": {
-        "A": "Request an increase for the affected quota.",
-        "B": "Enable the required API on the project.",
-        "C": "Grant the caller the appropriate IAM role.",
-        "D": "Add exponential backoff with jitter to the client."
+        "A": "Request a higher Compute Engine quota.",
+        "B": "Enable the Compute Engine API on the project.",
+        "C": "Grant the deploying account Compute Admin.",
+        "D": "Retry the deployment with exponential backoff."
       },
       "correct_answer": "B",
       "explanation": {
         "summary": "Newly created projects have most APIs disabled by default; the error names the service, and enabling it on the project is the direct fix.",
         "option_breakdown": {
-          "A": "A quota increase raises a capacity ceiling. It is the wrong remedy for a service that is not enabled, or for a permission error.",
-          "B": "Correct. Newly created projects have most APIs disabled by default; the error names the service, and enabling it on the project is the direct fix.",
-          "C": "An IAM role fixes a permission denial, not a disabled service or an exhausted quota.",
-          "D": "Backoff smooths transient rate limiting but cannot create capacity the quota does not allow, nor enable a service."
+          "A": "The error is about a disabled service, not a quota; a quota can't be raised for an API that isn't enabled.",
+          "B": "Correct. Newly created projects have most APIs disabled; the error names the service, and enabling it on the project is the fix.",
+          "C": "A missing role produces a permission-denied error; a role doesn't enable a service.",
+          "D": "The error is permanent until the API is enabled, so retries keep failing."
         },
         "gcloud_command": "gcloud services enable compute.googleapis.com --project=PROJECT_ID",
         "doc_ref": "https://cloud.google.com/service-usage/docs/enable-disable"
@@ -881,21 +849,21 @@
         "quotas"
       ],
       "source": "curated",
-      "question": "A batch job fails at peak because the project has hit its regional limit on CPUs. The workload's demand is legitimate and cannot be reduced. What should you do?",
+      "question": "A batch job in us-central1 fails at peak because the project has hit its regional CPU quota. The demand is legitimate, can't be reduced, and must run in us-central1 next to its data. What should you do?",
       "options": {
-        "A": "Add exponential backoff with jitter to the client.",
-        "B": "Create the resources in an additional project to spread the load.",
-        "C": "Request an increase for the affected quota.",
-        "D": "Enable the required API on the project."
+        "A": "Add exponential backoff and retries to the job's VM creation.",
+        "B": "Create the extra VMs in a second project.",
+        "C": "Request an increase to the regional CPU quota.",
+        "D": "Use machine types with fewer, larger vCPUs."
       },
       "correct_answer": "C",
       "explanation": {
         "summary": "Regional CPU limits are quotas; when the demand is legitimate the supported remedy is to request an increase for that specific quota in that region.",
         "option_breakdown": {
-          "A": "Backoff smooths transient rate limiting but cannot create capacity the quota does not allow, nor enable a service.",
-          "B": "Splitting across projects is a workaround for per-project quotas, not a fix for a disabled API or an insufficient role, and it fragments the estate.",
-          "C": "Correct. Regional CPU limits are quotas; when the demand is legitimate the supported remedy is to request an increase for that specific quota in that region.",
-          "D": "Enabling an API makes a service callable in the project; it does nothing about capacity limits or permissions."
+          "A": "Retries wait for capacity that the quota will never allow at peak.",
+          "B": "Spreading across projects sidesteps the quota at the cost of a fragmented estate, which is not the supported fix.",
+          "C": "Correct. Regional CPU limits are quotas; when demand is legitimate, the supported remedy is to request an increase for that quota in that region.",
+          "D": "The quota counts vCPUs, so the same demand uses the same quota whatever the machine size."
         },
         "gcloud_command": "gcloud compute regions describe us-central1 \\\n  --format='table(quotas.metric,quotas.limit,quotas.usage)'",
         "doc_ref": "https://cloud.google.com/docs/quotas/view-manage"
@@ -915,18 +883,18 @@
       "source": "curated",
       "question": "An application intermittently receives HTTP 429 responses during brief traffic spikes, but stays well within its daily allowance and its quota shows plenty of headroom. What should you do?",
       "options": {
-        "A": "Enable the required API on the project.",
-        "B": "Request an increase for the affected quota.",
-        "C": "Grant the caller the appropriate IAM role.",
-        "D": "Add exponential backoff with jitter to the client."
+        "A": "Enable the API again on the project.",
+        "B": "Request a higher quota for the API.",
+        "C": "Grant the caller a broader IAM role.",
+        "D": "Retry with exponential backoff and jitter."
       },
       "correct_answer": "D",
       "explanation": {
         "summary": "Rate-limit errors on brief spikes are the documented case for exponential backoff with jitter; the underlying quota is adequate.",
         "option_breakdown": {
-          "A": "Enabling an API makes a service callable in the project; it does nothing about capacity limits or permissions.",
-          "B": "A quota increase raises a capacity ceiling. It is the wrong remedy for a service that is not enabled, or for a permission error.",
-          "C": "An IAM role fixes a permission denial, not a disabled service or an exhausted quota.",
+          "A": "The API is already enabled, or every call would fail; re-enabling changes nothing.",
+          "B": "The quota has headroom, so a higher one would not stop rejections during brief bursts.",
+          "C": "429 means too many requests, not a permission problem; a role changes nothing.",
           "D": "Correct. Rate-limit errors on brief spikes are the documented case for exponential backoff with jitter; the underlying quota is adequate."
         },
         "gcloud_command": "# client-side retry; inspect limits with:\ngcloud services quota list --service=SERVICE --consumer=projects/PROJECT_ID",
@@ -947,19 +915,19 @@
       "source": "curated",
       "question": "A service account receives 'Permission denied' calling an API. You have confirmed the service is enabled and the project is well under quota. What should you do?",
       "options": {
-        "A": "Grant the caller the appropriate IAM role.",
-        "B": "Add exponential backoff with jitter to the client.",
-        "C": "Create the resources in an additional project to spread the load.",
-        "D": "Enable the required API on the project."
+        "A": "Grant the service account a role with the missing permission, on the resource it calls.",
+        "B": "Retry the call with exponential backoff.",
+        "C": "Request a higher quota for the API.",
+        "D": "Disable and re-enable the API on the project."
       },
       "correct_answer": "A",
       "explanation": {
         "summary": "With the service enabled and quota available, a permission denial leaves the IAM binding as the remaining cause; granting the required role on the resource resolves it.",
         "option_breakdown": {
-          "A": "Correct. With the service enabled and quota available, a permission denial leaves the IAM binding as the remaining cause; granting the required role on the resource resolves it.",
-          "B": "Backoff smooths transient rate limiting but cannot create capacity the quota does not allow, nor enable a service.",
-          "C": "Splitting across projects is a workaround for per-project quotas, not a fix for a disabled API or an insufficient role, and it fragments the estate.",
-          "D": "Enabling an API makes a service callable in the project; it does nothing about capacity limits or permissions."
+          "A": "Correct. With the service enabled and quota available, a permission denial leaves the IAM binding as the cause; granting a role that holds the permission on the resource resolves it.",
+          "B": "A permission denial is not transient; every retry is denied the same way.",
+          "C": "Quota errors return 429 or RESOURCE_EXHAUSTED; this caller is under quota.",
+          "D": "The API is enabled, and re-enabling it grants no permissions."
         },
         "gcloud_command": "gcloud projects add-iam-policy-binding PROJECT_ID \\\n  --member='serviceAccount:app@PROJECT_ID.iam.gserviceaccount.com' --role='roles/pubsub.publisher'",
         "doc_ref": "https://cloud.google.com/iam/docs/granting-changing-revoking-access"
@@ -980,7 +948,7 @@
       "question": "Before a Terraform run can create Cloud Run services in a fresh project, the pipeline must guarantee the necessary services are available, and the step must be safe to run on every execution. What should the pipeline do first?",
       "options": {
         "A": "Grant the pipeline's service account roles/owner on the project.",
-        "B": "Run gcloud services enable run.googleapis.com (and the other APIs it needs) as the pipeline's first step.",
+        "B": "Run gcloud services enable for the APIs it needs as its first step.",
         "C": "Ask an administrator to enable the APIs in the console before each run.",
         "D": "Retry the Terraform run until the services become available."
       },
@@ -1011,19 +979,19 @@
       "source": "curated",
       "question": "A web tier must stay available if a single Google Cloud data centre fails. The business explicitly accepts an outage if an entire region is lost, and wants to avoid cross-region cost and latency. What should you do?",
       "options": {
-        "A": "Deploy across multiple regions.",
+        "A": "Deploy across two or more regions.",
         "B": "Deploy into a single zone.",
-        "C": "Deploy across multiple zones within a single region.",
-        "D": "Verify the product's availability in the target location before committing to the design."
+        "C": "Deploy across multiple zones in one region.",
+        "D": "Deploy a zonal managed instance group with autohealing."
       },
       "correct_answer": "C",
       "explanation": {
         "summary": "Zones are independent failure domains inside a region, so spreading instances across zones — via a regional managed instance group — survives a zonal failure at no cross-region latency cost.",
         "option_breakdown": {
-          "A": "Multi-region costs more and adds cross-region latency and consistency complexity; it is overkill when only zone-level redundancy is required.",
-          "B": "A single zone has no redundancy: a zonal failure takes the workload down entirely.",
-          "C": "Correct. Zones are independent failure domains inside a region, so spreading instances across zones — via a regional managed instance group — survives a zonal failure at no cross-region latency cost.",
-          "D": "Checking availability is a planning step; it provides no redundancy and reduces no latency by itself."
+          "A": "It survives a zone loss too, but adds the cross-region cost and latency the business wants to avoid.",
+          "B": "A single zone has no redundancy, so one data centre failure takes the tier down.",
+          "C": "Correct. Zones are independent failure domains inside a region, so spreading instances across zones, for example with a regional managed instance group, survives a zonal failure with no cross-region latency.",
+          "D": "Autohealing recreates instances in the same zone, so it doesn't help when that zone is down."
         },
         "gcloud_command": "gcloud compute instance-groups managed create web-mig \\\n  --template=web-tpl --size=6 --region=us-central1",
         "doc_ref": "https://cloud.google.com/compute/docs/regions-zones"
@@ -1043,8 +1011,8 @@
       "source": "curated",
       "question": "A service must keep serving even if an entire Google Cloud region becomes unavailable. What deployment shape meets the requirement?",
       "options": {
-        "A": "Verify the product's availability in the target location before committing to the design.",
-        "B": "Deploy across multiple zones within a single region.",
+        "A": "Deploy in one region, with snapshots stored in a multi-region location.",
+        "B": "Deploy across multiple zones in one region.",
         "C": "Deploy into a single zone.",
         "D": "Deploy across multiple regions."
       },
@@ -1052,9 +1020,9 @@
       "explanation": {
         "summary": "Only a deployment spanning more than one region survives the loss of a region; zonal redundancy inside one region cannot.",
         "option_breakdown": {
-          "A": "Checking availability is a planning step; it provides no redundancy and reduces no latency by itself.",
-          "B": "Multi-zone protects against the loss of one data centre but not against a regional outage, and it does nothing for users on another continent.",
-          "C": "A single zone has no redundancy: a zonal failure takes the workload down entirely.",
+          "A": "Snapshots let you rebuild elsewhere later, but the service stops serving until you do.",
+          "B": "Multiple zones survive the loss of a data centre, not of the whole region.",
+          "C": "A single zone fails with its zone, let alone its region.",
           "D": "Correct. Only a deployment spanning more than one region survives the loss of a region; zonal redundancy inside one region cannot."
         },
         "gcloud_command": "gcloud compute backend-services add-backend web-bs \\\n  --instance-group=mig-eu --instance-group-region=europe-west1 --global",
@@ -1073,24 +1041,24 @@
         "regions-zones"
       ],
       "source": "curated",
-      "question": "The team wants to build a design around a specific machine family and a specific managed service in a country where the company has never deployed. What must you do before the design depends on it?",
+      "question": "The team plans a design around the C3 machine family in a region where the company has never deployed. Before the design depends on it, you need to know whether C3 is offered in that region's zones. What should you check?",
       "options": {
-        "A": "Verify the product's availability in the target location before committing to the design.",
-        "B": "Deploy across multiple regions.",
-        "C": "Deploy into a single zone.",
-        "D": "Deploy across multiple zones within a single region."
+        "A": "The machine types listed for each zone in that region.",
+        "B": "The project's Compute Engine quotas for that region.",
+        "C": "The organisation policy for allowed resource locations.",
+        "D": "The project's list of enabled APIs."
       },
       "correct_answer": "A",
       "explanation": {
-        "summary": "Product and machine-type availability varies by region and zone, so verifying availability in the target location is the necessary first step before the design depends on it.",
+        "summary": "Machine families are offered per zone, and not every zone has every family. Listing the machine types available in each of the region's zones answers the question.",
         "option_breakdown": {
-          "A": "Correct. Product and machine-type availability varies by region and zone, so verifying availability in the target location is the necessary first step before the design depends on it.",
-          "B": "Multi-region costs more and adds cross-region latency and consistency complexity; it is overkill when only zone-level redundancy is required.",
-          "C": "A single zone has no redundancy: a zonal failure takes the workload down entirely.",
-          "D": "Multi-zone protects against the loss of one data centre but not against a regional outage, and it does nothing for users on another continent."
+          "A": "Correct. Machine types are listed per zone, so this shows directly whether C3 is offered in that region.",
+          "B": "Quotas say how much you may use, not which machine families exist in a zone.",
+          "C": "The policy says where you're allowed to create resources, not what Google offers there.",
+          "D": "Enabled APIs say which services you can call, not where hardware is available."
         },
-        "gcloud_command": "gcloud compute machine-types list --filter='zone:europe-west3-a AND name~c3-'",
-        "doc_ref": "https://cloud.google.com/about/locations"
+        "gcloud_command": "gcloud compute machine-types list --filter=\"zone~^europe-west10 AND name~^c3-\"",
+        "doc_ref": "https://cloud.google.com/compute/docs/regions-zones"
       }
     },
     {
@@ -1108,9 +1076,9 @@
       "question": "Users in Europe and North America both report high latency against a service hosted in a single US region. What should you do?",
       "options": {
         "A": "Add a second zone in the existing US region.",
-        "B": "Deploy the service in a European region as well, behind a global external Application Load Balancer.",
-        "C": "Move the service to a larger machine type in the US region.",
-        "D": "Switch the service's network tier to Standard Tier."
+        "B": "Add a European region behind a global external Application Load Balancer.",
+        "C": "Move the service to a larger machine type.",
+        "D": "Switch the service to Standard Tier networking."
       },
       "correct_answer": "B",
       "explanation": {
@@ -1139,8 +1107,8 @@
       "source": "curated",
       "question": "A short-lived batch experiment must run as cheaply as possible. If it fails it can simply be re-run, and no redundancy is required. What should you do?",
       "options": {
-        "A": "Verify the product's availability in the target location before committing to the design.",
-        "B": "Deploy across multiple zones within a single region.",
+        "A": "Deploy into a single zone with a zonal reservation.",
+        "B": "Deploy across multiple zones in one region.",
         "C": "Deploy into a single zone.",
         "D": "Deploy across multiple regions."
       },
@@ -1148,10 +1116,10 @@
       "explanation": {
         "summary": "When the workload is disposable and re-runnable, single-zone placement avoids the cost of redundancy that the requirement explicitly does not need.",
         "option_breakdown": {
-          "A": "Checking availability is a planning step; it provides no redundancy and reduces no latency by itself.",
-          "B": "Multi-zone protects against the loss of one data centre but not against a regional outage, and it does nothing for users on another continent.",
-          "C": "Correct. When the workload is disposable and re-runnable, single-zone placement avoids the cost of redundancy that the requirement explicitly does not need.",
-          "D": "Multi-region costs more and adds cross-region latency and consistency complexity; it is overkill when only zone-level redundancy is required."
+          "A": "A reservation bills for the capacity whether or not it is used, which adds cost for no benefit here.",
+          "B": "Spreading across zones buys redundancy that the experiment doesn't need.",
+          "C": "Correct. When the workload is disposable and can be re-run, single-zone placement avoids the cost of redundancy the requirement doesn't need.",
+          "D": "Multiple regions add the most cost and complexity, for redundancy nobody asked for."
         },
         "gcloud_command": "gcloud compute instances create batch-vm --zone=us-central1-a --provisioning-model=SPOT",
         "doc_ref": "https://cloud.google.com/compute/docs/regions-zones"
@@ -1180,10 +1148,10 @@
       "explanation": {
         "summary": "The Cloud Asset Inventory search API queries live resource metadata across the whole organisation in one call, which is the fastest way to answer an ad-hoc inventory question.",
         "option_breakdown": {
-          "A": "Exporting to BigQuery suits large-scale or historical analysis; it is unnecessary overhead for an ad-hoc lookup the search API answers directly.",
-          "B": "An asset feed reacts to changes as they happen; it does not answer a question about current state.",
-          "C": "Cloud Logging records the actions taken, not a queryable inventory of what currently exists.",
-          "D": "Correct. The Cloud Asset Inventory search API queries live resource metadata across the whole organisation in one call, which is the fastest way to answer an ad-hoc inventory question."
+          "A": "It works, but needs an export and a query; the search API answers this one-off question directly.",
+          "B": "A feed reports future changes; it doesn't list what exists now.",
+          "C": "Audit logs record actions and age out; they are not an inventory of current instances.",
+          "D": "Correct. The Cloud Asset Inventory search API queries live resource metadata across the whole organisation in one call, which answers an ad-hoc inventory question quickest."
         },
         "gcloud_command": "gcloud asset search-all-resources --scope=organizations/ORG_ID \\\n  --asset-types='compute.googleapis.com/Instance' --query='natIP:*'",
         "doc_ref": "https://cloud.google.com/asset-inventory/docs/searching-resources"
@@ -1203,54 +1171,22 @@
       "source": "curated",
       "question": "Compliance needs a point-in-time record of every resource and IAM policy each month, retained and analysable for two years. What should you configure?",
       "options": {
-        "A": "Export Cloud Asset Inventory snapshots to BigQuery and query them.",
-        "B": "Query Cloud Logging for the relevant audit log entries.",
-        "C": "Query the BigQuery billing export.",
-        "D": "Use Cloud Asset Inventory to search all resources across the organisation."
+        "A": "Monthly Cloud Asset Inventory exports to BigQuery.",
+        "B": "Admin Activity audit logs in Cloud Logging.",
+        "C": "Cloud Asset Inventory asset history (get-history).",
+        "D": "Cloud Asset Inventory search across the organisation."
       },
       "correct_answer": "A",
       "explanation": {
         "summary": "Exporting asset snapshots to BigQuery produces the durable, queryable historical record that a retention and analysis requirement needs.",
         "option_breakdown": {
-          "A": "Correct. Exporting asset snapshots to BigQuery produces the durable, queryable historical record that a retention and analysis requirement needs.",
-          "B": "Cloud Logging records the actions taken, not a queryable inventory of what currently exists.",
-          "C": "Billing data describes spend, not configuration, so it cannot say how a resource is configured.",
-          "D": "Asset search answers 'what exists and how is it configured' right now; it is not a cost tool, a log store, or a change-notification mechanism."
+          "A": "Correct. Exporting asset snapshots to BigQuery each month produces the durable, queryable point-in-time record that two years of retention needs.",
+          "B": "Audit logs record changes, not a full snapshot of every resource, and their default retention is shorter than two years.",
+          "C": "Asset history covers only the last five weeks.",
+          "D": "Search shows the current state only, not what existed a year ago."
         },
         "gcloud_command": "gcloud asset export --organization=ORG_ID --content-type=resource \\\n  --bigquery-table=projects/PROJECT_ID/datasets/assets/tables/snapshot --output-bigquery-force",
         "doc_ref": "https://cloud.google.com/asset-inventory/docs/exporting-to-bigquery"
-      }
-    },
-    {
-      "id": "ace-dom1-041",
-      "title": "Detect an open firewall rule within seconds",
-      "objective": "1.1",
-      "subtopic": "Asset Inventory and Gemini Cloud Assist",
-      "summary": "A real-time asset feed publishes each asset change to Pub/Sub as it happens.",
-      "tags": [
-        "asset-inventory",
-        "detection",
-        "pubsub"
-      ],
-      "source": "curated",
-      "question": "The security team must be notified within seconds whenever a firewall rule allowing 0.0.0.0/0 is created anywhere in the organisation. What should you configure?",
-      "options": {
-        "A": "Use Cloud Asset Inventory to search all resources across the organisation.",
-        "B": "Create a Cloud Asset Inventory feed that publishes asset changes to Pub/Sub.",
-        "C": "Export Cloud Asset Inventory snapshots to BigQuery and query them.",
-        "D": "Query Cloud Logging for the relevant audit log entries."
-      },
-      "correct_answer": "B",
-      "explanation": {
-        "summary": "A real-time asset feed publishes each asset change to Pub/Sub as it happens, which is the only option that meets a seconds-level detection requirement.",
-        "option_breakdown": {
-          "A": "Asset search answers 'what exists and how is it configured' right now; it is not a cost tool, a log store, or a change-notification mechanism.",
-          "B": "Correct. A real-time asset feed publishes each asset change to Pub/Sub as it happens, which is the only option that meets a seconds-level detection requirement.",
-          "C": "Exporting to BigQuery suits large-scale or historical analysis; it is unnecessary overhead for an ad-hoc lookup the search API answers directly.",
-          "D": "Cloud Logging records the actions taken, not a queryable inventory of what currently exists."
-        },
-        "gcloud_command": "gcloud asset feeds create fw-feed --organization=ORG_ID \\\n  --asset-types='compute.googleapis.com/Firewall' --content-type=resource \\\n  --pubsub-topic=projects/PROJECT_ID/topics/asset-changes",
-        "doc_ref": "https://cloud.google.com/asset-inventory/docs/monitoring-asset-changes"
       }
     },
     {
@@ -1270,7 +1206,7 @@
         "A": "Run gcloud storage ls in every project until the bucket appears.",
         "B": "Search Admin Activity audit logs for bucket creation events.",
         "C": "Read the billing export for the storage SKU charges.",
-        "D": "Search for the bucket in Cloud Asset Inventory across the organisation by name fragment."
+        "D": "Search Cloud Asset Inventory across the organisation for the name fragment."
       },
       "correct_answer": "D",
       "explanation": {
@@ -1300,7 +1236,7 @@
       "question": "Security wants every project's logs delivered into one central location for retention and search, configured once at the organisation level rather than per project. What should you do?",
       "options": {
         "A": "Install the Ops Agent on the virtual machines.",
-        "B": "Create aggregated log sinks routing every project's logs into one central log bucket.",
+        "B": "Create an organisation-level aggregated sink that routes to one log bucket.",
         "C": "Configure a metrics scope in one project and add the other projects to it.",
         "D": "View each project's dashboards separately in its own Cloud Monitoring page."
       },
@@ -1310,43 +1246,11 @@
         "option_breakdown": {
           "A": "The Ops Agent collects guest-level metrics and logs from VMs; it does not consolidate anything across projects.",
           "B": "Correct. An aggregated sink created at the organisation or folder node, with the include-children flag, routes logs from every descendant project to a single destination and keeps working for projects created later.",
-          "C": "A metrics scope consolidates observability across projects for viewing; it is not a log destination and not an agent.",
-          "D": "Per-project views are the default and are exactly what a consolidation requirement asks you to replace."
+          "C": "A metrics scope lets one project view other projects' metrics; logs stay where they are.",
+          "D": "Viewing projects one by one is the current situation, not central retention."
         },
         "gcloud_command": "gcloud logging sinks create org-sink \\\n  logging.googleapis.com/projects/SEC_PROJECT/locations/global/buckets/central \\\n  --organization=ORG_ID --include-children",
         "doc_ref": "https://cloud.google.com/logging/docs/central-log-storage"
-      }
-    },
-    {
-      "id": "ace-dom1-046",
-      "title": "Guest metrics missing from Monitoring",
-      "objective": "1.1",
-      "subtopic": "Observability Setup",
-      "summary": "Guest-level metrics require an in-guest agent; the hypervisor cannot see them.",
-      "tags": [
-        "compute",
-        "monitoring",
-        "ops-agent"
-      ],
-      "source": "curated",
-      "question": "Memory utilisation and disk space inside your Compute Engine VMs are not visible in Cloud Monitoring, although CPU and network are. What should you do?",
-      "options": {
-        "A": "View each project's dashboards separately in its own Cloud Monitoring page.",
-        "B": "Create aggregated log sinks routing every project's logs into one central log bucket.",
-        "C": "Install the Ops Agent on the virtual machines.",
-        "D": "Configure a metrics scope in one project and add the other projects to it."
-      },
-      "correct_answer": "C",
-      "explanation": {
-        "summary": "Guest-level metrics such as memory and filesystem usage are not visible to the hypervisor; the Ops Agent must run inside the VM to report them.",
-        "option_breakdown": {
-          "A": "Per-project views are the default and are exactly what a consolidation requirement asks you to replace.",
-          "B": "Aggregated sinks centralise logs; they do not consolidate metrics dashboards.",
-          "C": "Correct. Guest-level metrics such as memory and filesystem usage are not visible to the hypervisor; the Ops Agent must run inside the VM to report them.",
-          "D": "A metrics scope consolidates observability across projects for viewing; it is not a log destination and not an agent."
-        },
-        "gcloud_command": "curl -sSO https://dl.google.com/cloudagents/add-google-cloud-ops-agent-repo.sh \\\n  && sudo bash add-google-cloud-ops-agent-repo.sh --also-install",
-        "doc_ref": "https://cloud.google.com/monitoring/agent/ops-agent"
       }
     },
     {
@@ -1396,7 +1300,7 @@
       "question": "A two-person startup signs up for Google Cloud for the first time on a new Free Trial. They own no company domain and have no Cloud Identity or Google Workspace account, but want folders, organisation policies and organisation-level IAM from the first day. What gives them an organisation resource?",
       "options": {
         "A": "Buy a domain, verify it in Cloud Identity Free, and wait for the organisation to be created from it.",
-        "B": "Use the standalone organisation that is created for the new Free Trial sign-up; the signing-up user becomes its Organization Owner.",
+        "B": "Use the standalone organisation created with the new Free Trial sign-up.",
         "C": "Create a top-level folder in the console, which becomes the organisation node for the account.",
         "D": "Open a support case asking Google to provision an organisation for their Gmail account."
       },
@@ -1405,7 +1309,7 @@
         "summary": "A standalone organisation gives a new Free Trial customer a real resource hierarchy — folders, organisation policies, organisation-level IAM — without a verified domain or a Cloud Identity super administrator. It is created automatically at sign-up and the user who signed up becomes Organization Owner.",
         "option_breakdown": {
           "A": "Verifying a domain works, but they own no domain; the guide's standalone route exists precisely for this case.",
-          "B": "Correct. The organisation is named after the user rather than a domain, and other people join by invitation.",
+          "B": "Correct. A standalone organisation is created for a new Free Trial sign-up with no domain: it is named after the user, who becomes its Organization Owner, and others join by invitation.",
           "C": "Folders live under an organisation; creating one never creates the organisation itself.",
           "D": "Organisations are not provisioned by support request; they come from Cloud Identity/Workspace or a standalone sign-up."
         },
@@ -1429,7 +1333,7 @@
       "options": {
         "A": "Grant roles/owner on the organisation to both the colleague and the service account; both take effect immediately.",
         "B": "Create a Cloud Identity user for the colleague, since standalone organisations only accept managed users.",
-        "C": "Invite the colleague's Google account, which they must accept; do not plan on the service account, because a service account can never be an organisation owner.",
+        "C": "Invite the colleague, who must accept, and drop the service account plan.",
         "D": "Add both principals to a workforce identity pool, which makes every pool member an owner automatically."
       },
       "correct_answer": "C",
@@ -1438,7 +1342,7 @@
         "option_breakdown": {
           "A": "The service account cannot become an organisation owner, and the colleague's access starts only when they accept.",
           "B": "Standalone organisations exist for customers without Cloud Identity; they hold Google accounts and workforce pool principals.",
-          "C": "Correct. Invitations and a second human owner are the supported way to share ownership; service accounts are excluded.",
+          "C": "Correct. Inviting a second person, who accepts, is the supported way to share ownership; a service account can never be an organisation owner.",
           "D": "Workforce identity pools federate sign-in from an external IdP; membership grants no role on its own."
         },
         "gcloud_command": "# Console > IAM & Admin > Organization > Invite members",
@@ -1524,19 +1428,19 @@
       "source": "curated",
       "question": "A security reviewer must list every principal who can read objects in one Cloud Storage bucket, including access that comes from group membership and from roles granted on the project, folder or organisation above it. What should you use?",
       "options": {
-        "A": "gcloud storage buckets get-iam-policy on the bucket.",
-        "B": "Data Access audit logs filtered on the bucket for the last 30 days.",
+        "A": "The bucket's own IAM policy.",
+        "B": "Data Access audit logs for the bucket over the last 30 days.",
         "C": "The IAM role recommender for the project.",
-        "D": "Policy Analyzer in Cloud Asset Inventory, querying for principals with a storage read permission on the bucket."
+        "D": "Policy Analyzer, with group expansion."
       },
       "correct_answer": "D",
       "explanation": {
         "summary": "A resource's own IAM policy shows only direct bindings. Policy Analyzer, part of Cloud Asset Inventory, evaluates the whole hierarchy and expands groups, so it answers 'who can access this resource, and why'.",
         "option_breakdown": {
-          "A": "The bucket's policy omits inherited bindings and does not expand groups.",
+          "A": "The bucket's policy omits bindings inherited from above and doesn't expand groups.",
           "B": "Audit logs show who did read, not who can read.",
           "C": "Role recommendations suggest reducing grants; they do not enumerate access to one resource.",
-          "D": "Correct. It evaluates inheritance and group membership together."
+          "D": "Correct. Policy Analyzer in Cloud Asset Inventory evaluates inherited bindings and group membership together, for a permission such as storage.objects.get on the bucket."
         },
         "gcloud_command": "gcloud asset analyze-iam-policy --organization=ORG_ID \\\n  --full-resource-name=//storage.googleapis.com/BUCKET --permissions=storage.objects.get --expand-groups",
         "doc_ref": "https://cloud.google.com/policy-intelligence/docs/policy-analyzer-overview"
@@ -1572,38 +1476,6 @@
         },
         "gcloud_command": "gcloud organizations add-iam-policy-binding ORG_ID \\\n  --member='user:eng@example.com' --role='roles/cloudasset.viewer'",
         "doc_ref": "https://cloud.google.com/asset-inventory/docs/searching-resources"
-      }
-    },
-    {
-      "id": "ace-s1-007",
-      "title": "Adding one binding without disturbing the rest",
-      "objective": "1.1",
-      "subtopic": "Project IAM Grants",
-      "summary": "add-iam-policy-binding adds a single binding safely; set-iam-policy replaces the whole policy.",
-      "tags": [
-        "gcloud",
-        "iam",
-        "projects"
-      ],
-      "source": "curated",
-      "question": "A script must give the group data-eng@example.com the BigQuery Data Viewer role on project analytics-prod. Several other teams edit that project's IAM policy through their own automation during the day. Which command should the script run?",
-      "options": {
-        "A": "gcloud projects set-iam-policy analytics-prod policy.json, with a policy file that contains only the new binding",
-        "B": "gcloud projects get-iam-policy analytics-prod, then email the output to the project owner to apply",
-        "C": "gcloud projects add-iam-policy-binding analytics-prod --member=group:data-eng@example.com --role=roles/bigquery.dataViewer",
-        "D": "gcloud iam roles create dataEngViewer --project=analytics-prod with the BigQuery viewer permissions"
-      },
-      "correct_answer": "C",
-      "explanation": {
-        "summary": "add-iam-policy-binding performs a read-modify-write of the policy for you and adds exactly one binding, leaving every other team's bindings untouched.",
-        "option_breakdown": {
-          "A": "set-iam-policy replaces the entire policy, so a file containing one binding would delete every other binding in the project.",
-          "B": "Reading the policy grants nothing; a manual hand-off is not what a script is for.",
-          "C": "Correct. add-iam-policy-binding performs a read-modify-write of the policy for you and adds exactly one binding, leaving every other team's bindings untouched.",
-          "D": "Creating a custom role grants it to nobody, and a predefined role already fits."
-        },
-        "gcloud_command": "gcloud projects add-iam-policy-binding analytics-prod \\\n  --member=group:data-eng@example.com --role=roles/bigquery.dataViewer",
-        "doc_ref": "https://cloud.google.com/sdk/gcloud/reference/projects/add-iam-policy-binding"
       }
     },
     {
@@ -1654,7 +1526,7 @@
       "options": {
         "A": "Request a standalone organisation for the existing account from the console.",
         "B": "Create a folder named kestrel.io, which becomes the organisation node for the account.",
-        "C": "Sign up for Cloud Identity Free, verify kestrel.io, and move the projects into the organisation that is created.",
+        "C": "Sign up for Cloud Identity Free, verify kestrel.io, then move the projects in.",
         "D": "Enable the Resource Manager API in each project, which creates the organisation automatically."
       },
       "correct_answer": "C",
@@ -1716,7 +1588,7 @@
       "source": "curated",
       "question": "The security baseline for a new organisation says no project may ever start with the auto-mode default network and its permissive firewall rules. Projects are created by many teams. What should you configure once?",
       "options": {
-        "A": "Enforce the compute.skipDefaultNetworkCreation organisation policy at the organisation node.",
+        "A": "Enforce compute.skipDefaultNetworkCreation on the organisation.",
         "B": "Ask each team to delete the default network after creating a project.",
         "C": "A hierarchical firewall policy that denies all ingress at the organisation.",
         "D": "Disable the Compute Engine API in every new project."
@@ -1730,7 +1602,7 @@
           "C": "A deny-all firewall policy blocks traffic but the default network is still created.",
           "D": "Without the Compute Engine API, teams cannot create VMs at all."
         },
-        "gcloud_command": "gcloud resource-manager org-policies enable-enforce compute.skipDefaultNetworkCreation \\\n  --organization=ORG_ID",
+        "gcloud_command": "gcloud org-policies set-policy skip-default-net.yaml\n# name: organizations/ORG_ID/policies/compute.skipDefaultNetworkCreation, rules: - enforce: true",
         "doc_ref": "https://cloud.google.com/resource-manager/docs/organization-policy/org-policy-constraints"
       }
     },
@@ -1751,7 +1623,7 @@
         "A": "In each application team's project, peered with every other application project.",
         "B": "In the largest application project, which the network team is added to as Owner.",
         "C": "In the organisation node itself, which holds networks for every project.",
-        "D": "In a dedicated host project owned by the network team, enabled for Shared VPC, with application projects attached as service projects."
+        "D": "In a dedicated Shared VPC host project, with app projects attached."
       },
       "correct_answer": "D",
       "explanation": {
@@ -1780,19 +1652,19 @@
       "source": "curated",
       "question": "Engineers sign in through a workforce identity pool named corp-pool, whose provider maps Entra ID group IDs to google.groups. Members of the Entra ID group with ID a1b2c3 must get Viewer on project ops-prod. Which member should the binding use?",
       "options": {
-        "A": "group:a1b2c3@corp-pool.iam.gserviceaccount.com",
-        "B": "serviceAccount:corp-pool@ops-prod.iam.gserviceaccount.com",
-        "C": "domain:login.microsoftonline.com",
-        "D": "principalSet://iam.googleapis.com/locations/global/workforcePools/corp-pool/group/a1b2c3"
+        "A": "A group: member made from the Entra ID group ID.",
+        "B": "A serviceAccount: member named after the workforce pool.",
+        "C": "A domain: member for Entra ID's sign-in domain.",
+        "D": "A principalSet member for the pool's group a1b2c3."
       },
       "correct_answer": "D",
       "explanation": {
         "summary": "IAM names federated workforce identities with principal and principalSet identifiers; a group mapped through google.groups is addressed as principalSet://…/workforcePools/POOL/group/GROUP_ID.",
         "option_breakdown": {
-          "A": "The group: prefix is for Google groups in Cloud Identity; that address does not exist.",
-          "B": "A workforce pool is not a service account, and its users do not act as one.",
-          "C": "domain: grants to every Google account in a Google-managed domain; it has nothing to do with Entra ID.",
-          "D": "Correct. IAM names federated workforce identities with principal and principalSet identifiers; a group mapped through google.groups is addressed as principalSet://…/workforcePools/POOL/group/GROUP_ID."
+          "A": "The group: prefix names Google groups in Cloud Identity; an Entra ID group isn't one.",
+          "B": "A workforce pool isn't a service account, and its users don't act as one.",
+          "C": "domain: grants to Google accounts in a Google-managed domain; it has nothing to do with Entra ID.",
+          "D": "Correct. IAM addresses federated workforce identities with principal and principalSet identifiers; a group mapped through google.groups is principalSet://iam.googleapis.com/locations/global/workforcePools/POOL/group/GROUP_ID."
         },
         "gcloud_command": "gcloud projects add-iam-policy-binding ops-prod --role=roles/viewer \\\n  --member=\"principalSet://iam.googleapis.com/locations/global/workforcePools/corp-pool/group/a1b2c3\"",
         "doc_ref": "https://cloud.google.com/iam/docs/principal-identifiers"
@@ -1812,10 +1684,10 @@
       "source": "curated",
       "question": "An administrator runs gcloud iam workforce-pools create hr-pool --project=hr-prod --location=europe-west4 and gets an error. The pool must let HR staff from the corporate IdP use Google Cloud. What is the correct way to create it?",
       "options": {
-        "A": "Create it in the same project with --location=global.",
-        "B": "Create it as a workload identity pool in project hr-prod instead.",
-        "C": "Create it with --organization=ORG_ID and --location=global.",
-        "D": "Enable the IAM API in hr-prod and rerun the same command."
+        "A": "In the same project, in the global location.",
+        "B": "As a workload identity pool in project hr-prod.",
+        "C": "Under the organisation, in the global location.",
+        "D": "After enabling the IAM API in hr-prod, as before."
       },
       "correct_answer": "C",
       "explanation": {
@@ -1847,7 +1719,7 @@
         "A": "A JSON key for a shared service account that has their roles.",
         "B": "Instructions to run gcloud auth application-default login with personal Gmail accounts.",
         "C": "A Cloud Identity account each, synchronised from the IdP.",
-        "D": "A login configuration file created for the pool, used with gcloud auth login --login-config."
+        "D": "A gcloud login configuration file created for the pool."
       },
       "correct_answer": "D",
       "explanation": {
@@ -1876,7 +1748,7 @@
       "source": "curated",
       "question": "Twelve production projects must appear in one set of dashboards and alerting policies managed by the SRE team. The team does not want its monitoring configuration mixed with any application's resources or access. How should you set this up?",
       "options": {
-        "A": "Create a dedicated monitoring project and add the twelve projects to its metrics scope.",
+        "A": "A dedicated monitoring project whose metrics scope includes the twelve.",
         "B": "Add eleven projects to the metrics scope of the busiest production project.",
         "C": "Create dashboards separately in each project and link them with bookmarks.",
         "D": "Export every project's metrics to BigQuery and build dashboards there."
@@ -1910,7 +1782,7 @@
       "options": {
         "A": "An aggregated sink at the organisation that copies all logs to a bucket in europe-west4.",
         "B": "The gcp.resourceLocations organisation policy with only europe-west4 allowed.",
-        "C": "The organisation's Logging default settings, with the storage location set to europe-west4.",
+        "C": "Logging's default settings on the organisation, set to europe-west4.",
         "D": "A lifecycle rule on each project's log buckets that moves them to europe-west4."
       },
       "correct_answer": "C",
@@ -1941,7 +1813,7 @@
       "question": "A project was granted 16 NVIDIA L4 GPUs in us-central1. Creating eight 2-GPU VMs there still fails with a quota error naming GPUS_ALL_REGIONS, whose limit is 4. What should you do?",
       "options": {
         "A": "Create the VMs in a second project, which has its own GPU quota.",
-        "B": "Request an increase of the GPUS_ALL_REGIONS quota for the project in Cloud Quotas.",
+        "B": "Request an increase of the GPUS_ALL_REGIONS quota.",
         "C": "Request a further increase of the us-central1 L4 quota.",
         "D": "Switch the VMs to Spot provisioning, which is not counted against GPU quotas."
       },
@@ -1970,21 +1842,21 @@
         "gcloud"
       ],
       "source": "curated",
-      "question": "During a security review you must list every API currently enabled in project legacy-etl, so that unused ones can be turned off. Which command gives you that list?",
+      "question": "During a security review, you must list every API currently enabled in project legacy-etl, so that unused ones can be turned off. What should you look at?",
       "options": {
-        "A": "gcloud services list --enabled --project=legacy-etl",
-        "B": "gcloud services list --available --project=legacy-etl",
-        "C": "gcloud projects describe legacy-etl",
-        "D": "gcloud services enable --list --project=legacy-etl"
+        "A": "The project's services, filtered to those that are enabled.",
+        "B": "The services available to the project.",
+        "C": "The project's description from Resource Manager.",
+        "D": "The project's quotas page."
       },
       "correct_answer": "A",
       "explanation": {
         "summary": "gcloud services list --enabled returns the services that are enabled on the project; the unused ones can then be turned off with gcloud services disable.",
         "option_breakdown": {
-          "A": "Correct. gcloud services list --enabled returns the services that are enabled on the project; the unused ones can then be turned off with gcloud services disable.",
-          "B": "--available lists every API that could be enabled, which is hundreds of services.",
-          "C": "describe shows the project's metadata — ID, number, parent, state — not its APIs.",
-          "D": "enable has no --list flag; it turns services on."
+          "A": "Correct. gcloud services list --enabled returns the services enabled on the project, and unused ones can then be turned off with gcloud services disable.",
+          "B": "Available services are every API that could be enabled, hundreds of them, most of them off.",
+          "C": "The description shows the project's ID, number, parent and state, not its APIs.",
+          "D": "Quotas exist for many services whether or not you use them, so they don't show what is enabled."
         },
         "gcloud_command": "gcloud services list --enabled --project=legacy-etl\ngcloud services disable SERVICE_NAME --project=legacy-etl",
         "doc_ref": "https://cloud.google.com/sdk/gcloud/reference/services/list"
@@ -2039,7 +1911,7 @@
         "A": "Enforce the policy on a Friday evening and roll it back if anyone complains.",
         "B": "Enforce the policy on one test project only.",
         "C": "Use Policy Troubleshooter for each team's service account.",
-        "D": "Create the gcp.resourceLocations policy in dry-run mode and review its violation logs."
+        "D": "Create the policy in dry-run mode and review its violation logs."
       },
       "correct_answer": "D",
       "explanation": {
@@ -2068,8 +1940,8 @@
       "source": "curated",
       "question": "Finance wants an alert when BigQuery spend in the three analytics projects reaches 80% of 4,000 EUR per month. Spend on other services and in other projects must not count towards it. What should you create?",
       "options": {
-        "A": "A budget on the billing account with no scope filter and an 80% threshold rule.",
-        "B": "A budget on the billing account scoped to the three projects and the BigQuery service, with an 80% threshold rule.",
+        "A": "A budget on the billing account with no scope filter, alerting at 80%.",
+        "B": "A budget scoped to the three projects and BigQuery, alerting at 80%.",
         "C": "A custom quota of 4,000 EUR on BigQuery in each project.",
         "D": "A billing report filtered to BigQuery, bookmarked for finance."
       },
@@ -2100,9 +1972,9 @@
       "source": "curated",
       "question": "A product's cloud spend grows every month, and its owners want to know when this month's spend is on track to exceed last month's, without someone updating a fixed amount every month. How should the budget be configured?",
       "options": {
-        "A": "Set a fixed amount and ask finance to edit it on the first of each month.",
+        "A": "Set a fixed amount and have finance edit it on the first of each month.",
         "B": "Create twelve budgets, one per calendar month, in advance.",
-        "C": "Set the budget amount to last month's spend, with a threshold rule on forecasted spend at 100%.",
+        "C": "Set the amount to last month's spend, alerting on forecasted spend at 100%.",
         "D": "Use the billing export and a monthly scheduled query that compares totals."
       },
       "correct_answer": "C",
@@ -2151,38 +2023,6 @@
       }
     },
     {
-      "id": "ace-s1-025",
-      "title": "Cost of each individual VM",
-      "objective": "1.2",
-      "subtopic": "Billing Export and Cost Attribution",
-      "summary": "Only the detailed usage cost export carries resource-level rows such as which VM incurred a cost.",
-      "tags": [
-        "bigquery",
-        "billing-export",
-        "cost-attribution"
-      ],
-      "source": "curated",
-      "question": "Finance already receives the standard usage cost export in BigQuery. They now need the monthly cost of each individual Compute Engine instance, identified by its resource name, not just per project and SKU. What should you enable?",
-      "options": {
-        "A": "The pricing export to BigQuery.",
-        "B": "Labels on each project with the project owner's name.",
-        "C": "A budget per instance with a threshold at 100%.",
-        "D": "The detailed usage cost export to BigQuery."
-      },
-      "correct_answer": "D",
-      "explanation": {
-        "summary": "The detailed usage cost export includes everything in the standard export plus resource-level rows, so costs can be grouped by individual instance.",
-        "option_breakdown": {
-          "A": "The pricing export contains list and contract prices, not usage.",
-          "B": "Project labels attribute cost per project, which finance already has.",
-          "C": "Budgets notify on thresholds; they do not produce per-resource cost data.",
-          "D": "Correct. The detailed usage cost export includes everything in the standard export plus resource-level rows, so costs can be grouped by individual instance."
-        },
-        "gcloud_command": "# Billing > Billing export > BigQuery export > Detailed usage cost > Edit settings",
-        "doc_ref": "https://cloud.google.com/billing/docs/how-to/export-data-bigquery-tables/detailed-usage"
-      }
-    },
-    {
       "id": "ace-s1-026",
       "title": "Comparing list prices with negotiated prices",
       "objective": "1.2",
@@ -2216,7 +2056,7 @@
     },
     {
       "id": "ace-s1-027",
-      "title": "Who changed a firewall rule's settings last week",
+      "title": "What a firewall rule looked like ten days ago",
       "objective": "1.1",
       "subtopic": "Asset Inventory and Gemini Cloud Assist",
       "summary": "Cloud Asset Inventory keeps a 35-day history of asset metadata and IAM policies.",
@@ -2228,18 +2068,18 @@
       "source": "curated",
       "question": "You need to see what the configuration of the firewall rule allow-admin looked like ten days ago, before someone widened its source range. No feeds or exports were ever configured. What can you use?",
       "options": {
-        "A": "gcloud asset get-history for the rule's asset name, with a start time before the change.",
+        "A": "The rule's asset history in Cloud Asset Inventory.",
         "B": "Firewall Insights for the rule.",
-        "C": "gcloud compute firewall-rules describe with --revision.",
-        "D": "A new Cloud Asset Inventory feed, which replays earlier changes."
+        "C": "VPC Flow Logs for the subnets the rule applies to.",
+        "D": "A new Cloud Asset Inventory feed for firewall rules."
       },
       "correct_answer": "A",
       "explanation": {
         "summary": "Cloud Asset Inventory keeps five weeks of history for resource metadata and IAM policies, so get-history returns earlier versions without any setup.",
         "option_breakdown": {
-          "A": "Correct. Cloud Asset Inventory keeps five weeks of history for resource metadata and IAM policies, so get-history returns earlier versions without any setup.",
+          "A": "Correct. Cloud Asset Inventory keeps five weeks of history for resource metadata and IAM policies, so the rule's history (gcloud asset get-history) returns earlier versions without any setup.",
           "B": "Firewall Insights reports shadowed and unused rules and hit counts, not earlier configurations.",
-          "C": "Firewall rules have no revision flag.",
+          "C": "Flow logs record traffic, not a rule's configuration, and nobody enabled them.",
           "D": "Feeds send notifications for future changes only."
         },
         "gcloud_command": "gcloud asset get-history --project=PROJECT_ID --content-type=resource \\\n  --asset-names=//compute.googleapis.com/projects/PROJECT_ID/global/firewalls/allow-admin \\\n  --start-time=2026-09-15T00:00:00Z",
@@ -2263,7 +2103,7 @@
         "A": "A Cloud Identity group named finance.",
         "B": "Google Cloud Directory Sync for the IdP's groups.",
         "C": "An attribute condition that allows the finance group.",
-        "D": "An attribute mapping of google.groups=assertion.groups on the provider."
+        "D": "A google.groups attribute mapping from the token's groups claim."
       },
       "correct_answer": "D",
       "explanation": {
@@ -2324,22 +2164,22 @@
       "source": "curated",
       "question": "Folders and projects across the organisation set, override and inherit the constraint compute.vmExternalIpAccess in different ways. A security lead needs a list of every project and the effective policy it ends up with. What is the quickest way?",
       "options": {
-        "A": "gcloud resource-manager org-policies describe on every project in a loop.",
-        "B": "gcloud asset analyze-org-policies for that constraint, scoped to the organisation.",
-        "C": "Search Admin Activity audit logs for SetOrgPolicy calls.",
-        "D": "gcloud asset search-all-iam-policies for the constraint name."
+        "A": "Describe the policy on every project, one at a time, in a loop.",
+        "B": "Organisation policy analysis in Cloud Asset Inventory.",
+        "C": "Admin Activity audit logs filtered on SetOrgPolicy calls.",
+        "D": "A Cloud Asset Inventory search of IAM policies for the constraint."
       },
       "correct_answer": "B",
       "explanation": {
         "summary": "Organisation policy analysis in Cloud Asset Inventory evaluates inheritance and overrides and returns the effective policy for each resource in scope, in one call.",
         "option_breakdown": {
-          "A": "That works but is slow, and describe shows only what is set on each project unless you add --effective.",
-          "B": "Correct. Organisation policy analysis in Cloud Asset Inventory evaluates inheritance and overrides and returns the effective policy for each resource in scope, in one call.",
+          "A": "It works, but it is slow across a whole organisation, and it shows only what is set on each project unless you ask for the effective policy.",
+          "B": "Correct. Organisation policy analysis (gcloud asset analyze-org-policies) evaluates inheritance and overrides and returns the effective policy for every resource in scope, in one call.",
           "C": "Audit logs show changes that happened, not the resulting effective policy everywhere.",
           "D": "That searches IAM allow policies, not organisation policies."
         },
         "gcloud_command": "gcloud asset analyze-org-policies --scope=organizations/ORG_ID \\\n  --constraint=constraints/compute.vmExternalIpAccess",
-        "doc_ref": "https://docs.cloud.google.com/asset-inventory/docs/analyze-org-policies"
+        "doc_ref": "https://docs.cloud.google.com/policy-intelligence/docs/analyze-organization-policies"
       }
     },
     {
@@ -2356,22 +2196,22 @@
       "source": "curated",
       "question": "You plan to move project billing-api from the Sandbox folder to the Production folder, whose organisation policies and inherited IAM grants are different. Before moving it, you want a report of the policy and access changes the move would cause. What should you run?",
       "options": {
-        "A": "gcloud projects move billing-api --folder=PROD_FOLDER_ID --dry-run",
-        "B": "gcloud asset export --content-type=iam-policy for both folders, then compare by hand.",
-        "C": "gcloud asset analyze-move --project=billing-api --destination-folder=PROD_FOLDER_ID",
-        "D": "gcloud resource-manager folders get-iam-policy PROD_FOLDER_ID"
+        "A": "Move the project, then move it back if something breaks.",
+        "B": "Export both folders' IAM policies and compare them by hand.",
+        "C": "Cloud Asset Inventory's move analysis for the project.",
+        "D": "Read the Production folder's own IAM policy."
       },
       "correct_answer": "C",
       "explanation": {
         "summary": "Cloud Asset Inventory's move analysis evaluates the destination's organisation policies and IAM inheritance for the project and reports what would change.",
         "option_breakdown": {
-          "A": "Project moves have no dry-run flag.",
+          "A": "That finds the impact by causing it.",
           "B": "Manual comparison is slow and misses organisation policy effects.",
-          "C": "Correct. Cloud Asset Inventory's move analysis evaluates the destination's organisation policies and IAM inheritance for the project and reports what would change.",
+          "C": "Correct. Move analysis (gcloud asset analyze-move) evaluates the destination's organisation policies and IAM inheritance for the project and reports what would change.",
           "D": "That shows the folder's own bindings only, not the effect on the project."
         },
         "gcloud_command": "gcloud asset analyze-move --project=billing-api --destination-folder=PROD_FOLDER_ID",
-        "doc_ref": "https://docs.cloud.google.com/asset-inventory/docs/analyze-resource-moves"
+        "doc_ref": "https://docs.cloud.google.com/resource-manager/docs/project-migration"
       }
     },
     {
@@ -2388,8 +2228,8 @@
       "source": "curated",
       "question": "An engineer wants to run a SQL query that counts Compute Engine disks by type and zone across the organisation. No BigQuery export has been set up, and this is a one-off question. What can they use?",
       "options": {
-        "A": "gcloud asset query with a SQL statement over the organisation's asset data.",
-        "B": "gcloud compute disks list --format=csv, then a spreadsheet.",
+        "A": "Cloud Asset Inventory's SQL query over current asset data.",
+        "B": "A disk listing per project, combined in a spreadsheet.",
         "C": "A Cloud Asset Inventory feed to Pub/Sub.",
         "D": "Log Analytics on the Admin Activity audit logs."
       },
@@ -2397,7 +2237,7 @@
       "explanation": {
         "summary": "Cloud Asset Inventory can run SQL queries over current (or recent) asset data without a user-managed BigQuery export.",
         "option_breakdown": {
-          "A": "Correct. Cloud Asset Inventory can run SQL queries over current (or recent) asset data without a user-managed BigQuery export.",
+          "A": "Correct. Cloud Asset Inventory can run SQL (gcloud asset query) over current or recent asset data without a BigQuery export you manage.",
           "B": "That lists disks for one project at a time and needs manual aggregation.",
           "C": "Feeds notify about future changes; they do not answer queries.",
           "D": "Audit logs record operations, not a complete inventory of existing disks."
@@ -2421,7 +2261,7 @@
       "question": "A workforce pool trusts the company's Microsoft Entra ID tenant, which also holds guest accounts for suppliers. Only employees, whose tokens carry an employee_type claim of \"staff\", may sign in to Google Cloud at all. What should you configure?",
       "options": {
         "A": "An IAM deny policy for guests on every project.",
-        "B": "An attribute condition on the provider, such as assertion.employee_type == 'staff'.",
+        "B": "An attribute condition on the provider requiring employee_type staff.",
         "C": "A google.groups mapping that excludes guests.",
         "D": "A shorter session duration on the pool."
       },
@@ -2484,19 +2324,19 @@
       "source": "curated",
       "question": "Federated users' tokens include a department claim, but the IdP has no groups for departments. Everyone whose department is finance needs BigQuery Data Viewer on the finance project. How should you grant it?",
       "options": {
-        "A": "Create a Cloud Identity group called finance and add each user.",
-        "B": "Grant the role to principalSet://iam.googleapis.com/locations/global/workforcePools/corp/*.",
-        "C": "Grant the role to each user's principal:// identifier.",
-        "D": "Map attribute.department=assertion.department on the provider, then grant the role to principalSet://iam.googleapis.com/locations/global/workforcePools/corp/attribute.department/finance."
+        "A": "A Cloud Identity group named finance, with each user added.",
+        "B": "A principalSet for every user in the pool.",
+        "C": "Each finance user's own principal identifier.",
+        "D": "A department attribute mapped on the provider, granted as a principalSet."
       },
       "correct_answer": "D",
       "explanation": {
         "summary": "Custom attributes mapped from the token can be used as principal sets in IAM, so the grant follows the department claim as it changes in the IdP.",
         "option_breakdown": {
           "A": "Federated users are not Cloud Identity users and cannot be added to Cloud Identity groups.",
-          "B": "That grants the role to every user of the pool.",
+          "B": "The pool-wide principalSet (…/workforcePools/corp/*) grants the role to every user of the pool.",
           "C": "Per-user grants need maintenance on every change.",
-          "D": "Correct. Custom attributes mapped from the token can be used as principal sets in IAM, so the grant follows the department claim as it changes in the IdP."
+          "D": "Correct. Map attribute.department=assertion.department, then grant to principalSet://iam.googleapis.com/locations/global/workforcePools/corp/attribute.department/finance; the grant follows the claim as it changes in the IdP."
         },
         "gcloud_command": "gcloud iam workforce-pools providers update-oidc entra --workforce-pool=corp --location=global \\\n  --attribute-mapping=\"google.subject=assertion.sub,attribute.department=assertion.department\"",
         "doc_ref": "https://docs.cloud.google.com/iam/docs/principal-identifiers"
@@ -2516,18 +2356,18 @@
       "source": "curated",
       "question": "Before committing to an architecture, you need to confirm which Spanner dual-region configurations are available to your project. What is the most direct check?",
       "options": {
-        "A": "gcloud compute regions list",
-        "B": "gcloud spanner instances list",
-        "C": "gcloud spanner instance-configs list",
-        "D": "gcloud services list --available --filter=spanner"
+        "A": "The list of Compute Engine regions and zones.",
+        "B": "The Spanner instances that already exist in the project.",
+        "C": "The Spanner instance configurations available to the project.",
+        "D": "The Spanner API's entry in the project's available services."
       },
       "correct_answer": "C",
       "explanation": {
         "summary": "Instance configurations define where Spanner can place replicas. Listing them shows the regional, dual-region and multi-region configurations you can use.",
         "option_breakdown": {
-          "A": "Compute Engine regions do not tell you which Spanner configurations exist.",
-          "B": "That lists instances you already created.",
-          "C": "Correct. Instance configurations define where Spanner can place replicas. Listing them shows the regional, dual-region and multi-region configurations you can use.",
+          "A": "Compute Engine regions don't tell you which Spanner configurations exist.",
+          "B": "That lists instances you already created, not the configurations you could choose.",
+          "C": "Correct. Instance configurations define where Spanner can place replicas; listing them (gcloud spanner instance-configs list) shows the regional, dual-region and multi-region configurations you can use.",
           "D": "That only tells you the Spanner API can be enabled."
         },
         "gcloud_command": "gcloud spanner instance-configs list --filter=\"name~dual-region\"",
@@ -2580,7 +2420,7 @@
       "source": "curated",
       "question": "An SRE investigates incidents that span three projects and keeps switching projects in Logs Explorer. Logs stay in each project's own buckets. How can the SRE query all three together in one view?",
       "options": {
-        "A": "Create a log scope that includes the three projects and select it in Logs Explorer.",
+        "A": "A log scope with the three projects, selected in Logs Explorer.",
         "B": "Create a metrics scope that includes the three projects.",
         "C": "Route all logs from the three projects into a fourth project.",
         "D": "Grant the SRE Logs Viewer on the organisation."
@@ -2614,7 +2454,7 @@
       "options": {
         "A": "A budget alert at 90% of the quota value.",
         "B": "An organisation policy that removes quota limits.",
-        "C": "The quota adjuster in Cloud Quotas for the project.",
+        "C": "The quota adjuster in Cloud Quotas.",
         "D": "A committed use discount for the vCPUs."
       },
       "correct_answer": "C",
@@ -2647,7 +2487,7 @@
         "A": "A Cloud Billing budget with an 80% threshold.",
         "B": "An uptime check on the Compute Engine API.",
         "C": "A log-based metric on quota-exceeded errors.",
-        "D": "A usage alert on that quota from the Quotas page, which creates a Cloud Monitoring alerting policy at 80%."
+        "D": "A quota usage alert at 80%, created from the Quotas page."
       },
       "correct_answer": "D",
       "explanation": {
@@ -2677,7 +2517,7 @@
       "question": "Security wants every new GKE cluster in the organisation to have Workload Identity Federation for GKE enabled. No predefined constraint does this. What should you use?",
       "options": {
         "A": "An IAM deny policy on container.clusters.create.",
-        "B": "A custom organisation policy constraint with a CEL condition on the cluster's workload identity field, enforced by an organisation policy.",
+        "B": "A custom constraint, enforced by an organisation policy.",
         "C": "A Cloud Asset Inventory feed that deletes non-compliant clusters.",
         "D": "A tag on the organisation named workload-identity=required."
       },
@@ -2742,7 +2582,7 @@
       "options": {
         "A": "Deletion protection on each VM in the project.",
         "B": "A label protected=true on the project.",
-        "C": "A lien with the restriction resourcemanager.projects.delete.",
+        "C": "A lien that restricts project deletion.",
         "D": "A budget alert on the project."
       },
       "correct_answer": "C",
@@ -2772,7 +2612,7 @@
       "source": "curated",
       "question": "A company runs Microsoft Entra ID (not on-premises Active Directory) and needs Cloud Identity users to be created, updated and suspended automatically when employees join, move or leave. What should it set up?",
       "options": {
-        "A": "User provisioning from Entra ID using its Google Cloud / Google Workspace enterprise application.",
+        "A": "Automatic provisioning from Entra ID's Google Cloud enterprise app.",
         "B": "Google Cloud Directory Sync on a domain controller.",
         "C": "A workforce identity pool, which creates Cloud Identity users.",
         "D": "A nightly CSV upload in the Admin console."
@@ -2804,7 +2644,7 @@
       "source": "curated",
       "question": "An engineer alternates between a staging project with one account and a production project with another account and a different default region. They keep running commands against the wrong project. What should they set up?",
       "options": {
-        "A": "Two named gcloud configurations, then gcloud config configurations activate to switch.",
+        "A": "Two named gcloud configurations, activated to switch between them.",
         "B": "Two installations of the Google Cloud CLI.",
         "C": "An environment variable per command with --project.",
         "D": "A service account key for each project."
@@ -2839,7 +2679,7 @@
         "A": "A budget per project at 100% of last year's average.",
         "B": "A billing export to BigQuery with a weekly manual review.",
         "C": "Committed use discount recommendations.",
-        "D": "Cost anomaly detection in Cloud Billing, with notifications for detected anomalies."
+        "D": "Cost anomaly detection in Cloud Billing, with alerts."
       },
       "correct_answer": "D",
       "explanation": {
@@ -2868,7 +2708,7 @@
       "source": "curated",
       "question": "A manager with Billing Account Viewer asks why the bill rose 30% last month and which services and projects drove it. They do not write SQL. What can they use in the console?",
       "options": {
-        "A": "Gemini Cloud Assist in Cloud Billing, asking the question in natural language.",
+        "A": "Gemini Cloud Assist in the Billing console.",
         "B": "The Pricing Calculator.",
         "C": "Active Assist idle-resource recommendations.",
         "D": "The billing account's payment history page."
@@ -2884,6 +2724,254 @@
         },
         "gcloud_command": "# Console > Billing > Reports > Gemini Cloud Assist: \"Why did costs increase last month?\"",
         "doc_ref": "https://docs.cloud.google.com/billing/docs/how-to/gemini/set-up-gemini"
+      }
+    },
+    {
+      "id": "ace-s1-048",
+      "title": "Removing one person's grant from a busy policy",
+      "objective": "1.1",
+      "subtopic": "Project IAM Grants",
+      "summary": "remove-iam-policy-binding takes out exactly one member–role pair and leaves every other binding alone.",
+      "tags": [
+        "gcloud",
+        "iam"
+      ],
+      "source": "curated",
+      "question": "A contractor's engagement has ended, and their Viewer role on project ops-prod must be removed from the project's IAM policy. Other teams' automation edits the same policy throughout the day, and their bindings must not change. What should you do?",
+      "options": {
+        "A": "Write a policy file without the contractor and apply it with set-iam-policy.",
+        "B": "Add an IAM deny policy for the contractor on the project.",
+        "C": "Run remove-iam-policy-binding for the contractor and the Viewer role.",
+        "D": "Delete the contractor's Google account from the project's IAM page."
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "remove-iam-policy-binding reads, modifies and writes the policy for you, removing exactly one member from one role and leaving every other binding as it is.",
+        "option_breakdown": {
+          "A": "Replacing the whole policy from a file can overwrite changes other automation made after you read it.",
+          "B": "A deny policy blocks the permissions, but the grant stays in the allow policy, which isn't what was asked.",
+          "C": "Correct. It removes only that member–role pair, with the read-modify-write handled by gcloud.",
+          "D": "You can't delete someone's Google account from a project; you can only change the project's IAM bindings."
+        },
+        "gcloud_command": "gcloud projects remove-iam-policy-binding ops-prod \\\n  --member='user:contractor@example.com' --role='roles/viewer'",
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/granting-changing-revoking-access"
+      }
+    },
+    {
+      "id": "ace-s1-049",
+      "title": "Default region and zone for every gcloud command",
+      "objective": "1.1",
+      "subtopic": "gcloud CLI and Configurations",
+      "summary": "gcloud properties compute/region and compute/zone set the defaults that commands use when no location flag is given.",
+      "tags": [
+        "configuration",
+        "gcloud"
+      ],
+      "source": "curated",
+      "question": "An engineer works almost entirely in europe-west4-b and is tired of adding --zone to every Compute Engine command. What should they do so that commands use that zone unless told otherwise?",
+      "options": {
+        "A": "Export the CLOUDSDK_CONFIG variable with the zone name.",
+        "B": "Set the compute/zone and compute/region properties in the active configuration.",
+        "C": "Create the project's resources in that zone, which gcloud then remembers.",
+        "D": "Set the default zone on the project's billing account."
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "gcloud reads defaults such as compute/zone and compute/region from the active configuration, and a --zone flag on a command still overrides them.",
+        "option_breakdown": {
+          "A": "CLOUDSDK_CONFIG points gcloud at a configuration directory; it doesn't hold a zone.",
+          "B": "Correct. With these properties set, commands that need a location use them by default.",
+          "C": "gcloud doesn't infer defaults from where resources were created.",
+          "D": "Billing accounts have no location settings for the CLI."
+        },
+        "gcloud_command": "gcloud config set compute/region europe-west4\ngcloud config set compute/zone europe-west4-b",
+        "doc_ref": "https://docs.cloud.google.com/sdk/docs/properties"
+      }
+    },
+    {
+      "id": "ace-s1-050",
+      "title": "One command against a different project",
+      "objective": "1.1",
+      "subtopic": "gcloud CLI and Configurations",
+      "summary": "The --project flag runs a single command against another project without changing the active configuration.",
+      "tags": [
+        "configuration",
+        "gcloud"
+      ],
+      "source": "curated",
+      "question": "Your active gcloud configuration points at project shop-dev. You need to list the VMs in project shop-prod once, without changing what later commands use. What should you run?",
+      "options": {
+        "A": "gcloud config set project shop-prod, then list the instances.",
+        "B": "gcloud auth login as a user who owns shop-prod, then list the instances.",
+        "C": "A new gcloud configuration for shop-prod, activated for the command.",
+        "D": "gcloud compute instances list with --project=shop-prod."
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "Global flags such as --project override the configuration for one command only, leaving the active configuration unchanged.",
+        "option_breakdown": {
+          "A": "This changes the default for every later command, which the stem rules out.",
+          "B": "Logging in changes the account, not which project commands target.",
+          "C": "It works but is heavier than needed, and it changes the active configuration until you switch back.",
+          "D": "Correct. --project applies to that command alone."
+        },
+        "gcloud_command": "gcloud compute instances list --project=shop-prod",
+        "doc_ref": "https://docs.cloud.google.com/sdk/gcloud/reference"
+      }
+    },
+    {
+      "id": "ace-s1-051",
+      "title": "gcloud components update is refused",
+      "objective": "1.1",
+      "subtopic": "gcloud CLI and Configurations",
+      "summary": "When the Google Cloud CLI was installed with a system package manager, it is updated through that package manager, not gcloud components.",
+      "tags": [
+        "gcloud",
+        "installation"
+      ],
+      "source": "curated",
+      "question": "On an Ubuntu server, the Google Cloud CLI was installed from Google's apt repository. Running gcloud components update fails with a message that the component manager is disabled for this installation. How should you update the CLI?",
+      "options": {
+        "A": "Update it through apt, the package manager that installed it.",
+        "B": "Run gcloud components update with sudo.",
+        "C": "Delete ~/.config/gcloud and run the update again.",
+        "D": "Reinstall the CLI from a tarball on top of the apt installation."
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "Package-manager installations disable the component manager so that apt or yum stays in control; updates and extra components come from the same repository.",
+        "option_breakdown": {
+          "A": "Correct. apt-get update and an upgrade of google-cloud-cli (and its component packages) updates it.",
+          "B": "Root privileges don't re-enable a component manager that the installation disabled.",
+          "C": "That directory holds your configurations and credentials, not the installation's settings.",
+          "D": "Two installations side by side cause conflicts and confusion over which gcloud runs."
+        },
+        "gcloud_command": "sudo apt-get update && sudo apt-get install --only-upgrade google-cloud-cli",
+        "doc_ref": "https://docs.cloud.google.com/sdk/docs/install-sdk"
+      }
+    },
+    {
+      "id": "ace-s1-052",
+      "title": "Separate network hosts for production and the rest",
+      "objective": "1.1",
+      "subtopic": "Foundation Networking",
+      "summary": "A foundation usually has separate Shared VPC host projects for production and non-production, so the environments are isolated by design.",
+      "tags": [
+        "foundation",
+        "shared-vpc"
+      ],
+      "source": "curated",
+      "question": "A new organisation's foundation will use Shared VPC. Security requires that no misconfigured route or firewall rule in development or test can ever affect production traffic. How should the host projects be laid out?",
+      "options": {
+        "A": "One host project with one VPC, and one subnet per environment.",
+        "B": "One host project per application team, shared by all its environments.",
+        "C": "No Shared VPC: a separate VPC in every project, peered together.",
+        "D": "A production host project and a separate non-production host project."
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "Routes and firewall rules belong to a VPC. Separate host projects, each with its own VPC, mean a change in non-production can't reach production.",
+        "option_breakdown": {
+          "A": "Subnets in one VPC share its routes and firewall rules, so a mistake in one environment can affect another.",
+          "B": "Per-team hosts mix environments inside each team's network.",
+          "C": "Peering every project rebuilds the many-networks problem Shared VPC removes.",
+          "D": "Correct. Each environment's network is a separate VPC with its own routes and rules, administered centrally."
+        },
+        "gcloud_command": "gcloud compute shared-vpc enable net-host-prod\ngcloud compute shared-vpc enable net-host-nonprod",
+        "doc_ref": "https://docs.cloud.google.com/architecture/security-foundations/networking"
+      }
+    },
+    {
+      "id": "ace-s1-053",
+      "title": "A project whose billing account was closed",
+      "objective": "1.2",
+      "subtopic": "Billing Accounts",
+      "summary": "A project without an active billing account has billing disabled; linking it to an active account restores paid services.",
+      "tags": [
+        "billing"
+      ],
+      "source": "curated",
+      "question": "Finance closed an old billing account. A project that was still linked to it now has billing disabled, and its VMs have stopped. The project must keep running on the company's current billing account. What should you do?",
+      "options": {
+        "A": "Link the project to the active billing account.",
+        "B": "Reopen the closed account under a new name.",
+        "C": "Create a new project and move every resource into it.",
+        "D": "Ask support to transfer the old account's credit to the project."
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "A project needs an active billing account for paid services. Linking it to the current account re-enables billing; stopped resources can then be started again.",
+        "option_breakdown": {
+          "A": "Correct. Linking (for example with gcloud billing projects link) restores billing for the project.",
+          "B": "A closed account isn't the company's current account, and reopening it isn't the fix that was asked for.",
+          "C": "Projects can't be merged, and moving resources is far more work than relinking.",
+          "D": "Credit isn't the issue; the project has no active billing account."
+        },
+        "gcloud_command": "gcloud billing projects link PROJECT_ID --billing-account=ACTIVE_ACCOUNT_ID",
+        "doc_ref": "https://docs.cloud.google.com/billing/docs/how-to/modify-project"
+      }
+    },
+    {
+      "id": "ace-s1-054",
+      "title": "Cost per Kubernetes namespace",
+      "objective": "1.2",
+      "subtopic": "Billing Export and Cost Attribution",
+      "summary": "GKE cost allocation adds namespace and Kubernetes label data to the detailed billing export.",
+      "tags": [
+        "billing",
+        "cost-allocation",
+        "gke"
+      ],
+      "source": "curated",
+      "question": "Five teams share one GKE Standard cluster, each in its own namespace. Finance already has the detailed billing export in BigQuery but sees only node costs. It needs cost per namespace. What should you enable?",
+      "options": {
+        "A": "A label on each node pool with the team's name.",
+        "B": "A separate billing account for each team.",
+        "C": "GKE cost allocation on the cluster.",
+        "D": "A budget for each namespace in Cloud Billing."
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "With GKE cost allocation, the billing export breaks cluster costs down by namespace and Kubernetes labels, based on the resources each workload requests.",
+        "option_breakdown": {
+          "A": "The teams share node pools, so node pool labels can't separate their costs.",
+          "B": "Billing accounts attach to projects, not namespaces.",
+          "C": "Correct. Cost allocation adds namespace and label detail to the export rows.",
+          "D": "Budgets can't be scoped to a namespace, and they don't produce the cost breakdown."
+        },
+        "gcloud_command": "gcloud container clusters update shared --location=REGION --enable-cost-allocation",
+        "doc_ref": "https://docs.cloud.google.com/kubernetes-engine/docs/how-to/cost-allocations"
+      }
+    },
+    {
+      "id": "ace-s1-055",
+      "title": "Incident logs gone before the review",
+      "objective": "1.1",
+      "subtopic": "Observability Setup",
+      "summary": "The _Default log bucket keeps logs for 30 days by default, and its retention can be changed.",
+      "tags": [
+        "logging",
+        "retention"
+      ],
+      "source": "curated",
+      "question": "An SRE preparing a review of an incident from seven weeks ago finds that the application's entries for that week are no longer in Logs Explorer, though they were never excluded. Reviews happen up to 90 days later. What should be changed so this doesn't happen again?",
+      "options": {
+        "A": "The _Required bucket's retention, to 90 days.",
+        "B": "A sink to a Cloud Storage bucket kept for 90 days.",
+        "C": "Data Access audit logs, turned on for the project.",
+        "D": "The _Default bucket's retention, to 90 days."
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "Logs that aren't audit or system logs go to the _Default bucket, whose 30-day default retention can be set to a longer period.",
+        "option_breakdown": {
+          "A": "The _Required bucket holds audit and system logs, and its retention can't be changed.",
+          "B": "A sink exports a copy outside Cloud Logging, which the stem rules out.",
+          "C": "Data Access logs add new entries; they don't change retention.",
+          "D": "Correct. Updating the _Default bucket's retention keeps those logs for 90 days in place."
+        },
+        "gcloud_command": "gcloud logging buckets update _Default --location=global --retention-days=90",
+        "doc_ref": "https://docs.cloud.google.com/logging/docs/buckets"
       }
     }
   ]

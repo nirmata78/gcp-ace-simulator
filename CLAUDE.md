@@ -13,6 +13,7 @@ bin/start.sh / bin/stop.sh                     # the simulator in Docker, syncin
 pytest -q                                      # must stay green
 pytest tests/container                         # the container, in a real browser; needs Docker and Playwright
 python scripts/kb.py check                     # bank integrity
+python scripts/kb.py lint                      # the question standard (docs/question-standard.md)
 python scripts/kb.py blueprint --min 3 --strict  # every guide bullet has 3+ questions
 python scripts/kb.py add --file newq.json      # add questions through validation
 ```
@@ -41,8 +42,8 @@ After changing dependencies in `pyproject.toml`, regenerate both lock files with
 
 ## Rules
 
-- Write questions in the voice of the bank: a scenario, one decision, four plausible options, a rationale for each,
-  and a `doc_ref` you have actually checked.
+- Write questions to `docs/question-standard.md`: a scenario, one decision, four plausible options, a rationale for
+  each, and a `doc_ref` you have actually checked. Never reuse an id; removed ids are in `data/retired.json`.
 - Google Cloud products get renamed. Verify against current documentation rather than memory, and mark volatile
   facts *verify* in the theory.
 - If you add a fact to a question that the theory does not teach, add it to the theory page too.

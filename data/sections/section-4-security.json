@@ -1,41 +1,9 @@
 {
   "domain": "Section 4: Configuring access and security",
   "version": 2,
-  "updated_at": "2026-11-06T18:34:51+00:00",
-  "count": 69,
+  "updated_at": "2026-11-07T14:36:24+00:00",
+  "count": 65,
   "questions": [
-    {
-      "id": "ace-dom1-005",
-      "title": "Access to exactly one bucket",
-      "objective": "4.1",
-      "subtopic": "IAM Policies and Inheritance",
-      "summary": "IAM can bind directly on individual resources such as buckets — the only scope that exposes one bucket without the project.",
-      "tags": [
-        "cloud-storage",
-        "iam",
-        "least-privilege"
-      ],
-      "source": "curated",
-      "question": "A partner needs read access to exactly one Cloud Storage bucket and to nothing else in the project that contains it. What should you do?",
-      "options": {
-        "A": "Apply the configuration on each individual project.",
-        "B": "Apply the configuration directly on the individual resource.",
-        "C": "Apply the configuration at the organisation node.",
-        "D": "Apply the configuration at the folder containing the affected projects."
-      },
-      "correct_answer": "B",
-      "explanation": {
-        "summary": "IAM can be bound directly on individual resources such as buckets, which is the only scope that grants access to that bucket without exposing the rest of the project.",
-        "option_breakdown": {
-          "A": "Per-project configuration does not inherit to projects created later, so it drifts as the estate grows and multiplies the administrative effort.",
-          "B": "Correct. IAM can be bound directly on individual resources such as buckets, which is the only scope that grants access to that bucket without exposing the rest of the project.",
-          "C": "The organisation node scopes a setting to every project the company owns, which is broader than a departmental or single-project requirement and awkward to carve exceptions out of.",
-          "D": "A folder scopes the setting to one branch of the hierarchy — wrong when the requirement is company-wide, and wrong when it must apply to exactly one project."
-        },
-        "gcloud_command": "gcloud storage buckets add-iam-policy-binding gs://BUCKET \\\n  --member='user:partner@example.com' --role='roles/storage.objectViewer'",
-        "doc_ref": "https://cloud.google.com/storage/docs/access-control/iam"
-      }
-    },
     {
       "id": "ace-dom5-001",
       "title": "No predefined role matches exactly",
@@ -69,38 +37,6 @@
       }
     },
     {
-      "id": "ace-dom5-002",
-      "title": "Access expiring at quarter end",
-      "objective": "4.1",
-      "subtopic": "IAM Policies and Inheritance",
-      "summary": "IAM conditions express expiry and resource-name predicates on the binding itself.",
-      "tags": [
-        "iam",
-        "iam-conditions",
-        "temporary-access"
-      ],
-      "source": "curated",
-      "question": "A contractor needs Storage Object Viewer access, but only until the end of the quarter and only on buckets whose name begins with 'shared-'. What should you do?",
-      "options": {
-        "A": "Grant a basic role such as Owner, Editor or Viewer.",
-        "B": "Create an IAM deny policy.",
-        "C": "Add an IAM condition to the role binding.",
-        "D": "Grant an existing predefined role."
-      },
-      "correct_answer": "C",
-      "explanation": {
-        "summary": "IAM conditions express both the expiry date and a resource-name predicate on the binding itself, which no static role can do.",
-        "option_breakdown": {
-          "A": "Basic roles are coarse legacy roles spanning every service in a project and should not be used where least privilege matters.",
-          "B": "Deny policies block permissions regardless of allow grants; they are a guardrail, not a way to grant access.",
-          "C": "Correct. IAM conditions express both the expiry date and a resource-name predicate on the binding itself, which no static role can do.",
-          "D": "Predefined roles are curated per-service permission sets; when none matches the required permissions, the nearest one over-grants."
-        },
-        "gcloud_command": "gcloud projects add-iam-policy-binding PROJECT_ID \\\n  --member='user:contractor@example.com' --role='roles/storage.objectViewer' \\\n  --condition='expression=request.time < timestamp(\"2026-10-01T00:00:00Z\"),title=temp'",
-        "doc_ref": "https://cloud.google.com/iam/docs/conditions-overview"
-      }
-    },
-    {
       "id": "ace-dom5-003",
       "title": "Even Owners must not delete these buckets",
       "objective": "4.1",
@@ -114,19 +50,19 @@
       "source": "curated",
       "question": "Principals who hold Owner must nonetheless be prevented from deleting a specific set of production buckets, and the control must not be defeatable by granting more roles. What should you do?",
       "options": {
-        "A": "Grant an existing predefined role.",
-        "B": "Create a custom role containing exactly the required permissions.",
-        "C": "Grant a basic role such as Owner, Editor or Viewer.",
+        "A": "Grant those principals a custom role without storage.buckets.delete.",
+        "B": "Add an IAM condition to their Owner binding that excludes the buckets.",
+        "C": "Alert on audit log entries that delete the buckets.",
         "D": "Create an IAM deny policy."
       },
       "correct_answer": "D",
       "explanation": {
         "summary": "Deny policies are evaluated before allow policies and cannot be overridden by any role grant, including Owner.",
         "option_breakdown": {
-          "A": "Predefined roles are curated per-service permission sets; when none matches the required permissions, the nearest one over-grants.",
-          "B": "Custom roles must be maintained by hand as services add permissions; they are unnecessary when a predefined role already fits.",
-          "C": "Basic roles are coarse legacy roles spanning every service in a project and should not be used where least privilege matters.",
-          "D": "Correct. Deny policies are evaluated before allow policies and cannot be overridden by any role grant, including Owner."
+          "A": "A new role adds permissions; they keep Owner, which still allows deletion.",
+          "B": "IAM conditions can't be used with basic roles such as Owner.",
+          "C": "An alert reports the deletion after it has happened.",
+          "D": "Correct. Deny policies are evaluated before allow policies, so no role grant, Owner included, can override them."
         },
         "gcloud_command": "gcloud iam policies create deny-bucket-delete \\\n  --attachment-point=cloudresourcemanager.googleapis.com/projects/PROJECT_ID \\\n  --kind=denypolicies --policy-file=deny.json",
         "doc_ref": "https://cloud.google.com/iam/docs/deny-overview"
@@ -156,8 +92,8 @@
         "summary": "roles/pubsub.publisher is the predefined role for exactly this permission set; creating a custom role would duplicate it and require ongoing maintenance.",
         "option_breakdown": {
           "A": "Correct. roles/pubsub.publisher is the predefined role for exactly this permission set; creating a custom role would duplicate it and require ongoing maintenance.",
-          "B": "IAM conditions restrict when or on which resources a binding applies; they narrow an existing grant rather than defining a new permission set.",
-          "C": "Deny policies block permissions regardless of allow grants; they are a guardrail, not a way to grant access.",
+          "B": "A condition limits when or where a role applies; the team still needs a role that grants publishing.",
+          "C": "A deny policy blocks permissions; it can't grant the ability to publish.",
           "D": "Custom roles must be maintained by hand as services add permissions; they are unnecessary when a predefined role already fits."
         },
         "gcloud_command": "gcloud projects add-iam-policy-binding PROJECT_ID \\\n  --member='group:app@example.com' --role='roles/pubsub.publisher'",
@@ -179,7 +115,7 @@
       "question": "An audit finds that all developers hold the basic Editor role on the production project, although most of them only deploy Cloud Run services and read logs. You must remediate the finding following least privilege. What should you do first?",
       "options": {
         "A": "Keep Editor and add an IAM condition that limits it to business hours.",
-        "B": "List the Editor bindings, use the IAM role recommendations to see which permissions each principal actually uses, and replace Editor with the matching predefined roles.",
+        "B": "Use IAM role recommendations to replace Editor with the predefined roles each developer uses.",
         "C": "Replace Editor with Owner on a smaller group of senior developers and route changes through them.",
         "D": "Leave Editor in place and create a deny policy that blocks every permission developers do not use."
       },
@@ -219,9 +155,9 @@
       "explanation": {
         "summary": "A dedicated service account attached to the instance is served short-lived tokens by the metadata server, so no key ever exists on disk.",
         "option_breakdown": {
-          "A": "Impersonation lets one principal act as a service account for a short-lived token; it is not how a workload obtains its own attached identity.",
-          "B": "Workload Identity Federation lets identities from an external provider obtain Google Cloud credentials without keys; it does not apply to workloads already running on Google Cloud.",
-          "C": "Workload Identity for GKE maps a Kubernetes service account to an IAM service account; it applies only to workloads on GKE.",
+          "A": "Impersonation still needs some identity on the VM to make the request, which is the problem to solve.",
+          "B": "Workload Identity Federation is for workloads outside Google Cloud; a VM can have a service account attached.",
+          "C": "Workload Identity Federation for GKE is for Pods on GKE, not Compute Engine VMs.",
           "D": "Correct. A dedicated service account attached to the instance is served short-lived tokens by the metadata server, so no key ever exists on disk."
         },
         "gcloud_command": "gcloud compute instances create app-1 \\\n  --service-account=app-sa@PROJECT.iam.gserviceaccount.com \\\n  --scopes=https://www.googleapis.com/auth/cloud-platform --zone=us-central1-a",
@@ -242,7 +178,7 @@
       "source": "curated",
       "question": "A Pod in GKE must access a Cloud Storage bucket using a Google Cloud identity, with no key mounted as a Kubernetes secret. What should you do?",
       "options": {
-        "A": "Configure Workload Identity Federation for GKE, binding the Kubernetes service account to the IAM service account.",
+        "A": "Workload Identity Federation for GKE, for the Pod's KSA.",
         "B": "Configure Workload Identity Federation for the external workload.",
         "C": "Create a service account key and store it with the application.",
         "D": "Use the project's default Compute Engine service account."
@@ -252,9 +188,9 @@
         "summary": "Workload Identity Federation for GKE binds the Kubernetes service account to an IAM service account, so Pods receive short-lived credentials with no secret to mount.",
         "option_breakdown": {
           "A": "Correct. Workload Identity Federation for GKE binds the Kubernetes service account to an IAM service account, so Pods receive short-lived credentials with no secret to mount.",
-          "B": "Workload Identity Federation lets identities from an external provider obtain Google Cloud credentials without keys; it does not apply to workloads already running on Google Cloud.",
-          "C": "Downloadable service account keys are long-lived credentials that never expire and are the leading cause of credential compromise.",
-          "D": "The default service account is shared by every instance and, unless changed, carries the broad Editor role — the opposite of least privilege."
+          "B": "Federation with an external provider is for workloads outside Google Cloud; GKE has its own built-in form.",
+          "C": "A key is the long-lived secret that must not be mounted.",
+          "D": "Pods would use the node's identity, shared by every Pod on the node and broad by default."
         },
         "gcloud_command": "gcloud iam service-accounts add-iam-policy-binding gcs-sa@PROJECT.iam.gserviceaccount.com \\\n  --role=roles/iam.workloadIdentityUser \\\n  --member='serviceAccount:PROJECT.svc.id.goog[prod/app-ksa]'",
         "doc_ref": "https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity"
@@ -283,10 +219,10 @@
       "explanation": {
         "summary": "Workload Identity Federation exchanges the external provider's OIDC token for short-lived Google Cloud credentials, removing the need for any key.",
         "option_breakdown": {
-          "A": "The default service account is shared by every instance and, unless changed, carries the broad Editor role — the opposite of least privilege.",
+          "A": "The default service account can only be used from outside Google Cloud with a key, which is banned.",
           "B": "Correct. Workload Identity Federation exchanges the external provider's OIDC token for short-lived Google Cloud credentials, removing the need for any key.",
-          "C": "Attaching a service account lets a workload get credentials from the metadata server; it does not apply to identities outside Google Cloud.",
-          "D": "Impersonation lets one principal act as a service account for a short-lived token; it is not how a workload obtains its own attached identity."
+          "C": "Attaching a service account only works for resources running in Google Cloud.",
+          "D": "To impersonate, the pipeline must first authenticate as a Google principal, which without keys means federation anyway."
         },
         "gcloud_command": "gcloud iam workload-identity-pools create ci-pool --location=global",
         "doc_ref": "https://cloud.google.com/iam/docs/workload-identity-federation"
@@ -306,8 +242,8 @@
       "source": "curated",
       "question": "An engineer must occasionally run a deployment as a privileged service account, and every such action must remain attributable to them personally in the audit log. What should you do?",
       "options": {
-        "A": "Configure Workload Identity Federation for the external workload.",
-        "B": "Configure Workload Identity Federation for GKE, binding the Kubernetes service account to the IAM service account.",
+        "A": "Grant the engineer Service Account User on the service account.",
+        "B": "Grant the service account's privileged roles to the engineer directly.",
         "C": "Grant Service Account Token Creator so the principal can impersonate the service account.",
         "D": "Create a service account key and store it with the application."
       },
@@ -315,10 +251,10 @@
       "explanation": {
         "summary": "Impersonation issues a short-lived token while the audit log still records the human principal who requested it, which preserves attribution.",
         "option_breakdown": {
-          "A": "Workload Identity Federation lets identities from an external provider obtain Google Cloud credentials without keys; it does not apply to workloads already running on Google Cloud.",
-          "B": "Workload Identity for GKE maps a Kubernetes service account to an IAM service account; it applies only to workloads on GKE.",
+          "A": "Service Account User lets the engineer attach the account to resources; it doesn't let them get tokens to act as it.",
+          "B": "Actions are attributable, but the engineer then holds the privileges all the time instead of using the service account occasionally.",
           "C": "Correct. Impersonation issues a short-lived token while the audit log still records the human principal who requested it, which preserves attribution.",
-          "D": "Downloadable service account keys are long-lived credentials that never expire and are the leading cause of credential compromise."
+          "D": "A key is a long-lived credential, and actions taken with it are logged as the service account, not the engineer."
         },
         "gcloud_command": "gcloud iam service-accounts add-iam-policy-binding deploy-sa@PROJECT.iam.gserviceaccount.com \\\n  --member='user:eng@example.com' --role='roles/iam.serviceAccountTokenCreator'",
         "doc_ref": "https://cloud.google.com/iam/docs/service-account-impersonation"
@@ -347,9 +283,9 @@
       "explanation": {
         "summary": "Giving each application its own attached service account is what makes its calls individually attributable and separately authorisable.",
         "option_breakdown": {
-          "A": "Downloadable service account keys are long-lived credentials that never expire and are the leading cause of credential compromise.",
-          "B": "The default service account is shared by every instance and, unless changed, carries the broad Editor role — the opposite of least privilege.",
-          "C": "Impersonation lets one principal act as a service account for a short-lived token; it is not how a workload obtains its own attached identity.",
+          "A": "A key is a long-lived secret, and it doesn't separate the applications unless each has its own account.",
+          "B": "Every application would share one identity, so their calls can't be told apart or authorised separately.",
+          "C": "Impersonation lets people act as an account; each application still needs its own identity.",
           "D": "Correct. Giving each application its own attached service account is what makes its calls individually attributable and separately authorisable."
         },
         "gcloud_command": "gcloud compute instances set-service-account billing-1 \\\n  --service-account=billing-app-sa@PROJECT.iam.gserviceaccount.com --zone=us-central1-a",
@@ -370,7 +306,7 @@
       "source": "curated",
       "question": "A script must obtain a token valid for about an hour to call an API as a service account, with no long-lived credential existing anywhere. What should you do?",
       "options": {
-        "A": "Grant the script's identity roles/iam.serviceAccountTokenCreator on the service account and run gcloud auth print-access-token --impersonate-service-account.",
+        "A": "Grant Token Creator to the script's identity and impersonate the service account.",
         "B": "Create a service-account key, use it, and delete it after an hour.",
         "C": "Store a service-account key in Secret Manager and read it at runtime.",
         "D": "Grant the script's identity roles/iam.serviceAccountUser on the service account."
@@ -403,7 +339,7 @@
       "question": "The analytics group holds BigQuery Data Viewer on a folder with twelve projects. One of those projects now holds regulated data that the group must not read. You try to remove the role in that project's IAM policy but the binding does not appear there. What should you do?",
       "options": {
         "A": "Add a binding in the project for the same role with an empty member list, which cancels the inherited one.",
-        "B": "Remove the folder-level binding and grant the role on the eleven projects that need it (or move the regulated project out of the folder).",
+        "B": "Remove the folder grant, and grant the eleven projects directly.",
         "C": "Grant the group roles/browser in the project, which overrides the inherited data role.",
         "D": "Wait for the next IAM propagation cycle, after which the project-level removal will be possible."
       },
@@ -503,7 +439,7 @@
         "A": "Create a key for frontend's service account and pass it in an HTTP header.",
         "B": "Allow unauthenticated invocations on pricing and restrict it with a VPC firewall rule.",
         "C": "Share an API key between the two services through an environment variable.",
-        "D": "Grant frontend's service account Cloud Run Invoker on pricing, and have frontend fetch an ID token for pricing's URL from the metadata server and send it as a bearer token."
+        "D": "Grant Invoker on pricing, and send an ID token from the metadata server."
       },
       "correct_answer": "D",
       "explanation": {
@@ -533,7 +469,7 @@
       "question": "A workload identity pool trusts GitHub Actions. Only workflows from the repository `acme/infra` should ever be able to exchange tokens through the provider, even if someone later grants a broader principal set access by mistake. What should you configure?",
       "options": {
         "A": "A VPC Service Controls perimeter around the project.",
-        "B": "An attribute condition on the provider, such as assertion.repository == 'acme/infra'.",
+        "B": "An attribute condition requiring repository acme/infra.",
         "C": "A service account key restricted to GitHub's IP ranges.",
         "D": "A separate workload identity pool for each workflow file."
       },
@@ -551,38 +487,6 @@
       }
     },
     {
-      "id": "ace-s4-006",
-      "title": "A custom role needed in forty projects",
-      "objective": "4.1",
-      "subtopic": "Role Types and Custom Roles",
-      "summary": "A custom role created in a project can be granted only in that project; create it at the organisation to reuse it.",
-      "tags": [
-        "custom-roles",
-        "iam",
-        "organization"
-      ],
-      "source": "curated",
-      "question": "Security designed a custom role for incident responders that must be granted in forty projects across the organisation, and it should be maintained in one place. Where should you create it?",
-      "options": {
-        "A": "In each of the forty projects, from the same YAML definition.",
-        "B": "In one project, then grant it in the other thirty-nine projects.",
-        "C": "In a folder, which then offers it to every project below.",
-        "D": "At the organisation level, then grant it in each project where it is needed."
-      },
-      "correct_answer": "D",
-      "explanation": {
-        "summary": "Custom roles can be defined at the organisation or at a project. A project-level custom role can only be used in that project; an organisation-level custom role can be granted on any resource in the organisation and is updated once.",
-        "option_breakdown": {
-          "A": "Forty copies drift and must be updated forty times.",
-          "B": "A project-level custom role cannot be granted in other projects.",
-          "C": "Custom roles cannot be defined on folders.",
-          "D": "Correct. One definition, grantable anywhere in the organisation."
-        },
-        "gcloud_command": "gcloud iam roles create incidentResponder --organization=ORG_ID --file=role.yaml",
-        "doc_ref": "https://cloud.google.com/iam/docs/creating-custom-roles"
-      }
-    },
-    {
       "id": "ace-s4-007",
       "title": "Every binding that applies to a project, including inherited ones",
       "objective": "4.1",
@@ -594,18 +498,18 @@
         "inheritance"
       ],
       "source": "curated",
-      "question": "During an access review you need every IAM binding that affects one project — those set on the project itself and those inherited from its folders and the organisation. Which command gives you this in one step?",
+      "question": "During an access review, you need every IAM binding that affects one project: those set on the project itself and those inherited from its folders and the organisation. What should you retrieve, in one step?",
       "options": {
-        "A": "`gcloud projects get-ancestors-iam-policy PROJECT_ID`",
-        "B": "`gcloud projects get-iam-policy PROJECT_ID`",
-        "C": "`gcloud organizations get-iam-policy ORG_ID`",
-        "D": "`gcloud iam roles describe roles/owner`"
+        "A": "The IAM policies of the project and all its ancestors.",
+        "B": "The project's own IAM policy.",
+        "C": "The organisation's IAM policy.",
+        "D": "The description of the Owner role."
       },
       "correct_answer": "A",
       "explanation": {
         "summary": "get-iam-policy returns only the bindings set directly on the project. get-ancestors-iam-policy walks up the hierarchy and returns the project's policy together with those of its folders and organisation.",
         "option_breakdown": {
-          "A": "Correct. The project and every ancestor in one call.",
+          "A": "Correct. gcloud projects get-ancestors-iam-policy returns the project's policy and every ancestor's in one call.",
           "B": "Direct bindings only; inherited access is invisible here.",
           "C": "Only the organisation's own policy, not the folders or the project.",
           "D": "Describes a role's permissions, not who holds it."
@@ -630,7 +534,7 @@
       "options": {
         "A": "Mount a key for the node's service account as a Kubernetes Secret.",
         "B": "Grant the Pub/Sub Publisher role on the node pool's service account.",
-        "C": "Grant Pub/Sub Publisher on the topic to the principal identifier for orders-ksa in the cluster's workload identity pool.",
+        "C": "Grant Publisher on the topic to orders-ksa's principal identifier.",
         "D": "Annotate orders-ksa with the project's default Compute Engine service account."
       },
       "correct_answer": "C",
@@ -661,7 +565,7 @@
       "question": "A new GKE Standard node pool would use the Compute Engine default service account, which holds Editor in this project. Nodes only need to write logs and metrics and pull images; workloads use their own identities. What should you do?",
       "options": {
         "A": "Keep the default service account but restrict it with the cloud-platform access scope.",
-        "B": "Create a dedicated node service account with Logs Writer, Monitoring Metric Writer and Artifact Registry Reader (or the Kubernetes Engine Default Node Service Account role), and create the node pool with it.",
+        "B": "A dedicated node service account with only those roles.",
         "C": "Use a service account key for the nodes, stored as a Kubernetes Secret.",
         "D": "Grant Owner to the default service account so node upgrades never fail on permissions."
       },
@@ -695,7 +599,7 @@
         "A": "Delete it; deleted service accounts are restored automatically when something calls them.",
         "B": "Remove all its roles and delete its keys, leaving it enabled.",
         "C": "Rename it to deprecated-legacy-batch so any caller receives a clear error.",
-        "D": "Disable it, watch for failures and its activity, and delete it only after an observation period."
+        "D": "Disable it, watch for failures, and delete it later."
       },
       "correct_answer": "D",
       "explanation": {
@@ -708,38 +612,6 @@
         },
         "gcloud_command": "gcloud iam service-accounts disable legacy-batch@PROJECT_ID.iam.gserviceaccount.com",
         "doc_ref": "https://cloud.google.com/iam/docs/service-accounts-disable-enable"
-      }
-    },
-    {
-      "id": "ace-s4-011",
-      "title": "Stop new default service accounts receiving Editor",
-      "objective": "4.2",
-      "subtopic": "Creating Service Accounts",
-      "summary": "The iam.automaticIamGrantsForDefaultServiceAccounts constraint stops default service accounts getting Editor.",
-      "tags": [
-        "default-service-accounts",
-        "least-privilege",
-        "organization-policy"
-      ],
-      "source": "curated",
-      "question": "When projects enable Compute Engine, the default compute service account is automatically granted the Editor role. Security wants that automatic grant to stop in every new project in the organisation. What should you do?",
-      "options": {
-        "A": "Enforce the iam.automaticIamGrantsForDefaultServiceAccounts organisation policy constraint at the organisation.",
-        "B": "Delete the default service account in every project after it is created.",
-        "C": "Add a deny policy on the Editor role for all service accounts.",
-        "D": "Enable Data Access audit logs so the grant is detected."
-      },
-      "correct_answer": "A",
-      "explanation": {
-        "summary": "This boolean constraint prevents default service accounts from receiving the Editor role automatically when they are created, so new projects start without that broad grant.",
-        "option_breakdown": {
-          "A": "Correct. The documented guardrail for exactly this automatic grant.",
-          "B": "Deleting it breaks workloads that expect it and does not change the default for future projects.",
-          "C": "Deny policies deny permissions, not roles, and a blanket rule on Editor's permissions would break legitimate users.",
-          "D": "Detection after the fact does not stop the grant."
-        },
-        "gcloud_command": "gcloud resource-manager org-policies enable-enforce iam.automaticIamGrantsForDefaultServiceAccounts \\\n  --organization=ORG_ID",
-        "doc_ref": "https://cloud.google.com/resource-manager/docs/organization-policy/restricting-service-accounts"
       }
     },
     {
@@ -759,7 +631,7 @@
         "A": "The roles granted to deploy-sa in the project's IAM policy.",
         "B": "Cloud Asset Inventory's list of service accounts in the project.",
         "C": "The Admin Activity logs for the last 30 days.",
-        "D": "The IAM policy of deploy-sa itself (gcloud iam service-accounts get-iam-policy), plus project-level grants of Service Account User or Token Creator."
+        "D": "deploy-sa's own IAM policy, plus project grants of those roles."
       },
       "correct_answer": "D",
       "explanation": {
@@ -789,7 +661,7 @@
       "question": "An administrator holds Token Creator on the tf-admin service account and wants every gcloud command in their session to run as tf-admin, without downloading a key and without adding a flag to each command. What should they do?",
       "options": {
         "A": "Run gcloud auth activate-service-account with a new key for tf-admin.",
-        "B": "Set the auth/impersonate_service_account property in the active gcloud configuration.",
+        "B": "Set the auth/impersonate_service_account gcloud property.",
         "C": "Export GOOGLE_APPLICATION_CREDENTIALS pointing at their user credentials file.",
         "D": "Add tf-admin to the administrator's Google group."
       },
@@ -822,7 +694,7 @@
       "options": {
         "A": "A service account key file for the service account it will impersonate.",
         "B": "The provider's client secret, embedded in the source code.",
-        "C": "A credential configuration file generated for the provider, referenced by GOOGLE_APPLICATION_CREDENTIALS.",
+        "C": "A credential configuration file for the provider, used by ADC.",
         "D": "A gcloud user login performed once on the server."
       },
       "correct_answer": "C",
@@ -852,7 +724,7 @@
       "source": "curated",
       "question": "Two automation jobs each read a project's IAM policy with get-iam-policy, add a different binding locally, and write it back with set-iam-policy a few seconds apart. The second write is rejected. What happened, and what should the second job do?",
       "options": {
-        "A": "The policy's etag changed after the first write; re-read the policy, re-apply the change and write again.",
+        "A": "The etag changed; re-read the policy, re-apply, and write again.",
         "B": "The second job lacks permission; grant it Project IAM Admin.",
         "C": "IAM allows only one policy change per hour; wait and retry.",
         "D": "The policy exceeded its size limit; remove unused bindings."
@@ -886,7 +758,7 @@
       "options": {
         "A": "A standing roles/compute.admin grant to the SRE group, reviewed every quarter.",
         "B": "An IAM condition on roles/compute.admin limited to office hours.",
-        "C": "A Privileged Access Manager entitlement for roles/compute.admin on the project, with approval and a four-hour maximum duration.",
+        "C": "A Privileged Access Manager entitlement, approved, for up to 4 hours.",
         "D": "A shared break-glass user account whose password is kept in a safe."
       },
       "correct_answer": "C",
@@ -916,7 +788,7 @@
       "source": "curated",
       "question": "Developers need roles/compute.instanceAdmin.v1 in a shared project, but only on VMs tagged env=dev (a resource-manager tag), never on the production VMs in the same project. What should you do?",
       "options": {
-        "A": "Grant the role with an IAM condition using resource.matchTag('ORG_ID/env', 'dev').",
+        "A": "A conditional grant using resource.matchTag for env=dev.",
         "B": "Grant the role on the project and ask developers to leave production VMs alone.",
         "C": "Add a network tag dev to the development VMs and grant the role on the tag.",
         "D": "Grant the role with a condition on the label env=dev."
@@ -983,7 +855,7 @@
         "A": "An OAuth access token for report-bot from gcloud auth print-access-token.",
         "B": "A JSON key for report-bot, passed in an Authorization header.",
         "C": "The user's own password, sent with basic authentication.",
-        "D": "An ID token for report-bot with that audience, for example gcloud auth print-identity-token --impersonate-service-account=report-bot@P.iam.gserviceaccount.com --audiences=CLIENT_ID --include-email."
+        "D": "An ID token for report-bot with that audience, by impersonation."
       },
       "correct_answer": "D",
       "explanation": {
@@ -1012,7 +884,7 @@
       "source": "curated",
       "question": "A backend on Cloud Run issues signed URLs for private objects. The organisation policy forbids service-account keys. The service runs as web@P.iam.gserviceaccount.com. How can it sign the URLs?",
       "options": {
-        "A": "Sign through the IAM Credentials signBlob API as web@, which needs roles/iam.serviceAccountTokenCreator on itself.",
+        "A": "Sign through the IAM Credentials signBlob API as web@.",
         "B": "Create a key for web@ as an exception to the policy.",
         "C": "Make the objects public and share the plain URLs.",
         "D": "Use an HMAC key belonging to a user account."
@@ -1045,7 +917,7 @@
       "question": "A long-running data transfer tool can refresh its token only at start-up and needs an access token for a service account valid for eight hours. Requests for more than 3600 seconds are rejected. What must be configured?",
       "options": {
         "A": "Nothing; request a longer lifetime with --lifetime and it is granted automatically.",
-        "B": "Allow the service account in the constraints/iam.allowServiceAccountCredentialLifetimeExtension organisation policy, then request the longer lifetime.",
+        "B": "List the account in the lifetime extension constraint, then ask.",
         "C": "Create a service-account key, which produces tokens that never expire.",
         "D": "Grant roles/owner to the service account."
       },
@@ -1078,7 +950,7 @@
       "options": {
         "A": "Create a service-account key and sign the JWTs locally.",
         "B": "Send the partner an OAuth access token instead of a JWT.",
-        "C": "Call the IAM Service Account Credentials signJwt method as that service account.",
+        "C": "Call the IAM Credentials signJwt method as that service account.",
         "D": "Store a private key in Secret Manager and sign with it."
       },
       "correct_answer": "C",
@@ -1110,7 +982,7 @@
       "options": {
         "A": "DaemonSets are not supported by Kubernetes service accounts.",
         "B": "The DaemonSet's namespace needs its own workload identity pool.",
-        "C": "Pods on the host network cannot use Workload Identity Federation for GKE, so they reach the node's metadata server identity.",
+        "C": "Host-network Pods can't use it, so they get the node's identity.",
         "D": "The node pool must be recreated after every DaemonSet change."
       },
       "correct_answer": "C",
@@ -1140,7 +1012,7 @@
       "source": "curated",
       "question": "Pods in namespace media run as Kubernetes service account uploader and must act as the existing IAM service account media-sa@P.iam.gserviceaccount.com, which already holds the roles they need. What two steps are required?",
       "options": {
-        "A": "Grant roles/iam.workloadIdentityUser on media-sa to serviceAccount:P.svc.id.goog[media/uploader], and annotate uploader with iam.gke.io/gcp-service-account=media-sa@P.iam.gserviceaccount.com.",
+        "A": "A workloadIdentityUser grant for media/uploader, plus a KSA annotation.",
         "B": "Create a key for media-sa and mount it into the Pods as a Secret.",
         "C": "Grant roles/iam.serviceAccountUser on media-sa to the node pool's service account.",
         "D": "Annotate the node pool with media-sa's email."
@@ -1173,7 +1045,7 @@
       "question": "A Pod running as Kubernetes service account reader in namespace prod reads a bucket successfully through a direct IAM grant. The identical Deployment in namespace staging, also with a KSA called reader, gets 403. Why?",
       "options": {
         "A": "Workload Identity Federation works in only one namespace per cluster.",
-        "B": "The grant names ns/prod/sa/reader; staging/reader is a different principal with no grant.",
+        "B": "The grant names prod's reader; staging's reader is another principal.",
         "C": "The staging Pods run on different nodes whose service account lacks access.",
         "D": "Bucket permissions take 24 hours to reach a second namespace."
       },
@@ -1205,7 +1077,7 @@
       "question": "A cluster's nodes run as gke-nodes@app-prod.iam.gserviceaccount.com, which holds only roles/container.defaultNodeServiceAccount. Logs and metrics flow, but Pods using images from a repository in project shared-images fail with ImagePullBackOff and a 403. What should you grant?",
       "options": {
         "A": "roles/artifactregistry.reader to each Pod's Kubernetes service account.",
-        "B": "roles/artifactregistry.reader to gke-nodes@ on the repository in shared-images.",
+        "B": "Artifact Registry Reader for gke-nodes@ on the shared repository.",
         "C": "roles/editor to gke-nodes@ in app-prod.",
         "D": "roles/artifactregistry.admin to gke-nodes@ on the organisation."
       },
@@ -1236,7 +1108,7 @@
       "source": "curated",
       "question": "An application on Amazon EC2 runs under an IAM role and must read a BigQuery dataset in Google Cloud. Service-account keys are prohibited. What should you configure?",
       "options": {
-        "A": "A workload identity pool with an AWS provider for the AWS account, and a grant to the federated AWS role (directly or through a service account it may impersonate).",
+        "A": "A workload identity pool with an AWS provider, granted to the role.",
         "B": "A service-account key stored in AWS Secrets Manager.",
         "C": "A workforce identity pool for the AWS account.",
         "D": "VPC Network Peering between the AWS VPC and the Google Cloud VPC."
@@ -1268,7 +1140,7 @@
       "source": "curated",
       "question": "An application on an Azure VM uses a managed identity and must write to a Cloud Storage bucket. Service-account keys are prohibited. What should you configure in Google Cloud?",
       "options": {
-        "A": "A workload identity pool with an OIDC provider for the Azure tenant's issuer, and a grant to the federated identity.",
+        "A": "A workload identity pool with an OIDC provider for the Azure issuer.",
         "B": "A workforce identity pool for the Azure tenant.",
         "C": "A service-account key stored in Azure Key Vault.",
         "D": "An AWS provider in a workload identity pool."
@@ -1332,7 +1204,7 @@
       "source": "curated",
       "question": "On-premises batch servers have no OIDC or SAML identity provider, but each holds a client certificate issued by the company's internal certificate authority. They must call Google Cloud APIs without service-account keys. What should you configure?",
       "options": {
-        "A": "A workload identity pool with an X.509 provider that trusts the company CA, used through mutual TLS.",
+        "A": "A workload identity pool with an X.509 provider trusting the CA.",
         "B": "A service-account key per server, rotated monthly.",
         "C": "An OIDC provider pointing at the certificate authority's web page.",
         "D": "Workforce Identity Federation for each server's hostname."
@@ -1351,38 +1223,6 @@
       }
     },
     {
-      "id": "ace-s4-031",
-      "title": "Granting a key role to a service agent that does not exist yet",
-      "objective": "4.2",
-      "subtopic": "Creating Service Accounts",
-      "summary": "Force-create a service agent with gcloud beta services identity create before its first use.",
-      "tags": [
-        "cmek",
-        "gcloud",
-        "service-agents"
-      ],
-      "source": "curated",
-      "question": "Terraform must grant the Pub/Sub service agent access to a Cloud KMS key before the first CMEK-protected topic is created, but the agent does not exist yet in the new project, so the grant fails. What should the pipeline do first?",
-      "options": {
-        "A": "Run gcloud beta services identity create --service=pubsub.googleapis.com for the project.",
-        "B": "Create a user-managed service account named like the Pub/Sub service agent.",
-        "C": "Grant the key role to the project's default Compute Engine service account instead.",
-        "D": "Wait 24 hours for the service agent to appear on its own."
-      },
-      "correct_answer": "A",
-      "explanation": {
-        "summary": "services identity create provisions the product's Google-managed service agent on demand, so it can be granted roles before the service first uses it.",
-        "option_breakdown": {
-          "A": "Correct. services identity create provisions the product's Google-managed service agent on demand, so it can be granted roles before the service first uses it.",
-          "B": "Service agents live in Google-managed domains; you cannot create one yourself.",
-          "C": "The Compute Engine account is not the identity Pub/Sub uses for the key.",
-          "D": "Agents are created on first use or on request, not after a delay."
-        },
-        "gcloud_command": "gcloud beta services identity create --service=pubsub.googleapis.com --project=P",
-        "doc_ref": "https://cloud.google.com/iam/docs/create-service-agents"
-      }
-    },
-    {
       "id": "ace-s4-032",
       "title": "Restoring a service account deleted last week",
       "objective": "4.2",
@@ -1398,7 +1238,7 @@
       "options": {
         "A": "Create a new service account with the same name.",
         "B": "Create a new service account with a different name and re-grant every role.",
-        "C": "Undelete the service account by its unique ID with gcloud iam service-accounts undelete.",
+        "C": "Undelete the service account by its unique ID.",
         "D": "Nothing can be done; deletion is permanent."
       },
       "correct_answer": "C",
@@ -1430,7 +1270,7 @@
       "options": {
         "A": "Run gcloud iam service-accounts update with a new account ID.",
         "B": "Change the display name, which changes the email address.",
-        "C": "Create a new service account orders-prod, grant it the same roles, move workloads to it, then disable and delete the old one.",
+        "C": "Create orders-prod, move roles and workloads, then retire the old one.",
         "D": "Rename the project, which renames every service account in it."
       },
       "correct_answer": "C",
@@ -1460,7 +1300,7 @@
       "source": "curated",
       "question": "Several engineers can impersonate deploy-sa. Last night a firewall rule was deleted by deploy-sa. Security must find which engineer did it. Where is that recorded?",
       "options": {
-        "A": "In the Admin Activity audit log entry for the deletion, under authenticationInfo's service account delegation information.",
+        "A": "In the deletion's audit log entry, under its delegation information.",
         "B": "Nowhere; impersonated calls are attributed only to the service account.",
         "C": "In the service account's key list.",
         "D": "In the VPC Flow Logs for the network."
@@ -1559,7 +1399,7 @@
         "A": "roles/iam.serviceAccountAdmin on project P.",
         "B": "roles/editor on project P.",
         "C": "roles/iam.serviceAccountUser on project P.",
-        "D": "roles/iam.serviceAccountAdmin on the etl@ service account only."
+        "D": "roles/iam.serviceAccountAdmin on etl@ only."
       },
       "correct_answer": "D",
       "explanation": {
@@ -1589,7 +1429,7 @@
       "question": "Service accounts are kept in a central project, idents. A developer with Service Account User on app@idents.iam.gserviceaccount.com tries to create a VM in project app-prod that runs as it, and gets an error that cross-project service account usage is disabled. What must change?",
       "options": {
         "A": "The developer needs roles/owner on idents.",
-        "B": "The iam.disableCrossProjectServiceAccountUsage constraint must not be enforced on the idents project.",
+        "B": "Stop enforcing iam.disableCrossProjectServiceAccountUsage on idents.",
         "C": "The service account must be moved into app-prod.",
         "D": "The VM must be created with a service-account key instead."
       },
@@ -1620,10 +1460,10 @@
       "source": "curated",
       "question": "A VM runs as app@P.iam.gserviceaccount.com, which holds roles/pubsub.publisher. Publishing from the VM fails with an insufficient-scopes error. The VM was created with the default access scopes. What should you do?",
       "options": {
-        "A": "Grant app@ roles/owner.",
+        "A": "Grant app@ the Owner role on the project.",
         "B": "Create a key for app@ and use it on the VM.",
         "C": "Restart the Pub/Sub API in the project.",
-        "D": "Stop the VM, set its access scope to cloud-platform (keeping IAM as the control), and start it again."
+        "D": "Stop the VM, set the cloud-platform scope, and start it again."
       },
       "correct_answer": "D",
       "explanation": {
@@ -1686,7 +1526,7 @@
       "options": {
         "A": "roles/iam.serviceAccountKeyAdmin on deployer@ so the pipeline can create a key.",
         "B": "roles/iam.workloadIdentityPoolAdmin on the project to the pipeline.",
-        "C": "roles/iam.workloadIdentityUser on deployer@ to the pool's principal set for that pipeline.",
+        "C": "Workload Identity User on deployer@, for the pipeline's principal set.",
         "D": "roles/owner on the project to the pipeline's federated principal."
       },
       "correct_answer": "C",
@@ -1719,7 +1559,7 @@
         "A": "Expose the Kubernetes API server to the internet so Google can fetch the keys.",
         "B": "Create an X.509 provider using the cluster's CA certificate.",
         "C": "Create a SAML provider using the cluster's service account signing key.",
-        "D": "Create an OIDC provider with the cluster's issuer URI and upload the cluster's JWKS with --jwk-json-path."
+        "D": "An OIDC provider with the issuer URI and the uploaded cluster JWKS."
       },
       "correct_answer": "D",
       "explanation": {
@@ -1750,7 +1590,7 @@
       "options": {
         "A": "An IAM deny policy on every other folder, updated as folders are added.",
         "B": "Remove the group's bindings outside the folder every week.",
-        "C": "A principal access boundary policy, bound to the contractors' principal set, that makes only the contractors folder eligible.",
+        "C": "A principal access boundary policy limiting them to the folder.",
         "D": "An organisation policy that restricts resource locations."
       },
       "correct_answer": "C",
@@ -1813,7 +1653,7 @@
       "question": "A project's team lead should be able to grant and revoke only roles/logging.viewer and roles/monitoring.viewer to colleagues, and never any other role. What should you grant the team lead?",
       "options": {
         "A": "roles/resourcemanager.projectIamAdmin with no condition.",
-        "B": "roles/resourcemanager.projectIamAdmin with an IAM condition that allows modifying grants only for those two roles.",
+        "B": "Project IAM Admin, with a condition limiting grants to those two roles.",
         "C": "roles/owner on the project.",
         "D": "roles/logging.admin and roles/monitoring.admin."
       },
@@ -1847,7 +1687,7 @@
         "A": "Storage Object Creator on each bucket, updated monthly.",
         "B": "Storage Admin on the project.",
         "C": "Storage Object Creator on the project with no condition.",
-        "D": "Storage Object Creator on the project, with a condition that resource.name starts with projects/_/buckets/logs-."
+        "D": "Object Creator on the project, conditioned on the logs- name prefix."
       },
       "correct_answer": "D",
       "explanation": {
@@ -1910,7 +1750,7 @@
       "options": {
         "A": "Split the project into two projects.",
         "B": "Create a custom role that contains the permissions of every existing role.",
-        "C": "Replace individual user grants with Google groups that hold those users, and grant roles to the groups.",
+        "C": "Grant roles to Google groups instead of individual users.",
         "D": "Ask support to raise the policy limit."
       },
       "correct_answer": "C",
@@ -1943,14 +1783,14 @@
         "A": "One pool with one provider, and a naming convention on service accounts.",
         "B": "One pool, with a service account key for production stored in the CI secret store.",
         "C": "One pool granted roles/owner in both projects.",
-        "D": "Separate workload identity pools (and providers) for staging and production, each granted only in its own environment and restricted by attribute conditions."
+        "D": "Separate workload identity pools per environment, each granted only there."
       },
       "correct_answer": "D",
       "explanation": {
         "summary": "Pools are the unit of trust and administration. Separate pools with their own conditions and grants keep each environment's federated identities isolated.",
         "option_breakdown": {
           "A": "A naming convention is not a security boundary.",
-          "B": "Keys are what federation replaces.",
+          "B": "A production key in the CI secret store is exactly what a compromised staging pipeline could read.",
           "C": "Owner in both projects is the opposite of isolation.",
           "D": "Correct. Pools are the unit of trust and administration. Separate pools with their own conditions and grants keep each environment's federated identities isolated."
         },
@@ -2004,7 +1844,7 @@
       "source": "curated",
       "question": "An external pipeline federated through a workload identity pool deleted a Cloud Storage bucket. Directly granted federated principals were used, with no service account. Where can you see which federated identity did it?",
       "options": {
-        "A": "The Admin Activity audit log entry, whose authentication info shows the federated principal.",
+        "A": "The Admin Activity audit log entry's authentication info.",
         "B": "The pipeline's service account key usage metrics.",
         "C": "VPC Flow Logs for the bucket.",
         "D": "The billing export."
@@ -2038,7 +1878,7 @@
       "options": {
         "A": "An IAM condition on the service accounts that expires after 90 days.",
         "B": "A budget alert on the projects that use keys.",
-        "C": "The organisation policy constraint iam.serviceAccountKeyExpiryHours with a 90-day (2160h) value.",
+        "C": "The iam.serviceAccountKeyExpiryHours constraint, set to 2160h.",
         "D": "A lifecycle rule on the bucket where keys are stored."
       },
       "correct_answer": "C",
@@ -2051,7 +1891,7 @@
           "D": "Keys should not be stored in buckets, and lifecycle rules do not revoke them."
         },
         "gcloud_command": "gcloud resource-manager org-policies allow iam.serviceAccountKeyExpiryHours 2160h --organization=ORG_ID",
-        "doc_ref": "https://docs.cloud.google.com/iam/docs/service-account-keys#key-expiry"
+        "doc_ref": "https://docs.cloud.google.com/resource-manager/docs/organization-policy/restricting-service-accounts"
       }
     },
     {
@@ -2070,7 +1910,7 @@
       "options": {
         "A": "Billing reports filtered by service account.",
         "B": "Cloud Asset Inventory's resource search for keys.",
-        "C": "Policy Intelligence's Activity Analyzer, querying service account key last-authentication activity.",
+        "C": "Activity Analyzer's key authentication activity.",
         "D": "VPC Flow Logs from the VMs."
       },
       "correct_answer": "C",
@@ -2100,7 +1940,7 @@
       "source": "curated",
       "question": "A backup appliance can only talk to storage through the Amazon S3 API with an access key and secret. It must write to one Cloud Storage bucket. What should you create?",
       "options": {
-        "A": "An HMAC key for a service account that has write access to that bucket, used with the XML API endpoint.",
+        "A": "An HMAC key for a service account that can write to the bucket.",
         "B": "A service account JSON key uploaded to the appliance.",
         "C": "An OAuth client ID and secret.",
         "D": "A signed URL valid for a year."
@@ -2132,7 +1972,7 @@
       "source": "curated",
       "question": "A Cloud Run service requires authentication. A Cloud Scheduler job must call it every hour. How should the job authenticate?",
       "options": {
-        "A": "Configure the job to send an OIDC token for a service account that has roles/run.invoker on the service.",
+        "A": "An OIDC token for a service account holding Invoker on the service.",
         "B": "Allow unauthenticated invocations on the service.",
         "C": "Put a service account key in the job's request headers.",
         "D": "Configure the job to send an OAuth access token with the cloud-platform scope."
@@ -2164,7 +2004,7 @@
       "source": "curated",
       "question": "A team creates a new GKE Autopilot cluster and asks what it must enable before Pods can use Workload Identity Federation for GKE to call Google Cloud APIs. What is accurate?",
       "options": {
-        "A": "Nothing on the cluster; Autopilot enables it by default. Grant roles to the Kubernetes service account's principal.",
+        "A": "Nothing on the cluster; grant roles to the KSA's principal.",
         "B": "Enable it on each node pool with --workload-metadata=GKE_METADATA.",
         "C": "Create a node pool with the GKE metadata server enabled.",
         "D": "Download a key for a Google service account into a Kubernetes Secret."
@@ -2197,7 +2037,7 @@
       "question": "A GitHub Actions workflow uses the google-github-actions/auth step with a workload identity provider. The pool, provider, attribute condition and IAM grants are correct, but the step fails because no OIDC token is available. What is missing?",
       "options": {
         "A": "A service account JSON key stored as a GitHub secret.",
-        "B": "permissions: id-token: write in the workflow or job, so GitHub can issue the OIDC token.",
+        "B": "The id-token: write permission in the workflow or job.",
         "C": "roles/iam.workloadIdentityPoolAdmin for the repository.",
         "D": "An X.509 certificate for the runner."
       },
@@ -2205,13 +2045,45 @@
       "explanation": {
         "summary": "GitHub issues an OIDC token to a job only when the workflow grants the id-token: write permission. Without that token there is nothing to exchange with Google's Security Token Service.",
         "option_breakdown": {
-          "A": "Keys are what federation replaces.",
+          "A": "A key would sidestep federation instead of fixing it; the setup is right, and only the OIDC token is missing.",
           "B": "Correct. GitHub issues an OIDC token to a job only when the workflow grants the id-token: write permission. Without that token there is nothing to exchange with Google's Security Token Service.",
           "C": "Pool Admin manages configuration; it does not produce the token.",
           "D": "GitHub federation uses OIDC tokens, not client certificates."
         },
         "gcloud_command": "permissions:\n  contents: read\n  id-token: write\nsteps:\n- uses: google-github-actions/auth@v2\n  with:\n    workload_identity_provider: projects/NUM/locations/global/workloadIdentityPools/github/providers/gh",
         "doc_ref": "https://github.com/google-github-actions/auth"
+      }
+    },
+    {
+      "id": "ace-s4-059",
+      "title": "Read-only access to Cloud Run and nothing else",
+      "objective": "4.1",
+      "subtopic": "Role Types and Custom Roles",
+      "summary": "A product's predefined viewer role grants read-only access to that product only, unlike the basic Viewer role.",
+      "tags": [
+        "cloud-run",
+        "iam",
+        "predefined-roles"
+      ],
+      "source": "curated",
+      "question": "An auditor must be able to see the configuration of the Cloud Run services in a project, and nothing about its other resources. Which role should you grant on the project?",
+      "options": {
+        "A": "The basic Viewer role.",
+        "B": "Cloud Run Viewer.",
+        "C": "Cloud Run Developer.",
+        "D": "Security Reviewer."
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "Predefined roles are scoped to one product. Cloud Run Viewer (roles/run.viewer) reads Cloud Run resources only.",
+        "option_breakdown": {
+          "A": "Basic Viewer reads nearly every resource in the project, far beyond Cloud Run.",
+          "B": "Correct. It grants read access to Cloud Run services and nothing else.",
+          "C": "Developer can deploy and change services, not just view them.",
+          "D": "Security Reviewer reads IAM policies across resources, not Cloud Run configuration."
+        },
+        "gcloud_command": "gcloud projects add-iam-policy-binding P --member='user:auditor@example.com' --role='roles/run.viewer'",
+        "doc_ref": "https://docs.cloud.google.com/run/docs/reference/iam/roles"
       }
     }
   ]

@@ -20,6 +20,7 @@ from .models import (
     DOMAIN_WEIGHTS,
     DOMAINS,
     EXAM_DURATION_SECONDS,
+    BANK_KEY_FIXES,
     AnswerRecord,
     Attempt,
     History,
@@ -308,6 +309,9 @@ class ExamSession:
             correct_count=sum(1 for r in records if r.is_correct),
             answers=records,
             report_path=report_path,
+            # Recorded against the current bank, so every repair is already reflected. Without
+            # this, the validator would treat the new attempt as an old record and repair it.
+            bank_fixes=list(BANK_KEY_FIXES),
         )
 
     def question_by_id(self, qid: str) -> Optional[Question]:
