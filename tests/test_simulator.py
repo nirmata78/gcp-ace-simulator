@@ -20,10 +20,12 @@ from src.exam_engine import ExamSession, weighted_sample, filtered_pool  # noqa:
 from src.blueprint import BULLET_LIST, objective_weights, objectives_in  # noqa: E402
 from src.models import (  # noqa: E402
     BANK_DIR,
+    BANK_KEY_FIXES,
     DOMAIN_FILE,
     DOMAIN_WEIGHTS,
     DOMAINS,
     OPTION_KEYS,
+    MULTI_OPTION_KEYS,
     PASS_THRESHOLD,
     Attempt,
     History,
@@ -93,27 +95,31 @@ def test_question_stems_are_unique(bank: QuestionBank) -> None:
 
 def test_every_question_is_well_formed(bank: QuestionBank) -> None:
     for q in bank.questions:
-        assert set(q.options) == set(OPTION_KEYS)
-        assert q.correct_answer in q.options
-        assert set(q.explanation.option_breakdown) == set(OPTION_KEYS)
+        if q.is_multi:
+            assert set(OPTION_KEYS) <= set(q.options) <= set(MULTI_OPTION_KEYS)
+        else:
+            assert set(q.options) == set(OPTION_KEYS)
+        assert set(q.correct_keys) <= set(q.options)
+        assert set(q.explanation.option_breakdown) == set(q.options)
         assert all(v.strip() for v in q.options.values())
         assert all(v.strip() for v in q.explanation.option_breakdown.values())
         assert q.explanation.summary.strip()
         # distractors must be genuinely distinct
-        assert len({v.strip().casefold() for v in q.options.values()}) == 4
+        assert len({v.strip().casefold() for v in q.options.values()}) == len(q.options)
 
 
 def test_correct_option_is_marked_correct_in_breakdown(bank: QuestionBank) -> None:
     for q in bank.questions:
-        assert q.explanation.option_breakdown[q.correct_answer].startswith("Correct")
+        for k in q.correct_keys:
+            assert q.explanation.option_breakdown[k].startswith("Correct"), q.id
 
 
 def test_only_the_key_is_called_correct(bank: QuestionBank) -> None:
     # Twelve questions once had the key on a distractor whose analysis was given a "Correct."
     # prefix and copied into the summary, so the explanation contradicted the key.
     bad = [q.id for q in bank.questions
-           if [k for k, v in q.explanation.option_breakdown.items() if v.startswith("Correct")]
-           != [q.correct_answer]]
+           if sorted(k for k, v in q.explanation.option_breakdown.items() if v.startswith("Correct"))
+           != q.correct_keys]
     assert bad == []
     for q in bank.questions:
         assert not q.explanation.summary.startswith("Correct"), q.id
@@ -134,10 +140,16 @@ def test_live_only_lifecycle_question_keeps_its_premise(bank: QuestionBank) -> N
 def test_correct_answers_are_spread_across_letters(bank: QuestionBank) -> None:
     """A bank where the answer is usually 'C' is a bank you can game."""
     counts = {k: 0 for k in OPTION_KEYS}
-    for q in bank.questions:
+    singles = [q for q in bank.questions if not q.is_multi]
+    for q in singles:
         counts[q.correct_answer] += 1
     for k, n in counts.items():
-        assert 0.20 <= n / len(bank.questions) <= 0.30, f"letter {k} skewed: {n}"
+        assert 0.20 <= n / len(singles) <= 0.30, f"letter {k} skewed: {n}"
+    # Multiple-select keys: no letter may sit in most of them.
+    multi = [q for q in bank.questions if q.is_multi]
+    for k in MULTI_OPTION_KEYS:
+        share = sum(k in q.correct_keys for q in multi) / len(multi)
+        assert share <= 0.55, f"letter {k} in {share:.0%} of multiple-select keys"
 
 
 def test_every_question_sits_on_the_june_2026_blueprint(bank: QuestionBank) -> None:
@@ -322,13 +334,17 @@ def test_weighted_sample_honours_blueprint(bank: QuestionBank) -> None:
 def test_weighted_sample_splits_each_section_across_its_objectives(bank: QuestionBank) -> None:
     from src.exam_engine import _apportion
     picked = weighted_sample(bank, 50, random.Random(7))
-    got = {}
+    got, mixed = {}, {}
     for q in picked:
-        got[q.objective] = got.get(q.objective, 0) + 1
+        if q.is_cross_domain:  # drawn first, against their own section's quota
+            mixed[q.domain] = mixed.get(q.domain, 0) + 1
+        else:
+            got[q.objective] = got.get(q.objective, 0) + 1
     w = objective_weights()
     for sec_n, sec_count in enumerate([10, 15, 15, 10], start=1):
         objs = {o.id: w[o.id] for o in objectives_in(sec_n)}
-        for oid, n in _apportion(sec_count, objs).items():
+        label = DOMAINS[sec_n - 1]
+        for oid, n in _apportion(sec_count - mixed.get(label, 0), objs).items():
             assert got.get(oid, 0) == n, (oid, got.get(oid), n)
 
 
@@ -336,6 +352,23 @@ def test_weighted_sample_prefers_unseen_questions(bank: QuestionBank) -> None:
     first = weighted_sample(bank, 50, random.Random(8))
     second = weighted_sample(bank, 50, random.Random(9), seen={q.id for q in first})
     assert not {q.id for q in first} & {q.id for q in second}
+
+
+def test_avoid_seen_draws_no_repeats_and_keeps_the_section_split(bank: QuestionBank) -> None:
+    rng = random.Random(11)
+    seen = {q.id for q in rng.sample(bank.questions, len(bank.questions) // 2)}
+    picked = weighted_sample(bank, 50, random.Random(12), seen=seen, avoid_seen=True)
+    assert not {q.id for q in picked} & seen
+    counts = {d: sum(q.domain == d for q in picked) for d in DOMAINS}
+    assert list(counts.values()) == [10, 15, 15, 10]
+
+
+def test_avoid_seen_repeats_only_when_the_bank_runs_out(bank: QuestionBank) -> None:
+    fresh = {q.id for q in random.Random(13).sample(bank.questions, 20)}
+    seen = {q.id for q in bank.questions} - fresh
+    picked = weighted_sample(bank, 50, random.Random(14), seen=seen, avoid_seen=True)
+    assert len({q.id for q in picked}) == 50
+    assert fresh <= {q.id for q in picked}
 
 
 def test_weighted_sample_spreads_across_subtopics(bank: QuestionBank) -> None:
@@ -764,12 +797,15 @@ def test_next_id_is_unique_and_domain_scoped(bank: QuestionBank) -> None:
     assert new_id not in {q.id for q in bank.questions}
 
 
-def test_next_id_fills_a_gap(bank: QuestionBank) -> None:
+def test_next_id_never_reuses_a_gap(bank: QuestionBank) -> None:
+    """A gap is a removed question, and history may still refer to its id."""
     subset = QuestionBank(questions=[
         q for q in bank.questions
         if q.id.startswith("ace-s1-") and not q.id.endswith(("002", "003"))
     ])
-    assert subset.next_id(DOMAINS[0]) == "ace-s1-002"
+    top = max(int(q.id.rsplit("-", 1)[1]) for q in subset.questions)
+    assert subset.next_id(DOMAINS[0]) == f"ace-s1-{top + 1:03d}"
+    assert subset.next_id(DOMAINS[0], retired=[f"ace-s1-{top + 5:03d}"]) == f"ace-s1-{top + 6:03d}"
 
 
 def test_register_carries_a_row_per_question(bank: QuestionBank) -> None:
@@ -828,3 +864,39 @@ def test_old_history_is_repaired_once_for_the_swapped_keys() -> None:
     from src.exam_engine import load_bank
     fresh = ExamSession(load_bank().questions[:2], mode="learning").build_attempt()
     assert fresh.bank_fixes  # new attempts are born repaired
+
+
+def _record(qid: str, selected: str, correct: str, finished: str, fixes=None) -> dict:
+    raw = {"attempt_id": "t", "mode": "certifying", "started_at": finished, "finished_at": finished,
+           "duration_seconds": 1.0, "question_count": 1, "correct_count": int(selected == correct),
+           "answers": [{"question_id": qid, "domain": DOMAINS[1], "selected": selected,
+                        "correct_answer": correct, "flagged": False, "subtopic": "Managed Instance Groups"}]}
+    if fixes is not None:
+        raw["bank_fixes"] = fixes
+    return raw
+
+
+def test_a_new_attempt_keeps_the_answers_as_given(session: ExamSession) -> None:
+    """Building an attempt must not run the history repairs on it (the 2026-11-07 bug)."""
+    for q in session.questions:
+        session.answer(q.correct_answer, q.id)
+    attempt = session.build_attempt()
+    assert attempt.correct_count == attempt.question_count
+    assert attempt.bank_fixes == list(BANK_KEY_FIXES)
+
+
+def test_attempts_wrongly_swapped_by_the_bug_are_restored() -> None:
+    # Recorded after the first fix shipped: the stored A was really a B, which is correct.
+    bad = Attempt.model_validate(_record("ace-dom2-053", "A", "B", "2026-11-07T12:35:57+00:00",
+                                         ["2026-11-06-swapped-keys"]))
+    assert bad.answers[0].selected == "B" and bad.correct_count == 1
+    # Recorded before it: the first repair was right and must not be undone.
+    old = Attempt.model_validate(_record("ace-dom2-053", "A", "B", "2026-09-18T08:17:15+00:00",
+                                         ["2026-11-06-swapped-keys"]))
+    assert old.answers[0].selected == "A"
+    # A record from before the field existed gets the first repair only.
+    legacy = Attempt.model_validate(_record("ace-dom2-053", "A", "B", "2026-09-18T08:17:15+00:00"))
+    assert legacy.answers[0].selected == "B" and legacy.bank_fixes == list(BANK_KEY_FIXES)
+    # Repairs are applied once: loading the repaired record again changes nothing.
+    again = Attempt.model_validate(bad.model_dump())
+    assert again.answers[0].selected == "B"

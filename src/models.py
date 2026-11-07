@@ -19,9 +19,10 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+import uuid
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, List, Literal, Optional
+from typing import Dict, Iterable, List, Literal, Optional
 
 from pydantic import BaseModel, Field, field_validator, model_validator
 
@@ -78,7 +79,36 @@ LEGACY_DOMAIN_MAP: Dict[str, str] = {
 }
 
 OptionKey = Literal["A", "B", "C", "D"]
+#: A single-answer question has exactly these four options.
 OPTION_KEYS: List[str] = ["A", "B", "C", "D"]
+#: A multiple-select question ("Choose two") may add a fifth option, as the real exam does.
+MULTI_OPTION_KEYS: List[str] = ["A", "B", "C", "D", "E"]
+#: How many options a multiple-select question asks for, at least and at most.
+MULTI_CHOOSE = (2, 3)
+
+
+def answer_keys(value) -> List[str]:
+    """The letters of an answer, sorted: ``"C,A"``, ``"AC"`` and ``["C", "A"]`` all give ``["A", "C"]``."""
+    if not value:
+        return []
+    if isinstance(value, str):
+        value = [c for c in value.upper() if c.isalpha()]
+    return sorted({str(k).strip().upper() for k in value if str(k).strip()})
+
+
+def answer_str(value) -> Optional[str]:
+    """The canonical stored form of an answer: one letter, or sorted letters joined by commas (``"A,C"``).
+
+    Scoring compares these strings, so a multiple-select answer counts only when every letter matches.
+    """
+    keys = answer_keys(value)
+    return ",".join(keys) if keys else None
+
+
+def format_answer(value) -> str:
+    """``"A,C"`` -> ``"A and C"``, for reading."""
+    keys = answer_keys(value)
+    return " and ".join([", ".join(keys[:-1]), keys[-1]]) if len(keys) > 1 else (keys[0] if keys else "")
 
 EXAM_DURATION_SECONDS = 120 * 60  # 120 minutes
 CERTIFYING_QUESTION_COUNT = 50
@@ -88,6 +118,8 @@ PASS_THRESHOLD = 0.70  # Google does not publish a cut score; 70% is the communi
 #: in one section must overlap below this Jaccard score, and two questions with the
 #: same correct answer may not share more than this many identical options.
 STEM_OVERLAP_LIMIT = 0.70
+#: Removed question ids, relative to the data directory. They are never reused.
+RETIRED_FILE = "retired.json"
 SHARED_OPTION_LIMIT = 2
 
 
@@ -110,6 +142,9 @@ class Explanation(BaseModel):
         missing = [k for k in OPTION_KEYS if not v.get(k)]
         if missing:
             raise ValueError(f"option_breakdown missing rationale for: {', '.join(missing)}")
+        extra = sorted(set(v) - set(MULTI_OPTION_KEYS))
+        if extra:
+            raise ValueError(f"unexpected option_breakdown keys: {', '.join(extra)}")
         return v
 
 
@@ -119,7 +154,13 @@ Source = Literal["curated", "official-sample", "user", "llm"]
 
 
 class Question(BaseModel):
-    """One four-option, single-answer scenario question.
+    """One scenario question: four options and one answer, or a multiple-select question
+    ("Choose two") with four or five options and two or three answers.
+
+    ``uid`` is a random GUID that never changes, even when the readable ``id`` is the only thing
+    people quote. ``also_tests`` lists the other guide objectives a cross-domain question needs;
+    ``certifying_only`` keeps a question out of learning mode (cross-domain questions are drawn only
+    in certifying exams, as the real exam mixes sections in one scenario).
 
     ``title`` and ``summary`` exist for the register: the title is how you refer
     to a question when browsing or adding, and the summary states the single
@@ -128,6 +169,7 @@ class Question(BaseModel):
     """
 
     id: str = Field(min_length=1)
+    uid: str = Field(default_factory=lambda: str(uuid.uuid4()))
     title: str = Field(min_length=3, max_length=90)
     domain: str
     objective: str
@@ -137,8 +179,82 @@ class Question(BaseModel):
     source: Source = "curated"
     question: str = Field(min_length=1)
     options: Dict[str, str]
-    correct_answer: OptionKey
+    correct_answer: str
     explanation: Explanation
+    also_tests: List[str] = Field(default_factory=list)
+    certifying_only: bool = False
+
+    @field_validator("uid")
+    @classmethod
+    def _uid_is_a_guid(cls, v: str) -> str:
+        return str(uuid.UUID(v))
+
+    @field_validator("correct_answer", mode="before")
+    @classmethod
+    def _canonical_answer(cls, v):
+        out = answer_str(v)
+        if not out:
+            raise ValueError("correct_answer is empty")
+        return out
+
+    @field_validator("also_tests")
+    @classmethod
+    def _known_objectives(cls, v: List[str]) -> List[str]:
+        unknown = [o for o in v if o not in OBJECTIVES]
+        if unknown:
+            raise ValueError(f"unknown objectives in also_tests: {unknown}")
+        return sorted(set(v))
+
+    @model_validator(mode="after")
+    def _answer_fits_the_options(self) -> "Question":
+        keys = answer_keys(self.correct_answer)
+        if set(keys) - set(self.options):
+            raise ValueError(f"correct_answer {self.correct_answer} names a missing option")
+        if len(keys) == 1:
+            if sorted(self.options) != OPTION_KEYS:
+                raise ValueError("a single-answer question has exactly options A-D")
+        elif not (MULTI_CHOOSE[0] <= len(keys) <= MULTI_CHOOSE[1]) or len(keys) >= len(self.options) - 1:
+            raise ValueError("a multiple-select question asks for 2 or 3 of 4-5 options, leaving 2+ wrong")
+        if sorted(self.explanation.option_breakdown) != sorted(self.options):
+            raise ValueError("option_breakdown must explain exactly the options given")
+        if self.objective in self.also_tests:
+            raise ValueError("also_tests repeats the question's own objective")
+        if self.also_tests and not any(section_of(o).label != self.domain for o in self.also_tests):
+            raise ValueError("a cross-domain question must also test an objective in another section")
+        if self.also_tests:
+            self.certifying_only = True  # cross-domain questions are drawn in certifying exams only
+        return self
+
+    @property
+    def keys(self) -> List[str]:
+        """The option letters this question has, in order."""
+        return [k for k in MULTI_OPTION_KEYS if k in self.options]
+
+    @property
+    def correct_keys(self) -> List[str]:
+        return answer_keys(self.correct_answer)
+
+    @property
+    def is_multi(self) -> bool:
+        return len(self.correct_keys) > 1
+
+    @property
+    def choose(self) -> int:
+        return len(self.correct_keys)
+
+    @property
+    def is_cross_domain(self) -> bool:
+        return bool(self.also_tests)
+
+    @property
+    def sections(self) -> List[str]:
+        """Every section this question draws on, its own first."""
+        out = [self.domain]
+        for o in self.also_tests:
+            label = section_of(o).label
+            if label not in out:
+                out.append(label)
+        return out
 
     @field_validator("title")
     @classmethod
@@ -211,17 +327,17 @@ class Question(BaseModel):
         missing = [k for k in OPTION_KEYS if not v.get(k)]
         if missing:
             raise ValueError(f"options missing: {', '.join(missing)}")
-        extra = sorted(set(v) - set(OPTION_KEYS))
+        extra = sorted(set(v) - set(MULTI_OPTION_KEYS))
         if extra:
             raise ValueError(f"unexpected option keys: {', '.join(extra)}")
-        texts = [v[k].strip().casefold() for k in OPTION_KEYS]
+        texts = [v[k].strip().casefold() for k in v]
         if len(set(texts)) != len(texts):
             raise ValueError("options must be distinct — duplicate distractor text")
         return v
 
     @property
     def correct_text(self) -> str:
-        return self.options[self.correct_answer]
+        return " / ".join(self.options[k] for k in self.correct_keys)
 
     @property
     def fingerprint(self) -> str:
@@ -244,6 +360,17 @@ class Question(BaseModel):
         return {_normalise(v) for v in self.options.values()}
 
 
+def _stored(q: Question) -> dict:
+    """A question as its section file stores it: no derived section, no empty cross-domain fields."""
+    out = q.model_dump(mode="json")
+    out.pop("domain")
+    if not out["also_tests"]:
+        out.pop("also_tests")
+    if not out["certifying_only"]:
+        out.pop("certifying_only")
+    return out
+
+
 class QuestionBank(BaseModel):
     """Every question, assembled from the per-domain files under ``data/domains/``."""
 
@@ -253,7 +380,7 @@ class QuestionBank(BaseModel):
 
     @model_validator(mode="after")
     def _unique_ids_and_titles(self) -> "QuestionBank":
-        for field in ("id", "title"):
+        for field in ("id", "uid", "title"):
             seen: set[str] = set()
             dupes: set[str] = set()
             for q in self.questions:
@@ -312,18 +439,17 @@ class QuestionBank(BaseModel):
             or n in q.subtopic.casefold() or any(n in t for t in q.tags)
         ]
 
-    def next_id(self, domain: str) -> str:
-        """Mint the next free sequential id within a section (``ace-s2-007``)."""
-        prefix = f"ace-{DOMAIN_SLUG[domain]}-"
-        used = {
-            int(q.id[len(prefix):])
-            for q in self.questions
-            if q.id.startswith(prefix) and q.id[len(prefix):].isdigit()
-        }
-        n = 1
-        while n in used:
-            n += 1
-        return f"{prefix}{n:03d}"
+    def next_id(self, domain: str, retired: Iterable[str] = (), cross: bool = False) -> str:
+        """Mint a new id in a section (``ace-s2-007``), or a cross-domain one (``ace-x-051``), above
+        every id in use or retired.
+
+        Ids are never reused: attempt history refers to questions by id, so a gap left by a removed
+        question must stay a gap (``data/retired.json`` lists them).
+        """
+        prefix = "ace-x-" if cross else f"ace-{DOMAIN_SLUG[domain]}-"
+        ids = [q.id for q in self.questions] + list(retired)
+        used = [int(i[len(prefix):]) for i in ids if i.startswith(prefix) and i[len(prefix):].isdigit()]
+        return f"{prefix}{max(used, default=0) + 1:03d}"
 
     # -- duplicate detection ----------------------------------------------
     #
@@ -409,6 +535,14 @@ class QuestionBank(BaseModel):
             )
         return cls(questions=questions)
 
+    @staticmethod
+    def retired_ids(root: Path | str) -> List[str]:
+        """Ids that were removed from the bank and must never be minted again (``data/retired.json``)."""
+        path = Path(root) / RETIRED_FILE
+        if not path.exists():
+            return []
+        return [r["id"] for r in json.loads(path.read_text(encoding="utf-8"))["retired"]]
+
     def save(self, root: Path) -> None:
         """Write one file per section, plus the register index."""
         domains_dir = root / BANK_DIR
@@ -422,10 +556,7 @@ class QuestionBank(BaseModel):
                 "version": self.version,
                 "updated_at": self.generated_at,
                 "count": len(group),
-                "questions": [
-                    {k: v for k, v in q.model_dump(mode="json").items() if k != "domain"}
-                    for q in group
-                ],
+                "questions": [_stored(q) for q in group],
             }
             _atomic_write(domains_dir / DOMAIN_FILE[domain], payload)
 
@@ -440,12 +571,18 @@ class QuestionBank(BaseModel):
             "guide": "Associate Cloud Engineer exam guide, live from 2026-06-30",
             "counts_by_domain": {DOMAIN_SHORT[d]: n for d, n in self.counts().items()},
             "counts_by_objective": {o: len(qs) for o, qs in self.by_objective().items()},
+            "counts_by_kind": {
+                "multiple_select": sum(q.is_multi for q in self.questions),
+                "cross_domain": sum(q.is_cross_domain for q in self.questions),
+                "certifying_only": sum(q.certifying_only for q in self.questions),
+            },
             "subtopics_by_domain": {
                 DOMAIN_SHORT[d]: self.subtopics(d) for d in DOMAINS
             },
             "entries": [
                 {
                     "id": q.id,
+                    "uid": q.uid,
                     "title": q.title,
                     "domain": DOMAIN_SHORT[q.domain],
                     "objective": q.objective,
@@ -455,6 +592,9 @@ class QuestionBank(BaseModel):
                     "tags": q.tags,
                     "source": q.source,
                     "fingerprint": q.fingerprint,
+                    "choose": q.choose,
+                    "also_tests": q.also_tests,
+                    "certifying_only": q.certifying_only,
                     "file": f"{BANK_DIR}/{DOMAIN_FILE[q.domain]}",
                 }
                 for q in sorted(self.questions, key=lambda q: q.id)
@@ -474,8 +614,8 @@ class AnswerRecord(BaseModel):
     domain: str
     objective: Optional[str] = None
     subtopic: str
-    selected: Optional[OptionKey] = None
-    correct_answer: OptionKey
+    selected: Optional[str] = None
+    correct_answer: str
     flagged: bool = False
     seconds_spent: float = 0.0
 
@@ -484,6 +624,11 @@ class AnswerRecord(BaseModel):
     def _read_legacy_domain(cls, v: str) -> str:
         """An attempt recorded under the retired five-domain taxonomy still loads."""
         return LEGACY_DOMAIN_MAP.get(v, v)
+
+    @field_validator("selected", "correct_answer", mode="before")
+    @classmethod
+    def _canonical(cls, v):
+        return answer_str(v)
 
     @property
     def is_correct(self) -> bool:
@@ -509,14 +654,39 @@ class DomainScore(BaseModel):
 #: key letter now names the right answer. An old record's letters still point at the
 #: old texts, so the chosen letter is swapped the same way. The correct letter stays, and
 #: the attempt is re-scored: a pick that was the right text now counts as correct.
-BANK_KEY_FIXES: Dict[str, Dict[str, tuple]] = {
-    "2026-11-06-swapped-keys": {
-        "ace-dom1-033": ("A", "B"), "ace-dom1-043": ("B", "D"), "ace-dom2-005": ("A", "B"),
-        "ace-dom2-007": ("A", "D"), "ace-dom2-021": ("A", "B"), "ace-dom2-043": ("C", "D"),
-        "ace-dom2-053": ("A", "B"), "ace-dom2-057": ("B", "C"), "ace-dom3-033": ("A", "B"),
-        "ace-dom3-037": ("A", "B"), "ace-dom4-006": ("A", "C"), "ace-dom5-017": ("A", "B"),
-    },
+_SWAPPED_KEYS = {
+    "ace-dom1-033": ("A", "B"), "ace-dom1-043": ("B", "D"), "ace-dom2-005": ("A", "B"),
+    "ace-dom2-007": ("A", "D"), "ace-dom2-021": ("A", "B"), "ace-dom2-043": ("C", "D"),
+    "ace-dom2-053": ("A", "B"), "ace-dom2-057": ("B", "C"), "ace-dom3-033": ("A", "B"),
+    "ace-dom3-037": ("A", "B"), "ace-dom4-006": ("A", "C"), "ace-dom5-017": ("A", "B"),
 }
+BANK_KEY_FIXES: Dict[str, Dict[str, tuple]] = {
+    "2026-11-06-swapped-keys": _SWAPPED_KEYS,
+    # Until 2026-11-07, new attempts were built without bank_fixes, so the repair above also
+    # ran on them and flipped answers that were recorded against the already-repaired bank.
+    # Swapping again restores those picks; it applies only to attempts finished after the
+    # first fix shipped (see BANK_FIX_SINCE).
+    "2026-11-07-undo-swap-on-new-attempts": _SWAPPED_KEYS,
+}
+#: A fix listed here applies only to attempts finished at or after this time (UTC, ISO 8601).
+BANK_FIX_SINCE: Dict[str, str] = {
+    "2026-11-07-undo-swap-on-new-attempts": "2026-11-06T19:03:01+00:00",
+}
+
+
+def _swap_picks(answers: List[dict], swaps: Dict[str, tuple]) -> None:
+    for a in answers:
+        pair = swaps.get(a.get("question_id"))
+        if pair and a.get("selected") in pair:
+            a["selected"] = pair[1] if a["selected"] == pair[0] else pair[0]
+
+
+def _parse_time(value: str) -> Optional[datetime]:
+    try:
+        t = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except (AttributeError, ValueError):
+        return None
+    return t if t.tzinfo else t.replace(tzinfo=timezone.utc)
 
 
 class Attempt(BaseModel):
@@ -539,15 +709,21 @@ class Attempt(BaseModel):
     @model_validator(mode="before")
     @classmethod
     def _apply_bank_fixes(cls, data):
-        if not isinstance(data, dict) or "bank_fixes" in data:
+        """Apply each repair this record does not list yet, once, and record that it did."""
+        if not isinstance(data, dict):
             return data
-        data = dict(data)  # a record from before the field existed: repair it once
+        done = list(data.get("bank_fixes", []))
+        pending = [name for name in BANK_KEY_FIXES if name not in done]
+        if not pending:
+            return data
+        data = dict(data)
         answers = [dict(a) if isinstance(a, dict) else a.model_dump() for a in data.get("answers", [])]
-        for swaps in BANK_KEY_FIXES.values():
-            for a in answers:
-                pair = swaps.get(a.get("question_id"))
-                if pair and a.get("selected") in pair:
-                    a["selected"] = pair[1] if a["selected"] == pair[0] else pair[0]
+        finished = _parse_time(data.get("finished_at", ""))
+        for name in pending:
+            since = BANK_FIX_SINCE.get(name)
+            if since is not None and (finished is None or finished < _parse_time(since)):
+                continue  # recorded before this bug existed: nothing to undo
+            _swap_picks(answers, BANK_KEY_FIXES[name])
         data["answers"] = answers
         data["correct_count"] = sum(1 for a in answers if a.get("selected") == a.get("correct_answer"))
         data["bank_fixes"] = list(BANK_KEY_FIXES)

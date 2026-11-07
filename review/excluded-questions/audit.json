@@ -1,0 +1,3620 @@
+{
+ "method": "Jaccard and containment of normalised stem tokens against each heading of the dump README; stop words removed; tokens under 3 chars dropped",
+ "dump": {
+  "repo": "Ditectrev/Google-Cloud-Platform-GCP-Associate-Cloud-Engineer-Practice-Tests-Exams-Questions-Answers",
+  "commit": "eec88f3dbf69b40d8bcd9664b6f9ed22d63423dc",
+  "licence": null,
+  "stems_compared": 179
+ },
+ "questions": [
+  {
+   "id": "ace-dom3-050",
+   "source": "user",
+   "objective": "2.1",
+   "subtopic": "Launching Instances",
+   "jaccard": 1.0,
+   "containment": 1.0,
+   "dump_readme_line": 1731,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 1.0,
+     "containment": 1.0,
+     "ref_line": 157
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.15,
+     "containment": 0.231,
+     "ref_line": 17
+    },
+    "slackwero": {
+     "jaccard": 0.214,
+     "containment": 0.231,
+     "ref_line": 94
+    },
+    "google-sample": {
+     "jaccard": 0.111,
+     "containment": 0.231,
+     "ref_line": 14
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom5-020",
+   "source": "user",
+   "objective": "4.1",
+   "subtopic": "Role Types and Custom Roles",
+   "jaccard": 1.0,
+   "containment": 1.0,
+   "dump_readme_line": 366,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 1.0,
+     "containment": 1.0,
+     "ref_line": 7
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.12,
+     "containment": 0.167,
+     "ref_line": 5
+    },
+    "slackwero": {
+     "jaccard": 0.174,
+     "containment": 0.222,
+     "ref_line": 310
+    },
+    "google-sample": {
+     "jaccard": 0.138,
+     "containment": 0.222,
+     "ref_line": 12
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom5-025",
+   "source": "user",
+   "objective": "4.2",
+   "subtopic": "Service Accounts and Least Privilege",
+   "jaccard": 0.941,
+   "containment": 1.0,
+   "dump_readme_line": 645,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.933,
+     "containment": 1.0,
+     "ref_line": 38
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.095,
+     "containment": 0.143,
+     "ref_line": 48
+    },
+    "slackwero": {
+     "jaccard": 0.227,
+     "containment": 0.357,
+     "ref_line": 602
+    },
+    "google-sample": {
+     "jaccard": 0.062,
+     "containment": 0.143,
+     "ref_line": 7
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom5-029",
+   "source": "user",
+   "objective": "4.1",
+   "subtopic": "Role Types and Custom Roles",
+   "jaccard": 0.889,
+   "containment": 0.941,
+   "dump_readme_line": 1236,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.867,
+     "containment": 0.929,
+     "ref_line": 102
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.048,
+     "containment": 0.071,
+     "ref_line": 40
+    },
+    "slackwero": {
+     "jaccard": 0.15,
+     "containment": 0.214,
+     "ref_line": 310
+    },
+    "google-sample": {
+     "jaccard": 0.103,
+     "containment": 0.214,
+     "ref_line": 2
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom4-001",
+   "source": "curated",
+   "objective": "3.4",
+   "subtopic": "Resource Alerts",
+   "jaccard": 0.882,
+   "containment": 0.938,
+   "dump_readme_line": 1425,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.75,
+     "containment": 0.857,
+     "ref_line": 123
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.174,
+     "containment": 0.286,
+     "ref_line": 10
+    },
+    "slackwero": {
+     "jaccard": 0.2,
+     "containment": 0.214,
+     "ref_line": 94
+    },
+    "google-sample": {
+     "jaccard": 0.107,
+     "containment": 0.214,
+     "ref_line": 14
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom2-083",
+   "source": "user",
+   "objective": "3.2",
+   "subtopic": "Backup and Restore",
+   "jaccard": 0.842,
+   "containment": 1.0,
+   "dump_readme_line": 852,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 1.0,
+     "containment": 1.0,
+     "ref_line": 61
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.1,
+     "containment": 0.167,
+     "ref_line": 27
+    },
+    "slackwero": {
+     "jaccard": 0.143,
+     "containment": 0.167,
+     "ref_line": 1138
+    },
+    "google-sample": {
+     "jaccard": 0.135,
+     "containment": 0.278,
+     "ref_line": 16
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom5-037",
+   "source": "user",
+   "objective": "4.1",
+   "subtopic": "IAM Policies and Inheritance",
+   "jaccard": 0.833,
+   "containment": 0.938,
+   "dump_readme_line": 1650,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.917,
+     "containment": 0.917,
+     "ref_line": 148
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.05,
+     "containment": 0.083,
+     "ref_line": 48
+    },
+    "slackwero": {
+     "jaccard": 0.217,
+     "containment": 0.417,
+     "ref_line": 241
+    },
+    "google-sample": {
+     "jaccard": 0.042,
+     "containment": 0.083,
+     "ref_line": 20
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom1-051",
+   "source": "user",
+   "objective": "3.2",
+   "subtopic": "Storage Cost Estimation",
+   "jaccard": 0.824,
+   "containment": 0.875,
+   "dump_readme_line": 483,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.833,
+     "containment": 0.882,
+     "ref_line": 20
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.08,
+     "containment": 0.118,
+     "ref_line": 17
+    },
+    "slackwero": {
+     "jaccard": 0.143,
+     "containment": 0.235,
+     "ref_line": 284
+    },
+    "google-sample": {
+     "jaccard": 0.067,
+     "containment": 0.118,
+     "ref_line": 21
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom5-022",
+   "source": "user",
+   "objective": "3.2",
+   "subtopic": "Securing Cloud Storage Objects",
+   "jaccard": 0.789,
+   "containment": 0.882,
+   "dump_readme_line": 393,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.812,
+     "containment": 0.929,
+     "ref_line": 10
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.174,
+     "containment": 0.286,
+     "ref_line": 10
+    },
+    "slackwero": {
+     "jaccard": 0.304,
+     "containment": 0.5,
+     "ref_line": 343
+    },
+    "google-sample": {
+     "jaccard": 0.24,
+     "containment": 0.429,
+     "ref_line": 14
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom4-037",
+   "source": "user",
+   "objective": "3.2",
+   "subtopic": "Backup and Restore",
+   "jaccard": 0.786,
+   "containment": 0.917,
+   "dump_readme_line": 1858,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.846,
+     "containment": 0.917,
+     "ref_line": 171
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.091,
+     "containment": 0.167,
+     "ref_line": 4
+    },
+    "slackwero": {
+     "jaccard": 0.214,
+     "containment": 0.25,
+     "ref_line": 1135
+    },
+    "google-sample": {
+     "jaccard": 0.059,
+     "containment": 0.167,
+     "ref_line": 16
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom2-080",
+   "source": "user",
+   "objective": "2.3",
+   "subtopic": "VPC Design",
+   "jaccard": 0.759,
+   "containment": 0.957,
+   "dump_readme_line": 429,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.696,
+     "containment": 0.941,
+     "ref_line": 14
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.081,
+     "containment": 0.176,
+     "ref_line": 59
+    },
+    "slackwero": {
+     "jaccard": 0.174,
+     "containment": 0.235,
+     "ref_line": 841
+    },
+    "google-sample": {
+     "jaccard": 0.103,
+     "containment": 0.176,
+     "ref_line": 12
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom5-027",
+   "source": "user",
+   "objective": "3.2",
+   "subtopic": "Securing Cloud Storage Objects",
+   "jaccard": 0.75,
+   "containment": 0.833,
+   "dump_readme_line": 789,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.824,
+     "containment": 0.875,
+     "ref_line": 54
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.114,
+     "containment": 0.25,
+     "ref_line": 59
+    },
+    "slackwero": {
+     "jaccard": 0.19,
+     "containment": 0.25,
+     "ref_line": 310
+    },
+    "google-sample": {
+     "jaccard": 0.148,
+     "containment": 0.25,
+     "ref_line": 12
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom5-030",
+   "source": "user",
+   "objective": "4.1",
+   "subtopic": "IAM Policies and Inheritance",
+   "jaccard": 0.75,
+   "containment": 0.875,
+   "dump_readme_line": 1254,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.739,
+     "containment": 0.85,
+     "ref_line": 104
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.07,
+     "containment": 0.15,
+     "ref_line": 69
+    },
+    "slackwero": {
+     "jaccard": 0.125,
+     "containment": 0.2,
+     "ref_line": 1037
+    },
+    "google-sample": {
+     "jaccard": 0.086,
+     "containment": 0.15,
+     "ref_line": 2
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom5-021",
+   "source": "user",
+   "objective": "4.1",
+   "subtopic": "Role Types and Custom Roles",
+   "jaccard": 0.733,
+   "containment": 0.733,
+   "dump_readme_line": 456,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.714,
+     "containment": 0.714,
+     "ref_line": 17
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.095,
+     "containment": 0.143,
+     "ref_line": 12
+    },
+    "slackwero": {
+     "jaccard": 0.278,
+     "containment": 0.357,
+     "ref_line": 310
+    },
+    "google-sample": {
+     "jaccard": 0.143,
+     "containment": 0.286,
+     "ref_line": 2
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom3-000",
+   "source": "official-sample",
+   "objective": "2.4",
+   "subtopic": "Infrastructure as Code",
+   "jaccard": 0.708,
+   "containment": 0.81,
+   "dump_readme_line": 310,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.682,
+     "containment": 0.789,
+     "ref_line": 1
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.148,
+     "containment": 0.211,
+     "ref_line": 13
+    },
+    "slackwero": {
+     "jaccard": 0.125,
+     "containment": 0.158,
+     "ref_line": 711
+    },
+    "google-sample": {
+     "jaccard": 0.118,
+     "containment": 0.211,
+     "ref_line": 4
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom2-102",
+   "source": "user",
+   "objective": "2.1",
+   "subtopic": "GKE Cluster Configurations",
+   "jaccard": 0.706,
+   "containment": 0.8,
+   "dump_readme_line": 537,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.75,
+     "containment": 0.8,
+     "ref_line": 26
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.103,
+     "containment": 0.267,
+     "ref_line": 68
+    },
+    "slackwero": {
+     "jaccard": 0.158,
+     "containment": 0.2,
+     "ref_line": 916
+    },
+    "google-sample": {
+     "jaccard": 0.094,
+     "containment": 0.2,
+     "ref_line": 9
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom5-023",
+   "source": "user",
+   "objective": "4.1",
+   "subtopic": "Role Types and Custom Roles",
+   "jaccard": 0.706,
+   "containment": 0.75,
+   "dump_readme_line": 582,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.75,
+     "containment": 0.8,
+     "ref_line": 31
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.083,
+     "containment": 0.133,
+     "ref_line": 36
+    },
+    "slackwero": {
+     "jaccard": 0.167,
+     "containment": 0.2,
+     "ref_line": 1021
+    },
+    "google-sample": {
+     "jaccard": 0.135,
+     "containment": 0.333,
+     "ref_line": 3
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom5-018",
+   "source": "curated",
+   "objective": "2.1",
+   "subtopic": "OS Login",
+   "jaccard": 0.7,
+   "containment": 0.933,
+   "dump_readme_line": 977,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.824,
+     "containment": 0.933,
+     "ref_line": 74
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.19,
+     "containment": 0.267,
+     "ref_line": 17
+    },
+    "slackwero": {
+     "jaccard": 0.286,
+     "containment": 0.4,
+     "ref_line": 1106
+    },
+    "google-sample": {
+     "jaccard": 0.081,
+     "containment": 0.2,
+     "ref_line": 5
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom3-048",
+   "source": "user",
+   "objective": "3.1",
+   "subtopic": "Connecting to Instances",
+   "jaccard": 0.7,
+   "containment": 0.875,
+   "dump_readme_line": 968,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.7,
+     "containment": 0.875,
+     "ref_line": 73
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.125,
+     "containment": 0.25,
+     "ref_line": 43
+    },
+    "slackwero": {
+     "jaccard": 0.25,
+     "containment": 0.25,
+     "ref_line": 287
+    },
+    "google-sample": {
+     "jaccard": 0.087,
+     "containment": 0.25,
+     "ref_line": 14
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom2-087",
+   "source": "user",
+   "objective": "2.2",
+   "subtopic": "Loading Data",
+   "jaccard": 0.696,
+   "containment": 0.889,
+   "dump_readme_line": 1076,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.714,
+     "containment": 0.938,
+     "ref_line": 85
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.143,
+     "containment": 0.25,
+     "ref_line": 23
+    },
+    "slackwero": {
+     "jaccard": 0.182,
+     "containment": 0.25,
+     "ref_line": 1366
+    },
+    "google-sample": {
+     "jaccard": 0.143,
+     "containment": 0.312,
+     "ref_line": 16
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom5-026",
+   "source": "user",
+   "objective": "2.1",
+   "subtopic": "OS Login",
+   "jaccard": 0.694,
+   "containment": 0.893,
+   "dump_readme_line": 663,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.655,
+     "containment": 0.864,
+     "ref_line": 40
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.103,
+     "containment": 0.136,
+     "ref_line": 17
+    },
+    "slackwero": {
+     "jaccard": 0.161,
+     "containment": 0.227,
+     "ref_line": 1330
+    },
+    "google-sample": {
+     "jaccard": 0.083,
+     "containment": 0.136,
+     "ref_line": 14
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom2-095",
+   "source": "user",
+   "objective": "2.1",
+   "subtopic": "Compute Platform Selection",
+   "jaccard": 0.68,
+   "containment": 0.895,
+   "dump_readme_line": 1542,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.652,
+     "containment": 0.882,
+     "ref_line": 136
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.1,
+     "containment": 0.176,
+     "ref_line": 8
+    },
+    "slackwero": {
+     "jaccard": 0.161,
+     "containment": 0.294,
+     "ref_line": 511
+    },
+    "google-sample": {
+     "jaccard": 0.077,
+     "containment": 0.176,
+     "ref_line": 19
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom1-044",
+   "source": "curated",
+   "objective": "1.1",
+   "subtopic": "Observability Setup",
+   "jaccard": 0.667,
+   "containment": 0.857,
+   "dump_readme_line": 492,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.667,
+     "containment": 0.8,
+     "ref_line": 21
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.05,
+     "containment": 0.1,
+     "ref_line": 36
+    },
+    "slackwero": {
+     "jaccard": 0.222,
+     "containment": 0.4,
+     "ref_line": 244
+    },
+    "google-sample": {
+     "jaccard": 0.074,
+     "containment": 0.2,
+     "ref_line": 4
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom2-062",
+   "source": "curated",
+   "objective": "2.4",
+   "subtopic": "Infrastructure as Code",
+   "jaccard": 0.667,
+   "containment": 0.778,
+   "dump_readme_line": 1759,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.529,
+     "containment": 0.692,
+     "ref_line": 160
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.19,
+     "containment": 0.308,
+     "ref_line": 13
+    },
+    "slackwero": {
+     "jaccard": 0.143,
+     "containment": 0.154,
+     "ref_line": 401
+    },
+    "google-sample": {
+     "jaccard": 0.053,
+     "containment": 0.154,
+     "ref_line": 3
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom4-035",
+   "source": "user",
+   "objective": "2.1",
+   "subtopic": "Storage for Compute Engine",
+   "jaccard": 0.667,
+   "containment": 0.87,
+   "dump_readme_line": 1470,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.733,
+     "containment": 0.917,
+     "ref_line": 128
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.111,
+     "containment": 0.167,
+     "ref_line": 23
+    },
+    "slackwero": {
+     "jaccard": 0.143,
+     "containment": 0.167,
+     "ref_line": 1075
+    },
+    "google-sample": {
+     "jaccard": 0.079,
+     "containment": 0.125,
+     "ref_line": 14
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom2-103",
+   "source": "user",
+   "objective": "3.2",
+   "subtopic": "Object Lifecycle",
+   "jaccard": 0.667,
+   "containment": 0.824,
+   "dump_readme_line": 555,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.7,
+     "containment": 0.824,
+     "ref_line": 28
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.12,
+     "containment": 0.176,
+     "ref_line": 22
+    },
+    "slackwero": {
+     "jaccard": 0.174,
+     "containment": 0.235,
+     "ref_line": 1097
+    },
+    "google-sample": {
+     "jaccard": 0.088,
+     "containment": 0.176,
+     "ref_line": 7
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom4-033",
+   "source": "user",
+   "objective": "3.4",
+   "subtopic": "Audit, Flow and Firewall Logs",
+   "jaccard": 0.667,
+   "containment": 0.783,
+   "dump_readme_line": 1371,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.65,
+     "containment": 0.722,
+     "ref_line": 117
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.074,
+     "containment": 0.111,
+     "ref_line": 22
+    },
+    "slackwero": {
+     "jaccard": 0.107,
+     "containment": 0.167,
+     "ref_line": 179
+    },
+    "google-sample": {
+     "jaccard": 0.071,
+     "containment": 0.167,
+     "ref_line": 3
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom5-034",
+   "source": "user",
+   "objective": "4.2",
+   "subtopic": "Service Accounts and Least Privilege",
+   "jaccard": 0.667,
+   "containment": 0.741,
+   "dump_readme_line": 1524,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.731,
+     "containment": 0.826,
+     "ref_line": 134
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.138,
+     "containment": 0.174,
+     "ref_line": 43
+    },
+    "slackwero": {
+     "jaccard": 0.147,
+     "containment": 0.217,
+     "ref_line": 343
+    },
+    "google-sample": {
+     "jaccard": 0.143,
+     "containment": 0.217,
+     "ref_line": 14
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom5-006",
+   "source": "curated",
+   "objective": "4.1",
+   "subtopic": "IAM Policies and Inheritance",
+   "jaccard": 0.655,
+   "containment": 0.905,
+   "dump_readme_line": 1317,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.696,
+     "containment": 0.941,
+     "ref_line": 111
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.049,
+     "containment": 0.118,
+     "ref_line": 69
+    },
+    "slackwero": {
+     "jaccard": 0.148,
+     "containment": 0.235,
+     "ref_line": 1056
+    },
+    "google-sample": {
+     "jaccard": 0.1,
+     "containment": 0.235,
+     "ref_line": 3
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom2-084",
+   "source": "user",
+   "objective": "2.3",
+   "subtopic": "Hybrid Connectivity",
+   "jaccard": 0.643,
+   "containment": 0.783,
+   "dump_readme_line": 861,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.667,
+     "containment": 0.842,
+     "ref_line": 62
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.115,
+     "containment": 0.158,
+     "ref_line": 5
+    },
+    "slackwero": {
+     "jaccard": 0.129,
+     "containment": 0.211,
+     "ref_line": 343
+    },
+    "google-sample": {
+     "jaccard": 0.133,
+     "containment": 0.211,
+     "ref_line": 12
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom2-085",
+   "source": "user",
+   "objective": "4.1",
+   "subtopic": "Role Types and Custom Roles",
+   "jaccard": 0.64,
+   "containment": 0.8,
+   "dump_readme_line": 870,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.65,
+     "containment": 0.765,
+     "ref_line": 63
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.107,
+     "containment": 0.176,
+     "ref_line": 29
+    },
+    "slackwero": {
+     "jaccard": 0.182,
+     "containment": 0.235,
+     "ref_line": 310
+    },
+    "google-sample": {
+     "jaccard": 0.167,
+     "containment": 0.294,
+     "ref_line": 2
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom4-031",
+   "source": "user",
+   "objective": "3.3",
+   "subtopic": "Subnets, Addresses and Routes",
+   "jaccard": 0.625,
+   "containment": 0.667,
+   "dump_readme_line": 771,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.625,
+     "containment": 0.667,
+     "ref_line": 52
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.136,
+     "containment": 0.2,
+     "ref_line": 17
+    },
+    "slackwero": {
+     "jaccard": 0.185,
+     "containment": 0.333,
+     "ref_line": 808
+    },
+    "google-sample": {
+     "jaccard": 0.103,
+     "containment": 0.2,
+     "ref_line": 14
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom1-052",
+   "source": "user",
+   "objective": "1.2",
+   "subtopic": "Billing Accounts",
+   "jaccard": 0.621,
+   "containment": 0.783,
+   "dump_readme_line": 564,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.65,
+     "containment": 0.812,
+     "ref_line": 29
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.081,
+     "containment": 0.188,
+     "ref_line": 55
+    },
+    "slackwero": {
+     "jaccard": 0.15,
+     "containment": 0.188,
+     "ref_line": 237
+    },
+    "google-sample": {
+     "jaccard": 0.042,
+     "containment": 0.062,
+     "ref_line": 17
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom1-055",
+   "source": "user",
+   "objective": "1.2",
+   "subtopic": "Billing Accounts",
+   "jaccard": 0.619,
+   "containment": 0.765,
+   "dump_readme_line": 1795,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.471,
+     "containment": 0.667,
+     "ref_line": 164
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.05,
+     "containment": 0.083,
+     "ref_line": 48
+    },
+    "slackwero": {
+     "jaccard": 0.118,
+     "containment": 0.167,
+     "ref_line": 253
+    },
+    "google-sample": {
+     "jaccard": 0.05,
+     "containment": 0.083,
+     "ref_line": 17
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom2-079",
+   "source": "user",
+   "objective": "2.2",
+   "subtopic": "Database Selection",
+   "jaccard": 0.615,
+   "containment": 0.8,
+   "dump_readme_line": 375,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.708,
+     "containment": 0.85,
+     "ref_line": 8
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.075,
+     "containment": 0.15,
+     "ref_line": 59
+    },
+    "slackwero": {
+     "jaccard": 0.108,
+     "containment": 0.2,
+     "ref_line": 206
+    },
+    "google-sample": {
+     "jaccard": 0.048,
+     "containment": 0.1,
+     "ref_line": 16
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom3-049",
+   "source": "user",
+   "objective": "3.1",
+   "subtopic": "Kubernetes Resources",
+   "jaccard": 0.613,
+   "containment": 0.792,
+   "dump_readme_line": 1157,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.6,
+     "containment": 0.783,
+     "ref_line": 94
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.067,
+     "containment": 0.087,
+     "ref_line": 12
+    },
+    "slackwero": {
+     "jaccard": 0.194,
+     "containment": 0.261,
+     "ref_line": 968
+    },
+    "google-sample": {
+     "jaccard": 0.075,
+     "containment": 0.13,
+     "ref_line": 9
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom5-024",
+   "source": "user",
+   "objective": "4.1",
+   "subtopic": "Role Types and Custom Roles",
+   "jaccard": 0.611,
+   "containment": 0.611,
+   "dump_readme_line": 600,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.611,
+     "containment": 0.611,
+     "ref_line": 33
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.08,
+     "containment": 0.111,
+     "ref_line": 12
+    },
+    "slackwero": {
+     "jaccard": 0.148,
+     "containment": 0.222,
+     "ref_line": 640
+    },
+    "google-sample": {
+     "jaccard": 0.2,
+     "containment": 0.333,
+     "ref_line": 2
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom5-036",
+   "source": "user",
+   "objective": "4.2",
+   "subtopic": "Service Accounts and Least Privilege",
+   "jaccard": 0.607,
+   "containment": 0.85,
+   "dump_readme_line": 1849,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.593,
+     "containment": 0.842,
+     "ref_line": 170
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.077,
+     "containment": 0.105,
+     "ref_line": 12
+    },
+    "slackwero": {
+     "jaccard": 0.167,
+     "containment": 0.263,
+     "ref_line": 1026
+    },
+    "google-sample": {
+     "jaccard": 0.067,
+     "containment": 0.105,
+     "ref_line": 20
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom5-038",
+   "source": "user",
+   "objective": "4.1",
+   "subtopic": "Role Types and Custom Roles",
+   "jaccard": 0.6,
+   "containment": 0.913,
+   "dump_readme_line": 1740,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.586,
+     "containment": 0.895,
+     "ref_line": 158
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.077,
+     "containment": 0.158,
+     "ref_line": 57
+    },
+    "slackwero": {
+     "jaccard": 0.167,
+     "containment": 0.211,
+     "ref_line": 310
+    },
+    "google-sample": {
+     "jaccard": 0.133,
+     "containment": 0.211,
+     "ref_line": 12
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom1-054",
+   "source": "user",
+   "objective": "1.1",
+   "subtopic": "Foundation Networking",
+   "jaccard": 0.594,
+   "containment": 0.792,
+   "dump_readme_line": 1308,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.571,
+     "containment": 0.762,
+     "ref_line": 110
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.148,
+     "containment": 0.19,
+     "ref_line": 43
+    },
+    "slackwero": {
+     "jaccard": 0.194,
+     "containment": 0.286,
+     "ref_line": 343
+    },
+    "google-sample": {
+     "jaccard": 0.241,
+     "containment": 0.333,
+     "ref_line": 12
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom2-090",
+   "source": "user",
+   "objective": "2.2",
+   "subtopic": "Cloud Storage Classes",
+   "jaccard": 0.583,
+   "containment": 0.824,
+   "dump_readme_line": 1139,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.65,
+     "containment": 0.812,
+     "ref_line": 92
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.167,
+     "containment": 0.312,
+     "ref_line": 15
+    },
+    "slackwero": {
+     "jaccard": 0.182,
+     "containment": 0.25,
+     "ref_line": 1071
+    },
+    "google-sample": {
+     "jaccard": 0.094,
+     "containment": 0.188,
+     "ref_line": 8
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom2-099",
+   "source": "user",
+   "objective": "2.1",
+   "subtopic": "Launching Instances",
+   "jaccard": 0.577,
+   "containment": 0.789,
+   "dump_readme_line": 1885,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.714,
+     "containment": 0.833,
+     "ref_line": 174
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.167,
+     "containment": 0.222,
+     "ref_line": 17
+    },
+    "slackwero": {
+     "jaccard": 0.158,
+     "containment": 0.167,
+     "ref_line": 604
+    },
+    "google-sample": {
+     "jaccard": 0.094,
+     "containment": 0.167,
+     "ref_line": 14
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom3-044",
+   "source": "user",
+   "objective": "3.1",
+   "subtopic": "Instance Inventory and Lifecycle",
+   "jaccard": 0.545,
+   "containment": 0.75,
+   "dump_readme_line": 708,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.545,
+     "containment": 0.75,
+     "ref_line": 45
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.2,
+     "containment": 0.375,
+     "ref_line": 43
+    },
+    "slackwero": {
+     "jaccard": 0.25,
+     "containment": 0.25,
+     "ref_line": 287
+    },
+    "google-sample": {
+     "jaccard": 0.136,
+     "containment": 0.375,
+     "ref_line": 14
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom5-032",
+   "source": "user",
+   "objective": "4.1",
+   "subtopic": "Role Types and Custom Roles",
+   "jaccard": 0.524,
+   "containment": 0.846,
+   "dump_readme_line": 1335,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.625,
+     "containment": 0.833,
+     "ref_line": 113
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.095,
+     "containment": 0.167,
+     "ref_line": 22
+    },
+    "slackwero": {
+     "jaccard": 0.368,
+     "containment": 0.583,
+     "ref_line": 784
+    },
+    "google-sample": {
+     "jaccard": 0.083,
+     "containment": 0.25,
+     "ref_line": 3
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom4-034",
+   "source": "user",
+   "objective": "2.2",
+   "subtopic": "Database Selection",
+   "jaccard": 0.522,
+   "containment": 0.632,
+   "dump_readme_line": 1434,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.524,
+     "containment": 0.647,
+     "ref_line": 124
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.2,
+     "containment": 0.294,
+     "ref_line": 1
+    },
+    "slackwero": {
+     "jaccard": 0.182,
+     "containment": 0.235,
+     "ref_line": 305
+    },
+    "google-sample": {
+     "jaccard": 0.133,
+     "containment": 0.235,
+     "ref_line": 14
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom1-049",
+   "source": "user",
+   "objective": "3.2",
+   "subtopic": "Storage Cost Estimation",
+   "jaccard": 0.519,
+   "containment": 0.737,
+   "dump_readme_line": 1177,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.481,
+     "containment": 0.722,
+     "ref_line": 96
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.083,
+     "containment": 0.167,
+     "ref_line": 70
+    },
+    "slackwero": {
+     "jaccard": 0.138,
+     "containment": 0.222,
+     "ref_line": 1507
+    },
+    "google-sample": {
+     "jaccard": 0.1,
+     "containment": 0.167,
+     "ref_line": 21
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom3-051",
+   "source": "user",
+   "objective": "3.1",
+   "subtopic": "Cloud Run Autoscaling",
+   "jaccard": 0.519,
+   "containment": 0.737,
+   "dump_readme_line": 1786,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.583,
+     "containment": 0.778,
+     "ref_line": 163
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.125,
+     "containment": 0.222,
+     "ref_line": 35
+    },
+    "slackwero": {
+     "jaccard": 0.143,
+     "containment": 0.333,
+     "ref_line": 580
+    },
+    "google-sample": {
+     "jaccard": 0.071,
+     "containment": 0.167,
+     "ref_line": 3
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom1-023",
+   "source": "curated",
+   "objective": "1.2",
+   "subtopic": "Billing Export and Cost Attribution",
+   "jaccard": 0.5,
+   "containment": 0.762,
+   "dump_readme_line": 1587,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.517,
+     "containment": 0.75,
+     "ref_line": 141
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.128,
+     "containment": 0.25,
+     "ref_line": 55
+    },
+    "slackwero": {
+     "jaccard": 0.217,
+     "containment": 0.25,
+     "ref_line": 235
+    },
+    "google-sample": {
+     "jaccard": 0.098,
+     "containment": 0.2,
+     "ref_line": 5
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom2-089",
+   "source": "user",
+   "objective": "3.2",
+   "subtopic": "Object Lifecycle",
+   "jaccard": 0.5,
+   "containment": 0.64,
+   "dump_readme_line": 1121,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.516,
+     "containment": 0.667,
+     "ref_line": 90
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.133,
+     "containment": 0.25,
+     "ref_line": 58
+    },
+    "slackwero": {
+     "jaccard": 0.136,
+     "containment": 0.25,
+     "ref_line": 1123
+    },
+    "google-sample": {
+     "jaccard": 0.067,
+     "containment": 0.125,
+     "ref_line": 16
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom5-035",
+   "source": "user",
+   "objective": "4.2",
+   "subtopic": "Service Accounts and Least Privilege",
+   "jaccard": 0.5,
+   "containment": 0.7,
+   "dump_readme_line": 1804,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.435,
+     "containment": 0.625,
+     "ref_line": 165
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.136,
+     "containment": 0.188,
+     "ref_line": 12
+    },
+    "slackwero": {
+     "jaccard": 0.19,
+     "containment": 0.25,
+     "ref_line": 310
+    },
+    "google-sample": {
+     "jaccard": 0.172,
+     "containment": 0.312,
+     "ref_line": 2
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom2-093",
+   "source": "user",
+   "objective": "2.1",
+   "subtopic": "GKE Cluster Configurations",
+   "jaccard": 0.48,
+   "containment": 0.75,
+   "dump_readme_line": 1187,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.455,
+     "containment": 0.714,
+     "ref_line": 97
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.095,
+     "containment": 0.143,
+     "ref_line": 46
+    },
+    "slackwero": {
+     "jaccard": 0.133,
+     "containment": 0.286,
+     "ref_line": 890
+    },
+    "google-sample": {
+     "jaccard": 0.062,
+     "containment": 0.143,
+     "ref_line": 9
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom2-101",
+   "source": "user",
+   "objective": "2.1",
+   "subtopic": "Managed Instance Groups",
+   "jaccard": 0.48,
+   "containment": 0.632,
+   "dump_readme_line": 420,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.545,
+     "containment": 0.667,
+     "ref_line": 13
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.273,
+     "containment": 0.333,
+     "ref_line": 17
+    },
+    "slackwero": {
+     "jaccard": 0.217,
+     "containment": 0.278,
+     "ref_line": 609
+    },
+    "google-sample": {
+     "jaccard": 0.132,
+     "containment": 0.278,
+     "ref_line": 5
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom5-031",
+   "source": "user",
+   "objective": "4.2",
+   "subtopic": "Creating Service Accounts",
+   "jaccard": 0.478,
+   "containment": 0.579,
+   "dump_readme_line": 1272,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.412,
+     "containment": 0.5,
+     "ref_line": 106
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.105,
+     "containment": 0.286,
+     "ref_line": 52
+    },
+    "slackwero": {
+     "jaccard": 0.167,
+     "containment": 0.286,
+     "ref_line": 636
+    },
+    "google-sample": {
+     "jaccard": 0.079,
+     "containment": 0.214,
+     "ref_line": 3
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom2-091",
+   "source": "user",
+   "objective": "3.2",
+   "subtopic": "Object Lifecycle",
+   "jaccard": 0.471,
+   "containment": 0.667,
+   "dump_readme_line": 1704,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.5,
+     "containment": 0.667,
+     "ref_line": 154
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.088,
+     "containment": 0.125,
+     "ref_line": 2
+    },
+    "slackwero": {
+     "jaccard": 0.27,
+     "containment": 0.417,
+     "ref_line": 337
+    },
+    "google-sample": {
+     "jaccard": 0.041,
+     "containment": 0.083,
+     "ref_line": 3
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom4-036",
+   "source": "user",
+   "objective": "3.3",
+   "subtopic": "Cloud DNS and Cloud NAT",
+   "jaccard": 0.457,
+   "containment": 0.727,
+   "dump_readme_line": 1777,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.467,
+     "containment": 0.7,
+     "ref_line": 162
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.115,
+     "containment": 0.15,
+     "ref_line": 34
+    },
+    "slackwero": {
+     "jaccard": 0.179,
+     "containment": 0.25,
+     "ref_line": 133
+    },
+    "google-sample": {
+     "jaccard": 0.118,
+     "containment": 0.2,
+     "ref_line": 6
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom1-050",
+   "source": "user",
+   "objective": "1.1",
+   "subtopic": "gcloud CLI and Configurations",
+   "jaccard": 0.444,
+   "containment": 0.857,
+   "dump_readme_line": 1560,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.5,
+     "containment": 0.857,
+     "ref_line": 138
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.125,
+     "containment": 0.214,
+     "ref_line": 10
+    },
+    "slackwero": {
+     "jaccard": 0.292,
+     "containment": 0.5,
+     "ref_line": 26
+    },
+    "google-sample": {
+     "jaccard": 0.107,
+     "containment": 0.214,
+     "ref_line": 14
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom3-047",
+   "source": "user",
+   "objective": "3.1",
+   "subtopic": "Kubernetes Resources",
+   "jaccard": 0.444,
+   "containment": 0.706,
+   "dump_readme_line": 926,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.444,
+     "containment": 0.706,
+     "ref_line": 69
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.132,
+     "containment": 0.294,
+     "ref_line": 69
+    },
+    "slackwero": {
+     "jaccard": 0.167,
+     "containment": 0.235,
+     "ref_line": 891
+    },
+    "google-sample": {
+     "jaccard": 0.067,
+     "containment": 0.118,
+     "ref_line": 12
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom2-082",
+   "source": "user",
+   "objective": "2.1",
+   "subtopic": "Launching Instances",
+   "jaccard": 0.44,
+   "containment": 0.733,
+   "dump_readme_line": 573,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.458,
+     "containment": 0.733,
+     "ref_line": 30
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.12,
+     "containment": 0.2,
+     "ref_line": 10
+    },
+    "slackwero": {
+     "jaccard": 0.238,
+     "containment": 0.333,
+     "ref_line": 950
+    },
+    "google-sample": {
+     "jaccard": 0.143,
+     "containment": 0.267,
+     "ref_line": 14
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom2-098",
+   "source": "user",
+   "objective": "3.2",
+   "subtopic": "Querying Data",
+   "jaccard": 0.439,
+   "containment": 0.692,
+   "dump_readme_line": 1632,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.486,
+     "containment": 0.72,
+     "ref_line": 146
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.111,
+     "containment": 0.16,
+     "ref_line": 27
+    },
+    "slackwero": {
+     "jaccard": 0.091,
+     "containment": 0.12,
+     "ref_line": 468
+    },
+    "google-sample": {
+     "jaccard": 0.073,
+     "containment": 0.12,
+     "ref_line": 8
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom2-097",
+   "source": "user",
+   "objective": "2.2",
+   "subtopic": "Database Selection",
+   "jaccard": 0.421,
+   "containment": 0.857,
+   "dump_readme_line": 1569,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.451,
+     "containment": 0.852,
+     "ref_line": 139
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.08,
+     "containment": 0.148,
+     "ref_line": 65
+    },
+    "slackwero": {
+     "jaccard": 0.087,
+     "containment": 0.148,
+     "ref_line": 1502
+    },
+    "google-sample": {
+     "jaccard": 0.062,
+     "containment": 0.111,
+     "ref_line": 16
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom2-086",
+   "source": "user",
+   "objective": "3.2",
+   "subtopic": "Securing Cloud Storage Objects",
+   "jaccard": 0.415,
+   "containment": 0.773,
+   "dump_readme_line": 762,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.41,
+     "containment": 0.762,
+     "ref_line": 51
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.059,
+     "containment": 0.095,
+     "ref_line": 47
+    },
+    "slackwero": {
+     "jaccard": 0.111,
+     "containment": 0.143,
+     "ref_line": 422
+    },
+    "google-sample": {
+     "jaccard": 0.026,
+     "containment": 0.048,
+     "ref_line": 6
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom2-094",
+   "source": "user",
+   "objective": "2.2",
+   "subtopic": "Database Selection",
+   "jaccard": 0.367,
+   "containment": 0.647,
+   "dump_readme_line": 1196,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.4,
+     "containment": 0.667,
+     "ref_line": 98
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.115,
+     "containment": 0.167,
+     "ref_line": 14
+    },
+    "slackwero": {
+     "jaccard": 0.103,
+     "containment": 0.167,
+     "ref_line": 1166
+    },
+    "google-sample": {
+     "jaccard": 0.065,
+     "containment": 0.111,
+     "ref_line": 21
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom5-033",
+   "source": "user",
+   "objective": "4.1",
+   "subtopic": "Role Types and Custom Roles",
+   "jaccard": 0.345,
+   "containment": 0.455,
+   "dump_readme_line": 1380,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.4,
+     "containment": 0.5,
+     "ref_line": 118
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.071,
+     "containment": 0.1,
+     "ref_line": 11
+    },
+    "slackwero": {
+     "jaccard": 0.15,
+     "containment": 0.15,
+     "ref_line": 1000
+    },
+    "google-sample": {
+     "jaccard": 0.054,
+     "containment": 0.1,
+     "ref_line": 8
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom1-053",
+   "source": "user",
+   "objective": "1.1",
+   "subtopic": "gcloud CLI and Configurations",
+   "jaccard": 0.304,
+   "containment": 0.467,
+   "dump_readme_line": 825,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.286,
+     "containment": 0.462,
+     "ref_line": 58
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.125,
+     "containment": 0.231,
+     "ref_line": 3
+    },
+    "slackwero": {
+     "jaccard": 0.188,
+     "containment": 0.231,
+     "ref_line": 474
+    },
+    "google-sample": {
+     "jaccard": 0.065,
+     "containment": 0.154,
+     "ref_line": 9
+    }
+   },
+   "flagged_2026_11_07": false
+  },
+  {
+   "id": "ace-dom2-115",
+   "source": "user",
+   "objective": "2.1",
+   "subtopic": "GPUs or TPUs",
+   "jaccard": 0.25,
+   "containment": 0.364,
+   "dump_readme_line": 1533,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.25,
+     "containment": 0.364,
+     "ref_line": 135
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.105,
+     "containment": 0.182,
+     "ref_line": 17
+    },
+    "slackwero": {
+     "jaccard": 0.25,
+     "containment": 0.364,
+     "ref_line": 953
+    },
+    "google-sample": {
+     "jaccard": 0.077,
+     "containment": 0.182,
+     "ref_line": 14
+    }
+   },
+   "flagged_2026_11_07": false
+  },
+  {
+   "id": "ace-dom2-117",
+   "source": "user",
+   "objective": "2.1",
+   "subtopic": "Managed Instance Groups",
+   "jaccard": 0.25,
+   "containment": 0.571,
+   "dump_readme_line": 411,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.25,
+     "containment": 0.571,
+     "ref_line": 12
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.062,
+     "containment": 0.143,
+     "ref_line": 17
+    },
+    "slackwero": {
+     "jaccard": 0.375,
+     "containment": 0.429,
+     "ref_line": 1257
+    },
+    "google-sample": {
+     "jaccard": 0.103,
+     "containment": 0.429,
+     "ref_line": 5
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-s4-056",
+   "source": "curated",
+   "objective": "4.2",
+   "subtopic": "Service Accounts and Least Privilege",
+   "jaccard": 0.25,
+   "containment": 0.625,
+   "dump_readme_line": 636,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.25,
+     "containment": 0.556,
+     "ref_line": 37
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.158,
+     "containment": 0.333,
+     "ref_line": 10
+    },
+    "slackwero": {
+     "jaccard": 0.4,
+     "containment": 0.444,
+     "ref_line": 1006
+    },
+    "google-sample": {
+     "jaccard": 0.074,
+     "containment": 0.222,
+     "ref_line": 9
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom4-032",
+   "source": "user",
+   "objective": "2.1",
+   "subtopic": "Managed Instance Groups",
+   "jaccard": 0.225,
+   "containment": 0.533,
+   "dump_readme_line": 807,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.235,
+     "containment": 0.571,
+     "ref_line": 56
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.108,
+     "containment": 0.143,
+     "ref_line": 10
+    },
+    "slackwero": {
+     "jaccard": 0.167,
+     "containment": 0.214,
+     "ref_line": 1292
+    },
+    "google-sample": {
+     "jaccard": 0.06,
+     "containment": 0.107,
+     "ref_line": 5
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom2-118",
+   "source": "user",
+   "objective": "2.1",
+   "subtopic": "Managed Instance Groups",
+   "jaccard": 0.208,
+   "containment": 0.625,
+   "dump_readme_line": 1407,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.208,
+     "containment": 0.625,
+     "ref_line": 121
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.13,
+     "containment": 0.375,
+     "ref_line": 35
+    },
+    "slackwero": {
+     "jaccard": 0.333,
+     "containment": 0.375,
+     "ref_line": 1257
+    },
+    "google-sample": {
+     "jaccard": 0.1,
+     "containment": 0.375,
+     "ref_line": 5
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom1-056",
+   "source": "user",
+   "objective": "2.1",
+   "subtopic": "kubectl Setup",
+   "jaccard": 0.179,
+   "containment": 0.278,
+   "dump_readme_line": 1398,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.152,
+     "containment": 0.312,
+     "ref_line": 138
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.057,
+     "containment": 0.125,
+     "ref_line": 70
+    },
+    "slackwero": {
+     "jaccard": 0.167,
+     "containment": 0.25,
+     "ref_line": 7
+    },
+    "google-sample": {
+     "jaccard": 0.059,
+     "containment": 0.125,
+     "ref_line": 9
+    }
+   },
+   "flagged_2026_11_07": false
+  },
+  {
+   "id": "ace-dom5-019",
+   "source": "user",
+   "objective": "3.2",
+   "subtopic": "Securing Cloud Storage Objects",
+   "jaccard": 0.179,
+   "containment": 0.412,
+   "dump_readme_line": 402,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.148,
+     "containment": 0.286,
+     "ref_line": 28
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.136,
+     "containment": 0.214,
+     "ref_line": 22
+    },
+    "slackwero": {
+     "jaccard": 0.15,
+     "containment": 0.214,
+     "ref_line": 1076
+    },
+    "google-sample": {
+     "jaccard": 0.062,
+     "containment": 0.143,
+     "ref_line": 7
+    }
+   },
+   "flagged_2026_11_07": false
+  },
+  {
+   "id": "ace-dom2-116",
+   "source": "user",
+   "objective": "2.1",
+   "subtopic": "Managed Instance Groups",
+   "jaccard": 0.174,
+   "containment": 0.286,
+   "dump_readme_line": 1731,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.174,
+     "containment": 0.286,
+     "ref_line": 157
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.143,
+     "containment": 0.214,
+     "ref_line": 43
+    },
+    "slackwero": {
+     "jaccard": 0.143,
+     "containment": 0.214,
+     "ref_line": 609
+    },
+    "google-sample": {
+     "jaccard": 0.107,
+     "containment": 0.214,
+     "ref_line": 14
+    }
+   },
+   "flagged_2026_11_07": false
+  },
+  {
+   "id": "ace-dom1-000",
+   "source": "official-sample",
+   "objective": "1.1",
+   "subtopic": "Project IAM Grants",
+   "jaccard": 0.167,
+   "containment": 0.348,
+   "dump_readme_line": 1740,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.15,
+     "containment": 0.316,
+     "ref_line": 158
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.077,
+     "containment": 0.105,
+     "ref_line": 12
+    },
+    "slackwero": {
+     "jaccard": 0.111,
+     "containment": 0.211,
+     "ref_line": 674
+    },
+    "google-sample": {
+     "jaccard": 0.095,
+     "containment": 0.211,
+     "ref_line": 3
+    }
+   },
+   "flagged_2026_11_07": false
+  },
+  {
+   "id": "ace-dom1-057",
+   "source": "user",
+   "objective": "1.1",
+   "subtopic": "Cloud Identity and Users",
+   "jaccard": 0.163,
+   "containment": 0.25,
+   "dump_readme_line": 726,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.143,
+     "containment": 0.192,
+     "ref_line": 47
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.068,
+     "containment": 0.115,
+     "ref_line": 70
+    },
+    "slackwero": {
+     "jaccard": 0.175,
+     "containment": 0.269,
+     "ref_line": 68
+    },
+    "google-sample": {
+     "jaccard": 0.045,
+     "containment": 0.077,
+     "ref_line": 7
+    }
+   },
+   "flagged_2026_11_07": false
+  },
+  {
+   "id": "ace-dom3-071",
+   "source": "user",
+   "objective": "3.1",
+   "subtopic": "Snapshots and Images",
+   "jaccard": 0.158,
+   "containment": 0.429,
+   "dump_readme_line": 510,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.158,
+     "containment": 0.429,
+     "ref_line": 131
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.133,
+     "containment": 0.286,
+     "ref_line": 43
+    },
+    "slackwero": {
+     "jaccard": 0.364,
+     "containment": 0.571,
+     "ref_line": 1075
+    },
+    "google-sample": {
+     "jaccard": 0.091,
+     "containment": 0.286,
+     "ref_line": 14
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom3-073",
+   "source": "user",
+   "objective": "3.1",
+   "subtopic": "Instance Inventory and Lifecycle",
+   "jaccard": 0.158,
+   "containment": 0.429,
+   "dump_readme_line": 986,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.188,
+     "containment": 0.375,
+     "ref_line": 75
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.062,
+     "containment": 0.125,
+     "ref_line": 48
+    },
+    "slackwero": {
+     "jaccard": 0.286,
+     "containment": 0.5,
+     "ref_line": 55
+    },
+    "google-sample": {
+     "jaccard": 0.05,
+     "containment": 0.125,
+     "ref_line": 20
+    }
+   },
+   "flagged_2026_11_07": false
+  },
+  {
+   "id": "ace-dom2-107",
+   "source": "user",
+   "objective": "2.2",
+   "subtopic": "Storage Products",
+   "jaccard": 0.156,
+   "containment": 0.2,
+   "dump_readme_line": 393,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.146,
+     "containment": 0.188,
+     "ref_line": 10
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.105,
+     "containment": 0.125,
+     "ref_line": 43
+    },
+    "slackwero": {
+     "jaccard": 0.227,
+     "containment": 0.312,
+     "ref_line": 1122
+    },
+    "google-sample": {
+     "jaccard": 0.065,
+     "containment": 0.094,
+     "ref_line": 14
+    }
+   },
+   "flagged_2026_11_07": false
+  },
+  {
+   "id": "ace-dom5-000",
+   "source": "official-sample",
+   "objective": "4.1",
+   "subtopic": "Role Types and Custom Roles",
+   "jaccard": 0.15,
+   "containment": 0.24,
+   "dump_readme_line": 1921,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.2,
+     "containment": 0.353,
+     "ref_line": 178
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.111,
+     "containment": 0.235,
+     "ref_line": 59
+    },
+    "slackwero": {
+     "jaccard": 0.156,
+     "containment": 0.294,
+     "ref_line": 675
+    },
+    "google-sample": {
+     "jaccard": 0.207,
+     "containment": 0.353,
+     "ref_line": 2
+    }
+   },
+   "flagged_2026_11_07": false
+  },
+  {
+   "id": "ace-dom2-111",
+   "source": "user",
+   "objective": "3.3",
+   "subtopic": "Subnets, Addresses and Routes",
+   "jaccard": 0.143,
+   "containment": 0.188,
+   "dump_readme_line": 609,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.136,
+     "containment": 0.188,
+     "ref_line": 34
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.077,
+     "containment": 0.125,
+     "ref_line": 13
+    },
+    "slackwero": {
+     "jaccard": 0.294,
+     "containment": 0.312,
+     "ref_line": 1066
+    },
+    "google-sample": {
+     "jaccard": 0.062,
+     "containment": 0.125,
+     "ref_line": 6
+    }
+   },
+   "flagged_2026_11_07": false
+  },
+  {
+   "id": "ace-dom1-058",
+   "source": "user",
+   "objective": "1.1",
+   "subtopic": "gcloud CLI and Configurations",
+   "jaccard": 0.136,
+   "containment": 0.214,
+   "dump_readme_line": 681,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.143,
+     "containment": 0.231,
+     "ref_line": 75
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.077,
+     "containment": 0.154,
+     "ref_line": 30
+    },
+    "slackwero": {
+     "jaccard": 0.25,
+     "containment": 0.385,
+     "ref_line": 319
+    },
+    "google-sample": {
+     "jaccard": 0.083,
+     "containment": 0.154,
+     "ref_line": 20
+    }
+   },
+   "flagged_2026_11_07": false
+  },
+  {
+   "id": "ace-dom1-061",
+   "source": "user",
+   "objective": "1.1",
+   "subtopic": "Regions and Zones",
+   "jaccard": 0.136,
+   "containment": 0.176,
+   "dump_readme_line": 798,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.143,
+     "containment": 0.25,
+     "ref_line": 74
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.083,
+     "containment": 0.125,
+     "ref_line": 43
+    },
+    "slackwero": {
+     "jaccard": 0.15,
+     "containment": 0.188,
+     "ref_line": 308
+    },
+    "google-sample": {
+     "jaccard": 0.074,
+     "containment": 0.125,
+     "ref_line": 20
+    }
+   },
+   "flagged_2026_11_07": false
+  },
+  {
+   "id": "ace-dom1-064",
+   "source": "user",
+   "objective": "1.2",
+   "subtopic": "Billing Accounts",
+   "jaccard": 0.129,
+   "containment": 0.211,
+   "dump_readme_line": 1425,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.133,
+     "containment": 0.235,
+     "ref_line": 60
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.08,
+     "containment": 0.118,
+     "ref_line": 43
+    },
+    "slackwero": {
+     "jaccard": 0.182,
+     "containment": 0.235,
+     "ref_line": 291
+    },
+    "google-sample": {
+     "jaccard": 0.088,
+     "containment": 0.176,
+     "ref_line": 9
+    }
+   },
+   "flagged_2026_11_07": false
+  },
+  {
+   "id": "ace-dom2-000",
+   "source": "official-sample",
+   "objective": "2.1",
+   "subtopic": "Serverless Deployment and Events",
+   "jaccard": 0.122,
+   "containment": 0.2,
+   "dump_readme_line": 1831,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.111,
+     "containment": 0.182,
+     "ref_line": 41
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.091,
+     "containment": 0.136,
+     "ref_line": 3
+    },
+    "slackwero": {
+     "jaccard": 0.28,
+     "containment": 0.318,
+     "ref_line": 558
+    },
+    "google-sample": {
+     "jaccard": 0.079,
+     "containment": 0.136,
+     "ref_line": 8
+    }
+   },
+   "flagged_2026_11_07": false
+  },
+  {
+   "id": "ace-dom5-040",
+   "source": "user",
+   "objective": "3.2",
+   "subtopic": "Securing Cloud Storage Objects",
+   "jaccard": 0.122,
+   "containment": 0.172,
+   "dump_readme_line": 816,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.114,
+     "containment": 0.172,
+     "ref_line": 57
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.081,
+     "containment": 0.103,
+     "ref_line": 22
+    },
+    "slackwero": {
+     "jaccard": 0.125,
+     "containment": 0.172,
+     "ref_line": 343
+    },
+    "google-sample": {
+     "jaccard": 0.043,
+     "containment": 0.069,
+     "ref_line": 7
+    }
+   },
+   "flagged_2026_11_07": false
+  },
+  {
+   "id": "ace-dom2-105",
+   "source": "user",
+   "objective": "2.2",
+   "subtopic": "Database Selection",
+   "jaccard": 0.12,
+   "containment": 0.167,
+   "dump_readme_line": 1085,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.115,
+     "containment": 0.2,
+     "ref_line": 115
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.12,
+     "containment": 0.2,
+     "ref_line": 39
+    },
+    "slackwero": {
+     "jaccard": 0.263,
+     "containment": 0.333,
+     "ref_line": 303
+    },
+    "google-sample": {
+     "jaccard": 0.061,
+     "containment": 0.133,
+     "ref_line": 11
+    }
+   },
+   "flagged_2026_11_07": false
+  },
+  {
+   "id": "ace-dom1-065",
+   "source": "user",
+   "objective": "1.2",
+   "subtopic": "Billing Export and Cost Attribution",
+   "jaccard": 0.116,
+   "containment": 0.192,
+   "dump_readme_line": 627,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.118,
+     "containment": 0.174,
+     "ref_line": 88
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.138,
+     "containment": 0.174,
+     "ref_line": 43
+    },
+    "slackwero": {
+     "jaccard": 0.143,
+     "containment": 0.217,
+     "ref_line": 808
+    },
+    "google-sample": {
+     "jaccard": 0.111,
+     "containment": 0.174,
+     "ref_line": 14
+    }
+   },
+   "flagged_2026_11_07": false
+  },
+  {
+   "id": "ace-dom1-066",
+   "source": "user",
+   "objective": "2.1",
+   "subtopic": "Spot and Custom Machine Types",
+   "jaccard": 0.115,
+   "containment": 0.25,
+   "dump_readme_line": 393,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.12,
+     "containment": 0.25,
+     "ref_line": 13
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.1,
+     "containment": 0.167,
+     "ref_line": 17
+    },
+    "slackwero": {
+     "jaccard": 0.188,
+     "containment": 0.25,
+     "ref_line": 1079
+    },
+    "google-sample": {
+     "jaccard": 0.074,
+     "containment": 0.167,
+     "ref_line": 14
+    }
+   },
+   "flagged_2026_11_07": false
+  },
+  {
+   "id": "ace-dom3-063",
+   "source": "user",
+   "objective": "3.1",
+   "subtopic": "Snapshots and Images",
+   "jaccard": 0.115,
+   "containment": 0.167,
+   "dump_readme_line": 681,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.107,
+     "containment": 0.214,
+     "ref_line": 165
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.091,
+     "containment": 0.143,
+     "ref_line": 5
+    },
+    "slackwero": {
+     "jaccard": 0.158,
+     "containment": 0.214,
+     "ref_line": 316
+    },
+    "google-sample": {
+     "jaccard": 0.08,
+     "containment": 0.143,
+     "ref_line": 15
+    }
+   },
+   "flagged_2026_11_07": false
+  },
+  {
+   "id": "ace-dom2-104",
+   "source": "user",
+   "objective": "2.2",
+   "subtopic": "Data Pipelines and Messaging",
+   "jaccard": 0.114,
+   "containment": 0.148,
+   "dump_readme_line": 908,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.111,
+     "containment": 0.174,
+     "ref_line": 4
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.125,
+     "containment": 0.174,
+     "ref_line": 42
+    },
+    "slackwero": {
+     "jaccard": 0.154,
+     "containment": 0.174,
+     "ref_line": 544
+    },
+    "google-sample": {
+     "jaccard": 0.05,
+     "containment": 0.087,
+     "ref_line": 8
+    }
+   },
+   "flagged_2026_11_07": false
+  },
+  {
+   "id": "ace-dom3-064",
+   "source": "user",
+   "objective": "2.1",
+   "subtopic": "Launching Instances",
+   "jaccard": 0.114,
+   "containment": 0.25,
+   "dump_readme_line": 1479,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.1,
+     "containment": 0.2,
+     "ref_line": 39
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.077,
+     "containment": 0.133,
+     "ref_line": 38
+    },
+    "slackwero": {
+     "jaccard": 0.211,
+     "containment": 0.267,
+     "ref_line": 1078
+    },
+    "google-sample": {
+     "jaccard": 0.065,
+     "containment": 0.133,
+     "ref_line": 6
+    }
+   },
+   "flagged_2026_11_07": false
+  },
+  {
+   "id": "ace-dom5-039",
+   "source": "user",
+   "objective": "3.2",
+   "subtopic": "Securing Cloud Storage Objects",
+   "jaccard": 0.114,
+   "containment": 0.174,
+   "dump_readme_line": 1840,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.103,
+     "containment": 0.167,
+     "ref_line": 113
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.16,
+     "containment": 0.222,
+     "ref_line": 22
+    },
+    "slackwero": {
+     "jaccard": 0.15,
+     "containment": 0.167,
+     "ref_line": 1077
+    },
+    "google-sample": {
+     "jaccard": 0.029,
+     "containment": 0.056,
+     "ref_line": 14
+    }
+   },
+   "flagged_2026_11_07": false
+  },
+  {
+   "id": "ace-dom5-042",
+   "source": "user",
+   "objective": "2.1",
+   "subtopic": "Launching Instances",
+   "jaccard": 0.111,
+   "containment": 0.143,
+   "dump_readme_line": 1533,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.114,
+     "containment": 0.19,
+     "ref_line": 176
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.097,
+     "containment": 0.143,
+     "ref_line": 10
+    },
+    "slackwero": {
+     "jaccard": 0.111,
+     "containment": 0.19,
+     "ref_line": 1243
+    },
+    "google-sample": {
+     "jaccard": 0.056,
+     "containment": 0.095,
+     "ref_line": 14
+    }
+   },
+   "flagged_2026_11_07": false
+  },
+  {
+   "id": "ace-dom5-043",
+   "source": "user",
+   "objective": "4.1",
+   "subtopic": "Role Types and Custom Roles",
+   "jaccard": 0.111,
+   "containment": 0.188,
+   "dump_readme_line": 1058,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.143,
+     "containment": 0.2,
+     "ref_line": 83
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.083,
+     "containment": 0.133,
+     "ref_line": 36
+    },
+    "slackwero": {
+     "jaccard": 0.172,
+     "containment": 0.333,
+     "ref_line": 119
+    },
+    "google-sample": {
+     "jaccard": 0.05,
+     "containment": 0.133,
+     "ref_line": 3
+    }
+   },
+   "flagged_2026_11_07": false
+  },
+  {
+   "id": "ace-dom2-108",
+   "source": "user",
+   "objective": "2.1",
+   "subtopic": "Storage for Compute Engine",
+   "jaccard": 0.108,
+   "containment": 0.154,
+   "dump_readme_line": 1506,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.108,
+     "containment": 0.154,
+     "ref_line": 132
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.105,
+     "containment": 0.154,
+     "ref_line": 23
+    },
+    "slackwero": {
+     "jaccard": 0.125,
+     "containment": 0.154,
+     "ref_line": 1092
+    },
+    "google-sample": {
+     "jaccard": 0.049,
+     "containment": 0.077,
+     "ref_line": 14
+    }
+   },
+   "flagged_2026_11_07": false
+  },
+  {
+   "id": "ace-dom3-053",
+   "source": "user",
+   "objective": "2.1",
+   "subtopic": "Spot and Custom Machine Types",
+   "jaccard": 0.105,
+   "containment": 0.2,
+   "dump_readme_line": 627,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.094,
+     "containment": 0.158,
+     "ref_line": 13
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.138,
+     "containment": 0.211,
+     "ref_line": 24
+    },
+    "slackwero": {
+     "jaccard": 0.111,
+     "containment": 0.158,
+     "ref_line": 1293
+    },
+    "google-sample": {
+     "jaccard": 0.054,
+     "containment": 0.105,
+     "ref_line": 7
+    }
+   },
+   "flagged_2026_11_07": false
+  },
+  {
+   "id": "ace-dom2-119",
+   "source": "user",
+   "objective": "2.1",
+   "subtopic": "Managed Instance Groups",
+   "jaccard": 0.103,
+   "containment": 0.16,
+   "dump_readme_line": 1022,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.121,
+     "containment": 0.174,
+     "ref_line": 79
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.07,
+     "containment": 0.13,
+     "ref_line": 59
+    },
+    "slackwero": {
+     "jaccard": 0.129,
+     "containment": 0.174,
+     "ref_line": 1100
+    },
+    "google-sample": {
+     "jaccard": 0.075,
+     "containment": 0.13,
+     "ref_line": 9
+    }
+   },
+   "flagged_2026_11_07": false
+  },
+  {
+   "id": "ace-dom3-072",
+   "source": "user",
+   "objective": "3.1",
+   "subtopic": "Snapshots and Images",
+   "jaccard": 0.103,
+   "containment": 0.2,
+   "dump_readme_line": 1236,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.115,
+     "containment": 0.2,
+     "ref_line": 102
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.083,
+     "containment": 0.133,
+     "ref_line": 36
+    },
+    "slackwero": {
+     "jaccard": 0.091,
+     "containment": 0.133,
+     "ref_line": 876
+    },
+    "google-sample": {
+     "jaccard": 0.029,
+     "containment": 0.067,
+     "ref_line": 7
+    }
+   },
+   "flagged_2026_11_07": false
+  },
+  {
+   "id": "ace-dom1-067",
+   "source": "user",
+   "objective": "3.2",
+   "subtopic": "Storage Cost Estimation",
+   "jaccard": 0.1,
+   "containment": 0.188,
+   "dump_readme_line": 816,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.125,
+     "containment": 0.25,
+     "ref_line": 57
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.074,
+     "containment": 0.125,
+     "ref_line": 31
+    },
+    "slackwero": {
+     "jaccard": 0.143,
+     "containment": 0.188,
+     "ref_line": 883
+    },
+    "google-sample": {
+     "jaccard": 0.061,
+     "containment": 0.125,
+     "ref_line": 8
+    }
+   },
+   "flagged_2026_11_07": false
+  },
+  {
+   "id": "ace-dom3-076",
+   "source": "user",
+   "objective": "3.1",
+   "subtopic": "Instance Inventory and Lifecycle",
+   "jaccard": 0.095,
+   "containment": 0.133,
+   "dump_readme_line": 798,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.081,
+     "containment": 0.25,
+     "ref_line": 128
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.048,
+     "containment": 0.083,
+     "ref_line": 17
+    },
+    "slackwero": {
+     "jaccard": 0.143,
+     "containment": 0.25,
+     "ref_line": 1095
+    },
+    "google-sample": {
+     "jaccard": 0.028,
+     "containment": 0.083,
+     "ref_line": 5
+    }
+   },
+   "flagged_2026_11_07": false
+  },
+  {
+   "id": "ace-dom3-057",
+   "source": "user",
+   "objective": "2.1",
+   "subtopic": "Launching Instances",
+   "jaccard": 0.091,
+   "containment": 0.167,
+   "dump_readme_line": 908,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.105,
+     "containment": 0.167,
+     "ref_line": 135
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.077,
+     "containment": 0.167,
+     "ref_line": 8
+    },
+    "slackwero": {
+     "jaccard": 0.167,
+     "containment": 0.25,
+     "ref_line": 1230
+    },
+    "google-sample": {
+     "jaccard": 0.091,
+     "containment": 0.25,
+     "ref_line": 16
+    }
+   },
+   "flagged_2026_11_07": false
+  },
+  {
+   "id": "ace-dom2-110",
+   "source": "user",
+   "objective": "2.1",
+   "subtopic": "Spot and Custom Machine Types",
+   "jaccard": 0.089,
+   "containment": 0.138,
+   "dump_readme_line": 1668,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.098,
+     "containment": 0.154,
+     "ref_line": 150
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.082,
+     "containment": 0.154,
+     "ref_line": 62
+    },
+    "slackwero": {
+     "jaccard": 0.182,
+     "containment": 0.231,
+     "ref_line": 989
+    },
+    "google-sample": {
+     "jaccard": 0.049,
+     "containment": 0.077,
+     "ref_line": 14
+    }
+   },
+   "flagged_2026_11_07": false
+  },
+  {
+   "id": "ace-dom4-041",
+   "source": "user",
+   "objective": "3.1",
+   "subtopic": "Attaching Accelerators",
+   "jaccard": 0.086,
+   "containment": 0.25,
+   "dump_readme_line": 1157,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.061,
+     "containment": 0.2,
+     "ref_line": 94
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.053,
+     "containment": 0.1,
+     "ref_line": 17
+    },
+    "slackwero": {
+     "jaccard": 0.261,
+     "containment": 0.6,
+     "ref_line": 985
+    },
+    "google-sample": {
+     "jaccard": 0.05,
+     "containment": 0.1,
+     "ref_line": 1
+    }
+   },
+   "flagged_2026_11_07": true
+  },
+  {
+   "id": "ace-dom2-114",
+   "source": "user",
+   "objective": "2.4",
+   "subtopic": "Infrastructure as Code",
+   "jaccard": 0.073,
+   "containment": 0.115,
+   "dump_readme_line": 1168,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.057,
+     "containment": 0.087,
+     "ref_line": 58
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.062,
+     "containment": 0.087,
+     "ref_line": 36
+    },
+    "slackwero": {
+     "jaccard": 0.094,
+     "containment": 0.13,
+     "ref_line": 134
+    },
+    "google-sample": {
+     "jaccard": 0.051,
+     "containment": 0.087,
+     "ref_line": 6
+    }
+   },
+   "flagged_2026_11_07": false
+  },
+  {
+   "id": "ace-dom3-056",
+   "source": "user",
+   "objective": "1.1",
+   "subtopic": "Regions and Zones",
+   "jaccard": 0.07,
+   "containment": 0.176,
+   "dump_readme_line": 1515,
+   "sources_2026_11_07": {
+    "ditectrev": {
+     "jaccard": 0.07,
+     "containment": 0.188,
+     "ref_line": 133
+    },
+    "calvinrodrigues500": {
+     "jaccard": 0.048,
+     "containment": 0.125,
+     "ref_line": 67
+    },
+    "slackwero": {
+     "jaccard": 0.115,
+     "containment": 0.188,
+     "ref_line": 255
+    },
+    "google-sample": {
+     "jaccard": 0.042,
+     "containment": 0.062,
+     "ref_line": 17
+    }
+   },
+   "flagged_2026_11_07": false
+  }
+ ],
+ "method_2026_11_07": "scripts/audit_overlap.py: normalised tokens (case-folded, punctuation stripped, stop words and tokens under 3 characters dropped); Jaccard = |A∩B|/|A∪B|, containment = |A∩B|/|A| where A is the audited stem. Flagged at Jaccard >= 0.30 or containment >= 0.55. Reference text is kept locally, never committed.",
+ "sources": [
+  {
+   "name": "ditectrev",
+   "url": "https://github.com/Ditectrev/Google-Cloud-Platform-GCP-Associate-Cloud-Engineer-Practice-Tests-Exams-Questions-Answers",
+   "commit": "eec88f3dbf69b40d8bcd9664b6f9ed22d63423dc",
+   "licence": null,
+   "stems": 179,
+   "read": "2026-11-07"
+  },
+  {
+   "name": "calvinrodrigues500",
+   "url": "https://github.com/calvinrodrigues500/gcp-ace-practice-questions",
+   "commit": "bafad4bcbb7f9c9b525e961ba324b8ee12f3f878",
+   "licence": "MIT",
+   "stems": 70,
+   "read": "2026-11-07"
+  },
+  {
+   "name": "slackwero",
+   "url": "https://github.com/slackwero/google-GCP-associate-cloud-engineer-exam-prep",
+   "commit": "f109d38958ee2f5c157be22d4bd4bf6f1596ef7f",
+   "licence": "MIT",
+   "created": "2026-08-02",
+   "stems": 1512,
+   "read": "2026-11-07",
+   "note": "English stems of the bilingual set (quiz-app/data/preguntas/*.json)"
+  },
+  {
+   "name": "google-sample",
+   "url": "https://docs.google.com/forms/d/e/1FAIpQLSfexWKtXT2OSFJ-obA4iT3GmzgiOCGvjrT9OfxilWC1yPtmfQ/viewform",
+   "licence": "Google; not redistributable",
+   "stems": 21,
+   "read": "2026-11-07"
+  }
+ ],
+ "bank_audit_2026_11_07": {
+  "removed": {
+   "ids": [
+    "ace-dom1-005",
+    "ace-dom1-014",
+    "ace-dom1-041",
+    "ace-dom1-046",
+    "ace-dom2-001",
+    "ace-dom2-028",
+    "ace-dom2-034",
+    "ace-dom2-055",
+    "ace-dom3-001",
+    "ace-dom3-028",
+    "ace-dom3-038",
+    "ace-dom4-002",
+    "ace-dom4-019",
+    "ace-dom4-025",
+    "ace-dom5-002",
+    "ace-s1-007",
+    "ace-s1-025",
+    "ace-s2-042",
+    "ace-s2-052",
+    "ace-s2-130",
+    "ace-s3-013",
+    "ace-s3-021",
+    "ace-s3-029",
+    "ace-s3-036",
+    "ace-s3-047",
+    "ace-s3-053",
+    "ace-s3-055",
+    "ace-s3-060",
+    "ace-s3-116",
+    "ace-s3-121",
+    "ace-s3-125",
+    "ace-s4-006",
+    "ace-s4-011",
+    "ace-s4-031"
+   ],
+   "reason": "Stem shares its scenario (sentence skeleton or distinctive details) with an earlier public question, mostly slackwero (public since 2026-08-02; this repository since 2026-11-03). Rewording is not a rewrite under issue #1, so they were removed and retired."
+  },
+  "kept_after_review": [
+   {
+    "id": "ace-dom1-007",
+    "worst": "slackwero",
+    "jaccard": 0.35,
+    "containment": 0.467,
+    "ref_line": 307
+   },
+   {
+    "id": "ace-dom1-016",
+    "worst": "ditectrev",
+    "jaccard": 0.312,
+    "containment": 0.357,
+    "ref_line": 18
+   },
+   {
+    "id": "ace-dom1-017",
+    "worst": "ditectrev",
+    "jaccard": 0.333,
+    "containment": 0.538,
+    "ref_line": 88
+   },
+   {
+    "id": "ace-s1-028",
+    "worst": "slackwero",
+    "jaccard": 0.325,
+    "containment": 0.433,
+    "ref_line": 83
+   },
+   {
+    "id": "ace-s1-041",
+    "worst": "slackwero",
+    "jaccard": 0.308,
+    "containment": 0.333,
+    "ref_line": 1011
+   },
+   {
+    "id": "ace-dom2-041",
+    "worst": "slackwero",
+    "jaccard": 0.3,
+    "containment": 0.375,
+    "ref_line": 880
+   },
+   {
+    "id": "ace-dom3-006",
+    "worst": "slackwero",
+    "jaccard": 0.333,
+    "containment": 0.429,
+    "ref_line": 879
+   },
+   {
+    "id": "ace-dom3-008",
+    "worst": "slackwero",
+    "jaccard": 0.333,
+    "containment": 0.471,
+    "ref_line": 902
+   },
+   {
+    "id": "ace-s2-053",
+    "worst": "slackwero",
+    "jaccard": 0.3,
+    "containment": 0.4,
+    "ref_line": 126
+   },
+   {
+    "id": "ace-s2-101",
+    "worst": "slackwero",
+    "jaccard": 0.364,
+    "containment": 0.533,
+    "ref_line": 1478
+   },
+   {
+    "id": "ace-dom3-015",
+    "worst": "slackwero",
+    "jaccard": 0.368,
+    "containment": 0.538,
+    "ref_line": 194
+   },
+   {
+    "id": "ace-dom3-027",
+    "worst": "slackwero",
+    "jaccard": 0.333,
+    "containment": 0.429,
+    "ref_line": 886
+   },
+   {
+    "id": "ace-dom4-022",
+    "worst": "slackwero",
+    "jaccard": 0.316,
+    "containment": 0.4,
+    "ref_line": 1162
+   },
+   {
+    "id": "ace-s3-004",
+    "worst": "slackwero",
+    "jaccard": 0.368,
+    "containment": 0.538,
+    "ref_line": 498
+   },
+   {
+    "id": "ace-s3-007",
+    "worst": "slackwero",
+    "jaccard": 0.308,
+    "containment": 0.5,
+    "ref_line": 709
+   },
+   {
+    "id": "ace-s3-044",
+    "worst": "slackwero",
+    "jaccard": 0.316,
+    "containment": 0.462,
+    "ref_line": 574
+   },
+   {
+    "id": "ace-s3-046",
+    "worst": "slackwero",
+    "jaccard": 0.348,
+    "containment": 0.444,
+    "ref_line": 956
+   },
+   {
+    "id": "ace-s3-058",
+    "worst": "slackwero",
+    "jaccard": 0.389,
+    "containment": 0.5,
+    "ref_line": 1396
+   },
+   {
+    "id": "ace-s3-079",
+    "worst": "slackwero",
+    "jaccard": 0.312,
+    "containment": 0.357,
+    "ref_line": 966
+   },
+   {
+    "id": "ace-s3-098",
+    "worst": "slackwero",
+    "jaccard": 0.318,
+    "containment": 0.389,
+    "ref_line": 1319
+   },
+   {
+    "id": "ace-s3-128",
+    "worst": "slackwero",
+    "jaccard": 0.4,
+    "containment": 0.6,
+    "ref_line": 1382
+   },
+   {
+    "id": "ace-s3-132",
+    "worst": "slackwero",
+    "jaccard": 0.333,
+    "containment": 0.462,
+    "ref_line": 132
+   },
+   {
+    "id": "ace-s3-141",
+    "worst": "slackwero",
+    "jaccard": 0.3,
+    "containment": 0.3,
+    "ref_line": 758
+   },
+   {
+    "id": "ace-dom5-010",
+    "worst": "slackwero",
+    "jaccard": 0.267,
+    "containment": 0.571,
+    "ref_line": 1039
+   },
+   {
+    "id": "ace-s4-008",
+    "worst": "slackwero",
+    "jaccard": 0.387,
+    "containment": 0.5,
+    "ref_line": 926
+   },
+   {
+    "id": "ace-s4-023",
+    "worst": "slackwero",
+    "jaccard": 0.387,
+    "containment": 0.48,
+    "ref_line": 635
+   },
+   {
+    "id": "ace-s4-047",
+    "worst": "slackwero",
+    "jaccard": 0.32,
+    "containment": 0.5,
+    "ref_line": 671
+   },
+   {
+    "id": "ace-s4-051",
+    "worst": "slackwero",
+    "jaccard": 0.37,
+    "containment": 0.556,
+    "ref_line": 678
+   }
+  ],
+  "kept_reason": "Read side by side: these share topic vocabulary only (for example a scenario about a Pending Pod against a reference asking what kubectl get shows), not a scenario. The thresholds were set for a 179-stem source; against 1,512 short topical stems they flag shared topics. Kept pending the owner's decision in issue #1.",
+  "owner_decision_2026_11_07": "Public appearance of a question's topic or scenario is not a reason to remove an original question. 33 of the 34 'removed' questions were restored with their own scenarios (ledger verdict 'restored'); ace-dom1-046 stays retired as a duplicate of ace-dom4-002. The 28 'kept_after_review' questions stay.",
+  "restored": [
+   "ids",
+   "reason"
+  ]
+ }
+}

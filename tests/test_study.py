@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import random
 import subprocess
 import sys
 from pathlib import Path
@@ -16,7 +17,8 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 from src import study_links  # noqa: E402
 from src.blueprint import BULLET_LIST, SUBTOPICS  # noqa: E402
-from src.exam_engine import ExamSession, load_bank  # noqa: E402
+from src.exam_engine import ExamSession, load_bank, record_attempt, weighted_sample  # noqa: E402
+from src.models import QuestionBank  # noqa: E402
 from src.retrospective import EMPTY_ATTEMPT_NOTES, build, build_report, md_blocks, md_inline, verify  # noqa: E402
 
 SITE = "https://nirmata78.github.io/gcp-ace-simulator/theory/"
@@ -87,7 +89,40 @@ def practice(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> AppTest:
     monkeypatch.setenv("ACE_STATE_DIR", str(tmp_path))
     app = AppTest.from_file(str(ROOT / "app.py"), default_timeout=30).run()
     next(b for b in app.button if "Start practice" in b.label).click()
+    app.run()
+    qs = app.session_state.session.questions  # a single-answer question first: these tests use the radio
+    qs.sort(key=lambda q: q.is_multi)
     return app.run()
+
+
+def test_a_choose_two_question_uses_checkboxes_and_is_scored_whole(tmp_path: Path,
+                                                                   monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("ACE_STATE_DIR", str(tmp_path))
+    app = AppTest.from_file(str(ROOT / "app.py"), default_timeout=30).run()
+    next(b for b in app.button if "Start practice" in b.label).click()
+    app.run()
+    sess = app.session_state.session
+    multi = next(q for q in QuestionBank.load(ROOT / "data").questions if q.is_multi and not q.certifying_only)
+    sess.questions[0] = multi
+    sess.index = 0
+    app.run()
+    assert not app.exception and not app.radio
+    assert any("Choose two" in m.value for m in app.markdown)
+    boxes = {cb.key: cb for cb in app.checkbox if cb.key and cb.key.startswith(f"cb_{multi.id}_")}
+    assert len(boxes) == len(multi.keys)
+    first, second = multi.correct_keys
+    boxes[f"cb_{multi.id}_{first}"].check().run()
+    assert app.session_state.session.answers[multi.id] == first
+    next(cb for cb in app.checkbox if cb.key == f"cb_{multi.id}_{second}").check().run()
+    assert app.session_state.session.answers[multi.id] == multi.correct_answer
+    # both picked: the remaining boxes lock, as on the exam
+    assert all(cb.disabled for cb in app.checkbox
+               if cb.key and cb.key.startswith(f"cb_{multi.id}_") and cb.key[-1] not in multi.correct_keys)
+    next(b for b in app.button if b.label == "Check answer").click()
+    app.run()
+    assert not app.exception
+    text = " ".join(m.value for m in app.markdown)
+    assert f"Correct — {first} and {second}" in text
 
 
 def test_study_panel_recalls_theory_without_giving_the_answer_away(practice: AppTest) -> None:
@@ -262,3 +297,18 @@ def test_a_removed_short_pdf_is_rebuilt_not_a_crash(tmp_path: Path) -> None:
     exec(fn, ns)
     cache = {"path": tmp_path / "gone.pdf"}
     assert ns["_report_pdf"](None, [], "T", cache, False)() == b"%PDF-new"
+
+
+def test_a_certifying_draw_avoids_questions_already_seen(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("ACE_STATE_DIR", str(tmp_path))
+    bank = QuestionBank.load(ROOT / "data")
+    first = ExamSession(weighted_sample(bank, 50, random.Random(21)), mode="certifying")
+    record_attempt(first.build_attempt(), tmp_path / "history.json")
+    app = AppTest.from_file(str(ROOT / "app.py"), default_timeout=30).run()
+    box = next(cb for cb in app.checkbox if cb.label == "Avoid questions I have already seen")
+    assert box.value
+    assert any(f"Seen so far: 50 of {len(bank.questions)}" in c.value for c in app.caption)
+    next(b for b in app.button if "Begin examination" in b.label).click()
+    app.run()
+    drawn = {q.id for q in app.session_state.session.questions}
+    assert len(drawn) == 50 and not drawn & {q.id for q in first.questions}
