@@ -22,6 +22,7 @@ from .models import (
     EXAM_DURATION_SECONDS,
     BANK_KEY_FIXES,
     AnswerRecord,
+    answer_str,
     Attempt,
     History,
     Question,
@@ -70,11 +71,16 @@ def _spread_pick(pool: List[Question], n: int, rng: random.Random,
     return picked
 
 
+#: Share of a certifying exam drawn from cross-domain questions, when the bank has them.
+CROSS_DOMAIN_SHARE = 0.10
+
+
 def weighted_sample(
     bank: QuestionBank,
     count: int = CERTIFYING_QUESTION_COUNT,
     rng: Optional[random.Random] = None,
     seen: Optional[Set[str]] = None,
+    cross_share: float = CROSS_DOMAIN_SHARE,
 ) -> List[Question]:
     """Draw ``count`` questions on the June 2026 blueprint.
 
@@ -91,16 +97,26 @@ def weighted_sample(
     questions to the front at every level, so repeated attempts keep meeting
     new material until the bank is exhausted. A short objective or section
     hands its shortfall to the remaining stock rather than returning a short exam.
+
+    Cross-domain questions (``also_tests``) fill ``cross_share`` of each section's quota first,
+    counted against their own section, so the 10 / 15 / 15 / 10 split still holds.
     """
     rng = rng or random.Random()
-    by_obj = bank.by_objective()
     obj_w = objective_weights()
+    cross = [q for q in bank.questions if q.is_cross_domain]
+    single = [q for q in bank.questions if not q.is_cross_domain]
+    by_obj: Dict[str, List[Question]] = {}
+    for q in single:
+        by_obj.setdefault(q.objective, []).append(q)
 
     picked: List[Question] = []
     section_quota = _apportion(count, {d: DOMAIN_WEIGHTS[d] for d in DOMAINS})
+    cross_quota = _apportion(round(count * cross_share), {d: DOMAIN_WEIGHTS[d] for d in DOMAINS}) if cross else {}
     for sec in SECTION_LIST:
+        mixed = _spread_pick([q for q in cross if q.domain == sec.label], cross_quota.get(sec.label, 0), rng, seen)
+        picked.extend(mixed)
         objs = {o.id: obj_w[o.id] for o in objectives_in(sec.number)}
-        for oid, n in _apportion(section_quota[sec.label], objs).items():
+        for oid, n in _apportion(section_quota[sec.label] - len(mixed), objs).items():
             picked.extend(_spread_pick(by_obj.get(oid, []), n, rng, seen))
 
     shortfall = count - len(picked)
@@ -122,9 +138,10 @@ def filtered_pool(
 ) -> List[Question]:
     """Learning-mode pool, narrowed to the sections/objectives/subtopics under study.
 
-    ``new_only`` keeps questions on bullets the June 2026 guide introduced.
+    ``new_only`` keeps questions on bullets the June 2026 guide introduced. Questions marked
+    ``certifying_only`` (the cross-domain set) never appear here.
     """
-    pool = bank.questions
+    pool = [q for q in bank.questions if not q.certifying_only]
     if domains:
         wanted = set(domains)
         pool = [q for q in pool if q.domain in wanted]
@@ -234,9 +251,15 @@ class ExamSession:
 
     # -- answering ---------------------------------------------------------
 
-    def answer(self, option: str, question_id: Optional[str] = None) -> None:
+    def answer(self, option, question_id: Optional[str] = None) -> None:
+        """Record a pick: one letter, or for a multiple-select question the letters chosen so far
+        (``"A,C"`` or ``["A", "C"]``). Choosing nothing clears the answer."""
         qid = question_id or self.current.id
-        self.answers[qid] = option
+        value = answer_str(option)
+        if value is None:
+            self.answers.pop(qid, None)
+        else:
+            self.answers[qid] = value
 
     def clear_answer(self, question_id: Optional[str] = None) -> None:
         self.answers.pop(question_id or self.current.id, None)

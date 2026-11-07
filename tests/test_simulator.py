@@ -25,6 +25,7 @@ from src.models import (  # noqa: E402
     DOMAIN_WEIGHTS,
     DOMAINS,
     OPTION_KEYS,
+    MULTI_OPTION_KEYS,
     PASS_THRESHOLD,
     Attempt,
     History,
@@ -94,27 +95,31 @@ def test_question_stems_are_unique(bank: QuestionBank) -> None:
 
 def test_every_question_is_well_formed(bank: QuestionBank) -> None:
     for q in bank.questions:
-        assert set(q.options) == set(OPTION_KEYS)
-        assert q.correct_answer in q.options
-        assert set(q.explanation.option_breakdown) == set(OPTION_KEYS)
+        if q.is_multi:
+            assert set(OPTION_KEYS) <= set(q.options) <= set(MULTI_OPTION_KEYS)
+        else:
+            assert set(q.options) == set(OPTION_KEYS)
+        assert set(q.correct_keys) <= set(q.options)
+        assert set(q.explanation.option_breakdown) == set(q.options)
         assert all(v.strip() for v in q.options.values())
         assert all(v.strip() for v in q.explanation.option_breakdown.values())
         assert q.explanation.summary.strip()
         # distractors must be genuinely distinct
-        assert len({v.strip().casefold() for v in q.options.values()}) == 4
+        assert len({v.strip().casefold() for v in q.options.values()}) == len(q.options)
 
 
 def test_correct_option_is_marked_correct_in_breakdown(bank: QuestionBank) -> None:
     for q in bank.questions:
-        assert q.explanation.option_breakdown[q.correct_answer].startswith("Correct")
+        for k in q.correct_keys:
+            assert q.explanation.option_breakdown[k].startswith("Correct"), q.id
 
 
 def test_only_the_key_is_called_correct(bank: QuestionBank) -> None:
     # Twelve questions once had the key on a distractor whose analysis was given a "Correct."
     # prefix and copied into the summary, so the explanation contradicted the key.
     bad = [q.id for q in bank.questions
-           if [k for k, v in q.explanation.option_breakdown.items() if v.startswith("Correct")]
-           != [q.correct_answer]]
+           if sorted(k for k, v in q.explanation.option_breakdown.items() if v.startswith("Correct"))
+           != q.correct_keys]
     assert bad == []
     for q in bank.questions:
         assert not q.explanation.summary.startswith("Correct"), q.id
@@ -135,10 +140,16 @@ def test_live_only_lifecycle_question_keeps_its_premise(bank: QuestionBank) -> N
 def test_correct_answers_are_spread_across_letters(bank: QuestionBank) -> None:
     """A bank where the answer is usually 'C' is a bank you can game."""
     counts = {k: 0 for k in OPTION_KEYS}
-    for q in bank.questions:
+    singles = [q for q in bank.questions if not q.is_multi]
+    for q in singles:
         counts[q.correct_answer] += 1
     for k, n in counts.items():
-        assert 0.20 <= n / len(bank.questions) <= 0.30, f"letter {k} skewed: {n}"
+        assert 0.20 <= n / len(singles) <= 0.30, f"letter {k} skewed: {n}"
+    # Multiple-select keys: no letter may sit in most of them.
+    multi = [q for q in bank.questions if q.is_multi]
+    for k in MULTI_OPTION_KEYS:
+        share = sum(k in q.correct_keys for q in multi) / len(multi)
+        assert share <= 0.55, f"letter {k} in {share:.0%} of multiple-select keys"
 
 
 def test_every_question_sits_on_the_june_2026_blueprint(bank: QuestionBank) -> None:
@@ -323,13 +334,17 @@ def test_weighted_sample_honours_blueprint(bank: QuestionBank) -> None:
 def test_weighted_sample_splits_each_section_across_its_objectives(bank: QuestionBank) -> None:
     from src.exam_engine import _apportion
     picked = weighted_sample(bank, 50, random.Random(7))
-    got = {}
+    got, mixed = {}, {}
     for q in picked:
-        got[q.objective] = got.get(q.objective, 0) + 1
+        if q.is_cross_domain:  # drawn first, against their own section's quota
+            mixed[q.domain] = mixed.get(q.domain, 0) + 1
+        else:
+            got[q.objective] = got.get(q.objective, 0) + 1
     w = objective_weights()
     for sec_n, sec_count in enumerate([10, 15, 15, 10], start=1):
         objs = {o.id: w[o.id] for o in objectives_in(sec_n)}
-        for oid, n in _apportion(sec_count, objs).items():
+        label = DOMAINS[sec_n - 1]
+        for oid, n in _apportion(sec_count - mixed.get(label, 0), objs).items():
             assert got.get(oid, 0) == n, (oid, got.get(oid), n)
 
 

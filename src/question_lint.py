@@ -25,6 +25,9 @@ SUPERLATIVE = re.compile(r"\b(best|fastest|optimal|most appropriate|ideal)\b", r
 CRITERION = re.compile(
     r"\b(least|lowest|fewest|minimi[sz]|most cost|cheapest|recommended|without|while|so that|only|"
     r"must|requirement|constraint|overhead|cost|secure|availability|quickest)\b", re.I)
+#: A multiple-select stem ends with "(Choose two.)", as the exam writes it.
+CHOOSE = re.compile(r"\(\s*choose (two|three)\b", re.I)
+WORDS = {"two": 2, "three": 3}
 ALL_NONE = re.compile(r"\b(all|none) of the above\b", re.I)
 CLI = re.compile(r"^\s*(gcloud|gsutil|kubectl|bq|terraform)\b")
 FLAG = re.compile(r"(?<!\w)--[a-z][a-z0-9-]*")
@@ -59,24 +62,35 @@ def lint_question(q: Question) -> List[Finding]:
         out.append(("error", "all-none", "'all/none of the above' option (AC3)"))
 
     rationale = q.explanation.option_breakdown
-    for k in OPTION_KEYS:
+    for k in q.keys:
         starts = rationale[k].lstrip().lower().startswith("correct")
-        if k == q.correct_answer and not starts:
+        if k in q.correct_keys and not starts:
             out.append(("error", "key-rationale", f"the key's rationale ({k}) doesn't start with 'Correct.' (AC5)"))
-        if k != q.correct_answer and starts:
+        if k not in q.correct_keys and starts:
             out.append(("error", "key-rationale", f"distractor {k}'s rationale starts with 'Correct' (AC4)"))
 
-    cli = [k for k in OPTION_KEYS if CLI.match(q.options[k])]
+    says = CHOOSE.search(stem)
+    if q.is_multi and (not says or WORDS.get(says.group(1).lower()) != q.choose):
+        out.append(("error", "choose-n", f"a multiple-select stem must end with '(Choose {q.choose}.)' in words (AC6)"))
+    if not q.is_multi and says:
+        out.append(("error", "choose-n", "a single-answer stem says 'Choose …' (AC6)"))
+
+    cli = [k for k in q.keys if CLI.match(q.options[k])]
     flagged = [k for k in cli if FLAG.search(q.options[k])]
     if len(cli) >= 3 and len(flagged) >= 2:
         out.append(("warning", "cli-syntax", "three or more options are commands and they differ by flags; "
                                              "test the decision, not the spelling (AC1)"))
 
-    lens = {k: len(q.options[k]) for k in OPTION_KEYS}
-    others = [lens[k] for k in OPTION_KEYS if k != q.correct_answer]
-    if lens[q.correct_answer] > 1.6 * (sum(others) / 3) and lens[q.correct_answer] == max(lens.values()) \
-            and lens[q.correct_answer] > 50:
-        out.append(("warning", "length-tell", "the correct option is much the longest (AC3)"))
+    lens = {k: len(q.options[k]) for k in q.keys}
+    if q.is_multi:
+        longest = sorted(lens, key=lens.get, reverse=True)[:q.choose]
+        if sorted(longest) == q.correct_keys:
+            out.append(("warning", "length-tell", f"the {q.choose} correct options are the {q.choose} longest (AC3)"))
+    else:
+        others = [lens[k] for k in q.keys if k != q.correct_answer]
+        if lens[q.correct_answer] > 1.6 * (sum(others) / 3) and lens[q.correct_answer] == max(lens.values()) \
+                and lens[q.correct_answer] > 50:
+            out.append(("warning", "length-tell", "the correct option is much the longest (AC3)"))
 
     ref = q.explanation.doc_ref.strip()
     if not ref:
@@ -93,14 +107,14 @@ def lint_bank(questions: Iterable[Question]) -> Dict[str, List[Finding]]:
     qs = list(questions)
     seen: Counter = Counter()
     for q in qs:
-        for k in OPTION_KEYS:
-            if k != q.correct_answer:
+        for k in q.keys:
+            if k not in q.correct_keys:
                 seen[_norm(q.explanation.option_breakdown[k])] += 1
     out: Dict[str, List[Finding]] = {}
     for q in qs:
         found = lint_question(q)
-        shared = [k for k in OPTION_KEYS
-                  if k != q.correct_answer and seen[_norm(q.explanation.option_breakdown[k])] > 1]
+        shared = [k for k in q.keys
+                  if k not in q.correct_keys and seen[_norm(q.explanation.option_breakdown[k])] > 1]
         if shared:
             found.append(("error", "copied-rationale",
                           f"rationale for {', '.join(shared)} also appears in another question (AC5)"))
@@ -110,8 +124,8 @@ def lint_bank(questions: Iterable[Question]) -> Dict[str, List[Finding]]:
 
 
 def key_spread(questions: Iterable[Question]) -> Dict[str, float]:
-    """Share of the bank keyed on each letter (AC6)."""
-    c = Counter(q.correct_answer for q in questions)
+    """Share of the single-answer questions keyed on each letter (AC6)."""
+    c = Counter(q.correct_answer for q in questions if not q.is_multi)
     total = sum(c.values()) or 1
     return {k: c.get(k, 0) / total for k in OPTION_KEYS}
 
@@ -125,8 +139,8 @@ LONGEST_KEY_LIMIT = 0.35
 
 
 def longest_key_rate(questions: Iterable[Question]) -> float:
-    """How often "pick the longest option" would score, as a share of the bank. Chance is 0.25."""
-    qs = list(questions)
+    """How often "pick the longest option" would score on single-answer questions. Chance is 0.25."""
+    qs = [q for q in questions if not q.is_multi]
     hits = 0
     for q in qs:
         lens = {k: len(q.options[k]) for k in OPTION_KEYS}

@@ -1,11 +1,12 @@
 {
   "domain": "Section 1: Setting up a cloud solution environment",
   "version": 2,
-  "updated_at": "2026-11-07T14:36:24+00:00",
-  "count": 93,
+  "updated_at": "2026-11-07T17:00:51+00:00",
+  "count": 112,
   "questions": [
     {
       "id": "ace-dom1-001",
+      "uid": "f62a1a09-1f92-4643-b7cb-5e1cad35a0fd",
       "title": "Org-wide control that covers future projects",
       "objective": "1.1",
       "subtopic": "Resource Hierarchy",
@@ -38,6 +39,7 @@
     },
     {
       "id": "ace-dom1-002",
+      "uid": "97d1f75b-9ce0-465e-ae65-ca90215e8e2d",
       "title": "Departmental access boundary",
       "objective": "1.1",
       "subtopic": "Resource Hierarchy",
@@ -70,6 +72,7 @@
     },
     {
       "id": "ace-dom1-003",
+      "uid": "a0497344-611b-49c6-ac99-ba0907628637",
       "title": "Isolating regulated workloads",
       "objective": "1.1",
       "subtopic": "Resource Hierarchy",
@@ -102,6 +105,7 @@
     },
     {
       "id": "ace-dom1-004",
+      "uid": "e8ed2732-ada2-4efd-b178-7f70ab648b22",
       "title": "Sandbox exception that must not leak",
       "objective": "1.1",
       "subtopic": "Resource Hierarchy",
@@ -134,6 +138,7 @@
     },
     {
       "id": "ace-dom1-006",
+      "uid": "e69dba5f-b858-48cc-b0c3-97b3a73baf10",
       "title": "Organisation-wide asset visibility for auditors",
       "objective": "1.1",
       "subtopic": "Resource Hierarchy",
@@ -166,6 +171,7 @@
     },
     {
       "id": "ace-dom1-007",
+      "uid": "8fdbeeb4-5f92-4262-bd9c-050494648e3e",
       "title": "Block public IPs except on a bastion",
       "objective": "1.1",
       "subtopic": "Organization Policy",
@@ -198,6 +204,7 @@
     },
     {
       "id": "ace-dom1-008",
+      "uid": "242c3beb-eab5-4930-b32b-67049b5f3ff0",
       "title": "Keep external identities out of IAM policies",
       "objective": "1.1",
       "subtopic": "Organization Policy",
@@ -230,6 +237,7 @@
     },
     {
       "id": "ace-dom1-009",
+      "uid": "84fe7b74-4a02-492c-9930-704c70233b50",
       "title": "Force teams off downloadable keys",
       "objective": "1.1",
       "subtopic": "Organization Policy",
@@ -262,6 +270,7 @@
     },
     {
       "id": "ace-dom1-010",
+      "uid": "cf458e43-3cfa-4554-8b97-58f48eaf4b11",
       "title": "Enforce EU data residency",
       "objective": "1.1",
       "subtopic": "Organization Policy",
@@ -294,6 +303,7 @@
     },
     {
       "id": "ace-dom1-011",
+      "uid": "9772b9ca-ad89-44de-b548-b6358390b008",
       "title": "Require Shielded VM on every instance",
       "objective": "1.1",
       "subtopic": "Organization Policy",
@@ -326,6 +336,7 @@
     },
     {
       "id": "ace-dom1-012",
+      "uid": "66f2cf7e-da23-4201-8a29-7f6538210310",
       "title": "Prevent public buckets organisation-wide",
       "objective": "1.1",
       "subtopic": "Organization Policy",
@@ -358,6 +369,7 @@
     },
     {
       "id": "ace-dom1-013",
+      "uid": "a2c18196-0489-4450-833f-c1774575c913",
       "title": "Link projects without seeing spend",
       "objective": "1.2",
       "subtopic": "Billing Accounts",
@@ -389,7 +401,41 @@
       }
     },
     {
+      "id": "ace-dom1-014",
+      "uid": "fc07d6df-a0b3-4649-aedd-3972971009c6",
+      "title": "Read-only cost reporting",
+      "objective": "1.2",
+      "subtopic": "Billing Accounts",
+      "summary": "Billing Account Viewer is read-only across the billing account, its cost data and its budgets.",
+      "tags": [
+        "billing",
+        "iam",
+        "reporting"
+      ],
+      "source": "curated",
+      "question": "At Harrowgate Mills, a finance analyst builds monthly reports from cost and budget data for every project on the company's single billing account. Audit requires that the analyst cannot change budgets, payment settings or project links. Which role should you grant?",
+      "options": {
+        "A": "Project Billing Manager on each project",
+        "B": "Billing Account Costs Manager on the billing account",
+        "C": "Billing Account Viewer on the billing account",
+        "D": "Billing Account Administrator on the billing account"
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "Billing Account Viewer grants read-only access to the billing account, its cost data and its budgets, which is exactly a reporting role.",
+        "option_breakdown": {
+          "A": "It changes which billing account a project uses, and it shows no billing account costs.",
+          "B": "It reads costs but can also create and change budgets, which the analyst must not do.",
+          "C": "Correct. Billing Account Viewer gives read-only access to the account's cost data and budgets, which is a reporting role.",
+          "D": "It can change everything on the account, far beyond read-only."
+        },
+        "gcloud_command": "gcloud billing accounts add-iam-policy-binding BILLING_ID \\\n  --member='user:analyst@example.com' --role='roles/billing.viewer'",
+        "doc_ref": "https://cloud.google.com/billing/docs/how-to/billing-access"
+      }
+    },
+    {
       "id": "ace-dom1-015",
+      "uid": "e34c9248-74db-4f1e-acde-0524c233b695",
       "title": "Move a project between billing accounts",
       "objective": "1.2",
       "subtopic": "Billing Accounts",
@@ -422,6 +468,7 @@
     },
     {
       "id": "ace-dom1-016",
+      "uid": "52da68c0-2512-485a-a2c8-4c3805bac73f",
       "title": "Subsidiary opens its own billing account",
       "objective": "1.2",
       "subtopic": "Billing Accounts",
@@ -454,6 +501,7 @@
     },
     {
       "id": "ace-dom1-017",
+      "uid": "cca13346-fd72-4712-82d8-5c850547ef86",
       "title": "Full ownership of a billing account",
       "objective": "1.2",
       "subtopic": "Billing Accounts",
@@ -486,6 +534,7 @@
     },
     {
       "id": "ace-dom1-018",
+      "uid": "59a11b16-1542-4dce-b1d2-dd75288ccc77",
       "title": "Threshold alerts at 50/90/100 percent",
       "objective": "1.2",
       "subtopic": "Budgets and Alerts",
@@ -518,6 +567,7 @@
     },
     {
       "id": "ace-dom1-019",
+      "uid": "f0e67d39-84ae-42ab-9b06-40a4b720e4c8",
       "title": "Automatically stop a sandbox over budget",
       "objective": "1.2",
       "subtopic": "Budgets and Alerts",
@@ -551,6 +601,7 @@
     },
     {
       "id": "ace-dom1-020",
+      "uid": "d61b9eda-7d61-4b2a-abe7-e59d1e2d7754",
       "title": "Alert on forecast rather than actual spend",
       "objective": "1.2",
       "subtopic": "Budgets and Alerts",
@@ -583,6 +634,7 @@
     },
     {
       "id": "ace-dom1-021",
+      "uid": "55c767ce-5701-48be-b369-721bb9c3a9aa",
       "title": "Chargeback model per business unit",
       "objective": "1.2",
       "subtopic": "Billing Export and Cost Attribution",
@@ -615,6 +667,7 @@
     },
     {
       "id": "ace-dom1-022",
+      "uid": "2e7f188a-24cf-4ed3-96db-500f2be4757b",
       "title": "Attribute costs inside one shared project",
       "objective": "1.2",
       "subtopic": "Billing Export and Cost Attribution",
@@ -647,6 +700,7 @@
     },
     {
       "id": "ace-dom1-024",
+      "uid": "66d62b41-6db3-436b-b5dd-bb8149e9dac6",
       "title": "Active Directory as the source of truth",
       "objective": "1.1",
       "subtopic": "Cloud Identity and Users",
@@ -679,6 +733,7 @@
     },
     {
       "id": "ace-dom1-025",
+      "uid": "4287f1b0-7f13-4a8d-b45a-acaf2d2d0747",
       "title": "No second password for Google Cloud",
       "objective": "1.1",
       "subtopic": "Cloud Identity and Users",
@@ -711,6 +766,7 @@
     },
     {
       "id": "ace-dom1-026",
+      "uid": "0e33066a-8167-4c8c-b355-6953f07ae743",
       "title": "Thousands of contractors without accounts",
       "objective": "1.1",
       "subtopic": "Workforce Identity Federation",
@@ -743,6 +799,7 @@
     },
     {
       "id": "ace-dom1-027",
+      "uid": "c0a7693d-b770-4f78-8ac8-a8b67660dade",
       "title": "Offboarding must revoke cloud access automatically",
       "objective": "1.1",
       "subtopic": "Cloud Identity and Users",
@@ -775,6 +832,7 @@
     },
     {
       "id": "ace-dom1-028",
+      "uid": "2d9d1d83-3b76-45f3-8229-54b46f05c89b",
       "title": "Employees signed up with company email",
       "objective": "1.1",
       "subtopic": "Cloud Identity and Users",
@@ -807,6 +865,7 @@
     },
     {
       "id": "ace-dom1-029",
+      "uid": "860fdd0b-e714-4bb8-9b41-59bd21fe5201",
       "title": "API not enabled on a new project",
       "objective": "1.1",
       "subtopic": "APIs and Quotas",
@@ -839,6 +898,7 @@
     },
     {
       "id": "ace-dom1-030",
+      "uid": "b77b90fa-0d9b-4af5-8952-e7723b1e911c",
       "title": "Regional CPU limit reached at peak",
       "objective": "1.1",
       "subtopic": "APIs and Quotas",
@@ -871,6 +931,7 @@
     },
     {
       "id": "ace-dom1-031",
+      "uid": "44bac938-a877-4078-9c0b-8e7f4fc6324e",
       "title": "Intermittent 429s during short spikes",
       "objective": "1.1",
       "subtopic": "APIs and Quotas",
@@ -903,6 +964,7 @@
     },
     {
       "id": "ace-dom1-032",
+      "uid": "84888f74-ccb8-4744-9c9d-8dbd3a14eaef",
       "title": "Permission denied with API enabled",
       "objective": "1.1",
       "subtopic": "Project IAM Grants",
@@ -935,6 +997,7 @@
     },
     {
       "id": "ace-dom1-033",
+      "uid": "d96d6489-2bd8-4f22-a5e1-26c93726d947",
       "title": "Pipeline prerequisite for a fresh project",
       "objective": "1.1",
       "subtopic": "APIs and Quotas",
@@ -967,6 +1030,7 @@
     },
     {
       "id": "ace-dom1-034",
+      "uid": "e49e8f81-99e6-4812-9cba-90c7371e9d6a",
       "title": "Survive one data centre failure",
       "objective": "1.1",
       "subtopic": "Regions and Zones",
@@ -999,6 +1063,7 @@
     },
     {
       "id": "ace-dom1-035",
+      "uid": "9558b961-bde9-4b0e-99e0-3fbdd63eaeb0",
       "title": "Survive the loss of a whole region",
       "objective": "1.1",
       "subtopic": "Regions and Zones",
@@ -1031,6 +1096,7 @@
     },
     {
       "id": "ace-dom1-036",
+      "uid": "6902731f-b1ed-43c5-a250-56f61a82acf4",
       "title": "Confirm a machine family exists in a new country",
       "objective": "1.1",
       "subtopic": "Regions and Zones",
@@ -1063,6 +1129,7 @@
     },
     {
       "id": "ace-dom1-037",
+      "uid": "cab55748-f512-42e5-a960-1861f747f094",
       "title": "Latency for users on two continents",
       "objective": "1.1",
       "subtopic": "Regions and Zones",
@@ -1095,6 +1162,7 @@
     },
     {
       "id": "ace-dom1-038",
+      "uid": "49cbbccf-622e-4cc4-994c-9bd7626c07d2",
       "title": "Disposable batch experiment",
       "objective": "1.1",
       "subtopic": "Regions and Zones",
@@ -1127,6 +1195,7 @@
     },
     {
       "id": "ace-dom1-039",
+      "uid": "69ce3db9-10d6-48bd-8ab5-2ee4f263fc10",
       "title": "Find every VM with an external IP now",
       "objective": "1.1",
       "subtopic": "Asset Inventory and Gemini Cloud Assist",
@@ -1159,6 +1228,7 @@
     },
     {
       "id": "ace-dom1-040",
+      "uid": "587ae012-4dfc-4397-8e40-64386b0085dc",
       "title": "Two years of monthly configuration snapshots",
       "objective": "1.1",
       "subtopic": "Asset Inventory and Gemini Cloud Assist",
@@ -1190,7 +1260,41 @@
       }
     },
     {
+      "id": "ace-dom1-041",
+      "uid": "bfb67f13-ab8d-4730-9563-d17b2a0d417a",
+      "title": "Detect an open firewall rule within seconds",
+      "objective": "1.1",
+      "subtopic": "Asset Inventory and Gemini Cloud Assist",
+      "summary": "A real-time asset feed publishes each asset change to Pub/Sub as it happens.",
+      "tags": [
+        "asset-inventory",
+        "detection",
+        "pubsub"
+      ],
+      "source": "curated",
+      "question": "After an incident at Tamsin Robotics, the security team must be alerted within seconds whenever any project in the organization creates or changes a VPC firewall rule, so that a rule allowing 0.0.0.0/0 is caught as it appears. What should you configure?",
+      "options": {
+        "A": "Search Cloud Asset Inventory for open firewall rules.",
+        "B": "A Cloud Asset Inventory feed that publishes firewall changes to Pub/Sub.",
+        "C": "A daily Cloud Asset Inventory export to BigQuery.",
+        "D": "Firewall Insights for the organisation's networks."
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "A real-time asset feed publishes each asset change to Pub/Sub as it happens, which is the only option that meets a seconds-level detection requirement.",
+        "option_breakdown": {
+          "A": "A search answers when someone runs it; nobody is notified when a rule appears.",
+          "B": "Correct. A real-time asset feed publishes each firewall change to Pub/Sub as it happens, which meets a seconds-level requirement.",
+          "C": "A daily export finds the rule up to a day later.",
+          "D": "Firewall Insights analyses rule usage and overly permissive rules over time; it isn't a real-time change notification."
+        },
+        "gcloud_command": "gcloud asset feeds create fw-feed --organization=ORG_ID \\\n  --asset-types='compute.googleapis.com/Firewall' --content-type=resource \\\n  --pubsub-topic=projects/PROJECT_ID/topics/asset-changes",
+        "doc_ref": "https://cloud.google.com/asset-inventory/docs/monitoring-asset-changes"
+      }
+    },
+    {
       "id": "ace-dom1-043",
+      "uid": "349a391b-ed83-4970-9475-68b148f99fe9",
       "title": "Locate a bucket by partial name",
       "objective": "1.1",
       "subtopic": "Asset Inventory and Gemini Cloud Assist",
@@ -1223,6 +1327,7 @@
     },
     {
       "id": "ace-dom1-045",
+      "uid": "fb5fce14-0aff-4a10-b215-2ba695d4d920",
       "title": "Centralise logs from every project",
       "objective": "1.1",
       "subtopic": "Observability Setup",
@@ -1255,6 +1360,7 @@
     },
     {
       "id": "ace-dom1-047",
+      "uid": "64e52335-ea85-498b-98dc-97a25af04788",
       "title": "Console access for an external workforce",
       "objective": "1.1",
       "subtopic": "Workforce Identity Federation",
@@ -1287,6 +1393,7 @@
     },
     {
       "id": "ace-s1-001",
+      "uid": "6f831272-84a4-408e-9618-ae5c93a3ddcd",
       "title": "An organisation without a domain for a new Free Trial customer",
       "objective": "1.1",
       "subtopic": "Standalone Organizations",
@@ -1319,6 +1426,7 @@
     },
     {
       "id": "ace-s1-002",
+      "uid": "51cd57f6-83c8-48a1-804a-f29bcfe797fc",
       "title": "A second owner for a standalone organisation",
       "objective": "1.1",
       "subtopic": "Standalone Organizations",
@@ -1351,6 +1459,7 @@
     },
     {
       "id": "ace-s1-003",
+      "uid": "6de39f8b-a5a2-4a66-98b2-3b320ed37d70",
       "title": "A guided foundation with a Shared VPC host, deployable as Terraform",
       "objective": "1.1",
       "subtopic": "Foundation Networking",
@@ -1384,6 +1493,7 @@
     },
     {
       "id": "ace-s1-004",
+      "uid": "bb71d61c-5c41-417a-bf0a-92c2cdc6a8b7",
       "title": "Plain-language questions about your own resources",
       "objective": "1.1",
       "subtopic": "Asset Inventory and Gemini Cloud Assist",
@@ -1416,6 +1526,7 @@
     },
     {
       "id": "ace-s1-005",
+      "uid": "2eeefe50-6032-45d1-9782-4989a0bcc0a0",
       "title": "Who can reach this bucket, through groups and inheritance",
       "objective": "1.1",
       "subtopic": "Asset Inventory and Gemini Cloud Assist",
@@ -1448,6 +1559,7 @@
     },
     {
       "id": "ace-s1-006",
+      "uid": "ce872962-75a2-4dee-9094-58d9d0aa39c1",
       "title": "Organisation-wide asset search denied to a project owner",
       "objective": "1.1",
       "subtopic": "Asset Inventory and Gemini Cloud Assist",
@@ -1479,7 +1591,41 @@
       }
     },
     {
+      "id": "ace-s1-007",
+      "uid": "1eb93f85-65b5-40a4-8930-b94db1c57020",
+      "title": "Adding one binding without disturbing the rest",
+      "objective": "1.1",
+      "subtopic": "Project IAM Grants",
+      "summary": "add-iam-policy-binding adds a single binding safely; set-iam-policy replaces the whole policy.",
+      "tags": [
+        "gcloud",
+        "iam",
+        "projects"
+      ],
+      "source": "curated",
+      "question": "A provisioning script at Juniper Health must give the group data-eng@example.com the BigQuery Data Viewer role on project analytics-prod. Three other teams change that project's IAM policy through their own automation during the day, and none of their bindings may be lost. Which command should the script run?",
+      "options": {
+        "A": "Run set-iam-policy with a file that holds only the new binding.",
+        "B": "Run get-iam-policy and email the output to the project owner.",
+        "C": "Run add-iam-policy-binding for the group and the role.",
+        "D": "Create a custom role with the BigQuery viewer permissions."
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "add-iam-policy-binding performs a read-modify-write of the policy for you and adds exactly one binding, leaving every other team's bindings untouched.",
+        "option_breakdown": {
+          "A": "set-iam-policy replaces the entire policy, so a file with one binding deletes every other binding in the project.",
+          "B": "Reading the policy grants nothing; a manual hand-off is not what a script is for.",
+          "C": "Correct. add-iam-policy-binding reads, modifies and writes the policy for you, adding exactly one binding and leaving other teams' bindings untouched.",
+          "D": "Creating a custom role grants it to nobody, and a predefined role already fits."
+        },
+        "gcloud_command": "gcloud projects add-iam-policy-binding analytics-prod \\\n  --member=group:data-eng@example.com --role=roles/bigquery.dataViewer",
+        "doc_ref": "https://cloud.google.com/sdk/gcloud/reference/projects/add-iam-policy-binding"
+      }
+    },
+    {
       "id": "ace-s1-008",
+      "uid": "949ee466-3cde-4f8f-86e2-7c8fb21946eb",
       "title": "Letting a team deploy Cloud Run in one project",
       "objective": "1.1",
       "subtopic": "Project IAM Grants",
@@ -1512,6 +1658,7 @@
     },
     {
       "id": "ace-s1-009",
+      "uid": "013c2607-911f-4b74-8375-76d461061dd7",
       "title": "A two-year-old account that now wants folders",
       "objective": "1.1",
       "subtopic": "Standalone Organizations",
@@ -1544,6 +1691,7 @@
     },
     {
       "id": "ace-s1-010",
+      "uid": "7620a461-f1f5-4474-9ec9-0d96eb7507a2",
       "title": "An invitation to a standalone organisation that lapsed",
       "objective": "1.1",
       "subtopic": "Standalone Organizations",
@@ -1576,6 +1724,7 @@
     },
     {
       "id": "ace-s1-011",
+      "uid": "488fc7d9-cfba-4b1d-a5df-c4f22000e388",
       "title": "No default network in any new project",
       "objective": "1.1",
       "subtopic": "Foundation Networking",
@@ -1608,6 +1757,7 @@
     },
     {
       "id": "ace-s1-012",
+      "uid": "cc027f46-21cc-41af-a665-b7ec42d83721",
       "title": "Where the shared foundation network lives",
       "objective": "1.1",
       "subtopic": "Foundation Networking",
@@ -1640,6 +1790,7 @@
     },
     {
       "id": "ace-s1-013",
+      "uid": "bc0c8695-22e6-4695-9160-d86b1bdd4cf1",
       "title": "Granting a role to a federated group",
       "objective": "1.1",
       "subtopic": "Workforce Identity Federation",
@@ -1672,6 +1823,7 @@
     },
     {
       "id": "ace-s1-014",
+      "uid": "50ab12d3-ec1c-401a-b08c-87cdfd1c19f4",
       "title": "Where a workforce pool is created",
       "objective": "1.1",
       "subtopic": "Workforce Identity Federation",
@@ -1704,6 +1856,7 @@
     },
     {
       "id": "ace-s1-015",
+      "uid": "993cb83b-7b75-4c12-95db-a44c568e84cc",
       "title": "gcloud sign-in for federated users",
       "objective": "1.1",
       "subtopic": "Workforce Identity Federation",
@@ -1736,6 +1889,7 @@
     },
     {
       "id": "ace-s1-016",
+      "uid": "aebf7bf8-b0ca-46b4-bacc-ede8bc86ca47",
       "title": "Which project should hold the metrics scope",
       "objective": "1.1",
       "subtopic": "Observability Setup",
@@ -1768,6 +1922,7 @@
     },
     {
       "id": "ace-s1-017",
+      "uid": "a4176d15-3f83-4114-b8e0-271c6467f022",
       "title": "Keep new log buckets in the EU by default",
       "objective": "1.1",
       "subtopic": "Observability Setup",
@@ -1800,6 +1955,7 @@
     },
     {
       "id": "ace-s1-018",
+      "uid": "4e145bc5-90e6-441f-a938-c626734ea8a0",
       "title": "A GPU quota error despite a regional increase",
       "objective": "1.1",
       "subtopic": "APIs and Quotas",
@@ -1832,6 +1988,7 @@
     },
     {
       "id": "ace-s1-019",
+      "uid": "90006522-37fa-4c34-8b8d-6947153c2700",
       "title": "Which APIs are switched on in a project",
       "objective": "1.1",
       "subtopic": "APIs and Quotas",
@@ -1864,6 +2021,7 @@
     },
     {
       "id": "ace-s1-020",
+      "uid": "fb5cf688-3d47-4c9f-944b-8ad3911d09e2",
       "title": "An engineer leaves today; keep the data",
       "objective": "1.1",
       "subtopic": "Cloud Identity and Users",
@@ -1896,6 +2054,7 @@
     },
     {
       "id": "ace-s1-021",
+      "uid": "41f2e979-2952-452f-abb2-7ccfe91cfef8",
       "title": "Seeing what a constraint would block before enforcing it",
       "objective": "1.1",
       "subtopic": "Organization Policy",
@@ -1928,6 +2087,7 @@
     },
     {
       "id": "ace-s1-022",
+      "uid": "908c232d-1b88-43c8-b21c-fcd2b295a73a",
       "title": "A budget only for BigQuery in the analytics projects",
       "objective": "1.2",
       "subtopic": "Budgets and Alerts",
@@ -1960,6 +2120,7 @@
     },
     {
       "id": "ace-s1-023",
+      "uid": "0615fd41-b205-4610-a35d-20f41e090689",
       "title": "A budget that follows last month's spend",
       "objective": "1.2",
       "subtopic": "Budgets and Alerts",
@@ -1992,6 +2153,7 @@
     },
     {
       "id": "ace-s1-024",
+      "uid": "94f6d2e8-6ffa-4a84-81d7-d15b7258cf8e",
       "title": "Budget alerts to the on-call chat channel",
       "objective": "1.2",
       "subtopic": "Budgets and Alerts",
@@ -2023,7 +2185,41 @@
       }
     },
     {
+      "id": "ace-s1-025",
+      "uid": "063ee5b9-9940-407f-8430-1f0c666702bc",
+      "title": "Cost of each individual VM",
+      "objective": "1.2",
+      "subtopic": "Billing Export and Cost Attribution",
+      "summary": "Only the detailed usage cost export carries resource-level rows such as which VM incurred a cost.",
+      "tags": [
+        "bigquery",
+        "billing-export",
+        "cost-attribution"
+      ],
+      "source": "curated",
+      "question": "Finance at Mariner Logistics already receives the standard usage cost export in BigQuery, broken down by project and SKU. They now need each month's cost for every individual Compute Engine instance, identified by its resource name, to charge back to the fleet owners. What should you enable?",
+      "options": {
+        "A": "The pricing export to BigQuery.",
+        "B": "Labels on each project with the project owner's name.",
+        "C": "A budget per instance with a threshold at 100%.",
+        "D": "The detailed usage cost export to BigQuery."
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "The detailed usage cost export includes everything in the standard export plus resource-level rows, so costs can be grouped by individual instance.",
+        "option_breakdown": {
+          "A": "The pricing export contains list and contract prices, not usage.",
+          "B": "Project labels attribute cost per project, which finance already has.",
+          "C": "Budgets notify on thresholds; they do not produce per-resource cost data.",
+          "D": "Correct. The detailed usage cost export includes everything in the standard export plus resource-level rows, so costs can be grouped by individual instance."
+        },
+        "gcloud_command": "# Billing > Billing export > BigQuery export > Detailed usage cost > Edit settings",
+        "doc_ref": "https://cloud.google.com/billing/docs/how-to/export-data-bigquery-tables/detailed-usage"
+      }
+    },
+    {
       "id": "ace-s1-026",
+      "uid": "b5775002-0560-4e7b-82e5-788aa97f5667",
       "title": "Comparing list prices with negotiated prices",
       "objective": "1.2",
       "subtopic": "Billing Export and Cost Attribution",
@@ -2056,6 +2252,7 @@
     },
     {
       "id": "ace-s1-027",
+      "uid": "da04aabf-9b71-404e-9946-395242035618",
       "title": "What a firewall rule looked like ten days ago",
       "objective": "1.1",
       "subtopic": "Asset Inventory and Gemini Cloud Assist",
@@ -2088,6 +2285,7 @@
     },
     {
       "id": "ace-s1-028",
+      "uid": "6feb807c-fe08-4c23-9c6b-ec8049e72f1f",
       "title": "Federated group grants that never apply",
       "objective": "1.1",
       "subtopic": "Workforce Identity Federation",
@@ -2120,6 +2318,7 @@
     },
     {
       "id": "ace-s1-029",
+      "uid": "478911a6-94d4-48fc-86b7-1d90c97e3da4",
       "title": "Shorter console sessions for federated contractors",
       "objective": "1.1",
       "subtopic": "Workforce Identity Federation",
@@ -2152,6 +2351,7 @@
     },
     {
       "id": "ace-s1-030",
+      "uid": "22b707a6-dfbd-48ea-8493-443704887f2b",
       "title": "Which projects actually enforce a constraint",
       "objective": "1.1",
       "subtopic": "Asset Inventory and Gemini Cloud Assist",
@@ -2184,6 +2384,7 @@
     },
     {
       "id": "ace-s1-031",
+      "uid": "098306d4-6691-4da3-9e60-bd09bada4e87",
       "title": "Checking what breaks before moving a project",
       "objective": "1.1",
       "subtopic": "Asset Inventory and Gemini Cloud Assist",
@@ -2216,6 +2417,7 @@
     },
     {
       "id": "ace-s1-032",
+      "uid": "de039054-5603-4635-a8e9-bfdff445e3e9",
       "title": "SQL over the resource inventory without an export pipeline",
       "objective": "1.1",
       "subtopic": "Asset Inventory and Gemini Cloud Assist",
@@ -2248,6 +2450,7 @@
     },
     {
       "id": "ace-s1-033",
+      "uid": "7471d9e2-beef-4e91-a04f-56d01ab56718",
       "title": "Only employees, not guests, may federate",
       "objective": "1.1",
       "subtopic": "Workforce Identity Federation",
@@ -2280,6 +2483,7 @@
     },
     {
       "id": "ace-s1-034",
+      "uid": "ed23e06b-1175-4668-aa5a-74fd613fde01",
       "title": "Cutting off every federated user at once",
       "objective": "1.1",
       "subtopic": "Workforce Identity Federation",
@@ -2312,6 +2516,7 @@
     },
     {
       "id": "ace-s1-035",
+      "uid": "284a2e03-d2f6-468d-abed-2862ad4f2b4d",
       "title": "A role for everyone in one department, by attribute",
       "objective": "1.1",
       "subtopic": "Workforce Identity Federation",
@@ -2344,6 +2549,7 @@
     },
     {
       "id": "ace-s1-036",
+      "uid": "4975d553-1e18-44ec-bfe1-198a57b440a8",
       "title": "Which Spanner dual-region configurations exist",
       "objective": "1.1",
       "subtopic": "Regions and Zones",
@@ -2376,6 +2582,7 @@
     },
     {
       "id": "ace-s1-037",
+      "uid": "04545630-ea87-4ce5-921a-ea7fa65ebc2c",
       "title": "EU residency plus EU-only support personnel",
       "objective": "1.1",
       "subtopic": "Regions and Zones",
@@ -2408,6 +2615,7 @@
     },
     {
       "id": "ace-s1-038",
+      "uid": "54ee0088-4fef-40cb-9f43-08e4f6465588",
       "title": "Reading logs from several projects in one Logs Explorer view",
       "objective": "1.1",
       "subtopic": "Observability Setup",
@@ -2440,6 +2648,7 @@
     },
     {
       "id": "ace-s1-039",
+      "uid": "53f0e7d4-4db9-434b-94ff-1c4ad193ce7b",
       "title": "Quota that grows with usage without tickets",
       "objective": "1.1",
       "subtopic": "APIs and Quotas",
@@ -2472,6 +2681,7 @@
     },
     {
       "id": "ace-s1-040",
+      "uid": "6c4844f9-1ce8-4a53-b9a3-a82942a3238b",
       "title": "A warning before a quota runs out",
       "objective": "1.1",
       "subtopic": "APIs and Quotas",
@@ -2504,6 +2714,7 @@
     },
     {
       "id": "ace-s1-041",
+      "uid": "451147dd-5786-4d2d-b36b-686db2cc355d",
       "title": "A rule no predefined constraint expresses",
       "objective": "1.1",
       "subtopic": "Organization Policy",
@@ -2536,6 +2747,7 @@
     },
     {
       "id": "ace-s1-042",
+      "uid": "2c07abe8-2923-41e5-b1e4-6aecc93991dc",
       "title": "No Cloud SQL instance may have a public IP",
       "objective": "1.1",
       "subtopic": "Organization Policy",
@@ -2568,6 +2780,7 @@
     },
     {
       "id": "ace-s1-043",
+      "uid": "722c08d1-5db8-4d21-abd7-8b6efa4d41cb",
       "title": "A project nobody can delete by accident",
       "objective": "1.1",
       "subtopic": "Resource Hierarchy",
@@ -2600,6 +2813,7 @@
     },
     {
       "id": "ace-s1-044",
+      "uid": "6940116c-ae75-4f9a-bfcd-464e64f6dc65",
       "title": "Users created automatically from Microsoft Entra ID",
       "objective": "1.1",
       "subtopic": "Cloud Identity and Users",
@@ -2632,6 +2846,7 @@
     },
     {
       "id": "ace-s1-045",
+      "uid": "c42dd616-3df8-4979-8b0c-752e786c14a8",
       "title": "Switching between two environments in gcloud",
       "objective": "1.1",
       "subtopic": "gcloud CLI and Configurations",
@@ -2664,6 +2879,7 @@
     },
     {
       "id": "ace-s1-046",
+      "uid": "7a19e882-fd0c-45d6-a61a-e7eb19a8eaa4",
       "title": "Spotting an unusual spend spike without setting thresholds",
       "objective": "1.2",
       "subtopic": "Budgets and Alerts",
@@ -2696,6 +2912,7 @@
     },
     {
       "id": "ace-s1-047",
+      "uid": "0658b9f8-748c-4956-9cdf-40e0f460d147",
       "title": "Explaining last month's bill increase",
       "objective": "1.2",
       "subtopic": "Billing Export and Cost Attribution",
@@ -2728,6 +2945,7 @@
     },
     {
       "id": "ace-s1-048",
+      "uid": "58c31d52-3485-4a4e-afe5-6950acb62e9f",
       "title": "Removing one person's grant from a busy policy",
       "objective": "1.1",
       "subtopic": "Project IAM Grants",
@@ -2759,6 +2977,7 @@
     },
     {
       "id": "ace-s1-049",
+      "uid": "f6267408-829e-481b-b1a6-5b70f5c67906",
       "title": "Default region and zone for every gcloud command",
       "objective": "1.1",
       "subtopic": "gcloud CLI and Configurations",
@@ -2790,6 +3009,7 @@
     },
     {
       "id": "ace-s1-050",
+      "uid": "68f23bac-1c23-4f9b-916f-b184331d037f",
       "title": "One command against a different project",
       "objective": "1.1",
       "subtopic": "gcloud CLI and Configurations",
@@ -2821,6 +3041,7 @@
     },
     {
       "id": "ace-s1-051",
+      "uid": "2f65b3ee-77ad-4e3a-833a-acccd44d5864",
       "title": "gcloud components update is refused",
       "objective": "1.1",
       "subtopic": "gcloud CLI and Configurations",
@@ -2852,6 +3073,7 @@
     },
     {
       "id": "ace-s1-052",
+      "uid": "3b018751-1c36-4b85-a1c1-34c52b71c664",
       "title": "Separate network hosts for production and the rest",
       "objective": "1.1",
       "subtopic": "Foundation Networking",
@@ -2883,6 +3105,7 @@
     },
     {
       "id": "ace-s1-053",
+      "uid": "29cccdb9-39d4-46ba-8da9-e3cbbde593fe",
       "title": "A project whose billing account was closed",
       "objective": "1.2",
       "subtopic": "Billing Accounts",
@@ -2913,6 +3136,7 @@
     },
     {
       "id": "ace-s1-054",
+      "uid": "fc006c27-fa30-465b-9201-fc1ff7740351",
       "title": "Cost per Kubernetes namespace",
       "objective": "1.2",
       "subtopic": "Billing Export and Cost Attribution",
@@ -2945,6 +3169,7 @@
     },
     {
       "id": "ace-s1-055",
+      "uid": "3ed80b20-c0f5-4975-82ba-7660d1819ceb",
       "title": "Incident logs gone before the review",
       "objective": "1.1",
       "subtopic": "Observability Setup",
@@ -2973,6 +3198,556 @@
         "gcloud_command": "gcloud logging buckets update _Default --location=global --retention-days=90",
         "doc_ref": "https://docs.cloud.google.com/logging/docs/buckets"
       }
+    },
+    {
+      "id": "ace-s1-056",
+      "uid": "edbf07ce-8800-4272-b090-65731084f7af",
+      "title": "Linking a new project to the company billing account",
+      "objective": "1.2",
+      "subtopic": "Billing Accounts",
+      "summary": "Linking a project to a billing account needs Billing Account User on the billing account and a role with billing-management permission on the project.",
+      "tags": [
+        "billing",
+        "billing-account-user",
+        "iam"
+      ],
+      "source": "curated",
+      "question": "A team lead at Sefton Print creates projects for new campaigns and must link each one to the company's billing account. They must not see invoices, change payment methods or manage other people's billing access. Which two roles should you grant? (Choose two.)",
+      "options": {
+        "A": "Billing Account User on the billing account",
+        "B": "Project Billing Manager on the campaign projects, or on their folder",
+        "C": "Billing Account Costs Manager on the billing account",
+        "D": "Billing Account Viewer on the billing account",
+        "E": "Billing Account Administrator on the billing account"
+      },
+      "correct_answer": "A,B",
+      "explanation": {
+        "summary": "Linking needs permission on both sides: Billing Account User lets someone attach projects to the billing account, and Project Billing Manager (or Owner) on the project lets them change its billing link.",
+        "option_breakdown": {
+          "A": "Correct. It allows linking projects to the billing account, without access to invoices or payment settings.",
+          "B": "Correct. It lets the lead change the billing link of the projects they create.",
+          "C": "Costs Manager manages budgets and exports; it can't link projects either.",
+          "D": "Viewer shows costs and invoices but can't link projects.",
+          "E": "Administrator manages payment methods and billing IAM, which is ruled out."
+        },
+        "gcloud_command": "gcloud billing projects link campaign-2026 --billing-account=BILLING_ACCOUNT_ID",
+        "doc_ref": "https://cloud.google.com/billing/docs/how-to/billing-access"
+      }
+    },
+    {
+      "id": "ace-s1-057",
+      "uid": "e52d251c-c108-4dce-92bf-106d15b8dee4",
+      "title": "Budget alerts for a team that isn't in billing",
+      "objective": "1.2",
+      "subtopic": "Budgets and Alerts",
+      "summary": "A budget can be scoped to one project, and Cloud Monitoring notification channels send its alerts to people who have no billing role.",
+      "tags": [
+        "billing",
+        "budgets",
+        "notification-channels"
+      ],
+      "source": "curated",
+      "question": "The mobile team at Grayling Apps wants an alert when their project's monthly spend reaches 50%, 90% and 100% of $3,000. Nobody on the team has a billing role, and finance doesn't want to give them one. Which two actions should you take? (Choose two.)",
+      "options": {
+        "A": "Connect a Cloud Monitoring email notification channel for the team to the budget.",
+        "B": "Set a Compute Engine quota that matches the $3,000 amount.",
+        "C": "Create a budget scoped to the mobile project with thresholds at 50%, 90% and 100%.",
+        "D": "Export billing data to BigQuery and ask the team to check it weekly.",
+        "E": "Grant the mobile team Billing Account Administrator so they receive budget emails."
+      },
+      "correct_answer": "A,C",
+      "explanation": {
+        "summary": "Budgets can be filtered to a project, with several thresholds. By default only billing admins and users get the emails; linking Monitoring notification channels sends the alerts to anyone else.",
+        "option_breakdown": {
+          "A": "Correct. A notification channel delivers the budget's alerts to the team without a billing role.",
+          "B": "Quotas limit resources, not spend, and they don't send budget alerts.",
+          "C": "Correct. The budget tracks just the mobile project against $3,000 at the three thresholds.",
+          "D": "A weekly check isn't an alert, and spend could pass 100% between checks.",
+          "E": "This is the billing role finance won't give, and it's far broader than receiving alerts."
+        },
+        "gcloud_command": "gcloud billing budgets create --billing-account=BILLING_ACCOUNT_ID --display-name=mobile \\\n  --budget-amount=3000USD --filter-projects=projects/mobile-prod \\\n  --threshold-rule=percent=0.5 --threshold-rule=percent=0.9 --threshold-rule=percent=1.0 \\\n  --notifications-rule-monitoring-notification-channels=CHANNEL_ID",
+        "doc_ref": "https://cloud.google.com/billing/docs/how-to/budgets-notification-recipients"
+      }
+    },
+    {
+      "id": "ace-s1-058",
+      "uid": "593290fa-ba05-457e-8c08-3dacaa654d99",
+      "title": "Guardrails for service accounts in every new project",
+      "objective": "1.1",
+      "subtopic": "Organization Policy",
+      "summary": "Two organization policy constraints cover the common service account risks: one blocks key creation, the other stops the automatic Editor grant to default service accounts.",
+      "tags": [
+        "keys",
+        "organization-policy",
+        "service-accounts"
+      ],
+      "source": "curated",
+      "question": "Security at Linfield Bank wants two guardrails in every project in the organization: nobody may create service account keys, and default service accounts must no longer receive the Editor role automatically when an API is enabled. Which two organization policy constraints should you enforce? (Choose two.)",
+      "options": {
+        "A": "iam.disableServiceAccountKeyCreation",
+        "B": "compute.requireOsLogin on every project",
+        "C": "iam.allowedPolicyMemberDomains for the company",
+        "D": "iam.automaticIamGrantsForDefaultServiceAccounts",
+        "E": "iam.disableServiceAccountCreation"
+      },
+      "correct_answer": "A,D",
+      "explanation": {
+        "summary": "Organization policies are inherited by every project. One boolean constraint blocks creating service account keys, and another stops default service accounts being granted Editor automatically.",
+        "option_breakdown": {
+          "A": "Correct. With it enforced, no one can create user-managed keys for service accounts.",
+          "B": "OS Login governs SSH access to VMs, not service accounts.",
+          "C": "Domain restricted sharing limits who can be granted roles; it doesn't stop keys or the Editor grant.",
+          "D": "Correct. It stops the automatic Editor grant to default service accounts in new projects.",
+          "E": "This blocks creating service accounts at all, which is far more than either guardrail asks."
+        },
+        "gcloud_command": "gcloud resource-manager org-policies enable-enforce iam.disableServiceAccountKeyCreation --organization=ORG_ID\ngcloud resource-manager org-policies enable-enforce iam.automaticIamGrantsForDefaultServiceAccounts --organization=ORG_ID",
+        "doc_ref": "https://cloud.google.com/resource-manager/docs/organization-policy/restricting-service-accounts"
+      }
+    },
+    {
+      "id": "ace-s1-059",
+      "uid": "5cdbadca-c2e0-4201-8194-bbdd73214b7a",
+      "title": "Searching every project for VMs with public addresses",
+      "objective": "1.1",
+      "subtopic": "Asset Inventory and Gemini Cloud Assist",
+      "summary": "Cloud Asset Inventory searches resources across the whole organization; the searcher needs Cloud Asset Viewer at that scope.",
+      "tags": [
+        "cloud-asset-inventory",
+        "organization",
+        "search"
+      ],
+      "source": "curated",
+      "question": "An auditor at Moreton Shipping must list every Compute Engine VM with an external IP address across the organization's 300 projects, today and on request later. They must not be able to change anything. Which two actions should you take? (Choose two.)",
+      "options": {
+        "A": "Search all resources at the organization scope for instances with an external IP.",
+        "B": "Run gcloud compute instances list in each project with a script.",
+        "C": "Enable VPC Flow Logs on every subnet and query them.",
+        "D": "Grant the auditor Compute Admin on each of the 300 projects.",
+        "E": "Grant the auditor Cloud Asset Viewer on the organization."
+      },
+      "correct_answer": "A,E",
+      "explanation": {
+        "summary": "Cloud Asset Inventory indexes resources and their configurations across the hierarchy. With Cloud Asset Viewer on the organization, one search covers every project, read-only.",
+        "option_breakdown": {
+          "A": "Correct. A single organization-scope search returns every matching VM in all projects.",
+          "B": "A per-project loop needs access to each project and misses projects added later.",
+          "C": "Flow logs record traffic, not which VMs have external IPs, and enabling them is a change.",
+          "D": "Compute Admin can change and delete VMs, and granting it 300 times is error-prone.",
+          "E": "Correct. It is read-only and lets the auditor search assets across the organization."
+        },
+        "gcloud_command": "gcloud asset search-all-resources --scope=organizations/ORG_ID \\\n  --asset-types=compute.googleapis.com/Instance \\\n  --query='networkInterfaces.accessConfigs.natIP:*'",
+        "doc_ref": "https://cloud.google.com/asset-inventory/docs/searching-resources"
+      }
+    },
+    {
+      "id": "ace-s1-060",
+      "uid": "20bfe8b9-5168-4e2b-916b-b9c3f31d17a3",
+      "title": "Letting an app project use the host network",
+      "objective": "1.1",
+      "subtopic": "Foundation Networking",
+      "summary": "Shared VPC needs the host project enabled and each service project attached to it; then Network User grants let service project teams use subnets.",
+      "tags": [
+        "networking",
+        "service-projects",
+        "shared-vpc"
+      ],
+      "source": "curated",
+      "question": "Haverley Foods is setting up its network foundation. The net-host project holds the company VPC, and the new orders project must create VMs in that VPC's subnets, while the network team keeps control of the network. Which two actions should you take? (Choose two.)",
+      "options": {
+        "A": "Copy the company VPC's subnets into the orders project.",
+        "B": "Enable net-host as a Shared VPC host project.",
+        "C": "Attach orders to net-host as a service project.",
+        "D": "Create a VPC in orders and peer it with the company VPC.",
+        "E": "Grant the orders team Compute Network Admin on net-host."
+      },
+      "correct_answer": "B,C",
+      "explanation": {
+        "summary": "In Shared VPC, a host project owns the network and service projects are attached to it. Service project teams then get Compute Network User on the subnets they may use, while the network team keeps administration.",
+        "option_breakdown": {
+          "A": "Subnets can't be copied between projects; a copy would be a separate network anyway.",
+          "B": "Correct. The host project must be enabled before any project can use its network.",
+          "C": "Correct. Attaching orders lets its resources use subnets of the host's VPC once granted.",
+          "D": "Peering joins two separately run networks; the orders VMs wouldn't be in the company VPC's subnets.",
+          "E": "Network Admin hands network control to the app team, which the network team must keep."
+        },
+        "gcloud_command": "gcloud compute shared-vpc enable net-host\ngcloud compute shared-vpc associated-projects add orders --host-project=net-host",
+        "doc_ref": "https://cloud.google.com/vpc/docs/provisioning-shared-vpc"
+      }
+    },
+    {
+      "id": "ace-s1-061",
+      "uid": "c7a54f0a-3a81-4b14-b01b-ae34b32e6149",
+      "title": "Warning before a quota runs out",
+      "objective": "1.1",
+      "subtopic": "APIs and Quotas",
+      "summary": "The Quotas page shows usage against each limit, and a Cloud Monitoring alert on the quota usage metrics warns before a limit is reached.",
+      "tags": [
+        "alerts",
+        "monitoring",
+        "quotas"
+      ],
+      "source": "curated",
+      "question": "Last month Pennard Labs hit its regional GPU quota in the middle of a training run. The team wants to see current usage against each quota, and to be warned automatically when any GPU quota passes 80% of its limit. Which two actions should you take? (Choose two.)",
+      "options": {
+        "A": "Turn on Data Access audit logs for Compute Engine.",
+        "B": "Create a Cloud Monitoring alerting policy on GPU quota usage as a fraction of the limit.",
+        "C": "Enable the Compute Engine API again in each region.",
+        "D": "Check usage on the Quotas & System Limits page.",
+        "E": "Create a budget for GPU spending with an alert at 80%."
+      },
+      "correct_answer": "B,D",
+      "explanation": {
+        "summary": "Quota usage and limits are exposed as Cloud Monitoring metrics and on the Quotas page. An alerting policy on usage divided by limit warns at 80% before jobs fail.",
+        "option_breakdown": {
+          "A": "Audit logs record API calls; they don't track quota usage against limits.",
+          "B": "Correct. The policy fires when usage crosses 80% of the GPU quota.",
+          "C": "Re-enabling an API doesn't change quotas or show usage.",
+          "D": "Correct. The Quotas page lists each quota with its current usage and limit.",
+          "E": "A budget tracks money, not how close usage is to a quota limit."
+        },
+        "gcloud_command": "# Console > Monitoring > Alerting > Create policy > metric serviceruntime.googleapis.com/quota/allocation/usage\n#   ratio to quota/limit, threshold 0.8",
+        "doc_ref": "https://cloud.google.com/monitoring/alerts/using-quota-metrics"
+      }
+    },
+    {
+      "id": "ace-x-004",
+      "uid": "182400ac-23f3-4dee-8bcb-f73b63cb9c6c",
+      "title": "Stopping a sandbox's charges when its budget runs out",
+      "objective": "1.2",
+      "subtopic": "Budgets and Alerts",
+      "summary": "Budgets only notify. To stop charges, publish budget notifications to Pub/Sub and have a function disable billing on the project.",
+      "tags": [
+        "billing",
+        "budgets",
+        "cloud-run-functions",
+        "pubsub"
+      ],
+      "source": "curated",
+      "question": "Students at Ellery College each get a sandbox project with a $50 budget. When a project's actual spend reaches the budget, all its charges must stop automatically, even if the sandbox is lost. Nobody watches the alert emails. What should you configure?",
+      "options": {
+        "A": "Lower Compute Engine CPU and Cloud Storage quotas in each project to match the  budget.",
+        "B": "A  spending limit on the billing account, applied to each sandbox project separately.",
+        "C": "A budget per project that emails the course administrators at 50%, 90% and 100% of the amount.",
+        "D": "Budget notifications to Pub/Sub, and a function that disables billing on the project at 100%."
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "A Cloud Billing budget sends notifications but never caps spend by itself. Programmatic notifications to Pub/Sub can trigger a function that unlinks the project's billing account, which stops billable services, so data in the project may be lost.",
+        "option_breakdown": {
+          "A": "Quotas limit some resources but not every billable service, so charges could still exceed $50.",
+          "B": "Cloud Billing has no per-project spending limit to set; budgets are the cost-control tool, and they only notify.",
+          "C": "Emails only inform people, and the stem says nobody acts on them, so charges continue.",
+          "D": "Correct. The function reacts to the budget's Pub/Sub message and disables billing on the project, which stops its charges."
+        },
+        "gcloud_command": "gcloud billing budgets create --billing-account=BILLING_ACCOUNT_ID \\\n  --display-name=sandbox-cap --budget-amount=50USD \\\n  --notifications-rule-pubsub-topic=projects/PROJECT_ID/topics/budget-alerts",
+        "doc_ref": "https://cloud.google.com/billing/docs/how-to/disable-billing-with-notifications"
+      },
+      "also_tests": [
+        "2.1"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-008",
+      "uid": "2f0b2bf3-ce98-4baf-b364-acea364a8129",
+      "title": "No public buckets, but partners still get access",
+      "objective": "1.1",
+      "subtopic": "Organization Policy",
+      "summary": "Public access prevention blocks allUsers and allAuthenticatedUsers on every bucket; uniform bucket-level access turns ACLs off; neither blocks named external accounts.",
+      "tags": [
+        "cloud-storage",
+        "organization-policy",
+        "public-access-prevention",
+        "ubla"
+      ],
+      "source": "curated",
+      "question": "Across every project in Brennock Health's organization, no Cloud Storage bucket or object may ever be made public, and object ACLs must not be usable to grant access. Some buckets are shared with named accounts at partner companies' own domains, and that must keep working. Which two organization policy constraints should you enforce? (Choose two.)",
+      "options": {
+        "A": "gcp.resourceLocations, limited to EU locations",
+        "B": "storage.uniformBucketLevelAccess",
+        "C": "iam.allowedPolicyMemberDomains, limited to Brennock's customer ID",
+        "D": "iam.disableServiceAccountKeyCreation",
+        "E": "storage.publicAccessPrevention"
+      },
+      "correct_answer": "B,E",
+      "explanation": {
+        "summary": "Public access prevention stops any grant to allUsers or allAuthenticatedUsers on buckets and objects. Enforcing uniform bucket-level access disables ACLs, so access is only through IAM. Neither restricts grants to named partner accounts.",
+        "option_breakdown": {
+          "A": "Resource locations control where data lives, not who may read it.",
+          "B": "Correct. With uniform bucket-level access enforced, ACLs can't grant access to anything.",
+          "C": "Domain restricted sharing would block public access too, but it also blocks the partners' accounts from other domains, which must keep working.",
+          "D": "Blocking key creation is a credential control; it doesn't stop a bucket being made public.",
+          "E": "Correct. It blocks public access on every bucket under the organization, whatever IAM or ACLs say."
+        },
+        "gcloud_command": "gcloud resource-manager org-policies enable-enforce storage.publicAccessPrevention --organization=ORG_ID\ngcloud resource-manager org-policies enable-enforce storage.uniformBucketLevelAccess --organization=ORG_ID",
+        "doc_ref": "https://cloud.google.com/storage/docs/public-access-prevention"
+      },
+      "also_tests": [
+        "3.2"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-015",
+      "uid": "5e7ddfd7-617f-4870-b1e3-9f0f7306a069",
+      "title": "Autoscaling stopped by a regional CPU quota",
+      "objective": "1.1",
+      "subtopic": "APIs and Quotas",
+      "summary": "A managed instance group that can't add VMs because of a regional quota needs a higher quota in that region, requested through Cloud Quotas.",
+      "tags": [
+        "autoscaling",
+        "compute-engine",
+        "mig",
+        "quotas"
+      ],
+      "source": "curated",
+      "question": "During a sale, Marlow Retail's regional managed instance group in us-central1 stops at 24 VMs although the autoscaler's maximum is 60. The group's errors show that the regional CPUS quota is exceeded. Other regions have spare quota, but the application must stay in us-central1. What should you do?",
+      "options": {
+        "A": "Raise the autoscaler's maximum number of instances to 120.",
+        "B": "Request a higher CPUS quota for us-central1 through Cloud Quotas.",
+        "C": "Move the project to a different billing account with a higher credit limit.",
+        "D": "Disable and re-enable the Compute Engine API to reset the quota usage."
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "Quotas cap how many resources a project may use in each region. When the autoscaler is blocked by a quota rather than by its own limit, the fix is a quota increase in that region.",
+        "option_breakdown": {
+          "A": "The autoscaler isn't the limit; it already wants more VMs than the quota allows.",
+          "B": "Correct. A larger regional CPUS quota lets the group grow past 24 VMs in us-central1.",
+          "C": "Quotas belong to the project and region, not to the billing account's credit.",
+          "D": "Quota usage reflects running resources; re-enabling the API doesn't change it and risks disrupting the service."
+        },
+        "gcloud_command": "# Console > IAM & Admin > Quotas & System Limits > CPUs (us-central1) > Edit quota",
+        "doc_ref": "https://cloud.google.com/docs/quotas/view-manage"
+      },
+      "also_tests": [
+        "2.1"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-020",
+      "uid": "78aaf173-faea-4a80-b333-7b32924b177e",
+      "title": "Switching between two projects' gcloud settings",
+      "objective": "1.1",
+      "subtopic": "gcloud CLI and Configurations",
+      "summary": "Named gcloud configurations hold a project, account and default region or zone each, and you activate one to switch them all at once.",
+      "tags": [
+        "configurations",
+        "gcloud"
+      ],
+      "source": "curated",
+      "question": "A support engineer at Tavish Telecom manages VMs in project billing-prod in europe-west2 and project lab-sandbox in us-east1, using a different account for each. Twice this month a command ran against the wrong project. The engineer wants to switch the project, account, region and zone together with one command. What should you recommend?",
+      "options": {
+        "A": "Install a second copy of the gcloud CLI for the second project.",
+        "B": "Run gcloud init again each time the engineer changes project.",
+        "C": "Create a named gcloud configuration for each project, and activate the one needed.",
+        "D": "Add --project to every command and set the region in an environment variable."
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "A gcloud configuration is a named set of properties such as account, project, compute/region and compute/zone. Activating one switches all of them in one step.",
+        "option_breakdown": {
+          "A": "A second installation is unnecessary; one gcloud supports many named configurations.",
+          "B": "Re-running init each time is slow and error-prone, which is how the mistakes happen.",
+          "C": "Correct. One configuration per project holds its account, project, region and zone; activating it switches them together.",
+          "D": "Per-command flags are exactly what gets forgotten, and they leave the account unchanged."
+        },
+        "gcloud_command": "gcloud config configurations create billing-prod\ngcloud config set project billing-prod\ngcloud config set compute/region europe-west2\ngcloud config configurations activate lab-sandbox",
+        "doc_ref": "https://cloud.google.com/sdk/docs/configurations"
+      },
+      "also_tests": [
+        "3.1"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-024",
+      "uid": "b79f58d2-2a62-4df3-a473-b9aabb72ddd8",
+      "title": "Contractors signing in with their own company's Okta",
+      "objective": "1.1",
+      "subtopic": "Workforce Identity Federation",
+      "summary": "Workforce Identity Federation lets users from an external identity provider use the console with IAM roles granted to pool principals, without Cloud Identity accounts.",
+      "tags": [
+        "iam",
+        "okta",
+        "workforce-identity-federation"
+      ],
+      "source": "curated",
+      "question": "Harlow Engineering hires 300 contractors from a partner whose staff sign in with the partner's Okta. The contractors need read access to BigQuery datasets in one project through the console. Harlow must not create Cloud Identity or Workspace accounts for them, and access must end when the partner disables an account. What should you do?",
+      "options": {
+        "A": "Create a workforce pool with an Okta provider, and grant BigQuery Data Viewer to the contractors' group in it.",
+        "B": "Create one service account for all the contractors and share a key for it with the partner.",
+        "C": "Create a workload identity pool with an OIDC provider that trusts the partner's Okta tenant.",
+        "D": "Create a Cloud Identity account for each contractor, kept in sync from the partner's Okta directory."
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "A workforce identity pool trusts an external identity provider for human users. IAM roles go to pool principals, such as everyone in a mapped group, and a disabled account at the provider can no longer sign in.",
+        "option_breakdown": {
+          "A": "Correct. The pool federates the partner's Okta for people, and the principal set grant gives the group read access.",
+          "B": "A shared key has no per-person identity and doesn't end when a contractor leaves.",
+          "C": "Workload identity pools are for software workloads, not people signing in to the console.",
+          "D": "Synced Cloud Identity accounts are exactly what Harlow must not create."
+        },
+        "gcloud_command": "gcloud iam workforce-pools create partner-pool --organization=ORG_ID --location=global\ngcloud iam workforce-pools providers create-oidc okta --workforce-pool=partner-pool --location=global \\\n  --issuer-uri=https://partner.okta.com --client-id=CLIENT_ID --attribute-mapping=google.subject=assertion.sub,google.groups=assertion.groups",
+        "doc_ref": "https://cloud.google.com/iam/docs/workforce-identity-federation"
+      },
+      "also_tests": [
+        "4.1"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-030",
+      "uid": "712f03ee-ee05-4d61-9cc4-315ced36107a",
+      "title": "Cost per team across shared projects",
+      "objective": "1.2",
+      "subtopic": "Billing Export and Cost Attribution",
+      "summary": "Labels on resources travel into the Cloud Billing export, so costs can be grouped by team in BigQuery even when teams share projects.",
+      "tags": [
+        "bigquery",
+        "billing",
+        "cost-attribution",
+        "labels"
+      ],
+      "source": "curated",
+      "question": "At Wexcombe Media, four teams share the same three projects, and finance needs a monthly cost total per team for Compute Engine, Cloud Storage and BigQuery, queryable in SQL. Moving teams into separate projects is not an option this year. Which two actions should you take? (Choose two.)",
+      "options": {
+        "A": "Add a team tag to each VM's network tags.",
+        "B": "Create a separate billing account for each team.",
+        "C": "Apply a team label to every VM, bucket and dataset.",
+        "D": "Enable the Cloud Billing export to BigQuery and group the cost rows by the team label.",
+        "E": "Create a budget per project with alerts to each team's lead."
+      },
+      "correct_answer": "C,D",
+      "explanation": {
+        "summary": "Resource labels are copied into each cost row of the billing export. With the export in BigQuery, finance can sum cost by the team label across the shared projects.",
+        "option_breakdown": {
+          "A": "Network tags only select VMs for firewall rules and routes; they never show up in Cloud Billing data.",
+          "B": "A project links to one billing account, so separate accounts would mean separate projects, which is ruled out.",
+          "C": "Correct. Labels are how costs from shared projects are attributed to teams.",
+          "D": "Correct. The BigQuery export carries the labels, so a GROUP BY on the team label gives the totals.",
+          "E": "Budgets alert on a project's spend; they don't split one project's cost between teams."
+        },
+        "gcloud_command": "gcloud compute instances add-labels VM_NAME --zone=ZONE --labels=team=video",
+        "doc_ref": "https://cloud.google.com/billing/docs/how-to/export-data-bigquery"
+      },
+      "also_tests": [
+        "3.1"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-036",
+      "uid": "8ef373c3-8982-4f3e-b172-165880e3b68b",
+      "title": "Access that follows people as they join and leave",
+      "objective": "1.1",
+      "subtopic": "Cloud Identity and Users",
+      "summary": "Grant IAM roles to Google groups managed in Cloud Identity, so that joining or leaving the group changes access without editing IAM policies.",
+      "tags": [
+        "cloud-identity",
+        "groups",
+        "iam"
+      ],
+      "source": "curated",
+      "question": "At Cresswell Bakeries, about ten analysts join or leave the data team each month, and each time someone edits IAM bindings on four projects by hand, often forgetting one. The team's access should change as soon as HR updates the team's membership in Cloud Identity. What should you do?",
+      "options": {
+        "A": "Give each analyst a service account key that carries the roles the data team needs.",
+        "B": "Grant each analyst the roles individually, with a script that HR runs once a month.",
+        "C": "Grant the roles to the company's whole Cloud Identity domain on the four projects.",
+        "D": "Grant the roles on the four projects to a Google group for the data team."
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "IAM bindings on a group apply to everyone in it. Adding or removing a member changes their access everywhere the group is granted, with no IAM edits.",
+        "option_breakdown": {
+          "A": "Keys are long-lived secrets tied to a service account, not to a person.",
+          "B": "A monthly script still leaves people with access for weeks after they leave.",
+          "C": "Granting the domain gives every employee the access, not just the data team.",
+          "D": "Correct. The bindings are set once, and membership changes do the rest."
+        },
+        "gcloud_command": "gcloud projects add-iam-policy-binding PROJECT_ID \\\n  --member=group:data-team@cresswell.example --role=roles/bigquery.dataViewer",
+        "doc_ref": "https://cloud.google.com/iam/docs/groups-in-cloud-console"
+      },
+      "also_tests": [
+        "4.1"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-039",
+      "uid": "06662dec-1544-4cc1-9f8f-60ac2767e5ef",
+      "title": "No external IPs except on the bastion",
+      "objective": "1.1",
+      "subtopic": "Organization Policy",
+      "summary": "The compute.vmExternalIpAccess list constraint allows external IPs only on the VM instances you list.",
+      "tags": [
+        "compute-engine",
+        "external-ip",
+        "organization-policy"
+      ],
+      "source": "curated",
+      "question": "Security at Ravenhill Water wants no Compute Engine VM anywhere in the organization to have an external IP address, except one bastion VM named bastion-1 in project net-hub. Developers in other projects must be unable to add one, even with Compute Admin. What should you do?",
+      "options": {
+        "A": "Create a firewall rule in each VPC that denies all ingress from 0.0.0.0/0.",
+        "B": "Remove Compute Admin from developers and grant Compute Viewer.",
+        "C": "Set the compute.vmExternalIpAccess constraint at the organization to allow only bastion-1.",
+        "D": "Enable Private Google Access on every subnet."
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "Organization policies apply whatever IAM roles people hold. The compute.vmExternalIpAccess list constraint permits external IPs only on the instances in its allowed list.",
+        "option_breakdown": {
+          "A": "Deny rules block traffic, but VMs could still be given external IPs, which is what's forbidden.",
+          "B": "Removing roles stops developers' work on VMs, and service accounts could still create VMs with external IPs.",
+          "C": "Correct. The constraint blocks external IPs on every VM except bastion-1, regardless of IAM roles.",
+          "D": "Private Google Access lets private VMs reach Google APIs; it doesn't prevent external IPs."
+        },
+        "gcloud_command": "# policy.yaml: constraint compute.vmExternalIpAccess, allowedValues:\n#   projects/net-hub/zones/ZONE/instances/bastion-1\ngcloud org-policies set-policy policy.yaml",
+        "doc_ref": "https://cloud.google.com/compute/docs/ip-addresses/reserve-static-external-ip-address#disableexternalip"
+      },
+      "also_tests": [
+        "2.1"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-046",
+      "uid": "abec260a-237a-47c5-93ee-b438f02ec784",
+      "title": "Separating production from everything else",
+      "objective": "1.1",
+      "subtopic": "Resource Hierarchy",
+      "summary": "Folders group projects so that IAM grants and organization policies set once on a folder apply to all its projects.",
+      "tags": [
+        "folders",
+        "organization",
+        "resource-hierarchy"
+      ],
+      "source": "curated",
+      "question": "Ollerton Group has just created its organization and has 40 projects directly under it. Production projects need stricter organization policies and a different set of admin groups than development and test projects, and new projects should pick up the right settings from where they are created. What should you do?",
+      "options": {
+        "A": "Create a second organization that holds only the production projects and their admins.",
+        "B": "Create Production and Non-production folders, move the projects in, and set policies there.",
+        "C": "Label every project env=prod or env=dev, and set the policies and roles by label.",
+        "D": "Set each policy and IAM binding directly on every project, according to its environment."
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "Organization policies and IAM allow policies are inherited down the hierarchy. Folders let each environment get its own settings once, and a project created in a folder inherits them.",
+        "option_breakdown": {
+          "A": "A second organization splits identity, billing and policies and makes shared administration harder.",
+          "B": "Correct. Each folder carries its environment's policies and admin groups, and new projects inherit them.",
+          "C": "Labels are metadata for filtering and billing; IAM and organization policies aren't set by project label.",
+          "D": "Per-project settings work but must be repeated for every new project, which is error-prone."
+        },
+        "gcloud_command": "gcloud resource-manager folders create --display-name=Production --organization=ORG_ID\ngcloud beta projects move PROJECT_ID --folder=FOLDER_ID",
+        "doc_ref": "https://cloud.google.com/resource-manager/docs/cloud-platform-resource-hierarchy"
+      },
+      "also_tests": [
+        "4.1"
+      ],
+      "certifying_only": true
     }
   ]
 }

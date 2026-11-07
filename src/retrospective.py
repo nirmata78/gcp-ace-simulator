@@ -46,7 +46,7 @@ from reportlab.platypus import (
 
 from . import study_links
 from .exam_engine import load_bank
-from .models import DOMAIN_SHORT, DOMAINS, PASS_THRESHOLD, Attempt, History, Question
+from .models import DOMAIN_SHORT, DOMAINS, PASS_THRESHOLD, Attempt, History, Question, answer_keys, format_answer
 from .paths import ensure_writable_dir, history_path, reports_dir
 
 # Authored notes are personal: they describe one person's attempts, so the file is gitignored
@@ -502,9 +502,10 @@ def item_page_one(idx: int, total: int, rec: Dict[str, Any], q, c: Dict[str, Any
         ("TOPPADDING", (0, 0), (-1, -1), 0),
         ("BOTTOMPADDING", (0, 0), (-1, -1), 3),
     ]
-    for i, k in enumerate("ABCD"):
-        is_right = k == rec["correct_answer"]
-        is_mine = k == rec["selected"]
+    right, mine = answer_keys(rec["correct_answer"]), answer_keys(rec["selected"])
+    for i, k in enumerate(q.keys):
+        is_right = k in right
+        is_mine = k in mine
         if is_right:
             box, bg, tag = GREEN, GREEN_BG, "CORRECT ANSWER"
         elif is_mine:
@@ -546,17 +547,18 @@ def item_page_one(idx: int, total: int, rec: Dict[str, Any], q, c: Dict[str, Any
     out.append(opts)
     out.append(Spacer(1, 7))
 
+    picked, key = format_answer(rec["selected"]), format_answer(rec["correct_answer"])
     if missed and not rec["selected"]:
         verdict = (f'<b>You left it unanswered</b> &nbsp;·&nbsp; '
-                   f'the correct answer is <b>{rec["correct_answer"]}</b>')
+                   f'the correct answer is <b>{key}</b>')
     elif missed:
-        verdict = (f'<b>You answered {rec["selected"]}</b> &nbsp;·&nbsp; '
-                   f'the correct answer is <b>{rec["correct_answer"]}</b>')
+        verdict = (f'<b>You answered {picked}</b> &nbsp;·&nbsp; '
+                   f'the correct answer is <b>{key}</b>')
     elif kind == "flagged":
-        verdict = (f'<b>You answered {rec["selected"]} — correct</b> &nbsp;·&nbsp; '
+        verdict = (f'<b>You answered {picked} — correct</b> &nbsp;·&nbsp; '
                    f'but you flagged it, so it is reviewed here as a guess')
     else:
-        verdict = (f'<b>You answered {rec["selected"]} — correct</b> &nbsp;·&nbsp; '
+        verdict = (f'<b>You answered {picked} — correct</b> &nbsp;·&nbsp; '
                    f'reviewed to confirm the reasoning, not only the letter')
     out.append(panel(verdict, st, bg=accent_bg, border=accent, pad=6))
     out.append(Spacer(1, 7))
@@ -571,8 +573,7 @@ def item_page_one(idx: int, total: int, rec: Dict[str, Any], q, c: Dict[str, Any
 
     out.append(Paragraph("WHY THE CORRECT ANSWER IS RIGHT", st["sect"]))
     out.append(Paragraph(rich(c["why_right"]), st["body"]))
-    if not restates(q.explanation.summary,
-                    q.explanation.option_breakdown[rec["correct_answer"]]):
+    if len(right) > 1 or not restates(q.explanation.summary, q.explanation.option_breakdown[right[0]]):
         out.append(Paragraph(code(q.explanation.summary), st["body"]))
     return out
 
@@ -892,7 +893,7 @@ def bank_notes(q) -> Dict[str, Any]:
     return {
         "root_cause": "Compare your choice with the option analysis on the question page.",
         "reflex": "Name the deciding constraint in the stem before you read the options.",
-        "why_right": code(q.explanation.option_breakdown[q.correct_answer]),
+        "why_right": code(" ".join(q.explanation.option_breakdown[k] for k in q.correct_keys)),
         "theory_title": esc(q.subtopic),
         "theory": [("p", code(q.explanation.summary))],
         "spot": code(q.summary),

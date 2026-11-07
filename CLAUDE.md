@@ -42,8 +42,9 @@ After changing dependencies in `pyproject.toml`, regenerate both lock files with
 
 ## Rules
 
-- Write questions to `docs/question-standard.md`: a scenario, one decision, four plausible options, a rationale for
-  each, and a `doc_ref` you have actually checked. Never reuse an id; removed ids are in `data/retired.json`.
+- Write questions to `docs/question-standard.md`: a scenario, one decision, four plausible options (or four or five
+  for a "Choose two" question), a rationale for each, and a `doc_ref` you have actually checked. Cross-domain
+  questions set `also_tests` and are certifying-only. Never reuse an id; removed ids are in `data/retired.json`.
 - Google Cloud products get renamed. Verify against current documentation rather than memory, and mark volatile
   facts *verify* in the theory.
 - If you add a fact to a question that the theory does not teach, add it to the theory page too.

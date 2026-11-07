@@ -349,6 +349,10 @@ Four questions choose every load balancer: **external or internal · global or r
 | **External passthrough Network LB** | 4 | Regional | TCP, **UDP**, ESP, ICMP | **Yes** | Games, UDP, protocols needing the real client IP |
 | **Internal passthrough Network LB** | 4 | Regional, internal | TCP, **UDP** | **Yes** | Internal TCP/UDP; next hop for appliances ([§4.3](#s4-3)) |
 
+Envoy-based load balancers, such as the internal Application Load Balancer and the regional external one, need a
+**proxy-only subnet** in each region they use (`--purpose=REGIONAL_MANAGED_PROXY`, *verify*): the proxies take
+their addresses from it, so backend firewall rules must allow that range.
+
 {: .key }
 > **Three eliminations answer most load-balancer items.** *UDP* or *not HTTP* removes every Application LB.
 > *Must see the client's source IP* removes every proxy — it is a **passthrough** LB. *One IP worldwide with

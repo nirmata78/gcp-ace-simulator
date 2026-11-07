@@ -47,6 +47,9 @@ from src.models import (  # noqa: E402
     DOMAINS,
     EXAM_DURATION_SECONDS,
     PASS_THRESHOLD,
+    answer_keys,
+    answer_str,
+    format_answer,
 )
 from src.retrospective import (  # noqa: E402
     build_report,
@@ -57,7 +60,7 @@ from src.retrospective import (  # noqa: E402
 )
 from src import study_links  # noqa: E402
 
-OPTION_KEYS = ["A", "B", "C", "D"]
+NUMBER_WORDS = {2: "two", 3: "three"}
 
 
 # --------------------------------------------------------------------------
@@ -226,6 +229,14 @@ BASE_CSS = """
   div[role="radiogroup"] label { opacity: 1 !important; }
   div[role="radiogroup"] label p { color: var(--md-on-surface) !important; }
   div[role="radiogroup"] label:hover { background: var(--md-surface-container); }
+  /* Multiple-select options: the same full-width targets, as checkboxes. */
+  .ace-choose { font-weight: 600; color: var(--ace-accent); margin: -0.4rem 0 0.6rem; }
+  [class*="st-key-cb_"] label {
+    padding: 0.6rem 0.85rem; border-radius: 12px; line-height: 1.55; width: 100%;
+    border: 1px solid transparent; opacity: 1 !important;
+  }
+  [class*="st-key-cb_"] label p { font-size: 1.0625rem !important; line-height: 1.55; color: var(--md-on-surface) !important; }
+  [class*="st-key-cb_"] label:hover { background: var(--md-surface-container); }
 
   /* --- palette --- */
   .ace-legend { font-size: 0.76rem; color: var(--ace-muted); margin-bottom: 0.5rem; }
@@ -802,48 +813,74 @@ def render_question(sess: ExamSession) -> None:
     )
 
     current = sess.answers.get(q.id)
-    idx = OPTION_KEYS.index(current) if current in OPTION_KEYS else None
     revealed = sess.is_revealed(q.id) if not sess.is_timed else False
 
-    choice = st.radio(
-        "Select one answer",
-        OPTION_KEYS,
-        index=idx,
-        key=f"radio_{q.id}",
-        format_func=lambda k: f"{k}.  {q.options[k]}",
-        disabled=revealed,
-        label_visibility="collapsed",
-    )
-    if choice and choice != current:
-        sess.answer(choice, q.id)
-        st.rerun()
+    if q.is_multi:
+        # "Choose two": one checkbox per option; once enough are ticked the rest lock, as on the exam.
+        st.markdown(f"<div class='ace-choose'>Choose {NUMBER_WORDS.get(q.choose, q.choose)}.</div>",
+                    unsafe_allow_html=True)
+        mine = answer_keys(current)
+        ticked = []
+        for k in q.keys:
+            full = len(mine) >= q.choose and k not in mine
+            if st.checkbox(f"{k}.  {q.options[k]}", value=k in mine, key=f"cb_{q.id}_{k}",
+                           disabled=revealed or full):
+                ticked.append(k)
+        choice = answer_str(ticked)
+        if choice != current:
+            sess.answer(ticked, q.id)
+            st.rerun()
+        complete = len(ticked) == q.choose
+
+        def _target(k: str) -> str:
+            return f".st-key-cb_{q.id}_{k} label"
+    else:
+        current_idx = q.keys.index(current) if current in q.keys else None
+        choice = st.radio(
+            "Select one answer",
+            q.keys,
+            index=current_idx,
+            key=f"radio_{q.id}",
+            format_func=lambda k: f"{k}.  {q.options[k]}",
+            disabled=revealed,
+            label_visibility="collapsed",
+        )
+        if choice and choice != current:
+            sess.answer(choice, q.id)
+            st.rerun()
+        complete = choice is not None
+
+        def _target(k: str) -> str:
+            return f".st-key-radio_{q.id} div[role='radiogroup'] > :nth-child({q.keys.index(k) + 1}) label"
     if revealed:  # mark the answer, and a wrong pick, in the list itself
-        marks = {q.correct_answer: ("#e7f6ec", "var(--md-success)")}
-        if choice and choice != q.correct_answer:
-            marks[choice] = ("#fcecea", "var(--md-error)")
+        marks = {k: ("#e7f6ec", "var(--md-success)") for k in q.correct_keys}
+        for k in answer_keys(choice):
+            if k not in q.correct_keys:
+                marks[k] = ("#fcecea", "var(--md-error)")
         st.markdown("<style>" + "".join(
-            f".st-key-radio_{q.id} div[role='radiogroup'] > :nth-child({OPTION_KEYS.index(k) + 1}) label"
-            f" {{ background: {bg}; border-color: {line} !important; }}"
+            f"{_target(k)} {{ background: {bg}; border-color: {line} !important; }}"
             for k, (bg, line) in marks.items()) + "</style>", unsafe_allow_html=True)
 
     # ---- learning-mode feedback ----------------------------------------
     if not sess.is_timed:
         c1, c2 = st.columns([1.4, 3])
         if not revealed:
-            if c1.button("Check answer", type="primary", disabled=choice is None):
+            if c1.button("Check answer", type="primary", disabled=not complete):
                 sess.reveal(q.id)
                 st.rerun()
-            if choice is None:
-                c2.caption("Choose an option to reveal the analysis.")
+            if not complete:
+                c2.caption(f"Choose {NUMBER_WORDS[q.choose]} options to reveal the analysis." if q.is_multi
+                           else "Choose an option to reveal the analysis.")
         else:
             correct = choice == q.correct_answer
             tone = "ok" if correct else "no"
             st.markdown(
                 f"<div class='ace-fb {tone}'><h4>"
                 + (
-                    f"✓ Correct — {q.correct_answer}"
+                    f"✓ Correct — {format_answer(q.correct_answer)}"
                     if correct
-                    else f"✗ Incorrect — you chose {choice}; the answer is {q.correct_answer}"
+                    else f"✗ Incorrect — you chose {format_answer(choice)}; "
+                         f"the answer is {format_answer(q.correct_answer)}"
                 )
                 + f"</h4>{q.explanation.summary}</div>",
                 unsafe_allow_html=True,
@@ -852,7 +889,7 @@ def render_question(sess: ExamSession) -> None:
                 return  # the study panel carries the option analysis, command and links
             items = "".join(
                 f"<li><b>{k}.</b> {q.explanation.option_breakdown[k]}</li>"
-                for k in OPTION_KEYS
+                for k in q.keys
             )
             st.markdown(
                 f"<div class='ace-breakdown'><b>Option analysis</b><ul>{items}</ul></div>",
@@ -974,14 +1011,16 @@ def render_study_panel(sess: ExamSession) -> None:
                 st.info("Choose an answer and press **Check answer** to see why it is right "
                         "or wrong. The recall tab doesn't give the answer away.")
                 return
-            k = q.correct_answer
-            st.markdown(f"**The answer is {k}.** {q.options[k]}")
-            if not restates(q.explanation.summary, q.explanation.option_breakdown[k]):
+            right = q.correct_keys
+            label = format_answer(q.correct_answer)
+            st.markdown(f"**The answer is {label}.** " + " ".join(q.options[k] for k in right))
+            if len(right) > 1 or not restates(q.explanation.summary, q.explanation.option_breakdown[right[0]]):
                 st.markdown(q.explanation.summary)
-            st.markdown(f"**Why {k} is right.** {q.explanation.option_breakdown[k]}")
+            st.markdown(f"**Why {label} {'are' if len(right) > 1 else 'is'} right.** "
+                        + " ".join(q.explanation.option_breakdown[k] for k in right))
             st.markdown("**Why the others are wrong**")
             st.markdown("\n".join(f"- **{o}.** {q.explanation.option_breakdown[o]}"
-                                   for o in OPTION_KEYS if o != k))
+                                   for o in q.keys if o not in right))
             if q.explanation.gcloud_command:
                 st.markdown("**Command**")
                 st.code(q.explanation.gcloud_command, language="bash")
@@ -1178,11 +1217,12 @@ def render_review_item(n: int, rec, q, expanded: bool) -> None:
             f"<div class='ace-q'>{_inline(q.question)}</div>",
             unsafe_allow_html=True)
         opts = []
-        for k in OPTION_KEYS:
+        mine = answer_keys(rec.selected)
+        for k in q.keys:
             cls, tag = "", ""
-            if k == q.correct_answer:
-                cls, tag = "right", ("CORRECT · YOUR ANSWER" if k == rec.selected else "CORRECT ANSWER")
-            elif k == rec.selected:
+            if k in q.correct_keys:
+                cls, tag = "right", ("CORRECT · YOUR ANSWER" if k in mine else "CORRECT ANSWER")
+            elif k in mine:
                 cls, tag = "mine", "YOUR ANSWER"
             opts.append(
                 f"<div class='ace-opt {cls}'><div class='k'>{k}</div><div>"
@@ -1191,18 +1231,19 @@ def render_review_item(n: int, rec, q, expanded: bool) -> None:
                 + f"<div class='why'>{_inline(q.explanation.option_breakdown[k])}</div></div></div>")
         st.markdown("".join(opts), unsafe_allow_html=True)
 
-        k = q.correct_answer
+        k = format_answer(q.correct_answer)
         if missed and not rec.selected:
             verdict = f"<b>You left it unanswered.</b> The correct answer is <b>{k}</b>."
         elif missed:
-            verdict = f"<b>You answered {rec.selected}.</b> The correct answer is <b>{k}</b>."
+            verdict = f"<b>You answered {format_answer(rec.selected)}.</b> The correct answer is <b>{k}</b>."
         elif rec.flagged:
             verdict = (f"<b>You answered {k}, correctly</b>, but flagged it, so it's reviewed "
                        f"here as a guess.")
         else:
             verdict = f"<b>You answered {k}, correctly.</b> Reviewed to confirm the reasoning."
         # Option {k}'s own analysis is already on its card; add the summary only if it says more.
-        why = ("" if restates(q.explanation.summary, q.explanation.option_breakdown[k]) else
+        why = ("" if not q.is_multi and restates(q.explanation.summary,
+                                                  q.explanation.option_breakdown[q.correct_answer]) else
                f"<div class='ace-note ok'><span class='lbl'>Why {k} is right</span>"
                f"{_inline(q.explanation.summary)}</div>")
         st.markdown(f"<div class='ace-note {kind}'>{verdict}</div>{why}", unsafe_allow_html=True)

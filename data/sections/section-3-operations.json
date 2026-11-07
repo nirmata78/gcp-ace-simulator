@@ -1,11 +1,12 @@
 {
   "domain": "Section 3: Ensuring the successful operation of a cloud solution",
   "version": 2,
-  "updated_at": "2026-11-07T14:36:24+00:00",
-  "count": 211,
+  "updated_at": "2026-11-07T17:00:51+00:00",
+  "count": 258,
   "questions": [
     {
       "id": "ace-dom1-042",
+      "uid": "f42fe7c1-bb87-4a02-a852-236175971c0d",
       "title": "Who deleted the VM yesterday",
       "objective": "3.4",
       "subtopic": "Audit, Flow and Firewall Logs",
@@ -37,7 +38,41 @@
       }
     },
     {
+      "id": "ace-dom3-001",
+      "uid": "5540aa0f-47a2-4686-abda-e631082ff474",
+      "title": "Smoke-test a revision before any traffic",
+      "objective": "3.1",
+      "subtopic": "Cloud Run Releases",
+      "summary": "Deploying with --tag and --no-traffic publishes a revision at a dedicated URL.",
+      "tags": [
+        "canary",
+        "cloud-run",
+        "deployment"
+      ],
+      "source": "curated",
+      "question": "Finchley Tickets deploys a new revision of its checkout service on Cloud Run before every sale. QA must smoke-test the new revision on its own URL while 100% of customers stay on the current revision, and traffic moves only after QA signs off. What should you do?",
+      "options": {
+        "A": "Update the service's traffic split across revisions by percentage.",
+        "B": "Deploy the new revision with a tag and no traffic, then shift traffic explicitly.",
+        "C": "Route 100% of traffic back to the previously known-good revision.",
+        "D": "Set the container concurrency on the service."
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "Deploying with --tag and --no-traffic publishes the revision at a dedicated tagged URL while production continues on the current revision.",
+        "option_breakdown": {
+          "A": "Any percentage sends some production traffic to the revision before QA has tested it.",
+          "B": "Correct. Deploying with --tag and --no-traffic publishes the revision at a dedicated tagged URL while production continues on the current revision.",
+          "C": "Rolling back is for after a bad release; here nothing has been released yet.",
+          "D": "Concurrency sets how many requests an instance handles at once; it doesn't control which revision gets traffic."
+        },
+        "gcloud_command": "gcloud run deploy api --image=IMAGE:v2 --region=us-central1 --tag=canary --no-traffic",
+        "doc_ref": "https://cloud.google.com/run/docs/rollouts-rollbacks-traffic-migration"
+      }
+    },
+    {
       "id": "ace-dom3-002",
+      "uid": "5d0757b7-bf12-43b3-a465-4eccb6286c61",
       "title": "Send 10 percent to the new revision",
       "objective": "3.1",
       "subtopic": "Traffic Splitting",
@@ -70,6 +105,7 @@
     },
     {
       "id": "ace-dom3-003",
+      "uid": "14c283e9-3b93-4732-bff6-0965018bb3e4",
       "title": "Error rates spike after a release",
       "objective": "3.1",
       "subtopic": "Traffic Splitting",
@@ -102,6 +138,7 @@
     },
     {
       "id": "ace-dom3-004",
+      "uid": "0ee87cce-847a-4c5a-8fba-cd82765e4f3d",
       "title": "Connection pool exhausted under load",
       "objective": "3.1",
       "subtopic": "Cloud Run Autoscaling",
@@ -134,6 +171,7 @@
     },
     {
       "id": "ace-dom3-005",
+      "uid": "3802737e-063f-4e21-8eb8-8ee32c3a6379",
       "title": "Cold starts after idle periods",
       "objective": "3.1",
       "subtopic": "Cloud Run Autoscaling",
@@ -166,6 +204,7 @@
     },
     {
       "id": "ace-dom3-013",
+      "uid": "196a0bae-e42b-489e-9cd5-27379e4b9a5e",
       "title": "Pod stuck in Pending",
       "objective": "3.1",
       "subtopic": "Kubernetes Resources",
@@ -198,6 +237,7 @@
     },
     {
       "id": "ace-dom3-014",
+      "uid": "b3362fec-5b4b-4d16-9c46-6ef565db54dc",
       "title": "Stack trace from a crash-looping container",
       "objective": "3.1",
       "subtopic": "Kubernetes Resources",
@@ -230,6 +270,7 @@
     },
     {
       "id": "ace-dom3-015",
+      "uid": "658f4c72-8943-4358-925d-34714698e95a",
       "title": "Roll out a patched image to a Deployment",
       "objective": "3.1",
       "subtopic": "Kubernetes Resources",
@@ -262,6 +303,7 @@
     },
     {
       "id": "ace-dom3-016",
+      "uid": "791e23c3-95d6-4bcd-891b-260674d66541",
       "title": "Restore the previous Deployment version",
       "objective": "3.1",
       "subtopic": "Kubernetes Resources",
@@ -294,6 +336,7 @@
     },
     {
       "id": "ace-dom3-017",
+      "uid": "65056522-b700-460c-9e12-258d822a63e1",
       "title": "Pre-provision for a known surge",
       "objective": "3.1",
       "subtopic": "Kubernetes Resources",
@@ -326,6 +369,7 @@
     },
     {
       "id": "ace-dom3-018",
+      "uid": "c8b28643-c45e-44ed-81c0-f2e1e26296b5",
       "title": "ImagePullBackOff on GKE nodes",
       "objective": "3.1",
       "subtopic": "Artifact Registry Access",
@@ -358,6 +402,7 @@
     },
     {
       "id": "ace-dom3-019",
+      "uid": "c86e2435-714c-4d78-8e6f-f2feea094101",
       "title": "Cloud Build cannot push the image",
       "objective": "3.1",
       "subtopic": "Artifact Registry Access",
@@ -390,6 +435,7 @@
     },
     {
       "id": "ace-dom3-020",
+      "uid": "085c7cc4-dc78-4922-8feb-8cf2c0ac2f23",
       "title": "Local docker push rejected as unauthenticated",
       "objective": "3.1",
       "subtopic": "Artifact Registry Access",
@@ -422,6 +468,7 @@
     },
     {
       "id": "ace-dom3-021",
+      "uid": "8afc2f34-b740-4844-bb95-e5bccabacb53",
       "title": "Destination for images near the cluster",
       "objective": "3.1",
       "subtopic": "Artifact Registry Access",
@@ -454,6 +501,7 @@
     },
     {
       "id": "ace-dom3-022",
+      "uid": "8724c2ad-ef33-4f17-b02c-c100994a4ef1",
       "title": "Registry storage growing without bound",
       "objective": "3.1",
       "subtopic": "Artifact Registry Access",
@@ -486,6 +534,7 @@
     },
     {
       "id": "ace-dom3-023",
+      "uid": "414b4870-5d5c-4453-954f-5adf26ad6bb2",
       "title": "Add replicas when CPU exceeds 65 percent",
       "objective": "3.1",
       "subtopic": "Pod Autoscaling",
@@ -518,6 +567,7 @@
     },
     {
       "id": "ace-dom3-024",
+      "uid": "991d189e-f9aa-4c80-b73e-bbee2ac4db6b",
       "title": "Pods Pending because the pool is full",
       "objective": "3.1",
       "subtopic": "GKE Node Pools",
@@ -550,6 +600,7 @@
     },
     {
       "id": "ace-dom3-025",
+      "uid": "4bbe1521-ffc4-4f19-89c6-3ae18da47155",
       "title": "Requests far higher than real usage",
       "objective": "3.1",
       "subtopic": "Pod Autoscaling",
@@ -582,6 +633,7 @@
     },
     {
       "id": "ace-dom3-026",
+      "uid": "6d72f5af-8255-4879-85ab-eb3eb26d046e",
       "title": "Controlling Autopilot cost per Pod",
       "objective": "3.1",
       "subtopic": "Autopilot Resource Requests",
@@ -614,6 +666,7 @@
     },
     {
       "id": "ace-dom3-027",
+      "uid": "531804fc-c69e-4431-91c8-c0ec4a31dba2",
       "title": "Local SSD cannot be added in place",
       "objective": "3.1",
       "subtopic": "GKE Node Pools",
@@ -645,7 +698,41 @@
       }
     },
     {
+      "id": "ace-dom3-028",
+      "uid": "efc398a4-528a-4bbc-8b95-1072b77d8485",
+      "title": "Golden hardened base for every new VM",
+      "objective": "3.1",
+      "subtopic": "Snapshots and Images",
+      "summary": "A custom image bakes the configuration into a bootable template.",
+      "tags": [
+        "compute-engine",
+        "hardening",
+        "images"
+      ],
+      "source": "curated",
+      "question": "The platform team at Corvid Transit spends a day hardening and patching a Debian VM to the company's security baseline. Every new Compute Engine instance in the next quarter must start from exactly that state at first boot, in any zone, without re-running the hardening. What should you create?",
+      "options": {
+        "A": "A custom image created from the configured boot disk",
+        "B": "A snapshot of the configured disk",
+        "C": "An instance template that uses the public base image",
+        "D": "A startup script that hardens each VM at boot"
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "A custom image bakes the configuration into a bootable template, so every instance created from it starts identical and already hardened.",
+        "option_breakdown": {
+          "A": "Correct. A custom image, ideally in an image family, bakes the hardened configuration into a bootable image, so every VM created from it starts identical.",
+          "B": "You can boot from a snapshot, but snapshots are backups; custom images, with image families and sharing, are the artefact for creating many identical VMs.",
+          "C": "The public base image isn't hardened, so each VM would start unpatched.",
+          "D": "Each VM runs unhardened until the script finishes, and results can differ if a package changes between boots."
+        },
+        "gcloud_command": "gcloud compute images create hardened-base-v3 --source-disk=build-disk \\\n  --source-disk-zone=us-central1-a --family=hardened-base",
+        "doc_ref": "https://cloud.google.com/compute/docs/images/create-custom"
+      }
+    },
+    {
       "id": "ace-dom3-029",
+      "uid": "ebc0fe68-2474-4377-a5e0-feadf265ed1b",
       "title": "Six-hourly backups retained two weeks",
       "objective": "3.1",
       "subtopic": "Snapshots and Images",
@@ -678,6 +765,7 @@
     },
     {
       "id": "ace-dom3-030",
+      "uid": "a65a0e03-e98c-4430-a147-fbdaf9560098",
       "title": "Safety copy before a risky upgrade",
       "objective": "3.1",
       "subtopic": "Snapshots and Images",
@@ -710,6 +798,7 @@
     },
     {
       "id": "ace-dom3-034",
+      "uid": "d7d5fa6b-445b-4d7a-a9ba-ac93e76283fe",
       "title": "SSH without public IPs or a bastion",
       "objective": "3.1",
       "subtopic": "Connecting to Instances",
@@ -742,6 +831,7 @@
     },
     {
       "id": "ace-dom3-035",
+      "uid": "2cdebaff-f2e5-495e-a702-615ed23e27d3",
       "title": "Instance unreachable after a network change",
       "objective": "3.1",
       "subtopic": "Connecting to Instances",
@@ -774,6 +864,7 @@
     },
     {
       "id": "ace-dom3-037",
+      "uid": "c8f8a6ca-06c6-4dbb-aac2-ba819fc3b531",
       "title": "RDP to a Windows VM without a public IP",
       "objective": "3.1",
       "subtopic": "Connecting to Instances",
@@ -805,7 +896,41 @@
       }
     },
     {
+      "id": "ace-dom3-038",
+      "uid": "487e7982-9320-4724-9bf0-701251f48fb1",
+      "title": "Build, push and deploy on merge to main",
+      "objective": "3.1",
+      "subtopic": "Cloud Run Releases",
+      "summary": "A Cloud Build trigger runs build, push and deploy under a service account inside Google Cloud.",
+      "tags": [
+        "ci-cd",
+        "cloud-build",
+        "cloud-run"
+      ],
+      "source": "curated",
+      "question": "At Lumen Florals, every merge to the main branch of the storefront repository must build a container image, push it to Artifact Registry and deploy a new Cloud Run revision. No developer laptop may hold deployment credentials, and there is only one environment. What should you configure?",
+      "options": {
+        "A": "Use Cloud Deploy to promote the release through a delivery pipeline.",
+        "B": "Run terraform plan and then terraform apply from the pipeline.",
+        "C": "Define the steps in a Cloud Build configuration and trigger it from the repository.",
+        "D": "A developer runs the build and the deploy from their machine after each merge."
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "Cloud Build triggers on repository events and runs the build, push and deploy steps in one configuration under a service account inside Google Cloud, so no credentials live on a developer machine.",
+        "option_breakdown": {
+          "A": "Cloud Deploy manages progressive promotion of a release across targets; it does not build images or provision infrastructure.",
+          "B": "Terraform applies declared infrastructure; it is not a container build system or an application release mechanism.",
+          "C": "Correct. Cloud Build triggers on repository events and runs the build, push and deploy steps in one configuration under a service account inside Google Cloud, so no credentials live on a developer machine.",
+          "D": "That puts deploy credentials on a developer's machine, and it depends on someone remembering."
+        },
+        "gcloud_command": "gcloud builds triggers create github --repo-name=app --repo-owner=example \\\n  --branch-pattern='^main$' --build-config=cloudbuild.yaml",
+        "doc_ref": "https://cloud.google.com/build/docs/automating-builds/create-manage-triggers"
+      }
+    },
+    {
       "id": "ace-dom3-039",
+      "uid": "f71f4b94-ba95-4331-97f0-287f968f7a06",
       "title": "Promotion with an approval before production",
       "objective": "3.1",
       "subtopic": "Cloud Run Releases",
@@ -838,6 +963,7 @@
     },
     {
       "id": "ace-dom3-041",
+      "uid": "d0317b3e-b1f2-4364-b504-8bafed10c43f",
       "title": "Keep source code off laptops",
       "objective": "3.1",
       "subtopic": "Developer Environments",
@@ -869,7 +995,41 @@
       }
     },
     {
+      "id": "ace-dom4-002",
+      "uid": "7f57d376-8dd5-4a15-b8f0-2a945f88969e",
+      "title": "Memory and disk metrics missing from VMs",
+      "objective": "3.4",
+      "subtopic": "Ops Agent",
+      "summary": "Guest-level metrics need an in-guest agent; the hypervisor cannot observe them.",
+      "tags": [
+        "compute-engine",
+        "monitoring",
+        "ops-agent"
+      ],
+      "source": "curated",
+      "question": "Pemberton Clinics moved its scheduling servers to Compute Engine. In Cloud Monitoring the operations team sees CPU and network graphs for each VM, but no memory utilisation and no free disk space, so a full disk last week went unnoticed until the app failed. What should you do?",
+      "options": {
+        "A": "Enable the Cloud Monitoring API on the project.",
+        "B": "Deploy Google Cloud Managed Service for Prometheus.",
+        "C": "Install and configure the Ops Agent on the instances.",
+        "D": "Create a log-based metric from the VMs' syslog."
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "Guest-level metrics such as memory and filesystem usage are not visible to the hypervisor; the Ops Agent must run inside the VM to report them.",
+        "option_breakdown": {
+          "A": "The API is already on, since CPU and network metrics arrive.",
+          "B": "Managed Service for Prometheus collects Prometheus-format metrics that workloads expose; it doesn't read a VM's memory or disk.",
+          "C": "Correct. Memory and filesystem usage aren't visible to the hypervisor; the Ops Agent must run inside the VM to report them.",
+          "D": "Syslog doesn't report memory and disk usage, and counting log lines isn't a gauge of either."
+        },
+        "gcloud_command": "sudo bash add-google-cloud-ops-agent-repo.sh --also-install",
+        "doc_ref": "https://cloud.google.com/monitoring/agent/ops-agent"
+      }
+    },
+    {
       "id": "ace-dom4-003",
+      "uid": "4fe1bbfc-d566-401d-92fc-080dab373ba2",
       "title": "Alert on an error string in the logs",
       "objective": "3.4",
       "subtopic": "Custom Metrics",
@@ -902,6 +1062,7 @@
     },
     {
       "id": "ace-dom4-004",
+      "uid": "9ad160e0-eac9-438e-99c6-62e4034419fa",
       "title": "Is the site reachable from other continents",
       "objective": "3.4",
       "subtopic": "Resource Alerts",
@@ -934,6 +1095,7 @@
     },
     {
       "id": "ace-dom4-005",
+      "uid": "d2cbd397-b3c5-45a8-a173-040bb9f789ba",
       "title": "Keep Prometheus instrumentation without servers",
       "objective": "3.4",
       "subtopic": "Managed Prometheus",
@@ -966,6 +1128,7 @@
     },
     {
       "id": "ace-dom4-006",
+      "uid": "ccfbd32d-9759-4c0b-be0f-1d4e50874690",
       "title": "Alert on p95 request latency",
       "objective": "3.4",
       "subtopic": "Resource Alerts",
@@ -998,6 +1161,7 @@
     },
     {
       "id": "ace-dom4-007",
+      "uid": "710fcc6c-b7f3-46c2-a4a2-ee9a2ca3ba1a",
       "title": "SQL investigation across a year of audit logs",
       "objective": "3.4",
       "subtopic": "Log Export",
@@ -1030,6 +1194,7 @@
     },
     {
       "id": "ace-dom4-008",
+      "uid": "94efc056-776b-40ce-a492-e23a6e71b4d6",
       "title": "Seven-year retention at lowest cost",
       "objective": "3.4",
       "subtopic": "Log Export",
@@ -1062,6 +1227,7 @@
     },
     {
       "id": "ace-dom4-009",
+      "uid": "a00b2960-c766-4938-8b4c-11eb63cd5e96",
       "title": "Stream logs to an on-premises SIEM",
       "objective": "3.4",
       "subtopic": "Log Export",
@@ -1094,6 +1260,7 @@
     },
     {
       "id": "ace-dom4-010",
+      "uid": "c8a813d7-9dd2-4243-8664-840bd2c16936",
       "title": "400-day retention queried in place",
       "objective": "3.4",
       "subtopic": "Log Buckets and Routing",
@@ -1126,6 +1293,7 @@
     },
     {
       "id": "ace-dom4-011",
+      "uid": "bebc07b2-aad0-417f-8a99-505afcbb081c",
       "title": "Reads of table data were never recorded",
       "objective": "3.4",
       "subtopic": "Audit, Flow and Firewall Logs",
@@ -1158,6 +1326,7 @@
     },
     {
       "id": "ace-dom4-012",
+      "uid": "774a6c68-8469-4df5-8d96-02d26c91bb90",
       "title": "Health-check log entries dominate cost",
       "objective": "3.4",
       "subtopic": "Log Buckets and Routing",
@@ -1190,6 +1359,7 @@
     },
     {
       "id": "ace-dom4-013",
+      "uid": "62026377-a2ac-4eb1-8d79-cdfc6467a952",
       "title": "Subnet has run out of addresses",
       "objective": "3.3",
       "subtopic": "Subnets, Addresses and Routes",
@@ -1222,6 +1392,7 @@
     },
     {
       "id": "ace-dom4-014",
+      "uid": "38d5b668-40f0-479c-bc53-b468b11c5873",
       "title": "Partner has firewalled a specific address",
       "objective": "3.3",
       "subtopic": "Subnets, Addresses and Routes",
@@ -1254,6 +1425,7 @@
     },
     {
       "id": "ace-dom4-015",
+      "uid": "fb4f1f0d-e4a1-4c98-a57d-a08d0a7aac9a",
       "title": "Force traffic through an appliance",
       "objective": "3.3",
       "subtopic": "Subnets, Addresses and Routes",
@@ -1286,6 +1458,7 @@
     },
     {
       "id": "ace-dom4-016",
+      "uid": "7ca22bfe-7e7e-4245-b7ad-817ba6ea3461",
       "title": "Private hostnames for internal services",
       "objective": "3.3",
       "subtopic": "Cloud DNS and Cloud NAT",
@@ -1318,6 +1491,7 @@
     },
     {
       "id": "ace-dom4-017",
+      "uid": "ca259971-8d60-4946-afa5-b7f5b527ea76",
       "title": "Private instances cannot reach the package mirror",
       "objective": "3.3",
       "subtopic": "Cloud DNS and Cloud NAT",
@@ -1350,6 +1524,7 @@
     },
     {
       "id": "ace-dom4-018",
+      "uid": "0b334edb-8ee3-40d4-b502-83b6566d7ce0",
       "title": "Who talked to the compromised instance",
       "objective": "3.4",
       "subtopic": "Audit, Flow and Firewall Logs",
@@ -1381,7 +1556,41 @@
       }
     },
     {
+      "id": "ace-dom4-019",
+      "uid": "8a0d9a1f-8740-4350-929c-a3271b6430d1",
+      "title": "Age logs to Coldline then delete",
+      "objective": "3.2",
+      "subtopic": "Object Lifecycle",
+      "summary": "Object lifecycle management applies age-based class changes and deletions automatically.",
+      "tags": [
+        "cloud-storage",
+        "cost",
+        "lifecycle"
+      ],
+      "source": "curated",
+      "question": "Sable Analytics writes application logs as objects to a Cloud Storage bucket. Compliance wants each object moved to Coldline 30 days after it is written and deleted one year after it is written, and the operations team refuses to maintain any scheduled script for it. What should you configure?",
+      "options": {
+        "A": "Enable object versioning on the bucket.",
+        "B": "Apply a bucket retention policy and lock it.",
+        "C": "Enable Autoclass on the bucket.",
+        "D": "Configure an object lifecycle management rule on the bucket."
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "Object lifecycle management applies age-based SetStorageClass and Delete actions automatically inside Cloud Storage.",
+        "option_breakdown": {
+          "A": "Versioning keeps old versions; it moves and deletes nothing by age.",
+          "B": "A locked retention policy prevents deletion, which is the opposite of deleting at one year.",
+          "C": "Autoclass moves objects by how they are accessed, not at a fixed age, and it never deletes them.",
+          "D": "Correct. Object lifecycle management applies age-based SetStorageClass and Delete actions automatically inside Cloud Storage."
+        },
+        "gcloud_command": "gcloud storage buckets update gs://logs --lifecycle-file=lifecycle.json",
+        "doc_ref": "https://cloud.google.com/storage/docs/lifecycle"
+      }
+    },
+    {
       "id": "ace-dom4-020",
+      "uid": "eb1a0e0c-e9d7-46d5-bfea-68687f629c32",
       "title": "Recover an overwritten object",
       "objective": "3.2",
       "subtopic": "Securing Cloud Storage Objects",
@@ -1414,6 +1623,7 @@
     },
     {
       "id": "ace-dom4-021",
+      "uid": "0839c07a-1b6d-4968-a3f9-a0bbd3ad22ef",
       "title": "Records nobody can delete for five years",
       "objective": "3.2",
       "subtopic": "Securing Cloud Storage Objects",
@@ -1446,6 +1656,7 @@
     },
     {
       "id": "ace-dom4-022",
+      "uid": "4e866069-959f-492c-8f4e-e1c1e0da46de",
       "title": "Return to the moment before a bad migration",
       "objective": "3.2",
       "subtopic": "Backup and Restore",
@@ -1478,6 +1689,7 @@
     },
     {
       "id": "ace-dom4-023",
+      "uid": "0d479bbe-654c-4e96-ad60-209edf7fb32a",
       "title": "Recover an accidentally deleted instance",
       "objective": "3.2",
       "subtopic": "Backup and Restore",
@@ -1510,6 +1722,7 @@
     },
     {
       "id": "ace-dom4-024",
+      "uid": "c8dae320-295d-4b2c-917a-cb42e4b8fe99",
       "title": "Hand a database copy to an external team",
       "objective": "3.2",
       "subtopic": "Backup and Restore",
@@ -1541,7 +1754,41 @@
       }
     },
     {
+      "id": "ace-dom4-025",
+      "uid": "fff71b05-8ed3-4fa4-9d25-8809a42f9a23",
+      "title": "Which of six services is slow",
+      "objective": "3.4",
+      "subtopic": "Diagnostic Tools",
+      "summary": "Cloud Trace breaks a request into spans per service, attributing end-to-end latency.",
+      "tags": [
+        "cloud-trace",
+        "diagnostics",
+        "latency"
+      ],
+      "source": "curated",
+      "question": "Customers of Wrenfield Bank report that the account-summary API takes about four seconds to respond. One request fans out to six downstream microservices on GKE, and the team must find which service adds the delay. Which tool should you use?",
+      "options": {
+        "A": "Cloud Profiler",
+        "B": "Cloud Trace",
+        "C": "Query Insights",
+        "D": "Error Reporting"
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "Cloud Trace breaks a request into spans per service, which is the only way to attribute end-to-end latency across a call graph.",
+        "option_breakdown": {
+          "A": "Profiler shows where one process spends CPU and memory; it doesn't follow a request across services.",
+          "B": "Correct. Cloud Trace breaks a request into spans per service, which shows where the four seconds go across the call graph.",
+          "C": "Query Insights covers database queries only, not six application services.",
+          "D": "Error Reporting groups exceptions; a slow request needn't raise any."
+        },
+        "gcloud_command": "gcloud trace list-traces --filter='LATENCY>3s'",
+        "doc_ref": "https://cloud.google.com/trace/docs/overview"
+      }
+    },
+    {
       "id": "ace-dom4-026",
+      "uid": "0dff3d57-907a-4a1f-b344-d05b786bf34b",
       "title": "Which functions burn the CPU",
       "objective": "3.4",
       "subtopic": "Diagnostic Tools",
@@ -1574,6 +1821,7 @@
     },
     {
       "id": "ace-dom4-027",
+      "uid": "ae17d7a4-981b-409f-ba8b-cfbf99a96a92",
       "title": "Which queries are loading the database",
       "objective": "3.4",
       "subtopic": "Diagnostic Tools",
@@ -1606,6 +1854,7 @@
     },
     {
       "id": "ace-dom4-028",
+      "uid": "cc42bbfd-9d5f-41b4-9c3c-c066a605f92a",
       "title": "Which VMs are idle or oversized",
       "objective": "3.4",
       "subtopic": "Gemini and Active Assist",
@@ -1638,6 +1887,7 @@
     },
     {
       "id": "ace-dom4-029",
+      "uid": "bda3774e-7dfc-42d7-b85e-2c331d994e9c",
       "title": "Deduplicated view of application exceptions",
       "objective": "3.4",
       "subtopic": "Diagnostic Tools",
@@ -1670,6 +1920,7 @@
     },
     {
       "id": "ace-dom4-030",
+      "uid": "18d44fa6-a9ba-46b6-8fe2-770a5c929bb5",
       "title": "One view of incidents affecting our projects",
       "objective": "3.4",
       "subtopic": "Service Health and Cloud Hub",
@@ -1702,6 +1953,7 @@
     },
     {
       "id": "ace-dom5-013",
+      "uid": "c6c5a420-0a38-4453-bece-c46e283acbf0",
       "title": "Disable the key to render data unreadable",
       "objective": "3.2",
       "subtopic": "CMEK and Key Management",
@@ -1734,6 +1986,7 @@
     },
     {
       "id": "ace-dom5-014",
+      "uid": "be46bf54-8b6f-42be-b099-9a6437d97d2f",
       "title": "FIPS 140-2 Level 3 key material",
       "objective": "3.2",
       "subtopic": "CMEK and Key Management",
@@ -1766,6 +2019,7 @@
     },
     {
       "id": "ace-dom5-015",
+      "uid": "07427553-2c32-406d-82ac-309b18bb8c7c",
       "title": "Store a database password centrally",
       "objective": "3.2",
       "subtopic": "CMEK and Key Management",
@@ -1798,6 +2052,7 @@
     },
     {
       "id": "ace-dom5-016",
+      "uid": "73c2f80b-0cdf-4bac-96b4-80a6fbd4d160",
       "title": "What must be configured for encryption at rest",
       "objective": "3.2",
       "subtopic": "CMEK and Key Management",
@@ -1830,6 +2085,7 @@
     },
     {
       "id": "ace-dom5-017",
+      "uid": "46faf45b-f844-493a-86fc-beb2dbd25e1a",
       "title": "Rotate the disk key every 90 days",
       "objective": "3.2",
       "subtopic": "CMEK and Key Management",
@@ -1862,6 +2118,7 @@
     },
     {
       "id": "ace-s3-001",
+      "uid": "fa3d1477-95b5-41fc-b8b0-eed85f73822c",
       "title": "Every externally exposed Service in a cluster",
       "objective": "3.1",
       "subtopic": "GKE Inventory",
@@ -1895,6 +2152,7 @@
     },
     {
       "id": "ace-s3-002",
+      "uid": "29fe68fc-9bde-4557-965e-6eb98f89ff0c",
       "title": "Which node and node pool each Pod runs on",
       "objective": "3.1",
       "subtopic": "GKE Inventory",
@@ -1928,6 +2186,7 @@
     },
     {
       "id": "ace-s3-003",
+      "uid": "87253064-0139-404e-a8a4-666861503927",
       "title": "An Autopilot Pod killed for memory",
       "objective": "3.1",
       "subtopic": "Autopilot Resource Requests",
@@ -1960,6 +2219,7 @@
     },
     {
       "id": "ace-s3-004",
+      "uid": "533e46da-e8da-46fd-9d93-3b30d30ef4e9",
       "title": "A canary split for a Cloud Run function",
       "objective": "3.1",
       "subtopic": "Traffic Splitting",
@@ -1992,6 +2252,7 @@
     },
     {
       "id": "ace-s3-005",
+      "uid": "636a6b5d-8a82-4c45-82eb-d98451a3cce4",
       "title": "Weighted routing between two versions on GKE",
       "objective": "3.1",
       "subtopic": "Traffic Splitting",
@@ -2025,6 +2286,7 @@
     },
     {
       "id": "ace-s3-006",
+      "uid": "970c078b-225d-415f-802c-c56d54baef02",
       "title": "Adding a GPU to an existing VM",
       "objective": "3.1",
       "subtopic": "Attaching Accelerators",
@@ -2057,6 +2319,7 @@
     },
     {
       "id": "ace-s3-007",
+      "uid": "4a99b293-9f40-4f41-8fbf-7b5b046c1e1c",
       "title": "Running a training Pod on TPUs in GKE",
       "objective": "3.1",
       "subtopic": "Attaching Accelerators",
@@ -2089,6 +2352,7 @@
     },
     {
       "id": "ace-s3-008",
+      "uid": "fabb2649-3097-4f41-ac9e-9f6fd7a11f2a",
       "title": "Least privilege for a deployed agent's tools",
       "objective": "3.1",
       "subtopic": "Agent Runtime",
@@ -2121,6 +2385,7 @@
     },
     {
       "id": "ace-s3-009",
+      "uid": "8748099f-90dd-4073-96a9-f85b35204c1c",
       "title": "Finding the slow step inside an agent's answer",
       "objective": "3.1",
       "subtopic": "Agent Runtime",
@@ -2153,6 +2418,7 @@
     },
     {
       "id": "ace-s3-010",
+      "uid": "1ff7d6b9-dc62-4ab3-b978-02a7588e5b43",
       "title": "Notebook VMs left running all weekend",
       "objective": "3.1",
       "subtopic": "Notebooks",
@@ -2185,6 +2451,7 @@
     },
     {
       "id": "ace-s3-011",
+      "uid": "03506ab1-5c78-4972-8652-6cfda8da4fdd",
       "title": "Running a BigQuery notebook every night",
       "objective": "3.1",
       "subtopic": "Notebooks",
@@ -2217,6 +2484,7 @@
     },
     {
       "id": "ace-s3-012",
+      "uid": "917da810-97ad-409d-8f6f-c08eaa527e27",
       "title": "Standard dev environments with private network access",
       "objective": "3.1",
       "subtopic": "Developer Environments",
@@ -2248,7 +2516,41 @@
       }
     },
     {
+      "id": "ace-s3-013",
+      "uid": "7fdd630a-d27e-40b8-a4ad-22d35a627aec",
+      "title": "Running instances across every zone, as a table",
+      "objective": "3.1",
+      "subtopic": "Instance Inventory and Lifecycle",
+      "summary": "gcloud compute instances list covers all zones; --filter and --format shape the result.",
+      "tags": [
+        "compute-engine",
+        "gcloud",
+        "inventory"
+      ],
+      "source": "curated",
+      "question": "Before a maintenance window, the on-call engineer at Glenmore Retail needs a single list of only the running Compute Engine VMs in the current project, across all zones, showing each VM's name, zone and machine type. What should the engineer run?",
+      "options": {
+        "A": "A describe of each instance, one at a time.",
+        "B": "An instance list per zone, combined by hand.",
+        "C": "A list of the project's managed instance groups.",
+        "D": "One instance list, with a status filter and a table format."
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "instances list already spans every zone unless restricted. --filter selects on any field, and --format chooses the columns.",
+        "option_breakdown": {
+          "A": "describe shows one named instance at a time, which is slow and needs the names first.",
+          "B": "It works, but instances list already covers every zone by default.",
+          "C": "Instance groups miss standalone VMs and don't show each VM's status.",
+          "D": "Correct. gcloud compute instances list --filter='status=RUNNING' --format='table(name,zone,machineType)' covers every zone in one call."
+        },
+        "gcloud_command": "gcloud compute instances list --filter='status=RUNNING' --format='table(name,zone,machineType)'",
+        "doc_ref": "https://cloud.google.com/sdk/gcloud/reference/compute/instances/list"
+      }
+    },
+    {
       "id": "ace-s3-014",
+      "uid": "39012b91-614c-46dd-a839-cf54c0bb581d",
       "title": "Reading recent rows from Bigtable by key prefix",
       "objective": "3.2",
       "subtopic": "Querying Data",
@@ -2281,6 +2583,7 @@
     },
     {
       "id": "ace-s3-015",
+      "uid": "5294ed47-8026-4d57-9487-a4b7a8651d76",
       "title": "An ad-hoc SQL query against a Spanner database",
       "objective": "3.2",
       "subtopic": "Querying Data",
@@ -2313,6 +2616,7 @@
     },
     {
       "id": "ace-s3-016",
+      "uid": "8fa5e1f5-b5db-4807-834b-0d60c2583947",
       "title": "Estimating a storage bill that includes retrieval",
       "objective": "3.2",
       "subtopic": "Storage Cost Estimation",
@@ -2345,6 +2649,7 @@
     },
     {
       "id": "ace-s3-017",
+      "uid": "4f90f56f-e921-45bc-ac50-5bd6b0c3a62c",
       "title": "Scheduled Firestore backups kept for weeks",
       "objective": "3.2",
       "subtopic": "Backup and Restore",
@@ -2377,6 +2682,7 @@
     },
     {
       "id": "ace-s3-018",
+      "uid": "0cded853-d46e-49a9-a010-89c8a1b6f76f",
       "title": "Recovering an AlloyDB cluster to ten minutes ago",
       "objective": "3.2",
       "subtopic": "Backup and Restore",
@@ -2409,6 +2715,7 @@
     },
     {
       "id": "ace-s3-019",
+      "uid": "c0c5c243-6aaa-4a9a-9c2c-aa63883bfebf",
       "title": "Why a Dataflow job has stopped making progress",
       "objective": "3.2",
       "subtopic": "Job Status",
@@ -2441,6 +2748,7 @@
     },
     {
       "id": "ace-s3-020",
+      "uid": "49849dcb-5a48-4ad6-a089-fe25f820f408",
       "title": "Checking whether a BigQuery job succeeded",
       "objective": "3.2",
       "subtopic": "Job Status",
@@ -2472,7 +2780,42 @@
       }
     },
     {
+      "id": "ace-s3-021",
+      "uid": "5be11d30-686b-4fe6-8669-f2f5aa24d68a",
+      "title": "Fleet-wide database risks across many projects",
+      "objective": "3.2",
+      "subtopic": "Database Center",
+      "summary": "Database Center gives one view of the database fleet across projects and flags issues like missing backups.",
+      "tags": [
+        "alloydb",
+        "cloud-sql",
+        "database-center",
+        "fleet-management"
+      ],
+      "source": "curated",
+      "question": "Northgate Finance runs about 200 Cloud SQL, AlloyDB and Spanner instances across 60 projects. The security lead wants one place to see which instances lack automated backups, have a public IP address or are not highly available, without building anything. What should you use?",
+      "options": {
+        "A": "Query Insights on each instance.",
+        "B": "A Cloud Monitoring dashboard per project.",
+        "C": "The billing export, grouped by SKU.",
+        "D": "Database Center."
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "Database Center is the fleet view for Google Cloud databases: an inventory across projects and engines, with health issues such as missing backups, public IP exposure or lack of high availability, and recommendations to fix them.",
+        "option_breakdown": {
+          "A": "Query Insights diagnoses query performance on a single instance.",
+          "B": "Per-project dashboards show metrics, not configuration risks across the fleet.",
+          "C": "Billing rows do not describe backup or network configuration.",
+          "D": "Correct. One inventory with the health issues surfaced."
+        },
+        "gcloud_command": "# Console > Database Center (filter by issue: no automated backups, public IP, not HA)",
+        "doc_ref": "https://cloud.google.com/database-center/docs/overview"
+      }
+    },
+    {
       "id": "ace-s3-022",
+      "uid": "3aec2b41-71eb-40a1-adb6-e39e7ed95855",
       "title": "Database engine versions nearing end of support",
       "objective": "3.2",
       "subtopic": "Database Center",
@@ -2505,6 +2848,7 @@
     },
     {
       "id": "ace-s3-023",
+      "uid": "a343f833-b4db-4056-9420-913275a65452",
       "title": "CMEK bucket creation fails on key permission",
       "objective": "3.2",
       "subtopic": "CMEK and Key Management",
@@ -2538,6 +2882,7 @@
     },
     {
       "id": "ace-s3-024",
+      "uid": "703a57f9-98b0-4267-82eb-1eb10a1068d4",
       "title": "A route to an appliance that drops the traffic",
       "objective": "3.3",
       "subtopic": "Subnets, Addresses and Routes",
@@ -2570,6 +2915,7 @@
     },
     {
       "id": "ace-s3-025",
+      "uid": "2ac1b163-d5a0-4bfe-8498-580a000d3c0c",
       "title": "Finding shadowed and unused firewall rules",
       "objective": "3.3",
       "subtopic": "Firewall Operations",
@@ -2602,6 +2948,7 @@
     },
     {
       "id": "ace-s3-026",
+      "uid": "d6852e89-4ba9-4845-9aaf-7ed88608d0fb",
       "title": "Switching a firewall rule off without losing it",
       "objective": "3.3",
       "subtopic": "Firewall Operations",
@@ -2634,6 +2981,7 @@
     },
     {
       "id": "ace-s3-027",
+      "uid": "5ecaf90d-d8bd-4da2-90fd-001784bb57df",
       "title": "A business metric emitted by the application",
       "objective": "3.4",
       "subtopic": "Custom Metrics",
@@ -2666,6 +3014,7 @@
     },
     {
       "id": "ace-s3-028",
+      "uid": "4f03587f-8b12-4de5-b1ee-139c54f0ede7",
       "title": "Which connections a deny rule blocked",
       "objective": "3.4",
       "subtopic": "Audit, Flow and Firewall Logs",
@@ -2697,7 +3046,41 @@
       }
     },
     {
+      "id": "ace-s3-029",
+      "uid": "b9641e19-0edb-4b08-aecc-2d63e7addad1",
+      "title": "Only the errors from one Cloud Run service",
+      "objective": "3.4",
+      "subtopic": "Viewing and Filtering Logs",
+      "summary": "The logging query language filters on resource type, labels and severity together.",
+      "tags": [
+        "cloud-run",
+        "logging-query-language",
+        "logs-explorer"
+      ],
+      "source": "curated",
+      "question": "On-call at Pellucid Maps is chasing failures in the Cloud Run service named api. In the Logs Explorer, they want only entries from that service with severity ERROR or worse, and nothing from the project's other Cloud Run services. Which query should they use?",
+      "options": {
+        "A": "resource.type=\"cloud_run_revision\" AND textPayload:\"api\" AND severity=ERROR",
+        "B": "resource.type=\"cloud_run_revision\" AND logName=\"api\" AND severity>=ERROR",
+        "C": "resource.type=\"cloud_run_revision\" AND resource.labels.service_name=\"api\" AND severity>=ERROR",
+        "D": "resource.type=\"gce_instance\" AND resource.labels.service_name=\"api\" AND severity>=ERROR"
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "Cloud Run entries carry resource.type cloud_run_revision with the service name as a resource label. Severity is ordered, so >= ERROR includes CRITICAL, ALERT and EMERGENCY.",
+        "option_breakdown": {
+          "A": "Text matching on \"api\" catches any message containing the word, and = ERROR misses CRITICAL and worse.",
+          "B": "A log name identifies a log, not the Cloud Run service.",
+          "C": "Correct. Resource, service and severity in the query language.",
+          "D": "Cloud Run entries use the cloud_run_revision resource type, not gce_instance."
+        },
+        "gcloud_command": "gcloud logging read 'resource.type=\"cloud_run_revision\" AND resource.labels.service_name=\"api\" AND severity>=ERROR' --limit=50",
+        "doc_ref": "https://cloud.google.com/logging/docs/view/logging-query-language"
+      }
+    },
+    {
       "id": "ace-s3-030",
+      "uid": "89095391-819c-4b99-ac00-d1f51a6b40e2",
       "title": "Who made a call, and from which address",
       "objective": "3.4",
       "subtopic": "Viewing and Filtering Logs",
@@ -2730,6 +3113,7 @@
     },
     {
       "id": "ace-s3-031",
+      "uid": "141fed1a-2d66-4fab-a58b-75f7f5a1b12f",
       "title": "Which index would fix the slow queries",
       "objective": "3.4",
       "subtopic": "Diagnostic Tools",
@@ -2762,6 +3146,7 @@
     },
     {
       "id": "ace-s3-032",
+      "uid": "d3434749-4f9a-41d2-90a8-a46d5cccaac5",
       "title": "Being told when a Google incident affects your projects",
       "objective": "3.4",
       "subtopic": "Service Health and Cloud Hub",
@@ -2794,6 +3179,7 @@
     },
     {
       "id": "ace-s3-033",
+      "uid": "e011a4aa-a368-483a-b6c4-221ba8eb4215",
       "title": "One application-centric operations view",
       "objective": "3.4",
       "subtopic": "Service Health and Cloud Hub",
@@ -2826,6 +3212,7 @@
     },
     {
       "id": "ace-s3-034",
+      "uid": "3916dee2-3d42-4f88-b2e9-d9ae27a25c60",
       "title": "AI-assisted root-cause investigation after an alert",
       "objective": "3.4",
       "subtopic": "Gemini and Active Assist",
@@ -2858,6 +3245,7 @@
     },
     {
       "id": "ace-s3-035",
+      "uid": "e11db2c7-04ab-4b43-bab5-b067b8bc7edc",
       "title": "Collecting an application's own log file with the Ops Agent",
       "objective": "3.4",
       "subtopic": "Ops Agent",
@@ -2889,7 +3277,41 @@
       }
     },
     {
+      "id": "ace-s3-036",
+      "uid": "b7295cce-ba3c-4b57-96e9-34c15e7bb73f",
+      "title": "Scraping an application's /metrics endpoint on GKE",
+      "objective": "3.4",
+      "subtopic": "Managed Prometheus",
+      "summary": "With managed collection, a PodMonitoring resource tells Managed Service for Prometheus which Pods to scrape.",
+      "tags": [
+        "gke",
+        "managed-prometheus",
+        "podmonitoring"
+      ],
+      "source": "curated",
+      "question": "Managed collection for Google Cloud Managed Service for Prometheus is enabled on Calloway Foods' GKE cluster. A new inventory Deployment exposes Prometheus metrics on port 9090 at /metrics, but after a day none of its metrics appear in Cloud Monitoring. What should you add?",
+      "options": {
+        "A": "A PodMonitoring resource for the Pods' metrics port.",
+        "B": "The Ops Agent, installed on every node through a DaemonSet.",
+        "C": "A self-managed Prometheus server with remote write to BigQuery.",
+        "D": "A log-based metric parsing the /metrics output from container logs."
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "Managed collection runs the collectors for you, but scraping is opt-in per workload: a PodMonitoring (or ClusterPodMonitoring) resource names the label selector, port and path to scrape.",
+        "option_breakdown": {
+          "A": "Correct. It declares what the managed collectors should scrape.",
+          "B": "The Ops Agent is for Compute Engine VMs; GKE uses managed collection for Prometheus metrics.",
+          "C": "Running your own server is what the managed service replaces, and BigQuery is not a Prometheus backend.",
+          "D": "Metrics are scraped over HTTP, not parsed from logs."
+        },
+        "gcloud_command": "kubectl apply -f podmonitoring.yaml   # kind: PodMonitoring, selector app=orders, endpoints: port 9090, path /metrics",
+        "doc_ref": "https://cloud.google.com/stackdriver/docs/managed-prometheus/setup-managed"
+      }
+    },
+    {
       "id": "ace-s3-037",
+      "uid": "138344b5-456e-4be8-80f6-4ce611a58e10",
       "title": "Which Pods are using the most memory right now",
       "objective": "3.1",
       "subtopic": "GKE Inventory",
@@ -2922,6 +3344,7 @@
     },
     {
       "id": "ace-s3-038",
+      "uid": "9a41dcbd-ebef-4ce9-bc51-a00d83e3ffce",
       "title": "Moving a node pool to a bigger machine type",
       "objective": "3.1",
       "subtopic": "GKE Node Pools",
@@ -2954,6 +3377,7 @@
     },
     {
       "id": "ace-s3-039",
+      "uid": "dfc0c2b5-8a7a-42cc-9a3b-2f4913d0a90b",
       "title": "HPA and VPA fighting over CPU",
       "objective": "3.1",
       "subtopic": "Pod Autoscaling",
@@ -2986,6 +3410,7 @@
     },
     {
       "id": "ace-s3-040",
+      "uid": "c574669f-da14-472c-b51b-911714a645df",
       "title": "Cheaper Autopilot Pods for interruptible work",
       "objective": "3.1",
       "subtopic": "Autopilot Resource Requests",
@@ -3018,6 +3443,7 @@
     },
     {
       "id": "ace-s3-041",
+      "uid": "e0caacaf-2495-4f35-947f-ce7cfe2c0275",
       "title": "Conversation state across turns without building a database",
       "objective": "3.1",
       "subtopic": "Agent Runtime",
@@ -3050,6 +3476,7 @@
     },
     {
       "id": "ace-s3-042",
+      "uid": "e0304e83-a1f7-41da-a69b-d2febb78b625",
       "title": "A notebook instance with no public IP",
       "objective": "3.1",
       "subtopic": "Notebooks",
@@ -3082,6 +3509,7 @@
     },
     {
       "id": "ace-s3-043",
+      "uid": "d216fec9-968b-4f88-829a-3a9ce1b2c328",
       "title": "Workstations left running overnight",
       "objective": "3.1",
       "subtopic": "Developer Environments",
@@ -3114,6 +3542,7 @@
     },
     {
       "id": "ace-s3-044",
+      "uid": "8f6aebbd-a418-4e5b-aedd-6682f57961d9",
       "title": "Source code to a running service in one command",
       "objective": "3.1",
       "subtopic": "Cloud Run Releases",
@@ -3146,6 +3575,7 @@
     },
     {
       "id": "ace-s3-045",
+      "uid": "050cc49b-3cee-4470-91f5-13bff406a484",
       "title": "Work that continues after the response is sent",
       "objective": "3.1",
       "subtopic": "Cloud Run Autoscaling",
@@ -3178,6 +3608,7 @@
     },
     {
       "id": "ace-s3-046",
+      "uid": "eff1d6dd-62a0-4069-9c3a-1f2ee97bfbf9",
       "title": "GPU drivers for a GKE node pool",
       "objective": "3.1",
       "subtopic": "Attaching Accelerators",
@@ -3209,7 +3640,41 @@
       }
     },
     {
+      "id": "ace-s3-047",
+      "uid": "18f2f168-0063-4c2e-9a4c-56f7f3e614bb",
+      "title": "Stopping a streaming pipeline without losing data",
+      "objective": "3.2",
+      "subtopic": "Job Status",
+      "summary": "Draining a Dataflow job finishes in-flight data before stopping; cancelling drops it.",
+      "tags": [
+        "dataflow",
+        "drain",
+        "streaming"
+      ],
+      "source": "curated",
+      "question": "Ravensworth Media runs a streaming Dataflow job that reads click events from a Pub/Sub subscription. A new version of the pipeline changes the graph and cannot replace the job in place. No event the running job has already read may be lost. What should you do with the running job?",
+      "options": {
+        "A": "Cancel it, then start the new job.",
+        "B": "Update it in place with the new pipeline code.",
+        "C": "Drain it, then start the new job on the same subscription.",
+        "D": "Delete the Pub/Sub subscription to stop input."
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "Drain stops reading new input and finishes processing what is in flight before the job stops; unread messages stay in the subscription for the new job.",
+        "option_breakdown": {
+          "A": "Cancel stops immediately and loses in-flight data.",
+          "B": "An in-place update needs a compatible pipeline graph, which this one is not.",
+          "C": "Correct. Drain stops reading new input and finishes processing what is in flight before the job stops; unread messages stay in the subscription for the new job.",
+          "D": "Deleting the subscription discards its backlog of unacknowledged messages."
+        },
+        "gcloud_command": "gcloud dataflow jobs drain JOB_ID --region=REGION",
+        "doc_ref": "https://cloud.google.com/dataflow/docs/guides/stopping-a-pipeline"
+      }
+    },
+    {
       "id": "ace-s3-048",
+      "uid": "5900f308-c278-473c-a23e-2eeacdb49ec4",
       "title": "Which databases would not survive a zone failure",
       "objective": "3.2",
       "subtopic": "Database Center",
@@ -3242,6 +3707,7 @@
     },
     {
       "id": "ace-s3-049",
+      "uid": "1049f3ae-a718-4c8d-ac69-d69c4972a1bc",
       "title": "Running a quick query on a Cloud SQL instance",
       "objective": "3.2",
       "subtopic": "Querying Data",
@@ -3274,6 +3740,7 @@
     },
     {
       "id": "ace-s3-050",
+      "uid": "e11e6a87-793c-4ec8-adba-e4c451c407ed",
       "title": "Which rule is blocking this connection",
       "objective": "3.3",
       "subtopic": "Firewall Operations",
@@ -3306,6 +3773,7 @@
     },
     {
       "id": "ace-s3-051",
+      "uid": "e6bfec8c-abb2-4e28-973e-d05afc29a993",
       "title": "Adding a partner range to an existing rule",
       "objective": "3.3",
       "subtopic": "Firewall Operations",
@@ -3338,6 +3806,7 @@
     },
     {
       "id": "ace-s3-052",
+      "uid": "29c7d60b-fce2-4077-85e7-56f036f74987",
       "title": "Blocking an attacking address across a whole folder",
       "objective": "3.3",
       "subtopic": "Firewall Operations",
@@ -3369,7 +3838,41 @@
       }
     },
     {
+      "id": "ace-s3-053",
+      "uid": "918c5ff6-b3d4-4974-bcdf-04ce6cdb192f",
+      "title": "Cloud VMs resolving on-premises names",
+      "objective": "3.3",
+      "subtopic": "Cloud DNS and Cloud NAT",
+      "summary": "A Cloud DNS forwarding zone sends queries for an on-premises domain to on-premises resolvers.",
+      "tags": [
+        "cloud-dns",
+        "forwarding",
+        "hybrid"
+      ],
+      "source": "curated",
+      "question": "Fairhaven Logistics connects a VPC to its data centre over HA VPN. VMs in the VPC must resolve names under corp.internal, which only the on-premises DNS servers at 192.168.10.53 and 192.168.10.54 serve, and records change there daily. What should you configure?",
+      "options": {
+        "A": "A private Cloud DNS forwarding zone for corp.internal.",
+        "B": "A public Cloud DNS zone for corp.internal with copies of the records.",
+        "C": "An inbound DNS server policy on the VPC.",
+        "D": "Hard-coded /etc/hosts entries on each VM."
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "A forwarding zone makes the VPC's resolver send queries for corp.internal to the on-premises servers over the hybrid connection.",
+        "option_breakdown": {
+          "A": "Correct. A forwarding zone makes the VPC's resolver send queries for corp.internal to the on-premises servers over the hybrid connection.",
+          "B": "A public zone would publish internal names on the internet and go stale.",
+          "C": "An inbound policy is for the opposite direction: on-premises clients resolving Cloud names.",
+          "D": "Hosts files are per VM and drift immediately."
+        },
+        "gcloud_command": "gcloud dns managed-zones create corp-fwd --dns-name=corp.internal. --visibility=private \\\n  --networks=vpc-prod --forwarding-targets=192.168.10.53,192.168.10.54 --description=\"to on-prem\"",
+        "doc_ref": "https://cloud.google.com/dns/docs/zones/forwarding-zones"
+      }
+    },
+    {
       "id": "ace-s3-054",
+      "uid": "726ed9ef-db9a-42c6-9c23-080add5465d4",
       "title": "On-premises servers resolving a Cloud private zone",
       "objective": "3.3",
       "subtopic": "Cloud DNS and Cloud NAT",
@@ -3401,7 +3904,41 @@
       }
     },
     {
+      "id": "ace-s3-055",
+      "uid": "ab2267b6-e094-4538-babb-47b5b7a8793b",
+      "title": "A fixed egress address for a partner's allow-list",
+      "objective": "3.3",
+      "subtopic": "Cloud DNS and Cloud NAT",
+      "summary": "Cloud NAT with manually assigned static IP addresses gives private VMs a fixed egress address.",
+      "tags": [
+        "cloud-nat",
+        "egress",
+        "static-ip"
+      ],
+      "source": "curated",
+      "question": "Payment workers at Olmstead Retail run on VMs without external IPs in a managed instance group that recreates them often. They call a partner's API, and the partner will accept traffic only from two fixed public addresses it adds to an allow-list. What should you configure?",
+      "options": {
+        "A": "Give each VM a static external IP address.",
+        "B": "Cloud NAT with two static external IPs, assigned manually.",
+        "C": "Cloud NAT with automatic IP allocation.",
+        "D": "Private Google Access on the subnet."
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "Manual NAT IP assignment makes all of the subnet's egress leave from reserved addresses that never change, however often the VMs are recreated.",
+        "option_breakdown": {
+          "A": "Static IPs per VM break as the group recreates VMs, and expose the VMs to inbound traffic.",
+          "B": "Correct. Manual NAT IP assignment makes all of the subnet's egress leave from reserved addresses that never change, however often the VMs are recreated.",
+          "C": "Automatic allocation can change or add addresses, which breaks an allow-list.",
+          "D": "Private Google Access reaches Google APIs, not a partner's API."
+        },
+        "gcloud_command": "gcloud compute addresses create nat-1 nat-2 --region=REGION\ngcloud compute routers nats create nat-cfg --router=nat-router --region=REGION \\\n  --nat-all-subnet-ip-ranges --nat-external-ip-pool=nat-1,nat-2",
+        "doc_ref": "https://cloud.google.com/nat/docs/overview"
+      }
+    },
+    {
       "id": "ace-s3-056",
+      "uid": "8c3d2f16-7542-4bb2-87a4-a9b21b10ac18",
       "title": "Keeping the address a VM already has",
       "objective": "3.3",
       "subtopic": "Subnets, Addresses and Routes",
@@ -3434,6 +3971,7 @@
     },
     {
       "id": "ace-s3-057",
+      "uid": "68b40d3b-01fa-4311-82e8-7ae9d99ea871",
       "title": "Isolating two subnets by deleting a route",
       "objective": "3.3",
       "subtopic": "Subnets, Addresses and Routes",
@@ -3466,6 +4004,7 @@
     },
     {
       "id": "ace-s3-058",
+      "uid": "411bf404-0ef9-43e9-8def-17050b77f61b",
       "title": "Two routes that both match a packet",
       "objective": "3.3",
       "subtopic": "Subnets, Addresses and Routes",
@@ -3498,6 +4037,7 @@
     },
     {
       "id": "ace-s3-059",
+      "uid": "8351ca9e-f66e-4d85-a152-e3f3571f6982",
       "title": "Latency percentiles from a value in the logs",
       "objective": "3.4",
       "subtopic": "Custom Metrics",
@@ -3529,7 +4069,41 @@
       }
     },
     {
+      "id": "ace-s3-060",
+      "uid": "af4ffa16-dad6-4247-9744-71ee1c5390c8",
+      "title": "Prometheus metrics from an application on a VM",
+      "objective": "3.4",
+      "subtopic": "Custom Metrics",
+      "summary": "The Ops Agent's Prometheus receiver scrapes an application's /metrics endpoint on a VM.",
+      "tags": [
+        "custom-metrics",
+        "ops-agent",
+        "prometheus"
+      ],
+      "source": "curated",
+      "question": "A pricing service at Halden Travel runs on Compute Engine VMs and already exposes Prometheus metrics at localhost:9100/metrics. The Ops Agent is installed. The team wants those metrics in Cloud Monitoring without running or maintaining a Prometheus server. What should you add?",
+      "options": {
+        "A": "A Prometheus receiver in the Ops Agent configuration",
+        "B": "Rewrite the metrics as log lines and create log-based metrics.",
+        "C": "Deploy a Prometheus server on another VM and point Grafana at it.",
+        "D": "Enable Managed Service for Prometheus managed collection on the project."
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "The Ops Agent can scrape Prometheus endpoints on the VM and send the metrics to Cloud Monitoring, where they are queryable with PromQL.",
+        "option_breakdown": {
+          "A": "Correct. The Ops Agent can scrape Prometheus endpoints on the VM and send the metrics to Cloud Monitoring, where they are queryable with PromQL.",
+          "B": "Logging metrics as text and parsing them back is a lossy detour.",
+          "C": "Running Prometheus yourself is the server the team wants to avoid.",
+          "D": "Managed collection runs on GKE clusters; on VMs, the Ops Agent is the collector."
+        },
+        "gcloud_command": "# /etc/google-cloud-ops-agent/config.yaml\nmetrics:\n  receivers:\n    app:\n      type: prometheus\n      config:\n        scrape_configs:\n        - job_name: app\n          static_configs: [{targets: ['localhost:9100']}]\n  service:\n    pipelines:\n      app: {receivers: [app]}",
+        "doc_ref": "https://cloud.google.com/stackdriver/docs/solutions/agents/ops-agent/prometheus"
+      }
+    },
+    {
       "id": "ace-s3-061",
+      "uid": "ea2682fb-10af-44be-94cc-dbe8290d7d54",
       "title": "A sink that routes nothing",
       "objective": "3.4",
       "subtopic": "Log Buckets and Routing",
@@ -3562,6 +4136,7 @@
     },
     {
       "id": "ace-s3-062",
+      "uid": "a77d9763-3c97-4c6c-a5fb-923ae14ebdc5",
       "title": "One bucket, different teams see different logs",
       "objective": "3.4",
       "subtopic": "Log Buckets and Routing",
@@ -3594,6 +4169,7 @@
     },
     {
       "id": "ace-s3-063",
+      "uid": "7509441a-e293-450e-9296-b08d163b471e",
       "title": "Errors from the last hour, from the command line",
       "objective": "3.4",
       "subtopic": "Viewing and Filtering Logs",
@@ -3626,6 +4202,7 @@
     },
     {
       "id": "ace-s3-064",
+      "uid": "f3086b1b-e925-4bbd-8160-614cc127e09b",
       "title": "Every log line for one order ID",
       "objective": "3.4",
       "subtopic": "Viewing and Filtering Logs",
@@ -3658,6 +4235,7 @@
     },
     {
       "id": "ace-s3-065",
+      "uid": "b21c650b-bf32-46cd-a260-47bbeb28252c",
       "title": "The Ops Agent is running but sends nothing",
       "objective": "3.4",
       "subtopic": "Ops Agent",
@@ -3690,6 +4268,7 @@
     },
     {
       "id": "ace-s3-066",
+      "uid": "c3047308-77d1-4ede-b3c5-0623c543cb01",
       "title": "MySQL metrics from the Ops Agent",
       "objective": "3.4",
       "subtopic": "Ops Agent",
@@ -3722,6 +4301,7 @@
     },
     {
       "id": "ace-s3-067",
+      "uid": "636ee311-bb0d-4b6f-93b7-e42fe38cac6c",
       "title": "Turning on managed collection for an existing cluster",
       "objective": "3.4",
       "subtopic": "Managed Prometheus",
@@ -3754,6 +4334,7 @@
     },
     {
       "id": "ace-s3-068",
+      "uid": "e80937ee-2698-42dc-9135-4375ff4ff595",
       "title": "Alerting on a PromQL expression",
       "objective": "3.4",
       "subtopic": "Managed Prometheus",
@@ -3786,6 +4367,7 @@
     },
     {
       "id": "ace-s3-069",
+      "uid": "1f650e94-b1bc-4d68-8deb-045af115eafd",
       "title": "A commitment sized to steady usage",
       "objective": "3.4",
       "subtopic": "Gemini and Active Assist",
@@ -3818,6 +4400,7 @@
     },
     {
       "id": "ace-s3-070",
+      "uid": "f9349444-5174-4edb-9781-8c1af3f8d60d",
       "title": "Unattached disks that nobody remembers",
       "objective": "3.4",
       "subtopic": "Gemini and Active Assist",
@@ -3850,6 +4433,7 @@
     },
     {
       "id": "ace-s3-071",
+      "uid": "a09f8985-64d1-48b9-8e21-ef12c42ee9ed",
       "title": "Alert when a heartbeat metric stops arriving",
       "objective": "3.4",
       "subtopic": "Resource Alerts",
@@ -3882,6 +4466,7 @@
     },
     {
       "id": "ace-s3-072",
+      "uid": "349a58ef-8cb3-43a7-8225-191264014e23",
       "title": "An alert that pages on every brief spike",
       "objective": "3.4",
       "subtopic": "Resource Alerts",
@@ -3914,6 +4499,7 @@
     },
     {
       "id": "ace-s3-073",
+      "uid": "a3bd38f6-7208-4b08-b967-821ca3cbc367",
       "title": "One folder's audit logs to a central bucket",
       "objective": "3.4",
       "subtopic": "Log Export",
@@ -3946,6 +4532,7 @@
     },
     {
       "id": "ace-s3-074",
+      "uid": "4dd21ed1-2174-4bf9-9b11-71ab9567ad91",
       "title": "Google incidents across the whole organisation",
       "objective": "3.4",
       "subtopic": "Service Health and Cloud Hub",
@@ -3978,6 +4565,7 @@
     },
     {
       "id": "ace-s3-075",
+      "uid": "5c7f9f63-e9f3-46e8-85ed-8b931fc57ebc",
       "title": "Cloud Hub shows nothing about the checkout app",
       "objective": "3.4",
       "subtopic": "Service Health and Cloud Hub",
@@ -4010,6 +4598,7 @@
     },
     {
       "id": "ace-s3-076",
+      "uid": "eb3e8471-c5ec-4efd-9cf9-b84e9bfe12d1",
       "title": "Memory grows steadily in production",
       "objective": "3.4",
       "subtopic": "Diagnostic Tools",
@@ -4042,6 +4631,7 @@
     },
     {
       "id": "ace-s3-077",
+      "uid": "14628725-a0c3-4a84-998b-abf5dd14b672",
       "title": "Letting an Autopilot Pod use spare CPU above its request",
       "objective": "3.1",
       "subtopic": "Autopilot Resource Requests",
@@ -4074,6 +4664,7 @@
     },
     {
       "id": "ace-s3-078",
+      "uid": "26942ac3-910a-43e3-aef0-49713ce98b85",
       "title": "An Autopilot workload that must run on Arm nodes",
       "objective": "3.1",
       "subtopic": "Autopilot Resource Requests",
@@ -4106,6 +4697,7 @@
     },
     {
       "id": "ace-s3-079",
+      "uid": "7ff19bdf-a6d9-42b2-bc0f-c3bf80aafe03",
       "title": "A specific machine family for one Autopilot workload",
       "objective": "3.1",
       "subtopic": "Autopilot Resource Requests",
@@ -4138,6 +4730,7 @@
     },
     {
       "id": "ace-s3-080",
+      "uid": "e13ff53b-fb67-4bcb-be86-3b248362cb7e",
       "title": "A GPU for one Pod in an Autopilot cluster",
       "objective": "3.1",
       "subtopic": "Attaching Accelerators",
@@ -4170,6 +4763,7 @@
     },
     {
       "id": "ace-s3-081",
+      "uid": "c3638cf0-1070-42fc-816a-2640123792f1",
       "title": "Creating a VM with A100 GPUs",
       "objective": "3.1",
       "subtopic": "Attaching Accelerators",
@@ -4202,6 +4796,7 @@
     },
     {
       "id": "ace-s3-082",
+      "uid": "895cabcd-1a1a-447f-bfdd-c56e6c1f7c91",
       "title": "Starting a Cloud TPU VM for a JAX job",
       "objective": "3.1",
       "subtopic": "Attaching Accelerators",
@@ -4234,6 +4829,7 @@
     },
     {
       "id": "ace-s3-083",
+      "uid": "6f112da2-f89e-4930-a5b7-6456aa7c2bb0",
       "title": "Shipping a new version of a deployed agent",
       "objective": "3.1",
       "subtopic": "Agent Runtime",
@@ -4266,6 +4862,7 @@
     },
     {
       "id": "ace-s3-084",
+      "uid": "21a4d097-e5ba-460b-9e33-deb5fbcb68d4",
       "title": "An agent staging bucket in a different project",
       "objective": "3.1",
       "subtopic": "Agent Runtime",
@@ -4298,6 +4895,7 @@
     },
     {
       "id": "ace-s3-085",
+      "uid": "94b14963-b8a4-46f6-979d-5a991d606988",
       "title": "A deployed agent that fails on import",
       "objective": "3.1",
       "subtopic": "Agent Runtime",
@@ -4330,6 +4928,7 @@
     },
     {
       "id": "ace-s3-086",
+      "uid": "193cfb64-f6c9-4fda-af97-afb7b41cb2e9",
       "title": "A Workbench instance only one analyst may open",
       "objective": "3.1",
       "subtopic": "Notebooks",
@@ -4362,6 +4961,7 @@
     },
     {
       "id": "ace-s3-087",
+      "uid": "885df091-87c9-490b-b601-d39348b3c8e9",
       "title": "Upgrading a Workbench instance without losing work",
       "objective": "3.1",
       "subtopic": "Notebooks",
@@ -4394,6 +4994,7 @@
     },
     {
       "id": "ace-s3-088",
+      "uid": "642b8b66-66b4-40df-b03f-6fd1b7c68eb2",
       "title": "Letting a colleague edit a BigQuery Studio notebook",
       "objective": "3.1",
       "subtopic": "Notebooks",
@@ -4426,6 +5027,7 @@
     },
     {
       "id": "ace-s3-089",
+      "uid": "e4ce2711-2219-44f1-b5f1-770e52163f1f",
       "title": "Every workstation with the company's toolchain preinstalled",
       "objective": "3.1",
       "subtopic": "Developer Environments",
@@ -4458,6 +5060,7 @@
     },
     {
       "id": "ace-s3-090",
+      "uid": "56e852f9-b1da-4f63-918f-0106e0b49a29",
       "title": "Files that disappear when a workstation restarts",
       "objective": "3.1",
       "subtopic": "Developer Environments",
@@ -4490,6 +5093,7 @@
     },
     {
       "id": "ace-s3-091",
+      "uid": "61186a0b-42d7-40ca-9be1-837d65349442",
       "title": "Letting developers create their own workstations",
       "objective": "3.1",
       "subtopic": "Developer Environments",
@@ -4522,6 +5126,7 @@
     },
     {
       "id": "ace-s3-092",
+      "uid": "92c0f5ca-4807-4a64-b9b5-755c835138f6",
       "title": "Which databases have no recent backup",
       "objective": "3.2",
       "subtopic": "Database Center",
@@ -4554,6 +5159,7 @@
     },
     {
       "id": "ace-s3-093",
+      "uid": "f6c337c3-6bd5-4181-a9ae-c7dedb37e580",
       "title": "Asking about the database fleet in plain language",
       "objective": "3.2",
       "subtopic": "Database Center",
@@ -4586,6 +5192,7 @@
     },
     {
       "id": "ace-s3-094",
+      "uid": "b14aad5a-e7ce-47ea-b392-089a209d271e",
       "title": "Seeing Bigtable and Memorystore in the database fleet view",
       "objective": "3.2",
       "subtopic": "Database Center",
@@ -4618,6 +5225,7 @@
     },
     {
       "id": "ace-s3-095",
+      "uid": "2af9968f-8ccd-469f-a4fb-1c091cd35011",
       "title": "Blocking new resources that are not CMEK-protected",
       "objective": "3.2",
       "subtopic": "CMEK and Key Management",
@@ -4650,6 +5258,7 @@
     },
     {
       "id": "ace-s3-096",
+      "uid": "eba0d3ae-e76d-4cad-a25b-641e5429f436",
       "title": "CMEK for every team without creating keys by hand",
       "objective": "3.2",
       "subtopic": "CMEK and Key Management",
@@ -4682,6 +5291,7 @@
     },
     {
       "id": "ace-s3-097",
+      "uid": "c74028db-9a5c-436c-9e8e-012e4175c3a7",
       "title": "A CMEK dataset in the EU that will not create",
       "objective": "3.2",
       "subtopic": "CMEK and Key Management",
@@ -4714,6 +5324,7 @@
     },
     {
       "id": "ace-s3-098",
+      "uid": "2c4899ff-3834-4b92-afb2-1e641d2da460",
       "title": "Moving a VPC's firewall rules into a network firewall policy",
       "objective": "3.3",
       "subtopic": "Firewall Operations",
@@ -4746,6 +5357,7 @@
     },
     {
       "id": "ace-s3-099",
+      "uid": "63eb2489-48fa-4558-a390-797de91ed8db",
       "title": "Letting projects decide traffic an org policy should not judge",
       "objective": "3.3",
       "subtopic": "Firewall Operations",
@@ -4778,6 +5390,7 @@
     },
     {
       "id": "ace-s3-100",
+      "uid": "f48e5ec8-d0a1-4227-8a23-eadec0cd911c",
       "title": "Seeing which connections a policy rule is matching",
       "objective": "3.3",
       "subtopic": "Firewall Operations",
@@ -4810,6 +5423,7 @@
     },
     {
       "id": "ace-s3-101",
+      "uid": "167bd2f1-1727-4c07-856e-14bd1ce2eb0b",
       "title": "An on-call engineer who cannot see Service Health events",
       "objective": "3.4",
       "subtopic": "Service Health and Cloud Hub",
@@ -4842,6 +5456,7 @@
     },
     {
       "id": "ace-s3-102",
+      "uid": "0fc4902e-3b2e-4070-8206-b83564ab3764",
       "title": "The Gemini Cloud Assist panel will not work in a new project",
       "objective": "3.4",
       "subtopic": "Gemini and Active Assist",
@@ -4874,6 +5489,7 @@
     },
     {
       "id": "ace-s3-103",
+      "uid": "c9abbe34-3772-4862-959a-23afdb51af5f",
       "title": "Making sense of a latency spike on a dashboard chart",
       "objective": "3.4",
       "subtopic": "Gemini and Active Assist",
@@ -4906,6 +5522,7 @@
     },
     {
       "id": "ace-s3-104",
+      "uid": "db8f5873-a32e-4e81-a222-dcab04db320c",
       "title": "Why an Autopilot HPA scales out too late",
       "objective": "3.1",
       "subtopic": "Autopilot Resource Requests",
@@ -4938,6 +5555,7 @@
     },
     {
       "id": "ace-s3-105",
+      "uid": "e541b7fd-3c64-47b9-92aa-052d7b49edbb",
       "title": "Several small inference Pods sharing one GPU",
       "objective": "3.1",
       "subtopic": "Attaching Accelerators",
@@ -4970,6 +5588,7 @@
     },
     {
       "id": "ace-s3-106",
+      "uid": "1d777ebf-63e6-45fa-b2bd-76ac90022442",
       "title": "Hard isolation between workloads on one A100",
       "objective": "3.1",
       "subtopic": "Attaching Accelerators",
@@ -5002,6 +5621,7 @@
     },
     {
       "id": "ace-s3-107",
+      "uid": "c15b773f-a776-4071-be46-a5d64ccf04ef",
       "title": "An identity that belongs to one agent only",
       "objective": "3.1",
       "subtopic": "Agent Runtime",
@@ -5034,6 +5654,7 @@
     },
     {
       "id": "ace-s3-108",
+      "uid": "e0bd447b-bd51-44cc-a070-905bb74e84dc",
       "title": "Decommissioning an agent completely",
       "objective": "3.1",
       "subtopic": "Agent Runtime",
@@ -5066,6 +5687,7 @@
     },
     {
       "id": "ace-s3-109",
+      "uid": "bb4ef7ef-c6d3-4d88-9bc2-691a7935e053",
       "title": "BigQuery notebook runtimes on a private network",
       "objective": "3.1",
       "subtopic": "Notebooks",
@@ -5098,6 +5720,7 @@
     },
     {
       "id": "ace-s3-110",
+      "uid": "c0205bc5-1e5b-40af-9206-a65118d4b5ea",
       "title": "Collecting diagnostics from a misbehaving Workbench instance",
       "objective": "3.1",
       "subtopic": "Notebooks",
@@ -5130,6 +5753,7 @@
     },
     {
       "id": "ace-s3-111",
+      "uid": "4b4aebad-8a3a-4c34-b38a-24bf5b2399c8",
       "title": "Workstations reachable only from the corporate network",
       "objective": "3.1",
       "subtopic": "Developer Environments",
@@ -5162,6 +5786,7 @@
     },
     {
       "id": "ace-s3-112",
+      "uid": "b5d63261-20b2-4809-a3ed-32415c3bb9b2",
       "title": "A GPU in a data scientist's workstation",
       "objective": "3.1",
       "subtopic": "Developer Environments",
@@ -5194,6 +5819,7 @@
     },
     {
       "id": "ace-s3-113",
+      "uid": "9a4ec05a-3108-40f4-8ce5-1898869c9876",
       "title": "Protecting a database from a Cloud Run scale-out",
       "objective": "3.1",
       "subtopic": "Cloud Run Autoscaling",
@@ -5226,6 +5852,7 @@
     },
     {
       "id": "ace-s3-114",
+      "uid": "7c18cec3-51db-4fdf-ab26-72aa5f4e7c2e",
       "title": "A node pool upgrade that can be rolled back quickly",
       "objective": "3.1",
       "subtopic": "GKE Node Pools",
@@ -5258,6 +5885,7 @@
     },
     {
       "id": "ace-s3-115",
+      "uid": "d9b738a5-0ba6-4fa5-ac55-2687030e9d74",
       "title": "A changed ConfigMap the Pods ignore",
       "objective": "3.1",
       "subtopic": "Kubernetes Resources",
@@ -5289,7 +5917,41 @@
       }
     },
     {
+      "id": "ace-s3-116",
+      "uid": "2cdc523b-262e-41c2-a71a-a4bbf6cedfdf",
+      "title": "Scaling workers on a Pub/Sub backlog",
+      "objective": "3.1",
+      "subtopic": "Pod Autoscaling",
+      "summary": "An HPA on an external metric such as a subscription's undelivered messages scales queue consumers.",
+      "tags": [
+        "external-metrics",
+        "hpa",
+        "pubsub"
+      ],
+      "source": "curated",
+      "question": "At Brackenridge Courier, worker Pods on GKE pull delivery jobs from a Pub/Sub subscription. Their CPU stays low even when the backlog grows to millions of messages, so the CPU-based HorizontalPodAutoscaler never adds Pods. What should the HorizontalPodAutoscaler scale on instead?",
+      "options": {
+        "A": "Average memory utilisation of the worker Pods.",
+        "B": "A higher maximum replica count on the CPU-based HPA.",
+        "C": "The node pool's cluster autoscaler.",
+        "D": "An external metric: the subscription's undelivered messages."
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "Queue depth measures the work waiting. An HPA on that external metric adds workers as the backlog grows and removes them as it drains.",
+        "option_breakdown": {
+          "A": "Memory, like CPU, does not reflect the backlog.",
+          "B": "The maximum does not matter if the metric never triggers scaling.",
+          "C": "The cluster autoscaler adds nodes for pending Pods; it does not add Pods.",
+          "D": "Correct. Queue depth measures the work waiting. An HPA on that external metric adds workers as the backlog grows and removes them as it drains."
+        },
+        "gcloud_command": "metrics:\n- type: External\n  external:\n    metric:\n      name: pubsub.googleapis.com|subscription|num_undelivered_messages\n      selector: { matchLabels: { resource.labels.subscription_id: orders-sub } }\n    target: { type: AverageValue, averageValue: \"100\" }",
+        "doc_ref": "https://docs.cloud.google.com/kubernetes-engine/docs/tutorials/autoscaling-metrics"
+      }
+    },
+    {
       "id": "ace-s3-117",
+      "uid": "949783d5-c8d8-453f-976b-e3faa61f8d5f",
       "title": "Docker Hub rate limits breaking deployments",
       "objective": "3.1",
       "subtopic": "Artifact Registry Access",
@@ -5322,6 +5984,7 @@
     },
     {
       "id": "ace-s3-118",
+      "uid": "eded6067-13c4-4cf9-94d6-d2c2060477d4",
       "title": "Snapshots that must stay in Germany",
       "objective": "3.1",
       "subtopic": "Snapshots and Images",
@@ -5354,6 +6017,7 @@
     },
     {
       "id": "ace-s3-119",
+      "uid": "0b160a59-102d-476e-8164-9b2d7a880c1d",
       "title": "Every Pending Pod across all namespaces",
       "objective": "3.1",
       "subtopic": "GKE Inventory",
@@ -5386,6 +6050,7 @@
     },
     {
       "id": "ace-s3-120",
+      "uid": "4fdcc7d2-a628-41e9-87cc-ca5006e27401",
       "title": "Moving old objects onto the new key version",
       "objective": "3.2",
       "subtopic": "CMEK and Key Management",
@@ -5417,7 +6082,41 @@
       }
     },
     {
+      "id": "ace-s3-121",
+      "uid": "d8cf3b1a-daa6-482f-8efc-ede9de43cece",
+      "title": "Undoing a key destruction request",
+      "objective": "3.2",
+      "subtopic": "CMEK and Key Management",
+      "summary": "Destroyed key versions stay in 'scheduled for destruction' (30 days by default) and can be restored meanwhile.",
+      "tags": [
+        "cmek",
+        "key-destruction",
+        "recovery"
+      ],
+      "source": "curated",
+      "question": "Yesterday an administrator at Cinderford Health scheduled the only enabled version of the Cloud KMS key protecting a production Cloud SQL instance (CMEK) for destruction, by mistake. The key uses the default scheduled-destruction duration. What should you do?",
+      "options": {
+        "A": "Restore the key version while it is scheduled for destruction.",
+        "B": "Nothing can be done; destruction is immediate.",
+        "C": "Create a new key with the same name and re-encrypt the database from it.",
+        "D": "Ask Google Cloud support to recover the destroyed key material after the period ends."
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "A version scheduled for destruction is kept for the destruction delay (30 days by default). During that time it can be restored; afterwards its material is gone for good.",
+        "option_breakdown": {
+          "A": "Correct. A version scheduled for destruction is kept for the destruction delay (30 days by default). During that time it can be restored; afterwards its material is gone for good.",
+          "B": "Destruction is delayed precisely so mistakes can be undone.",
+          "C": "A new key has different material and cannot decrypt the data.",
+          "D": "After destruction, not even Google can recover the key material."
+        },
+        "gcloud_command": "gcloud kms keys versions restore 1 --key=db-key --keyring=data --location=europe-west1\ngcloud kms keys versions enable 1 --key=db-key --keyring=data --location=europe-west1",
+        "doc_ref": "https://docs.cloud.google.com/kms/docs/destroy-restore"
+      }
+    },
+    {
       "id": "ace-s3-122",
+      "uid": "08bdcefb-498c-443a-b30d-c30741b986e8",
       "title": "Backups that ransomware and rogue admins cannot delete",
       "objective": "3.2",
       "subtopic": "Backup and Restore",
@@ -5450,6 +6149,7 @@
     },
     {
       "id": "ace-s3-123",
+      "uid": "ebd701dd-0f25-43bf-a835-1dcc010bc836",
       "title": "Reading Spanner data as it was an hour ago",
       "objective": "3.2",
       "subtopic": "Backup and Restore",
@@ -5482,6 +6182,7 @@
     },
     {
       "id": "ace-s3-124",
+      "uid": "1188fc73-12a7-4d09-8d9d-6ab0dcb87fee",
       "title": "Joining Cloud SQL rows with BigQuery tables in one query",
       "objective": "3.2",
       "subtopic": "Querying Data",
@@ -5513,7 +6214,41 @@
       }
     },
     {
+      "id": "ace-s3-125",
+      "uid": "5c65796b-af46-43f7-9d08-e86bf8bbedc0",
+      "title": "Paying for compressed bytes in BigQuery storage",
+      "objective": "3.2",
+      "subtopic": "Storage Cost Estimation",
+      "summary": "Switching a dataset to the physical storage billing model bills compressed bytes, often far cheaper.",
+      "tags": [
+        "bigquery",
+        "cost",
+        "storage-billing"
+      ],
+      "source": "curated",
+      "question": "A BigQuery dataset at Lowther Telemetry holds 400 TB of logical data that compresses about 8:1, and its tables are rarely updated. Storage is the largest line on the monthly bill, and queries must not change. Which change is most likely to cut storage cost?",
+      "options": {
+        "A": "Move the dataset to a multi-region location.",
+        "B": "Switch the dataset to physical-bytes storage billing.",
+        "C": "Turn on table snapshots.",
+        "D": "Set a custom daily query quota."
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "Under the physical billing model you pay for compressed bytes (at a higher unit price), which is usually much cheaper for data that compresses well.",
+        "option_breakdown": {
+          "A": "Location does not reduce the bytes billed.",
+          "B": "Correct. Under the physical billing model you pay for compressed bytes (at a higher unit price), which is usually much cheaper for data that compresses well.",
+          "C": "Snapshots add storage.",
+          "D": "Query quotas limit query spend, not storage."
+        },
+        "gcloud_command": "ALTER SCHEMA logs SET OPTIONS(storage_billing_model = 'PHYSICAL');",
+        "doc_ref": "https://docs.cloud.google.com/bigquery/docs/datasets-intro#dataset_storage_billing_models"
+      }
+    },
+    {
       "id": "ace-s3-126",
+      "uid": "045b5ce7-3508-414d-8797-29020342d1cd",
       "title": "Getting back an object deleted three days ago",
       "objective": "3.2",
       "subtopic": "Securing Cloud Storage Objects",
@@ -5546,6 +6281,7 @@
     },
     {
       "id": "ace-s3-127",
+      "uid": "7e19bfe3-a6ba-440a-a717-44c8b50b4083",
       "title": "Self-managed databases in the fleet view",
       "objective": "3.2",
       "subtopic": "Database Center",
@@ -5578,6 +6314,7 @@
     },
     {
       "id": "ace-s3-128",
+      "uid": "082fd780-67f0-4f87-a270-2ac3cda9a19b",
       "title": "Sending only one subnet's traffic through an inspection appliance",
       "objective": "3.3",
       "subtopic": "Subnets, Addresses and Routes",
@@ -5610,6 +6347,7 @@
     },
     {
       "id": "ace-s3-129",
+      "uid": "2f26d98e-39df-4da3-af28-8c4847262a1f",
       "title": "A highly available next hop for a static route",
       "objective": "3.3",
       "subtopic": "Subnets, Addresses and Routes",
@@ -5642,6 +6380,7 @@
     },
     {
       "id": "ace-s3-130",
+      "uid": "8288856c-ebff-4159-bffd-eef958ae8e49",
       "title": "A peered VPC that cannot see the VPN routes",
       "objective": "3.3",
       "subtopic": "Subnets, Addresses and Routes",
@@ -5674,6 +6413,7 @@
     },
     {
       "id": "ace-s3-131",
+      "uid": "99b242f6-19eb-46c1-88bc-e2e9139c51b5",
       "title": "A GKE cluster that has run out of Pod addresses",
       "objective": "3.3",
       "subtopic": "Subnets, Addresses and Routes",
@@ -5706,6 +6446,7 @@
     },
     {
       "id": "ace-s3-132",
+      "uid": "f73bb436-9f37-48b4-8c0c-c2f6db5e81dd",
       "title": "One address for a global load balancer that must never change",
       "objective": "3.3",
       "subtopic": "Subnets, Addresses and Routes",
@@ -5738,6 +6479,7 @@
     },
     {
       "id": "ace-s3-133",
+      "uid": "9a6a3f05-87c1-4105-b557-166d03be7a27",
       "title": "Every firewall rule that actually applies to one VM",
       "objective": "3.3",
       "subtopic": "Firewall Operations",
@@ -5770,6 +6512,7 @@
     },
     {
       "id": "ace-s3-134",
+      "uid": "6e3da169-927b-4c80-a9d1-35fb0275fc38",
       "title": "NAT port exhaustion on a few busy VMs",
       "objective": "3.3",
       "subtopic": "Cloud DNS and Cloud NAT",
@@ -5802,6 +6545,7 @@
     },
     {
       "id": "ace-s3-135",
+      "uid": "c26c8c04-45b9-4d26-828d-ba400302c3b8",
       "title": "A cryptic log entry during an incident",
       "objective": "3.4",
       "subtopic": "Gemini and Active Assist",
@@ -5834,6 +6578,7 @@
     },
     {
       "id": "ace-s3-136",
+      "uid": "ab199ce9-13ad-4e2c-a863-8a24d99afa50",
       "title": "Which application's deployment failed last night",
       "objective": "3.4",
       "subtopic": "Service Health and Cloud Hub",
@@ -5866,6 +6611,7 @@
     },
     {
       "id": "ace-s3-137",
+      "uid": "ae0f5354-8faa-4bf1-b0c1-4597af08d5a1",
       "title": "Cost of one application across its projects",
       "objective": "3.4",
       "subtopic": "Service Health and Cloud Hub",
@@ -5898,6 +6644,7 @@
     },
     {
       "id": "ace-s3-138",
+      "uid": "e43001ff-b07b-494b-bf70-0debeb1d9a7a",
       "title": "Paging on how fast the error budget is burning",
       "objective": "3.4",
       "subtopic": "Resource Alerts",
@@ -5930,6 +6677,7 @@
     },
     {
       "id": "ace-s3-139",
+      "uid": "0ac36eeb-9053-4953-aa20-67546003072f",
       "title": "Testing a multi-step checkout journey every five minutes",
       "objective": "3.4",
       "subtopic": "Resource Alerts",
@@ -5962,6 +6710,7 @@
     },
     {
       "id": "ace-s3-140",
+      "uid": "3bb805c8-05e1-4033-be6a-553a7680bc59",
       "title": "An uptime check for a service with no public address",
       "objective": "3.4",
       "subtopic": "Resource Alerts",
@@ -5994,6 +6743,7 @@
     },
     {
       "id": "ace-s3-141",
+      "uid": "3ec6958b-9cbe-4f9b-886b-68813cc7e130",
       "title": "Existing Grafana dashboards on Managed Service for Prometheus",
       "objective": "3.4",
       "subtopic": "Managed Prometheus",
@@ -6026,6 +6776,7 @@
     },
     {
       "id": "ace-s3-142",
+      "uid": "c50b505a-4f08-415f-b20b-e4ce9a494072",
       "title": "OpenTelemetry-instrumented services on Google Cloud",
       "objective": "3.4",
       "subtopic": "Custom Metrics",
@@ -6058,6 +6809,7 @@
     },
     {
       "id": "ace-s3-143",
+      "uid": "8019ae44-e079-4167-93ad-05413d22ba81",
       "title": "VPC Flow Logs costing more than they are worth",
       "objective": "3.4",
       "subtopic": "Audit, Flow and Firewall Logs",
@@ -6090,6 +6842,7 @@
     },
     {
       "id": "ace-s3-144",
+      "uid": "c214a6ec-1657-46f6-9a23-234f3502fadb",
       "title": "What TERMINATED means in the instance list",
       "objective": "3.1",
       "subtopic": "Instance Inventory and Lifecycle",
@@ -6122,6 +6875,7 @@
     },
     {
       "id": "ace-s3-145",
+      "uid": "30197385-a955-499f-a155-0a4e5f543e5e",
       "title": "Every VM in the organization, not one project",
       "objective": "3.1",
       "subtopic": "Instance Inventory and Lifecycle",
@@ -6154,6 +6908,7 @@
     },
     {
       "id": "ace-s3-146",
+      "uid": "f944f99e-07a9-4769-9b70-171f988ab827",
       "title": "Applying a lifecycle configuration from a file",
       "objective": "3.2",
       "subtopic": "Object Lifecycle",
@@ -6186,6 +6941,7 @@
     },
     {
       "id": "ace-s3-147",
+      "uid": "3772d652-901a-4967-be4b-f83236656599",
       "title": "A live-only age rule that never frees versioned storage",
       "objective": "3.2",
       "subtopic": "Object Lifecycle",
@@ -6218,6 +6974,7 @@
     },
     {
       "id": "ace-s3-148",
+      "uid": "1cecbe6e-f473-4280-83ef-0fe40be79c0e",
       "title": "Deleting Coldline objects after a month",
       "objective": "3.2",
       "subtopic": "Storage Cost Estimation",
@@ -6250,6 +7007,7 @@
     },
     {
       "id": "ace-s3-149",
+      "uid": "f56fde1f-e0f0-4841-ace4-e2ac799e9bd7",
       "title": "New revisions that never receive traffic",
       "objective": "3.1",
       "subtopic": "Cloud Run Releases",
@@ -6281,6 +7039,7 @@
     },
     {
       "id": "ace-s3-150",
+      "uid": "c7287883-09c0-42d3-b0f3-65ea81ff82ae",
       "title": "Changing an environment variable on Cloud Run",
       "objective": "3.1",
       "subtopic": "Cloud Run Releases",
@@ -6312,6 +7071,7 @@
     },
     {
       "id": "ace-s3-151",
+      "uid": "9ca4ffd5-0820-4274-a7e2-788b63bf94b3",
       "title": "Clearing out abandoned multipart uploads",
       "objective": "3.2",
       "subtopic": "Object Lifecycle",
@@ -6343,6 +7103,7 @@
     },
     {
       "id": "ace-s3-152",
+      "uid": "a43d4f21-21a9-478f-a353-dfc982dc6436",
       "title": "A lifecycle rule that has not acted yet",
       "objective": "3.2",
       "subtopic": "Object Lifecycle",
@@ -6374,6 +7135,7 @@
     },
     {
       "id": "ace-s3-153",
+      "uid": "e0c7628f-0fff-4918-a683-ae742b541276",
       "title": "Pausing a VM with its memory kept",
       "objective": "3.1",
       "subtopic": "Instance Inventory and Lifecycle",
@@ -6405,6 +7167,7 @@
     },
     {
       "id": "ace-s3-154",
+      "uid": "7b20930c-fa90-44cf-8446-665acbe50153",
       "title": "Giving a running VM more vCPUs",
       "objective": "3.1",
       "subtopic": "Instance Inventory and Lifecycle",
@@ -6436,6 +7199,7 @@
     },
     {
       "id": "ace-s3-155",
+      "uid": "8f74a583-6df4-4e93-9ebb-7f973baa2e7f",
       "title": "A BigQuery job that cannot be found",
       "objective": "3.2",
       "subtopic": "Job Status",
@@ -6467,6 +7231,7 @@
     },
     {
       "id": "ace-s3-156",
+      "uid": "f9f57b24-f71f-409c-9f8e-0c45d9d20ed1",
       "title": "A CI gate on bytes scanned",
       "objective": "3.2",
       "subtopic": "Storage Cost Estimation",
@@ -6498,6 +7263,7 @@
     },
     {
       "id": "ace-s3-157",
+      "uid": "54542e8c-fde4-4e35-a79c-5e4d989fca65",
       "title": "Tables nobody modifies any more",
       "objective": "3.2",
       "subtopic": "Storage Cost Estimation",
@@ -6529,6 +7295,7 @@
     },
     {
       "id": "ace-s3-158",
+      "uid": "661fc975-5c27-4560-8772-2bdebd4e4a3b",
       "title": "One switch for object-level permissions",
       "objective": "3.2",
       "subtopic": "Securing Cloud Storage Objects",
@@ -6561,6 +7328,7 @@
     },
     {
       "id": "ace-s3-159",
+      "uid": "25df1be4-845d-4764-b78c-90aea799969a",
       "title": "A one-hour download link for an outsider",
       "objective": "3.2",
       "subtopic": "Securing Cloud Storage Objects",
@@ -6592,6 +7360,7 @@
     },
     {
       "id": "ace-s3-160",
+      "uid": "b5bff2d1-76ea-4b9d-bbea-acbd3d9d97dd",
       "title": "Sharing a custom image with another project",
       "objective": "3.1",
       "subtopic": "Snapshots and Images",
@@ -6624,6 +7393,7 @@
     },
     {
       "id": "ace-s3-161",
+      "uid": "03760342-36c5-4a77-a9af-75d1569e5215",
       "title": "Credentials for a new Windows VM",
       "objective": "3.1",
       "subtopic": "Connecting to Instances",
@@ -6656,6 +7426,7 @@
     },
     {
       "id": "ace-s3-162",
+      "uid": "f1c33370-2dbf-4080-96b0-745a917df736",
       "title": "A CPU-heavy service drowning in parallel requests",
       "objective": "3.1",
       "subtopic": "Cloud Run Autoscaling",
@@ -6687,6 +7458,7 @@
     },
     {
       "id": "ace-s3-163",
+      "uid": "a0df0965-0cf1-4eef-ba51-555aad84ca0a",
       "title": "Querying CSV files where they already are",
       "objective": "3.2",
       "subtopic": "Querying Data",
@@ -6719,6 +7491,7 @@
     },
     {
       "id": "ace-s3-164",
+      "uid": "c629128b-43bd-47a0-a30e-f0d3920ef71c",
       "title": "Configuration-change records for three years",
       "objective": "3.4",
       "subtopic": "Audit, Flow and Firewall Logs",
@@ -6747,6 +7520,1130 @@
         "gcloud_command": "gcloud logging sinks create audit-3y logging.googleapis.com/projects/P/locations/global/buckets/audit-3y \\\n  --log-filter='logName:\"cloudaudit.googleapis.com%2Factivity\"'",
         "doc_ref": "https://docs.cloud.google.com/logging/docs/audit"
       }
+    },
+    {
+      "id": "ace-s3-165",
+      "uid": "4c540ccf-6d83-4079-a0eb-b67a0d6de7ac",
+      "title": "Settings and a password for the same Pods",
+      "objective": "3.1",
+      "subtopic": "Kubernetes Resources",
+      "summary": "Keep non-sensitive configuration in a ConfigMap and credentials in a Secret, both outside the image, and reference them from the Pod spec.",
+      "tags": [
+        "configmap",
+        "kubernetes",
+        "secret"
+      ],
+      "source": "curated",
+      "question": "A GKE Deployment at Ruthin Tools needs a feature-flag file and a database password. Neither may be baked into the container image, the flags change weekly without a rebuild, and the password must not be stored in plain text in the Deployment manifest. Which two actions should you take? (Choose two.)",
+      "options": {
+        "A": "Store the feature flags in a ConfigMap mounted into the Pods.",
+        "B": "Put the password in an environment variable written in the Deployment manifest.",
+        "C": "Store the flags as annotations on the Deployment object.",
+        "D": "Store the password in a Kubernetes Secret and reference it from the Pod spec.",
+        "E": "Copy both into the image at build time."
+      },
+      "correct_answer": "A,D",
+      "explanation": {
+        "summary": "ConfigMaps hold configuration that Pods read as files or variables, and can be changed without a new image. Secrets hold credentials separately from the manifests that use them.",
+        "option_breakdown": {
+          "A": "Correct. The flags change weekly by updating the ConfigMap, with no rebuild.",
+          "B": "The password would sit in plain text in the manifest, which is ruled out.",
+          "C": "Annotations are metadata for tools, not a way to hand configuration to containers.",
+          "D": "Correct. The manifest references the Secret by name, and the value lives elsewhere.",
+          "E": "Both would be baked into the image, which is forbidden."
+        },
+        "gcloud_command": "kubectl create configmap flags --from-file=flags.yaml\nkubectl create secret generic db --from-literal=password=REDACTED",
+        "doc_ref": "https://cloud.google.com/kubernetes-engine/docs/concepts/secret"
+      }
+    },
+    {
+      "id": "ace-s3-166",
+      "uid": "34b7e103-cf74-46ce-902a-202b00b0f6d7",
+      "title": "No cold starts, and a cap on Cloud Run cost",
+      "objective": "3.1",
+      "subtopic": "Cloud Run Autoscaling",
+      "summary": "Minimum instances keep instances warm to avoid cold starts; maximum instances cap how far the service scales out.",
+      "tags": [
+        "autoscaling",
+        "cloud-run",
+        "cold-start"
+      ],
+      "source": "curated",
+      "question": "Customers of Penrose Bank notice slow first requests on a Cloud Run API in the morning, and a traffic spike last month also ran up an unexpected bill and overloaded the database behind it. The service must stay warm, and scale out to no more than 20 instances. Which two settings should you change? (Choose two.)",
+      "options": {
+        "A": "Set the minimum number of instances to 1.",
+        "B": "Switch to a larger CPU allocation for each instance.",
+        "C": "Set the request timeout to 60 minutes.",
+        "D": "Set the maximum concurrent requests per instance to 1.",
+        "E": "Set the maximum number of instances to 20."
+      },
+      "correct_answer": "A,E",
+      "explanation": {
+        "summary": "With a minimum of one instance, Cloud Run keeps an instance ready, so the first request doesn't wait for a cold start. A maximum of 20 caps scale-out, which bounds both the cost and the connections to the database.",
+        "option_breakdown": {
+          "A": "Correct. A warm instance removes the morning cold start.",
+          "B": "More CPU may speed start-up slightly, but it neither keeps an instance warm nor caps scale.",
+          "C": "A longer timeout lets requests run longer; it doesn't avoid cold starts or limit scale.",
+          "D": "Concurrency of 1 makes Cloud Run start more instances, which worsens both cost and database load.",
+          "E": "Correct. The service never runs more than 20 instances."
+        },
+        "gcloud_command": "gcloud run services update api --region=REGION --min-instances=1 --max-instances=20",
+        "doc_ref": "https://cloud.google.com/run/docs/configuring/min-instances"
+      }
+    },
+    {
+      "id": "ace-s3-167",
+      "uid": "c9f6981b-00b9-4644-a1e0-570dfe816168",
+      "title": "Upgrading nodes without dropping below two replicas",
+      "objective": "3.1",
+      "subtopic": "GKE Node Pools",
+      "summary": "Surge upgrades with maxUnavailable 0 add a new node before draining an old one, and a PodDisruptionBudget stops drains from evicting too many replicas at once.",
+      "tags": [
+        "gke",
+        "node-upgrade",
+        "pdb",
+        "surge"
+      ],
+      "source": "curated",
+      "question": "Hexham Energy is upgrading a GKE Standard node pool that runs a three-replica payment service. During the upgrade, at least two replicas must stay running at all times, and no node may be drained before its replacement exists. Which two actions should you take? (Choose two.)",
+      "options": {
+        "A": "Scale the payment Deployment down to one replica for the upgrade window.",
+        "B": "Set the node pool's surge upgrade to maxSurge 1 and maxUnavailable 0.",
+        "C": "Create a PodDisruptionBudget for the service with minAvailable set to 2.",
+        "D": "Turn off node auto-repair on the pool until the upgrade finishes.",
+        "E": "Delete the node pool, then create a new one on the target version."
+      },
+      "correct_answer": "B,C",
+      "explanation": {
+        "summary": "Surge settings control how nodes are replaced: maxSurge 1 with maxUnavailable 0 creates a new node before cordoning and draining an old one. GKE respects PodDisruptionBudgets when draining, so no more than one replica is evicted at a time.",
+        "option_breakdown": {
+          "A": "One replica means the service is down while that Pod moves.",
+          "B": "Correct. A replacement node exists before any old node is drained.",
+          "C": "Correct. Drains wait rather than let fewer than two replicas run.",
+          "D": "Auto-repair is unrelated to how upgrades replace nodes.",
+          "E": "Deleting the pool evicts every replica at once."
+        },
+        "gcloud_command": "gcloud container node-pools update pay-pool --cluster=CLUSTER --location=LOCATION \\\n  --max-surge-upgrade=1 --max-unavailable-upgrade=0",
+        "doc_ref": "https://cloud.google.com/kubernetes-engine/docs/concepts/node-pool-upgrade-strategies"
+      }
+    },
+    {
+      "id": "ace-s3-168",
+      "uid": "5aa88a6e-70f8-4b18-84b5-246307735611",
+      "title": "A Cloud SQL database that survives a region outage",
+      "objective": "3.2",
+      "subtopic": "Backup and Restore",
+      "summary": "For regional disaster recovery on Cloud SQL, keep a cross-region read replica to promote, and store backups in a location outside the primary region.",
+      "tags": [
+        "backups",
+        "cloud-sql",
+        "disaster-recovery",
+        "read-replica"
+      ],
+      "source": "curated",
+      "question": "Kirby Hotels' booking database is a Cloud SQL for MySQL instance with high availability in us-east1. Management wants it back within an hour if the whole region becomes unavailable, and backups that don't depend on that region. Which two actions should you take? (Choose two.)",
+      "options": {
+        "A": "Take on-demand backups more often, and keep them in us-east1.",
+        "B": "Create a cross-region read replica in us-central1, ready to promote.",
+        "C": "Turn on query insights for the instance to watch its health.",
+        "D": "Store automated backups in a custom location outside us-east1.",
+        "E": "Rely on the HA standby that runs in another zone of us-east1."
+      },
+      "correct_answer": "B,D",
+      "explanation": {
+        "summary": "High availability protects against a zone failure only. A cross-region replica can be promoted to a standalone primary if the region is lost, and backups stored in another location remain usable when the primary region isn't.",
+        "option_breakdown": {
+          "A": "More frequent backups still in us-east1 are lost with the region.",
+          "B": "Correct. Promoting the replica brings the database back in another region quickly.",
+          "C": "Query insights helps tune queries; it does nothing for recovery.",
+          "D": "Correct. Backups in another location don't depend on us-east1.",
+          "E": "The HA standby is in the same region, so a regional outage takes both down."
+        },
+        "gcloud_command": "gcloud sql instances create bookings-dr --master-instance-name=bookings --region=us-central1",
+        "doc_ref": "https://cloud.google.com/sql/docs/mysql/intro-to-cloud-sql-disaster-recovery"
+      }
+    },
+    {
+      "id": "ace-s3-169",
+      "uid": "f7b51948-08b0-4b91-b763-5235d2963e5d",
+      "title": "Proving which firewall rule allowed a connection",
+      "objective": "3.3",
+      "subtopic": "Firewall Operations",
+      "summary": "Firewall Rules Logging records each connection a rule allows or denies, and the entries are read in Cloud Logging.",
+      "tags": [
+        "firewall",
+        "firewall-logging",
+        "logging"
+      ],
+      "source": "curated",
+      "question": "From now on, auditors at Sandford Water must be able to see which VPC firewall rule allowed each connection to a reporting VM on TCP 8443. Several overlapping allow rules exist. Which two actions should you take? (Choose two.)",
+      "options": {
+        "A": "Enable Data Access audit logs for Compute Engine.",
+        "B": "Turn on logging for the candidate allow rules.",
+        "C": "Create an uptime check for port 8443.",
+        "D": "Delete the overlapping rules and recreate one rule.",
+        "E": "Query the firewall log entries for the VM in the Logs Explorer."
+      },
+      "correct_answer": "B,E",
+      "explanation": {
+        "summary": "With Firewall Rules Logging on, each connection a rule matches produces a log entry that names the rule. The entries are in Cloud Logging, where you can filter by VM and port. Logging starts when you enable it, so past connections aren't covered.",
+        "option_breakdown": {
+          "A": "Data Access audit logs record API calls, not network connections.",
+          "B": "Correct. Logging records which rule matched each new connection from now on.",
+          "C": "An uptime check tests reachability; it doesn't say which rule allowed it.",
+          "D": "Deleting rules changes the configuration and doesn't show which one allowed traffic.",
+          "E": "Correct. The entries name the rule that matched each connection."
+        },
+        "gcloud_command": "gcloud compute firewall-rules update allow-reporting-8443 --enable-logging",
+        "doc_ref": "https://cloud.google.com/firewall/docs/using-firewall-rules-logging"
+      }
+    },
+    {
+      "id": "ace-s3-170",
+      "uid": "694a8d9a-6c67-4e30-98e3-27c55abe6bb3",
+      "title": "Apache logs and metrics from a VM fleet",
+      "objective": "3.4",
+      "subtopic": "Ops Agent",
+      "summary": "The Ops Agent collects system metrics and logs, and its configuration file adds receivers for third-party applications such as Apache.",
+      "tags": [
+        "apache",
+        "logging",
+        "monitoring",
+        "ops-agent"
+      ],
+      "source": "curated",
+      "question": "Aldbury Books runs Apache on 40 Compute Engine VMs. Operations needs memory and disk metrics, Apache's request metrics, and Apache's access and error logs, all in Cloud Monitoring and Cloud Logging. Which two actions should you take? (Choose two.)",
+      "options": {
+        "A": "Enable VPC Flow Logs on the VMs' subnet.",
+        "B": "Turn on Data Access audit logs for Compute Engine.",
+        "C": "Install the Ops Agent on the VMs.",
+        "D": "Add Apache receivers for metrics and logs to the Ops Agent configuration.",
+        "E": "Create a log sink that routes syslog to BigQuery."
+      },
+      "correct_answer": "C,D",
+      "explanation": {
+        "summary": "The Ops Agent sends guest metrics, such as memory and disk, and system logs. Third-party applications need receivers in the agent's config.yaml, and Apache has receivers for both its metrics and its logs.",
+        "option_breakdown": {
+          "A": "Flow logs show network traffic, not Apache metrics or logs.",
+          "B": "Audit logs record API calls, not what Apache serves.",
+          "C": "Correct. The agent provides memory, disk and system logs from inside the VMs.",
+          "D": "Correct. The Apache receivers add its request metrics and its access and error logs.",
+          "E": "A sink routes logs that are already collected; it doesn't collect Apache's logs."
+        },
+        "gcloud_command": "# /etc/google-cloud-ops-agent/config.yaml: metrics receiver type apache, logging receivers apache_access and apache_error\nsudo systemctl restart google-cloud-ops-agent",
+        "doc_ref": "https://cloud.google.com/monitoring/agent/ops-agent/third-party/apache"
+      }
+    },
+    {
+      "id": "ace-s3-171",
+      "uid": "0d1f4e35-58e8-4d63-831f-d26b257ee9ec",
+      "title": "Logs for analysis now and a cheap archive for years",
+      "objective": "3.4",
+      "subtopic": "Log Export",
+      "summary": "Use one sink to BigQuery for SQL analysis and another to a Cloud Storage bucket for long, low-cost retention.",
+      "tags": [
+        "bigquery",
+        "cloud-storage",
+        "log-sinks",
+        "retention"
+      ],
+      "source": "curated",
+      "question": "Compliance at Elmswell Bank wants application logs available for SQL analysis for 90 days, and an archive of the same logs kept for seven years at the lowest storage cost. Both must fill automatically as logs arrive. Which two actions should you take? (Choose two.)",
+      "options": {
+        "A": "Create a log-based metric for every application log the services write.",
+        "B": "Export the logs by hand from the Logs Explorer at the end of each month.",
+        "C": "Sink to a Cloud Storage bucket with a lifecycle rule to Archive.",
+        "D": "Extend the _Default log bucket's retention period to seven years.",
+        "E": "Create a sink to a BigQuery dataset whose tables expire after 90 days."
+      },
+      "correct_answer": "C,E",
+      "explanation": {
+        "summary": "Sinks route matching logs as they arrive. A BigQuery destination gives SQL analysis; a Cloud Storage destination with a lifecycle rule to Archive is the cheapest long-term store.",
+        "option_breakdown": {
+          "A": "Metrics count logs; they don't keep the log contents.",
+          "B": "Manual exports aren't automatic and will be missed.",
+          "C": "Correct. The bucket keeps seven years cheaply, and the rule moves objects to Archive.",
+          "D": "Long retention in a log bucket costs more per GB than Archive storage.",
+          "E": "Correct. Logs land in BigQuery for SQL, and table expiry drops them after 90 days."
+        },
+        "gcloud_command": "gcloud logging sinks create app-to-gcs storage.googleapis.com/elmswell-log-archive --log-filter='resource.type=\"k8s_container\"'",
+        "doc_ref": "https://cloud.google.com/logging/docs/export/configure_export_v2"
+      }
+    },
+    {
+      "id": "ace-s3-172",
+      "uid": "7c72e8c8-0a7f-4bb7-843c-77f3fdd8b31e",
+      "title": "Signing in to a new Windows VM through IAP",
+      "objective": "3.1",
+      "subtopic": "Connecting to Instances",
+      "summary": "A Windows VM needs a generated Windows password, and with IAP TCP forwarding, port 3389 opened to IAP's range.",
+      "tags": [
+        "iap",
+        "rdp",
+        "windows"
+      ],
+      "source": "curated",
+      "question": "An engineer at Ludlow Clinics created a Windows Server VM with no external IP address and must connect to it with Remote Desktop from a laptop, using IAP TCP forwarding. The VPC allows only internal traffic, and the engineer already has IAP-secured Tunnel User. Which two actions should you take? (Choose two.)",
+      "options": {
+        "A": "Add the engineer's SSH public key to the VM's metadata.",
+        "B": "Give the VM an ephemeral external IP address for the session.",
+        "C": "Enable OS Login on the VM through its instance metadata.",
+        "D": "Generate a Windows password for the engineer's user on the VM.",
+        "E": "Allow ingress on TCP 3389 from 35.235.240.0/20 to the VM."
+      },
+      "correct_answer": "D,E",
+      "explanation": {
+        "summary": "Windows VMs use a username and password for RDP, which Compute Engine can generate. IAP's forwarders connect from 35.235.240.0/20, so port 3389 must be open to that range.",
+        "option_breakdown": {
+          "A": "SSH keys are for Linux SSH, not for RDP to Windows.",
+          "B": "An external IP isn't needed with IAP and would expose the VM.",
+          "C": "OS Login controls SSH access to Linux VMs, not RDP to Windows.",
+          "D": "Correct. A generated password is how the engineer signs in to Windows.",
+          "E": "Correct. IAP reaches the VM's RDP port from this range."
+        },
+        "gcloud_command": "gcloud compute reset-windows-password win-1 --zone=ZONE --user=engineer\ngcloud compute start-iap-tunnel win-1 3389 --local-host-port=localhost:3389 --zone=ZONE",
+        "doc_ref": "https://cloud.google.com/compute/docs/instances/connecting-to-windows"
+      }
+    },
+    {
+      "id": "ace-s3-173",
+      "uid": "f9ebe719-10d0-4c2d-adee-5f68901a0e7b",
+      "title": "Knowing a query's cost before running it",
+      "objective": "3.2",
+      "subtopic": "Querying Data",
+      "summary": "A dry run, or the console's query validator, reports the bytes a query would process without running it; on-demand cost follows from those bytes.",
+      "tags": [
+        "bigquery",
+        "cost",
+        "dry-run"
+      ],
+      "source": "curated",
+      "question": "Kinver Media's analysts pay on-demand BigQuery prices. Before launching a heavy join against two years of clickstream tables, an analyst wants the number of bytes it will scan, and finding that out must itself cost nothing. Which two approaches give that number? (Choose two.)",
+      "options": {
+        "A": "Read the bytes-processed estimate in the console's query validator.",
+        "B": "Run the query with the --dry_run flag in the bq tool.",
+        "C": "Run the query with LIMIT 10 added, and multiply the cost it shows.",
+        "D": "Check the table's storage size in the Cloud Billing reports page.",
+        "E": "Run the full query and cancel it after a few seconds of processing."
+      },
+      "correct_answer": "A,B",
+      "explanation": {
+        "summary": "A dry run validates a query and returns the bytes it would process, at no charge. The console's validator shows the same estimate while you type. On-demand pricing then follows from bytes processed.",
+        "option_breakdown": {
+          "A": "Correct. The validator shows the estimate before you run anything.",
+          "B": "Correct. A dry run is free and returns the bytes processed.",
+          "C": "LIMIT doesn't reduce bytes scanned, so the small query costs as much as the full one.",
+          "D": "Storage size doesn't tell you which columns and partitions the query reads.",
+          "E": "A cancelled query may still be charged for the work done."
+        },
+        "gcloud_command": "bq query --use_legacy_sql=false --dry_run 'SELECT user_id FROM media.events WHERE day = \"2026-11-01\"'",
+        "doc_ref": "https://cloud.google.com/bigquery/docs/best-practices-costs"
+      }
+    },
+    {
+      "id": "ace-x-002",
+      "uid": "a78ecdea-1f10-4ef1-9b9c-c1ec0cd53d11",
+      "title": "Two years of audit logs for the whole organization",
+      "objective": "3.4",
+      "subtopic": "Log Export",
+      "summary": "An aggregated sink at the organization with children included routes every project's audit logs; the sink's writer identity needs write access on the destination.",
+      "tags": [
+        "audit-logs",
+        "bigquery",
+        "logging",
+        "organization"
+      ],
+      "source": "curated",
+      "question": "Security at Ostrander Mutual must query Admin Activity audit logs from every current and future project in the organization with SQL for two years. The logs must land in a BigQuery dataset in the security-logs project, and project owners must not be able to stop the export. Which two actions should you take? (Choose two.)",
+      "options": {
+        "A": "Create an aggregated sink at the organization with includeChildren, filtered to the audit logs, routing to the dataset.",
+        "B": "Create a sink in each existing project, routing its audit logs to the dataset.",
+        "C": "Grant the sink's writer identity BigQuery Data Editor on the dataset.",
+        "D": "Grant the security team Logs Viewer on the organization.",
+        "E": "Extend the _Required log bucket's retention to two years in every project."
+      },
+      "correct_answer": "A,C",
+      "explanation": {
+        "summary": "An organization-level aggregated sink with includeChildren captures logs from every project under it, including new ones, and project owners can't edit it. The sink writes as its own writer identity, which needs permission to write into the BigQuery dataset.",
+        "option_breakdown": {
+          "A": "Correct. One sink at the organization covers current and future projects, and it lives above the projects so their owners can't remove it.",
+          "B": "Per-project sinks miss projects created later, and each project owner could delete theirs.",
+          "C": "Correct. The writer identity is a service account that must be allowed to create tables and insert rows in the dataset.",
+          "D": "Logs Viewer lets the team read logs where they are; it doesn't export anything or give SQL over two years.",
+          "E": "The _Required bucket's retention is fixed at 400 days and can't be changed, and a log bucket isn't a BigQuery dataset."
+        },
+        "gcloud_command": "gcloud logging sinks create org-audit \\\n  bigquery.googleapis.com/projects/security-logs/datasets/audit \\\n  --organization=ORG_ID --include-children \\\n  --log-filter='logName:\"cloudaudit.googleapis.com%2Factivity\"'",
+        "doc_ref": "https://cloud.google.com/logging/docs/export/aggregated_sinks"
+      },
+      "also_tests": [
+        "1.1",
+        "4.1"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-005",
+      "uid": "728d081f-51e2-4b99-af29-860b00cceaa0",
+      "title": "Private GKE nodes that can't pull from Docker Hub",
+      "objective": "3.3",
+      "subtopic": "Cloud DNS and Cloud NAT",
+      "summary": "Private Google Access covers Google APIs such as Artifact Registry; reaching an internet registry from nodes without external IPs needs Cloud NAT.",
+      "tags": [
+        "cloud-nat",
+        "gke",
+        "networking",
+        "private-nodes"
+      ],
+      "source": "curated",
+      "question": "Halvorsen Media runs a GKE cluster with private nodes in europe-west1. Images from Artifact Registry pull fine, but a new Deployment that uses an image from Docker Hub stays in ImagePullBackOff with a connection timeout. The nodes must keep having no external IP addresses. What should you do?",
+      "options": {
+        "A": "Add an egress firewall rule allowing TCP 443 to 0.0.0.0/0.",
+        "B": "Create a Cloud Router and a Cloud NAT gateway for the nodes' subnet in europe-west1.",
+        "C": "Create a new node pool whose nodes have external IP addresses.",
+        "D": "Enable Private Google Access on the nodes' subnet."
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "Nodes without external IPs reach Google APIs through Private Google Access, which is why Artifact Registry works. Docker Hub is on the internet, so the nodes need Cloud NAT, a regional gateway on a Cloud Router, to make outbound connections.",
+        "option_breakdown": {
+          "A": "Egress is allowed by the implied rule already; the problem is that there is no path to the internet, not a blocked one.",
+          "B": "Correct. Cloud NAT gives the private nodes outbound internet access in that region without giving them external IPs.",
+          "C": "External IPs on nodes would fix the pull, but the stem requires the nodes to stay without them.",
+          "D": "Private Google Access reaches Google APIs only, and it is evidently already working since Artifact Registry pulls succeed."
+        },
+        "gcloud_command": "gcloud compute routers create nat-router --network=NETWORK --region=europe-west1\ngcloud compute routers nats create nat-gw --router=nat-router --region=europe-west1 \\\n  --auto-allocate-nat-external-ips --nat-all-subnet-ip-ranges",
+        "doc_ref": "https://cloud.google.com/nat/docs/gke-example"
+      },
+      "also_tests": [
+        "2.1"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-007",
+      "uid": "780c172a-8984-4cdf-a281-4b025a911a68",
+      "title": "Undoing an accidental DELETE on Cloud SQL",
+      "objective": "3.2",
+      "subtopic": "Backup and Restore",
+      "summary": "Point-in-time recovery clones a Cloud SQL instance to a moment before the mistake, without losing the changes made since the last backup.",
+      "tags": [
+        "backup",
+        "cloud-sql",
+        "pitr"
+      ],
+      "source": "curated",
+      "question": "At 14:05 a developer at Tolland Pharmacy ran a DELETE without a WHERE clause on a production Cloud SQL for PostgreSQL instance. Automated backups run nightly, and point-in-time recovery is enabled. The team needs the data as it was at 14:04, including the morning's orders. What should you do?",
+      "options": {
+        "A": "Clone the instance to 14:04 with point-in-time recovery, then point the app at the clone.",
+        "B": "Fail over the instance to its high-availability standby in the other zone.",
+        "C": "Export the database to Cloud Storage now, then re-import it into a new instance.",
+        "D": "Restore last night's automated backup onto the production instance, overwriting it."
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "Point-in-time recovery replays the write-ahead logs onto a new instance up to a chosen timestamp, so it recovers changes made after the last backup. The original instance is untouched while you check the clone.",
+        "option_breakdown": {
+          "A": "Correct. A point-in-time clone at 14:04 has the data just before the DELETE, including the morning's orders.",
+          "B": "The standby replicates synchronously, so the DELETE is already on it.",
+          "C": "An export now would capture the database after the DELETE.",
+          "D": "The nightly backup predates the morning's orders, so they would be lost."
+        },
+        "gcloud_command": "gcloud sql instances clone prod-db prod-db-1404 \\\n  --point-in-time='2026-11-07T14:04:00Z'",
+        "doc_ref": "https://cloud.google.com/sql/docs/postgres/backup-recovery/pitr"
+      },
+      "also_tests": [
+        "2.2"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-009",
+      "uid": "8b96f0dd-53d2-4f23-a78a-19d2548fb782",
+      "title": "One set of alerts for fifteen projects",
+      "objective": "3.4",
+      "subtopic": "Resource Alerts",
+      "summary": "A scoping project's metrics scope can include other projects, so alert policies and dashboards defined once there see all their metrics.",
+      "tags": [
+        "alerting",
+        "metrics-scope",
+        "monitoring"
+      ],
+      "source": "curated",
+      "question": "Galway Freight runs one service across fifteen projects. The on-call team wants each alert policy defined once, in one place, covering CPU and error-rate metrics from all fifteen projects, including projects added later to that service. What should you do?",
+      "options": {
+        "A": "Route every project's logs to one log bucket and alert on log-based metrics there.",
+        "B": "Export the metrics of every project to BigQuery and schedule queries that send email.",
+        "C": "Copy the alert policies into each of the fifteen projects with a script.",
+        "D": "Create a scoping project, add the fifteen projects to its metrics scope, and create the alert policies in the scoping project."
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "A metrics scope lets one scoping project read the metrics of the projects added to it. Alert policies and dashboards there can cover all of them, and a new project only has to be added to the scope.",
+        "option_breakdown": {
+          "A": "CPU utilisation is a metric, not a log, so log-based metrics would miss it.",
+          "B": "Cloud Monitoring doesn't export metrics to BigQuery for alerting, and scheduled queries are not alerting.",
+          "C": "Copies work but aren't defined once; each change has to be repeated fifteen times.",
+          "D": "Correct. Policies created in the scoping project evaluate metrics from every project in its metrics scope."
+        },
+        "gcloud_command": "gcloud beta monitoring metrics-scopes create projects/MONITORED_PROJECT_ID \\\n  --project=SCOPING_PROJECT_ID",
+        "doc_ref": "https://cloud.google.com/monitoring/settings"
+      },
+      "also_tests": [
+        "1.1"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-012",
+      "uid": "e104bda3-5a88-48f0-8178-e9a30fda3a05",
+      "title": "Seven years kept, cheap after ninety days",
+      "objective": "3.2",
+      "subtopic": "Object Lifecycle",
+      "summary": "A locked retention policy stops anyone deleting objects early; lifecycle rules change the storage class and delete objects by age without scripts.",
+      "tags": [
+        "bucket-lock",
+        "cloud-storage",
+        "lifecycle",
+        "retention-policy"
+      ],
+      "source": "curated",
+      "question": "Hollins Broadcasting stores finished episodes in Cloud Storage. Each object is rarely read after 90 days, must be kept for seven years from when it was written with no one able to delete it sooner, and must be deleted when the seven years end. There may be no scripts. Which two actions should you take? (Choose two.)",
+      "options": {
+        "A": "Add lifecycle rules: change objects to Archive at 90 days, and delete them at seven years.",
+        "B": "Enable Autoclass so that unread episodes move to colder classes.",
+        "C": "Set the bucket's soft delete retention to seven years.",
+        "D": "Set a seven-year retention policy on the bucket and lock it.",
+        "E": "Enable object versioning so that deleted episodes can be restored."
+      },
+      "correct_answer": "A,D",
+      "explanation": {
+        "summary": "A locked retention policy prevents deletion or replacement of any object before it reaches the retention age, even by owners. Lifecycle rules then do the class change and the final deletion by object age.",
+        "option_breakdown": {
+          "A": "Correct. SetStorageClass at 90 days cuts the cost, and Delete at the seven-year age removes each object when it may go.",
+          "B": "Autoclass moves objects between classes but never deletes them, so the seven-year deletion would still need a rule.",
+          "C": "Soft delete retention is at most 90 days, and it only delays a deletion that someone already made.",
+          "D": "Correct. Once locked, the retention policy can't be shortened or removed, so nobody can delete an episode early.",
+          "E": "Versioning keeps noncurrent copies, but anyone with permission can still delete them; it doesn't enforce the seven years."
+        },
+        "gcloud_command": "gcloud storage buckets update gs://episodes --retention-period=7y\ngcloud storage buckets update gs://episodes --lock-retention-period\ngcloud storage buckets update gs://episodes --lifecycle-file=lifecycle.json",
+        "doc_ref": "https://cloud.google.com/storage/docs/bucket-lock"
+      },
+      "also_tests": [
+        "2.2"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-016",
+      "uid": "65a9340f-7891-4771-bf18-4588647074ad",
+      "title": "Knowing who reads a sensitive bucket from now on",
+      "objective": "3.4",
+      "subtopic": "Audit, Flow and Firewall Logs",
+      "summary": "Reads of Cloud Storage objects are recorded only in Data Access audit logs, which are off by default for Cloud Storage and are enabled in the IAM audit configuration.",
+      "tags": [
+        "audit-logs",
+        "cloud-storage",
+        "data-access"
+      ],
+      "source": "curated",
+      "question": "Compliance at Rowan Legal needs a record, from today onward, of every user who reads objects in the case-files bucket, kept in Cloud Logging. Admin Activity audit logs already show who changed the bucket's settings. What should you do?",
+      "options": {
+        "A": "Enable VPC Flow Logs on the subnets the users connect from.",
+        "B": "Enable Data Access audit logs of type DATA_READ for Cloud Storage in the project.",
+        "C": "Nothing; Admin Activity audit logs already record object reads.",
+        "D": "Enable Access Transparency for the organization."
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "Admin Activity logs record configuration changes and are always on. Reading object data is a data access, logged only when Data Access audit logs are enabled for the service; for Cloud Storage they are off by default.",
+        "option_breakdown": {
+          "A": "Flow logs sample network traffic in a VPC; they don't name the user reading an object through the API.",
+          "B": "Correct. DATA_READ audit logs for Cloud Storage record each object read and who made it.",
+          "C": "Admin Activity logs cover changes to resources and their metadata, not reads of object data.",
+          "D": "Access Transparency logs actions by Google personnel, not by the company's own users."
+        },
+        "gcloud_command": "# Console > IAM & Admin > Audit Logs > Google Cloud Storage > Data Read",
+        "doc_ref": "https://cloud.google.com/logging/docs/audit/configure-data-access"
+      },
+      "also_tests": [
+        "4.1"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-018",
+      "uid": "44a31407-14cd-4e3a-9245-6901bb87a7a3",
+      "title": "GPU jobs on GPU nodes only",
+      "objective": "3.1",
+      "subtopic": "GKE Node Pools",
+      "summary": "Add a GPU node pool and request nvidia.com/gpu in the Pod's resource limits; GKE taints GPU nodes so that other Pods stay off them.",
+      "tags": [
+        "gke",
+        "gpu",
+        "node-pools"
+      ],
+      "source": "curated",
+      "question": "Sorrel Vision runs a GKE Standard cluster whose single node pool has no GPUs. A new inference Deployment needs one NVIDIA L4 GPU per Pod, and the other workloads must keep running on the existing nodes, not on the expensive GPU nodes. Which two actions should you take? (Choose two.)",
+      "options": {
+        "A": "Create a new node pool with L4 GPUs attached to its nodes.",
+        "B": "Move the other workloads to Cloud Run so the cluster holds only GPU Pods.",
+        "C": "Attach L4 GPUs to the existing nodes with the gcloud compute instances commands.",
+        "D": "Install the NVIDIA drivers on the cluster's control plane.",
+        "E": "Set a limit of nvidia.com/gpu: 1 in the inference containers' resources."
+      },
+      "correct_answer": "A,E",
+      "explanation": {
+        "summary": "GPUs are added to GKE as a node pool with accelerators. Pods ask for GPUs through the nvidia.com/gpu resource; GKE taints GPU nodes and adds the matching toleration to Pods that request GPUs, so other Pods stay on the original nodes.",
+        "option_breakdown": {
+          "A": "Correct. A GPU node pool provides the L4 capacity without changing the existing nodes.",
+          "B": "Moving workloads off the cluster isn't needed; the GPU taint already keeps them off the GPU nodes.",
+          "C": "GKE manages its nodes; editing the underlying VMs directly is unsupported and changes would be lost when nodes are recreated.",
+          "D": "The control plane is managed by Google and runs no workloads; drivers belong on the GPU nodes.",
+          "E": "Correct. Requesting the GPU schedules each Pod on a GPU node and gives it the toleration for the GPU taint."
+        },
+        "gcloud_command": "gcloud container node-pools create l4-pool --cluster=CLUSTER --location=LOCATION \\\n  --machine-type=g2-standard-8 --accelerator=type=nvidia-l4,count=1,gpu-driver-version=default",
+        "doc_ref": "https://cloud.google.com/kubernetes-engine/docs/how-to/gpus"
+      },
+      "also_tests": [
+        "2.1"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-019",
+      "uid": "6765e659-2df7-4167-8ba5-5ced723b1378",
+      "title": "A BigQuery dataset encrypted with the security team's key",
+      "objective": "3.2",
+      "subtopic": "CMEK and Key Management",
+      "summary": "For CMEK in BigQuery, the BigQuery service agent needs Encrypter/Decrypter on a key in the dataset's location, and the dataset's default key is set to it.",
+      "tags": [
+        "bigquery",
+        "cloud-kms",
+        "cmek",
+        "service-agents"
+      ],
+      "source": "curated",
+      "question": "Security at Penhallow Energy manages Cloud KMS keys in the sec-keys project. A new BigQuery dataset in the EU multi-region of project analytics must encrypt every new table with a key the security team controls. Which two actions should you take? (Choose two.)",
+      "options": {
+        "A": "Create the key in the global location of sec-keys so that every region can use it.",
+        "B": "Set the key as the dataset's default Cloud KMS key.",
+        "C": "Create the key in the europe location of sec-keys, and grant the analytics project's BigQuery service agent Encrypter/Decrypter on it.",
+        "D": "Use customer-supplied encryption keys sent with each query.",
+        "E": "Grant the data analysts Cloud KMS Admin on the key."
+      },
+      "correct_answer": "B,C",
+      "explanation": {
+        "summary": "BigQuery uses its service agent to call Cloud KMS, so that identity needs Encrypter/Decrypter on the key. The key must be in a location that matches the dataset. A dataset default key then applies to every new table.",
+        "option_breakdown": {
+          "A": "BigQuery requires the key's location to match the dataset's, so a global key can't protect an EU dataset.",
+          "B": "Correct. With a default key on the dataset, new tables are encrypted with it without each job naming it.",
+          "C": "Correct. A key in the europe multi-region matches the EU dataset, and the BigQuery service agent is the identity that uses it.",
+          "D": "BigQuery doesn't support customer-supplied encryption keys.",
+          "E": "Analysts don't use the key directly, and KMS Admin would let them change or destroy it."
+        },
+        "gcloud_command": "bq update --default_kms_key=projects/sec-keys/locations/europe/keyRings/bq/cryptoKeys/analytics analytics:DATASET",
+        "doc_ref": "https://cloud.google.com/bigquery/docs/customer-managed-encryption"
+      },
+      "also_tests": [
+        "4.2"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-023",
+      "uid": "e81e6424-79f4-4239-9bf4-991693bf63d9",
+      "title": "SSH to private VMs through IAP",
+      "objective": "3.1",
+      "subtopic": "Connecting to Instances",
+      "summary": "IAP TCP forwarding needs ingress from 35.235.240.0/20 on port 22 and the IAP-secured Tunnel User role for the people connecting.",
+      "tags": [
+        "firewall",
+        "iam",
+        "iap",
+        "ssh"
+      ],
+      "source": "curated",
+      "question": "Engineers at Fenwick Grain must SSH to Compute Engine VMs that have no external IP addresses, from their laptops on the internet, without a bastion host or VPN. The VPC has only rules for internal traffic. Which two actions should you take? (Choose two.)",
+      "options": {
+        "A": "Create a Cloud NAT gateway for the VMs' subnet.",
+        "B": "Create a firewall rule allowing TCP 22 from 35.235.240.0/20 to the VMs.",
+        "C": "Grant the engineers Compute Network Admin on the project.",
+        "D": "Grant the engineers IAP-secured Tunnel User on the project or on the VMs.",
+        "E": "Give the VMs ephemeral external IP addresses while engineers are working on them."
+      },
+      "correct_answer": "B,D",
+      "explanation": {
+        "summary": "IAP TCP forwarding wraps SSH in HTTPS to Google, which then connects to the VM from the 35.235.240.0/20 range. The VPC must allow that range on port 22, and IAM decides who may open tunnels.",
+        "option_breakdown": {
+          "A": "Cloud NAT handles the VMs' outbound connections, not inbound SSH sessions.",
+          "B": "Correct. IAP's forwarders connect from this range, so port 22 must be open to it.",
+          "C": "Network Admin manages network resources; it isn't the permission IAP checks to open a tunnel.",
+          "D": "Correct. Without IAP-secured Tunnel User, IAP refuses to open the tunnel for the engineer.",
+          "E": "External IPs expose the VMs to the internet, which the setup is meant to avoid."
+        },
+        "gcloud_command": "gcloud compute firewall-rules create allow-iap-ssh --network=NETWORK \\\n  --allow=tcp:22 --source-ranges=35.235.240.0/20\ngcloud compute ssh VM_NAME --zone=ZONE --tunnel-through-iap",
+        "doc_ref": "https://cloud.google.com/iap/docs/using-tcp-forwarding"
+      },
+      "also_tests": [
+        "2.3",
+        "4.1"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-025",
+      "uid": "d6b7f955-5a9e-4ec1-99c4-132f71459e38",
+      "title": "Logs only the security team may read",
+      "objective": "3.4",
+      "subtopic": "Log Buckets and Routing",
+      "summary": "Route sensitive logs to their own log bucket, keep them out of _Default, and grant access through a log view on that bucket.",
+      "tags": [
+        "iam",
+        "log-buckets",
+        "log-views",
+        "logging"
+      ],
+      "source": "curated",
+      "question": "The payments service at Corriedale Bank writes logs containing card fragments. Those entries must stay in Cloud Logging, readable only by the security team, while developers keep Logs Viewer on the project for every other log. Which two actions should you take? (Choose two.)",
+      "options": {
+        "A": "Enable CMEK on the _Default log bucket with a Cloud KMS key that only the security team can use.",
+        "B": "Create a log bucket and a sink that routes the payments logs to it, and exclude those logs from the _Default sink.",
+        "C": "Turn on Data Access audit logs for the payments service so that every read is recorded.",
+        "D": "Grant the developers Private Logs Viewer on the project instead of Logs Viewer.",
+        "E": "Grant the security team Logs View Accessor on a log view of the new bucket."
+      },
+      "correct_answer": "B,E",
+      "explanation": {
+        "summary": "Where a log is stored decides who can see it. Routing the sensitive entries to a separate bucket, and excluding them from _Default, removes them from what developers can read; a log view on the new bucket is what the security team is granted.",
+        "option_breakdown": {
+          "A": "CMEK controls the encryption key; if Logging couldn't use the key, logging would fail for everyone rather than hide the entries from developers.",
+          "B": "Correct. The entries now live only in the new bucket, so developers' access to _Default no longer covers them.",
+          "C": "Data Access audit logs add more entries about API reads; they don't restrict who reads the payments logs.",
+          "D": "Private Logs Viewer adds access to Data Access audit logs, which widens developers' access instead of narrowing it.",
+          "E": "Correct. Logs View Accessor on that bucket's view gives the security team read access to exactly those logs."
+        },
+        "gcloud_command": "gcloud logging buckets create payments-restricted --location=global\ngcloud logging sinks create payments-to-restricted \\\n  logging.googleapis.com/projects/PROJECT_ID/locations/global/buckets/payments-restricted \\\n  --log-filter='resource.labels.service_name=\"payments\"'",
+        "doc_ref": "https://cloud.google.com/logging/docs/logs-views"
+      },
+      "also_tests": [
+        "4.1"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-029",
+      "uid": "39806fa8-1cd0-4db9-bc4f-56ee16d642ca",
+      "title": "One hour of access for someone without a Google account",
+      "objective": "3.2",
+      "subtopic": "Securing Cloud Storage Objects",
+      "summary": "A V4 signed URL grants time-limited access to one object to anyone holding the URL, signed by a service account the requester can use.",
+      "tags": [
+        "cloud-storage",
+        "service-accounts",
+        "signed-url"
+      ],
+      "source": "curated",
+      "question": "A customer of Larchmont Surveys, who has no Google account, must download one 2 GB report from a private Cloud Storage bucket within the next hour. Nothing else in the bucket may become accessible, and the bucket must stay private. What should you do?",
+      "options": {
+        "A": "Grant allUsers Storage Object Viewer on the object for an hour.",
+        "B": "Copy the report to a new public bucket and send its link.",
+        "C": "Generate a V4 signed URL for the object that expires in one hour.",
+        "D": "Create a service account key and send it to the customer."
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "A signed URL embeds a signature from a service account and an expiry, so anyone holding it can read that one object until it expires, without a Google account and without changing the bucket's IAM.",
+        "option_breakdown": {
+          "A": "allUsers makes the object public to everyone, and uniform buckets can't grant per-object access anyway.",
+          "B": "A public bucket exposes the report to anyone and leaves a copy to clean up.",
+          "C": "Correct. The URL works for one object, for one hour, and the bucket stays private.",
+          "D": "A key grants everything the service account can do, for as long as the key exists."
+        },
+        "gcloud_command": "gcloud storage sign-url gs://reports/survey-2026.pdf --duration=1h \\\n  --impersonate-service-account=signer@PROJECT_ID.iam.gserviceaccount.com",
+        "doc_ref": "https://cloud.google.com/storage/docs/access-control/signed-urls"
+      },
+      "also_tests": [
+        "4.2"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-031",
+      "uid": "2dbec961-8246-4e65-9d8d-20ff455a1e27",
+      "title": "Which function burns the CPU in production",
+      "objective": "3.4",
+      "subtopic": "Diagnostic Tools",
+      "summary": "Cloud Profiler samples CPU and memory use per function in production with low overhead; Trace shows latency between services.",
+      "tags": [
+        "observability",
+        "performance",
+        "profiler"
+      ],
+      "source": "curated",
+      "question": "After a release, Keld Analytics' Go API on GKE uses three times more CPU per request, though latency between its services hasn't changed. The team must find which functions in the code consume the extra CPU, in production, without a noticeable performance cost. Which tool should you use?",
+      "options": {
+        "A": "Cloud Profiler",
+        "B": "VPC Flow Logs",
+        "C": "Cloud Trace",
+        "D": "Error Reporting"
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "Cloud Profiler continuously samples running code and attributes CPU time and memory to functions, with low overhead suitable for production.",
+        "option_breakdown": {
+          "A": "Correct. Profiler's CPU profiles show which functions use the extra CPU, in production.",
+          "B": "Flow logs describe network traffic, not where code spends CPU.",
+          "C": "Trace shows where time goes between and within requests, but not per-function CPU, and latency hasn't changed.",
+          "D": "Error Reporting groups exceptions; higher CPU isn't an error."
+        },
+        "gcloud_command": "# In the app: import \"cloud.google.com/go/profiler\" and call profiler.Start(...)\n# Console > Profiler > service api > CPU time",
+        "doc_ref": "https://cloud.google.com/profiler/docs/about-profiler"
+      },
+      "also_tests": [
+        "2.1"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-033",
+      "uid": "f2a0940b-5c6b-42d6-a08f-b3091ea013d2",
+      "title": "A subnet that has run out of addresses",
+      "objective": "3.3",
+      "subtopic": "Subnets, Addresses and Routes",
+      "summary": "A subnet's primary range can be expanded in place, without downtime, as long as the new range doesn't overlap others; it can't be shrunk.",
+      "tags": [
+        "ip-addresses",
+        "subnets",
+        "vpc"
+      ],
+      "source": "curated",
+      "question": "The 10.20.0.0/24 subnet that Ashby Dairy's VMs use in us-east4 is full, and the managed instance group can't add VMs. 10.20.1.0/24 is unused in the VPC and in the connected on-premises network. Running VMs must keep their addresses, with no downtime. What should you do?",
+      "options": {
+        "A": "Delete the subnet and recreate it as 10.20.0.0/23.",
+        "B": "Create a new VPC with a larger subnet and peer it with the current one.",
+        "C": "Add 10.20.1.0/24 as a secondary range on the subnet.",
+        "D": "Expand the subnet's primary range to 10.20.0.0/23."
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "You can widen a subnet's primary IPv4 range in place; existing VMs keep their addresses, and the new range must not overlap any other subnet or route. A secondary range is for alias IPs such as GKE Pods, not for VMs' primary addresses.",
+        "option_breakdown": {
+          "A": "A subnet can't be deleted while VMs use it, and recreating it would mean downtime.",
+          "B": "A new VPC means new subnets for the group's VMs and a migration; it's far more work than an in-place expansion.",
+          "C": "Secondary ranges serve alias IPs; new VMs still take primary addresses from the full /24.",
+          "D": "Correct. Expanding from /24 to /23 adds 10.20.1.0/24 to the subnet with no downtime."
+        },
+        "gcloud_command": "gcloud compute networks subnets expand-ip-range app-subnet --region=us-east4 --prefix-length=23",
+        "doc_ref": "https://cloud.google.com/vpc/docs/create-modify-vpc-networks#expand-subnet"
+      },
+      "also_tests": [
+        "2.3"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-034",
+      "uid": "acc5952d-d377-47ae-a105-ca5d6c34f06b",
+      "title": "Keeping BigQuery query costs in check",
+      "objective": "3.2",
+      "subtopic": "Querying Data",
+      "summary": "Partitioning with a filter on the partition column cuts bytes scanned; custom query quotas cap the bytes a user or project can process per day.",
+      "tags": [
+        "bigquery",
+        "cost",
+        "partitioning",
+        "quotas"
+      ],
+      "source": "curated",
+      "question": "Analysts at Duncliffe Media query a 90 TB events table, mostly for the last seven days, and on-demand query costs have tripled. Finance wants each query to scan less, and a hard daily limit on the bytes each analyst can process. Which two actions should you take? (Choose two.)",
+      "options": {
+        "A": "Switch the dataset to physical-bytes storage billing.",
+        "B": "Create a budget on the project with an alert at 100%.",
+        "C": "Set a custom quota on query usage per day per user.",
+        "D": "Partition the table by event date, and filter queries on that column.",
+        "E": "Add LIMIT 1000 to the analysts' queries."
+      },
+      "correct_answer": "C,D",
+      "explanation": {
+        "summary": "On-demand pricing charges for bytes scanned. A date partition lets a filtered query scan only the partitions it needs, and a custom quota stops a user's queries once their daily bytes limit is reached.",
+        "option_breakdown": {
+          "A": "Storage billing affects the cost of storing data, not of querying it.",
+          "B": "A budget alert notifies, but it doesn't stop queries.",
+          "C": "Correct. A per-user daily quota is a hard limit on bytes processed.",
+          "D": "Correct. Queries on the last seven days scan only those partitions instead of all 90 TB.",
+          "E": "LIMIT reduces the rows returned, not the bytes read, so the cost is the same."
+        },
+        "gcloud_command": "bq query --use_legacy_sql=false --dry_run 'SELECT ... FROM events WHERE event_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY)'",
+        "doc_ref": "https://cloud.google.com/bigquery/docs/custom-quotas"
+      },
+      "also_tests": [
+        "1.1"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-035",
+      "uid": "91845c95-01a1-41ac-a931-47350262830e",
+      "title": "Deploying an image from another project's registry",
+      "objective": "3.1",
+      "subtopic": "Artifact Registry Access",
+      "summary": "Cloud Run pulls images as its service agent, so a repository in another project must grant that project's Cloud Run service agent Artifact Registry Reader.",
+      "tags": [
+        "artifact-registry",
+        "cloud-run",
+        "cross-project",
+        "service-agents"
+      ],
+      "source": "curated",
+      "question": "Images for Marden Travel are built into an Artifact Registry repository in project build-hub. Deploying a Cloud Run service in project travel-prod from one of those images fails with a permission error when the image is pulled. The repository must stay private. What should you do?",
+      "options": {
+        "A": "Copy the image into a new Cloud Storage bucket in travel-prod.",
+        "B": "Grant the deploying developer Artifact Registry Administrator on build-hub.",
+        "C": "Grant travel-prod's Cloud Run service agent Artifact Registry Reader on the repository.",
+        "D": "Make the repository readable by allUsers."
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "Cloud Run pulls the container image using the Cloud Run service agent of the project where the service runs. For a repository in another project, that service agent needs read access on the repository.",
+        "option_breakdown": {
+          "A": "Cloud Run deploys from container registries, not from objects in a bucket.",
+          "B": "The developer's own access isn't used for the pull, and Administrator is far too broad.",
+          "C": "Correct. The service agent is the identity that pulls the image, and Reader is enough.",
+          "D": "allUsers makes the images public, which the stem forbids."
+        },
+        "gcloud_command": "gcloud artifacts repositories add-iam-policy-binding images --location=REGION --project=build-hub \\\n  --member=serviceAccount:service-TRAVEL_PROD_NUMBER@serverless-robot-prod.iam.gserviceaccount.com \\\n  --role=roles/artifactregistry.reader",
+        "doc_ref": "https://cloud.google.com/run/docs/deploying#other-projects"
+      },
+      "also_tests": [
+        "4.2"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-038",
+      "uid": "8cdb461a-edde-4411-977b-47c9392bd54d",
+      "title": "Daily disk backups kept for two weeks",
+      "objective": "3.1",
+      "subtopic": "Snapshots and Images",
+      "summary": "A snapshot schedule attached to persistent disks takes snapshots automatically and deletes them after the retention you set.",
+      "tags": [
+        "backup",
+        "persistent-disk",
+        "snapshots"
+      ],
+      "source": "curated",
+      "question": "Rothbury Clinic's three file-server VMs each have a 2 TB data disk. Every disk must be backed up once a day, each backup kept for 14 days and then removed, with no scripts or cron jobs on the VMs. What should you configure?",
+      "options": {
+        "A": "A machine image of each of the three file-server VMs, created once every week",
+        "B": "A daily snapshot schedule with 14-day retention, attached to the three disks",
+        "C": "A cron job on each VM that runs gcloud compute disks snapshot every night",
+        "D": "A custom image of each data disk, created every day from the Google Cloud console"
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "Snapshot schedules are resource policies: attach one to a disk, and Compute Engine takes snapshots on the schedule and deletes those older than the retention period.",
+        "option_breakdown": {
+          "A": "Weekly isn't daily, and machine images capture whole VMs rather than scheduled disk backups.",
+          "B": "Correct. The schedule takes a daily snapshot and removes each one after 14 days automatically.",
+          "C": "A cron job on the VMs is the kind of script the stem rules out, and nothing would delete old snapshots.",
+          "D": "Images are for creating boot disks, and making them by hand every day isn't automatic."
+        },
+        "gcloud_command": "gcloud compute resource-policies create snapshot-schedule daily-14 --region=REGION \\\n  --daily-schedule --start-time=02:00 --max-retention-days=14\ngcloud compute disks add-resource-policies data-1 --resource-policies=daily-14 --zone=ZONE",
+        "doc_ref": "https://cloud.google.com/compute/docs/disks/scheduled-snapshots"
+      },
+      "also_tests": [
+        "2.1"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-041",
+      "uid": "bda1de92-bcf1-4437-895a-c4112a02f4f7",
+      "title": "Pods and nodes both scaling for a traffic spike",
+      "objective": "3.1",
+      "subtopic": "Pod Autoscaling",
+      "summary": "On GKE Standard, the HorizontalPodAutoscaler adds Pods and the cluster autoscaler adds nodes when Pods can't be scheduled; both are needed for a spike.",
+      "tags": [
+        "cluster-autoscaler",
+        "gke",
+        "hpa"
+      ],
+      "source": "curated",
+      "question": "Wymark Tickets runs its web tier on a GKE Standard cluster with a fixed node pool of three nodes. During on-sales, CPU on the web Pods hits 95% and requests time out. The web tier must add Pods as CPU rises, and the cluster must add nodes when new Pods don't fit. Which two actions should you take? (Choose two.)",
+      "options": {
+        "A": "Convert the cluster to Autopilot in place before the next on-sale.",
+        "B": "Add a VerticalPodAutoscaler in Auto mode on the same Deployment, also driven by CPU.",
+        "C": "Create a HorizontalPodAutoscaler for the web Deployment targeting CPU utilisation.",
+        "D": "Raise the web Deployment's replica count to 50 permanently.",
+        "E": "Enable the cluster autoscaler on the node pool, with a minimum and maximum node count."
+      },
+      "correct_answer": "C,E",
+      "explanation": {
+        "summary": "The HorizontalPodAutoscaler changes the number of replicas from a metric such as CPU. When new replicas can't be scheduled, the cluster autoscaler adds nodes to the pool, within its limits, and removes them when they're idle.",
+        "option_breakdown": {
+          "A": "A Standard cluster can't be converted to Autopilot in place; it would mean a new cluster and a migration.",
+          "B": "A VPA in Auto mode that also acts on CPU conflicts with a CPU-based HPA, and it resizes Pods rather than adding them.",
+          "C": "Correct. The HPA adds web Pods as CPU rises and removes them afterwards.",
+          "D": "A permanent 50 replicas wastes capacity most of the time, and three nodes can't hold them.",
+          "E": "Correct. The cluster autoscaler adds nodes when Pods are pending for lack of capacity."
+        },
+        "gcloud_command": "kubectl autoscale deployment web --cpu-percent=60 --min=3 --max=40\ngcloud container clusters update CLUSTER --node-pool=default-pool \\\n  --enable-autoscaling --min-nodes=3 --max-nodes=15 --location=LOCATION",
+        "doc_ref": "https://cloud.google.com/kubernetes-engine/docs/concepts/horizontalpodautoscaler"
+      },
+      "also_tests": [
+        "2.1"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-043",
+      "uid": "208ba23f-c807-4180-88d0-797210d686df",
+      "title": "Alerting on a burst of error logs",
+      "objective": "3.4",
+      "subtopic": "Custom Metrics",
+      "summary": "A counter log-based metric counts matching log entries, and an alerting policy on that metric fires when the count over a window crosses a threshold.",
+      "tags": [
+        "alerting",
+        "log-based-metrics",
+        "logging"
+      ],
+      "source": "curated",
+      "question": "The on-call team at Fallow Couriers must be paged when the checkout service writes more than 50 log entries of severity ERROR in any five-minute window. One or two errors an hour are normal and must not page anyone. Which two actions should you take? (Choose two.)",
+      "options": {
+        "A": "Turn on Error Reporting notifications for the checkout service's error groups.",
+        "B": "Create a distribution log-based metric of the latency field in checkout's entries.",
+        "C": "Create an uptime check on the checkout service's public URL that pages on-call.",
+        "D": "Create an alerting policy on it: more than 50 in five minutes.",
+        "E": "Create a counter log-based metric for checkout's ERROR entries."
+      },
+      "correct_answer": "D,E",
+      "explanation": {
+        "summary": "A counter log-based metric turns matching log entries into a time series. An alerting policy can then compare the count in a rolling window with a threshold, so occasional errors don't page.",
+        "option_breakdown": {
+          "A": "Error Reporting notifies on new or resurfacing error groups, not on a count over a window.",
+          "B": "A latency distribution measures response times, not the number of error entries.",
+          "C": "An uptime check tests whether the URL answers; it doesn't count error logs.",
+          "D": "Correct. The policy pages only when more than 50 errors fall in five minutes.",
+          "E": "Correct. The metric counts checkout's error entries over time."
+        },
+        "gcloud_command": "gcloud logging metrics create checkout_errors \\\n  --log-filter='resource.labels.service_name=\"checkout\" AND severity>=ERROR'",
+        "doc_ref": "https://cloud.google.com/logging/docs/logs-based-metrics/counter-metrics"
+      },
+      "also_tests": [
+        "1.1"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-045",
+      "uid": "f8ad9883-fcfd-4853-88da-4c7aeb23746a",
+      "title": "Partners who may upload but not read",
+      "objective": "3.2",
+      "subtopic": "Securing Cloud Storage Objects",
+      "summary": "Storage Object Creator allows creating objects without viewing, listing or overwriting them.",
+      "tags": [
+        "cloud-storage",
+        "iam",
+        "least-privilege"
+      ],
+      "source": "curated",
+      "question": "Seven suppliers send invoices to Tamworth Foods by uploading files into one Cloud Storage bucket. Each supplier must be able to upload, but not see, list or download any file in the bucket, including other suppliers' invoices. The bucket uses uniform bucket-level access. Which role should you grant the suppliers on the bucket?",
+      "options": {
+        "A": "Storage Object Creator",
+        "B": "Storage Object Admin",
+        "C": "Storage Object User",
+        "D": "Storage Object Viewer"
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "Storage Object Creator contains storage.objects.create but not get or list, so holders can upload new objects and nothing else.",
+        "option_breakdown": {
+          "A": "Correct. Suppliers can upload but can't read or list anything in the bucket.",
+          "B": "Object Admin gives full control of every object, including reading and deleting them.",
+          "C": "Object User includes reading, listing and deleting objects as well as creating them.",
+          "D": "Object Viewer allows reading and listing, and no uploads."
+        },
+        "gcloud_command": "gcloud storage buckets add-iam-policy-binding gs://invoices-inbox \\\n  --member=group:suppliers@tamworth.example --role=roles/storage.objectCreator",
+        "doc_ref": "https://cloud.google.com/storage/docs/access-control/iam-roles"
+      },
+      "also_tests": [
+        "4.1"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-047",
+      "uid": "e76e5182-376b-4ef9-b6e0-cd502d43c111",
+      "title": "Proving which rule blocks traffic before sending any",
+      "objective": "3.3",
+      "subtopic": "Firewall Operations",
+      "summary": "Connectivity Tests analyse the configured path between two endpoints and name the firewall rule or route that blocks it, without sending traffic.",
+      "tags": [
+        "connectivity-tests",
+        "firewall",
+        "network-intelligence-center"
+      ],
+      "source": "curated",
+      "question": "A new reporting VM at Ellwood Mining can't reach a PostgreSQL VM on port 5432 in a peered VPC, and the network team suspects a firewall rule or a route. They want to know which configuration element blocks the path without changing any configuration and without needing traffic to flow. What should you use?",
+      "options": {
+        "A": "Open an SSH session and run traceroute to the database VM.",
+        "B": "Enable Firewall Rules Logging on every rule and retry the connection.",
+        "C": "Enable VPC Flow Logs on both subnets and wait for samples.",
+        "D": "Run a Connectivity Test from the reporting VM to the database VM on TCP 5432."
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "Connectivity Tests, in Network Intelligence Center, model the path from the configuration (firewall rules, routes, peering) and report where and why packets would be dropped, with no traffic sent.",
+        "option_breakdown": {
+          "A": "traceroute needs traffic, and Google Cloud's network doesn't answer it in a way that shows firewall rules.",
+          "B": "Logging means changing every rule's configuration and needs real traffic to log.",
+          "C": "Flow logs record traffic that flows; they need configuration changes and don't name the blocking rule.",
+          "D": "Correct. The test names the firewall rule or route that drops the traffic, from the configuration alone."
+        },
+        "gcloud_command": "gcloud network-management connectivity-tests create report-to-db \\\n  --source-instance=projects/PROJECT_ID/zones/ZONE/instances/report-vm \\\n  --destination-instance=projects/PEER_PROJECT/zones/ZONE/instances/db-vm \\\n  --protocol=TCP --destination-port=5432",
+        "doc_ref": "https://cloud.google.com/network-intelligence-center/docs/connectivity-tests/concepts/overview"
+      },
+      "also_tests": [
+        "2.3"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-050",
+      "uid": "74981658-5048-4fef-a4ba-b597b9bf15cb",
+      "title": "Notebook instances left running overnight",
+      "objective": "3.1",
+      "subtopic": "Notebooks",
+      "summary": "Vertex AI Workbench instances can shut down automatically after a set idle time, which stops compute charges while nobody uses them.",
+      "tags": [
+        "cost",
+        "idle-shutdown",
+        "vertex-ai-workbench"
+      ],
+      "source": "curated",
+      "question": "Data scientists at Kelso Retail each have a Vertex AI Workbench instance with a GPU, and the billing report shows most of them running all night and at weekends with nothing executing. The instances must stop automatically when unused, without anyone remembering to do it, and keep their data. What should you do?",
+      "options": {
+        "A": "Lower the project's GPU quota to zero outside working hours.",
+        "B": "Enable idle shutdown on each Workbench instance with a suitable idle timeout.",
+        "C": "Set a budget alert at 80% for the data science project.",
+        "D": "Delete each instance every evening and create a new one in the morning."
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "Idle shutdown stops a Workbench instance after it has been idle for the configured time. A stopped instance doesn't incur compute or GPU charges, and its disks keep the data.",
+        "option_breakdown": {
+          "A": "Quota limits creating resources; lowering it doesn't stop instances that are already running.",
+          "B": "Correct. Instances stop themselves when idle, and the data on their disks stays.",
+          "C": "A budget alert notifies; it doesn't stop anything.",
+          "D": "Deleting instances depends on people remembering to and loses whatever isn't saved elsewhere."
+        },
+        "gcloud_command": "gcloud workbench instances update INSTANCE --location=ZONE \\\n  --metadata=idle-timeout-seconds=3600",
+        "doc_ref": "https://cloud.google.com/vertex-ai/docs/workbench/instances/idle-shutdown"
+      },
+      "also_tests": [
+        "1.2"
+      ],
+      "certifying_only": true
     }
   ]
 }

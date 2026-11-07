@@ -235,13 +235,13 @@ def cmd_show(args) -> int:
     if q.tags:
         print(dim("tags: " + ", ".join(q.tags)))
     print(f"\n{textwrap.fill(q.question, 96)}\n")
-    for k in OPTION_KEYS:
-        marker = green(" ✓") if k == q.correct_answer else "  "
+    for k in q.keys:
+        marker = green(" ✓") if k in q.correct_keys else "  "
         body = textwrap.fill(f"{k}. {q.options[k]}", 92, subsequent_indent="     ")
         print(f"{marker} {body}")
     print(f"\n{bold('Why')}  {textwrap.fill(q.explanation.summary, 90, subsequent_indent='     ')}")
     print(f"\n{bold('Option analysis')}")
-    for k in OPTION_KEYS:
+    for k in q.keys:
         print(textwrap.fill(f"  {k}. {q.explanation.option_breakdown[k]}", 96,
                             subsequent_indent="     "))
     if q.explanation.gcloud_command:
@@ -293,8 +293,10 @@ def cmd_stats(args) -> int:
 
     print(f"\n{bold('Correct-answer spread')}")
     letters = {k: 0 for k in OPTION_KEYS}
-    for q in bank.questions:
+    singles = [q for q in bank.questions if not q.is_multi]
+    for q in singles:
         letters[q.correct_answer] += 1
+    total = len(singles)
     for k, n in letters.items():
         pct = n / total * 100 if total else 0
         flag = "" if 18 <= pct <= 32 else yellow("  ← skewed")
@@ -509,8 +511,8 @@ def _preview(q: Question) -> None:
     print(f"{bold(q.title)}   {dim(DOMAIN_SHORT[q.domain] + ' · ' + q.subtopic)}")
     print(dim(q.summary))
     print(f"\n{textwrap.fill(q.question, 90)}\n")
-    for k in OPTION_KEYS:
-        marker = green("✓") if k == q.correct_answer else " "
+    for k in q.keys:
+        marker = green("✓") if k in q.correct_keys else " "
         print(textwrap.fill(f"{marker} {k}. {q.options[k]}", 90, subsequent_indent="     "))
     print(f"\n{dim(textwrap.fill(q.explanation.summary, 88))}")
 

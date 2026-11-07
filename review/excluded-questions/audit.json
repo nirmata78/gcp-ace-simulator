@@ -3610,6 +3610,11 @@
     "ref_line": 678
    }
   ],
-  "kept_reason": "Read side by side: these share topic vocabulary only (for example a scenario about a Pending Pod against a reference asking what kubectl get shows), not a scenario. The thresholds were set for a 179-stem source; against 1,512 short topical stems they flag shared topics. Kept pending the owner's decision in issue #1."
+  "kept_reason": "Read side by side: these share topic vocabulary only (for example a scenario about a Pending Pod against a reference asking what kubectl get shows), not a scenario. The thresholds were set for a 179-stem source; against 1,512 short topical stems they flag shared topics. Kept pending the owner's decision in issue #1.",
+  "owner_decision_2026_11_07": "Public appearance of a question's topic or scenario is not a reason to remove an original question. 33 of the 34 'removed' questions were restored with their own scenarios (ledger verdict 'restored'); ace-dom1-046 stays retired as a duplicate of ace-dom4-002. The 28 'kept_after_review' questions stay.",
+  "restored": [
+   "ids",
+   "reason"
+  ]
  }
 }

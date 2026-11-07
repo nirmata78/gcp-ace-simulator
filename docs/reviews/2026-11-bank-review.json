@@ -93,7 +93,7 @@
     },
     {
       "id": "ace-dom1-005",
-      "verdict": "removed",
+      "verdict": "restored",
       "ac": {
         "AC1": "pass",
         "AC2": "pass",
@@ -101,9 +101,9 @@
         "AC4": "pass",
         "AC5": "pass",
         "AC6": "pass",
-        "AC7": "fail"
+        "AC7": "pass"
       },
-      "notes": "Removed: the stem shares its scenario with an earlier public practice question (wider audit, issue #1), so its origin can't be shown to be original. Rewording would not fix provenance; a clean-room replacement covers the subtopic where depth required one.",
+      "notes": "Removed earlier on 2026-11-07 because its scenario overlapped a public practice-question set; restored the same day at the owner's decision, since a public look-alike is not a defect in an original question. The decision and the key are unchanged, so the id is kept; the stem now has its own scenario (an invented company and the deciding facts spelled out) so it reads as this bank's question.",
       "replacement_id": null,
       "original": {
         "question": "A partner needs read access to exactly one Cloud Storage bucket and to nothing else in the project that contains it. What should you do?",
@@ -308,7 +308,7 @@
     },
     {
       "id": "ace-dom1-014",
-      "verdict": "removed",
+      "verdict": "restored",
       "ac": {
         "AC1": "pass",
         "AC2": "pass",
@@ -316,9 +316,9 @@
         "AC4": "pass",
         "AC5": "pass",
         "AC6": "pass",
-        "AC7": "fail"
+        "AC7": "pass"
       },
-      "notes": "Removed: the stem shares its scenario with an earlier public practice question (wider audit, issue #1), so its origin can't be shown to be original. Rewording would not fix provenance; a clean-room replacement covers the subtopic where depth required one.",
+      "notes": "Removed earlier on 2026-11-07 because its scenario overlapped a public practice-question set; restored the same day at the owner's decision, since a public look-alike is not a defect in an original question. The decision and the key are unchanged, so the id is kept; the stem now has its own scenario (an invented company and the deciding facts spelled out) so it reads as this bank's question.",
       "replacement_id": null,
       "original": {
         "question": "A finance analyst needs to read cost and budget information for the whole billing account to build reports, but must not be able to change anything. Which role should you grant?",
@@ -938,7 +938,7 @@
     },
     {
       "id": "ace-dom1-041",
-      "verdict": "removed",
+      "verdict": "restored",
       "ac": {
         "AC1": "pass",
         "AC2": "pass",
@@ -946,9 +946,9 @@
         "AC4": "pass",
         "AC5": "pass",
         "AC6": "pass",
-        "AC7": "fail"
+        "AC7": "pass"
       },
-      "notes": "Removed: the stem shares its scenario with an earlier public practice question (wider audit, issue #1), so its origin can't be shown to be original. Rewording would not fix provenance; a clean-room replacement covers the subtopic where depth required one.",
+      "notes": "Removed earlier on 2026-11-07 because its scenario overlapped a public practice-question set; restored the same day at the owner's decision, since a public look-alike is not a defect in an original question. The decision and the key are unchanged, so the id is kept; the stem now has its own scenario (an invented company and the deciding facts spelled out) so it reads as this bank's question.",
       "replacement_id": null,
       "original": {
         "question": "The security team must be notified within seconds whenever a firewall rule allowing 0.0.0.0/0 is created anywhere in the organisation. What should you configure?",
@@ -1048,7 +1048,7 @@
         "AC6": "pass",
         "AC7": "fail"
       },
-      "notes": "Removed: the stem shares its scenario with an earlier public practice question (wider audit, issue #1), so its origin can't be shown to be original. Rewording would not fix provenance; a clean-room replacement covers the subtopic where depth required one.",
+      "notes": "Duplicate of ace-dom4-002 (Ops Agent for missing memory and disk metrics), which was restored; this copy stays removed.",
       "replacement_id": null,
       "original": {
         "question": "Memory utilisation and disk space inside your Compute Engine VMs are not visible in Cloud Monitoring, although CPU and network are. What should you do?",
@@ -1078,7 +1078,7 @@
     },
     {
       "id": "ace-dom2-001",
-      "verdict": "removed",
+      "verdict": "restored",
       "ac": {
         "AC1": "pass",
         "AC2": "pass",
@@ -1086,9 +1086,9 @@
         "AC4": "pass",
         "AC5": "pass",
         "AC6": "pass",
-        "AC7": "fail"
+        "AC7": "pass"
       },
-      "notes": "Removed: the stem shares its scenario with an earlier public practice question (wider audit, issue #1), so its origin can't be shown to be original. Rewording would not fix provenance; a clean-room replacement covers the subtopic where depth required one.",
+      "notes": "Removed earlier on 2026-11-07 because its scenario overlapped a public practice-question set; restored the same day at the owner's decision, since a public look-alike is not a defect in an original question. The decision and the key are unchanged, so the id is kept; the stem now has its own scenario (an invented company and the deciding facts spelled out) so it reads as this bank's question.",
       "replacement_id": null,
       "original": {
         "question": "A licensed legacy application requires a specific kernel module, a MAC-addressed licence dongle emulator, and full root access to the operating system. Which compute platform should you choose?",
@@ -1733,7 +1733,7 @@
     },
     {
       "id": "ace-dom2-028",
-      "verdict": "removed",
+      "verdict": "restored",
       "ac": {
         "AC1": "pass",
         "AC2": "pass",
@@ -1741,9 +1741,9 @@
         "AC4": "pass",
         "AC5": "pass",
         "AC6": "pass",
-        "AC7": "fail"
+        "AC7": "pass"
       },
-      "notes": "Removed: the stem shares its scenario with an earlier public practice question (wider audit, issue #1), so its origin can't be shown to be original. Rewording would not fix provenance; a clean-room replacement covers the subtopic where depth required one.",
+      "notes": "Removed earlier on 2026-11-07 because its scenario overlapped a public practice-question set; restored the same day at the owner's decision, since a public look-alike is not a defect in an original question. The decision and the key are unchanged, so the id is kept; the stem now has its own scenario (an invented company and the deciding facts spelled out) so it reads as this bank's question.",
       "replacement_id": null,
       "original": {
         "question": "Twelve application teams each own a project, but the network team must retain exclusive control of subnets, routes and firewall rules. What should you do?",
@@ -1863,7 +1863,7 @@
     },
     {
       "id": "ace-dom2-034",
-      "verdict": "removed",
+      "verdict": "restored",
       "ac": {
         "AC1": "pass",
         "AC2": "pass",
@@ -1871,9 +1871,9 @@
         "AC4": "pass",
         "AC5": "pass",
         "AC6": "pass",
-        "AC7": "fail"
+        "AC7": "pass"
       },
-      "notes": "Removed: the stem shares its scenario with an earlier public practice question (wider audit, issue #1), so its origin can't be shown to be original. Rewording would not fix provenance; a clean-room replacement covers the subtopic where depth required one.",
+      "notes": "Removed earlier on 2026-11-07 because its scenario overlapped a public practice-question set; restored the same day at the owner's decision, since a public look-alike is not a defect in an original question. The decision and the key are unchanged, so the id is kept; the stem now has its own scenario (an invented company and the deciding facts spelled out) so it reads as this bank's question.",
       "replacement_id": null,
       "original": {
         "question": "Backends behind a newly created load balancer are all marked unhealthy, even though the application responds correctly when tested from another VM inside the VPC. What should you configure?",
@@ -2378,7 +2378,7 @@
     },
     {
       "id": "ace-dom2-055",
-      "verdict": "removed",
+      "verdict": "restored",
       "ac": {
         "AC1": "pass",
         "AC2": "pass",
@@ -2386,9 +2386,9 @@
         "AC4": "pass",
         "AC5": "pass",
         "AC6": "pass",
-        "AC7": "fail"
+        "AC7": "pass"
       },
-      "notes": "Removed: the stem shares its scenario with an earlier public practice question (wider audit, issue #1), so its origin can't be shown to be original. Rewording would not fix provenance; a clean-room replacement covers the subtopic where depth required one.",
+      "notes": "Removed earlier on 2026-11-07 because its scenario overlapped a public practice-question set; restored the same day at the owner's decision, since a public look-alike is not a defect in an original question. The decision and the key are unchanged, so the id is kept; the stem now has its own scenario (an invented company and the deciding facts spelled out) so it reads as this bank's question.",
       "replacement_id": null,
       "original": {
         "question": "A data-migration programme must sustain 20 Gbps between the data centre and Google Cloud with predictable latency. The company is already present in a Google colocation facility. Which option should you choose?",
@@ -2953,7 +2953,7 @@
     },
     {
       "id": "ace-dom3-001",
-      "verdict": "removed",
+      "verdict": "restored",
       "ac": {
         "AC1": "pass",
         "AC2": "pass",
@@ -2961,9 +2961,9 @@
         "AC4": "pass",
         "AC5": "pass",
         "AC6": "pass",
-        "AC7": "fail"
+        "AC7": "pass"
       },
-      "notes": "Removed: the stem shares its scenario with an earlier public practice question (wider audit, issue #1), so its origin can't be shown to be original. Rewording would not fix provenance; a clean-room replacement covers the subtopic where depth required one.",
+      "notes": "Removed earlier on 2026-11-07 because its scenario overlapped a public practice-question set; restored the same day at the owner's decision, since a public look-alike is not a defect in an original question. The decision and the key are unchanged, so the id is kept; the stem now has its own scenario (an invented company and the deciding facts spelled out) so it reads as this bank's question.",
       "replacement_id": null,
       "original": {
         "question": "A new Cloud Run revision must be smoke-tested by QA on its own URL before any production traffic reaches it. What should you do?",
@@ -3618,7 +3618,7 @@
     },
     {
       "id": "ace-dom3-028",
-      "verdict": "removed",
+      "verdict": "restored",
       "ac": {
         "AC1": "pass",
         "AC2": "pass",
@@ -3626,9 +3626,9 @@
         "AC4": "pass",
         "AC5": "pass",
         "AC6": "pass",
-        "AC7": "fail"
+        "AC7": "pass"
       },
-      "notes": "Removed: the stem shares its scenario with an earlier public practice question (wider audit, issue #1), so its origin can't be shown to be original. Rewording would not fix provenance; a clean-room replacement covers the subtopic where depth required one.",
+      "notes": "Removed earlier on 2026-11-07 because its scenario overlapped a public practice-question set; restored the same day at the owner's decision, since a public look-alike is not a defect in an original question. The decision and the key are unchanged, so the id is kept; the stem now has its own scenario (an invented company and the deciding facts spelled out) so it reads as this bank's question.",
       "replacement_id": null,
       "original": {
         "question": "A hardened, fully patched configuration must be the starting point for every new instance the team creates, so that instances are identical from first boot. What should you create?",
@@ -3858,7 +3858,7 @@
     },
     {
       "id": "ace-dom3-038",
-      "verdict": "removed",
+      "verdict": "restored",
       "ac": {
         "AC1": "pass",
         "AC2": "pass",
@@ -3866,9 +3866,9 @@
         "AC4": "pass",
         "AC5": "pass",
         "AC6": "pass",
-        "AC7": "fail"
+        "AC7": "pass"
       },
-      "notes": "Removed: the stem shares its scenario with an earlier public practice question (wider audit, issue #1), so its origin can't be shown to be original. Rewording would not fix provenance; a clean-room replacement covers the subtopic where depth required one.",
+      "notes": "Removed earlier on 2026-11-07 because its scenario overlapped a public practice-question set; restored the same day at the owner's decision, since a public look-alike is not a defect in an original question. The decision and the key are unchanged, so the id is kept; the stem now has its own scenario (an invented company and the deciding facts spelled out) so it reads as this bank's question.",
       "replacement_id": null,
       "original": {
         "question": "Every merge to main must build a container image, push it to Artifact Registry and deploy the new revision to Cloud Run, with no credentials on any developer machine. What should you configure?",
@@ -3958,7 +3958,7 @@
     },
     {
       "id": "ace-dom4-002",
-      "verdict": "removed",
+      "verdict": "restored",
       "ac": {
         "AC1": "pass",
         "AC2": "pass",
@@ -3966,9 +3966,9 @@
         "AC4": "pass",
         "AC5": "pass",
         "AC6": "pass",
-        "AC7": "fail"
+        "AC7": "pass"
       },
-      "notes": "Removed: the stem shares its scenario with an earlier public practice question (wider audit, issue #1), so its origin can't be shown to be original. Rewording would not fix provenance; a clean-room replacement covers the subtopic where depth required one.",
+      "notes": "Removed earlier on 2026-11-07 because its scenario overlapped a public practice-question set; restored the same day at the owner's decision, since a public look-alike is not a defect in an original question. The decision and the key are unchanged, so the id is kept; the stem now has its own scenario (an invented company and the deciding facts spelled out) so it reads as this bank's question.",
       "replacement_id": null,
       "original": {
         "question": "Memory utilisation and free disk space inside your Compute Engine VMs do not appear in Cloud Monitoring, although CPU and network do. What should you do?",
@@ -4383,7 +4383,7 @@
     },
     {
       "id": "ace-dom4-019",
-      "verdict": "removed",
+      "verdict": "restored",
       "ac": {
         "AC1": "pass",
         "AC2": "pass",
@@ -4391,9 +4391,9 @@
         "AC4": "pass",
         "AC5": "pass",
         "AC6": "pass",
-        "AC7": "fail"
+        "AC7": "pass"
       },
-      "notes": "Removed: the stem shares its scenario with an earlier public practice question (wider audit, issue #1), so its origin can't be shown to be original. Rewording would not fix provenance; a clean-room replacement covers the subtopic where depth required one.",
+      "notes": "Removed earlier on 2026-11-07 because its scenario overlapped a public practice-question set; restored the same day at the owner's decision, since a public look-alike is not a defect in an original question. The decision and the key are unchanged, so the id is kept; the stem now has its own scenario (an invented company and the deciding facts spelled out) so it reads as this bank's question.",
       "replacement_id": null,
       "original": {
         "question": "Log objects in a bucket must move to Coldline after 30 days and be deleted after one year, with no scripts to maintain. What should you configure?",
@@ -4533,7 +4533,7 @@
     },
     {
       "id": "ace-dom4-025",
-      "verdict": "removed",
+      "verdict": "restored",
       "ac": {
         "AC1": "pass",
         "AC2": "pass",
@@ -4541,9 +4541,9 @@
         "AC4": "pass",
         "AC5": "pass",
         "AC6": "pass",
-        "AC7": "fail"
+        "AC7": "pass"
       },
-      "notes": "Removed: the stem shares its scenario with an earlier public practice question (wider audit, issue #1), so its origin can't be shown to be original. Rewording would not fix provenance; a clean-room replacement covers the subtopic where depth required one.",
+      "notes": "Removed earlier on 2026-11-07 because its scenario overlapped a public practice-question set; restored the same day at the owner's decision, since a public look-alike is not a defect in an original question. The decision and the key are unchanged, so the id is kept; the stem now has its own scenario (an invented company and the deciding facts spelled out) so it reads as this bank's question.",
       "replacement_id": null,
       "original": {
         "question": "An API request takes four seconds end to end, and the team must find which of the six downstream services is responsible. Which tool should you use?",
@@ -4698,7 +4698,7 @@
     },
     {
       "id": "ace-dom5-002",
-      "verdict": "removed",
+      "verdict": "restored",
       "ac": {
         "AC1": "pass",
         "AC2": "pass",
@@ -4706,9 +4706,9 @@
         "AC4": "pass",
         "AC5": "pass",
         "AC6": "pass",
-        "AC7": "fail"
+        "AC7": "pass"
       },
-      "notes": "Removed: the stem shares its scenario with an earlier public practice question (wider audit, issue #1), so its origin can't be shown to be original. Rewording would not fix provenance; a clean-room replacement covers the subtopic where depth required one.",
+      "notes": "Removed earlier on 2026-11-07 because its scenario overlapped a public practice-question set; restored the same day at the owner's decision, since a public look-alike is not a defect in an original question. The decision and the key are unchanged, so the id is kept; the stem now has its own scenario (an invented company and the deciding facts spelled out) so it reads as this bank's question.",
       "replacement_id": null,
       "original": {
         "question": "A contractor needs Storage Object Viewer access, but only until the end of the quarter and only on buckets whose name begins with 'shared-'. What should you do?",
@@ -5183,7 +5183,7 @@
     },
     {
       "id": "ace-s1-007",
-      "verdict": "removed",
+      "verdict": "restored",
       "ac": {
         "AC1": "pass",
         "AC2": "pass",
@@ -5191,9 +5191,9 @@
         "AC4": "pass",
         "AC5": "pass",
         "AC6": "pass",
-        "AC7": "fail"
+        "AC7": "pass"
       },
-      "notes": "Removed: the stem shares its scenario with an earlier public practice question (wider audit, issue #1), so its origin can't be shown to be original. Rewording would not fix provenance; a clean-room replacement covers the subtopic where depth required one.",
+      "notes": "Removed earlier on 2026-11-07 because its scenario overlapped a public practice-question set; restored the same day at the owner's decision, since a public look-alike is not a defect in an original question. The decision and the key are unchanged, so the id is kept; the stem now has its own scenario (an invented company and the deciding facts spelled out) so it reads as this bank's question.",
       "replacement_id": null,
       "original": {
         "question": "A script must give the group data-eng@example.com the BigQuery Data Viewer role on project analytics-prod. Several other teams edit that project's IAM policy through their own automation during the day. Which command should the script run?",
@@ -5593,7 +5593,7 @@
     },
     {
       "id": "ace-s1-025",
-      "verdict": "removed",
+      "verdict": "restored",
       "ac": {
         "AC1": "pass",
         "AC2": "pass",
@@ -5601,9 +5601,9 @@
         "AC4": "pass",
         "AC5": "pass",
         "AC6": "pass",
-        "AC7": "fail"
+        "AC7": "pass"
       },
-      "notes": "Removed: the stem shares its scenario with an earlier public practice question (wider audit, issue #1), so its origin can't be shown to be original. Rewording would not fix provenance; a clean-room replacement covers the subtopic where depth required one.",
+      "notes": "Removed earlier on 2026-11-07 because its scenario overlapped a public practice-question set; restored the same day at the owner's decision, since a public look-alike is not a defect in an original question. The decision and the key are unchanged, so the id is kept; the stem now has its own scenario (an invented company and the deciding facts spelled out) so it reads as this bank's question.",
       "replacement_id": null,
       "original": {
         "question": "Finance already receives the standard usage cost export in BigQuery. They now need the monthly cost of each individual Compute Engine instance, identified by its resource name, not just per project and SKU. What should you enable?",
@@ -7113,7 +7113,7 @@
     },
     {
       "id": "ace-s2-042",
-      "verdict": "removed",
+      "verdict": "restored",
       "ac": {
         "AC1": "pass",
         "AC2": "pass",
@@ -7121,9 +7121,9 @@
         "AC4": "pass",
         "AC5": "pass",
         "AC6": "pass",
-        "AC7": "fail"
+        "AC7": "pass"
       },
-      "notes": "Removed: the stem shares its scenario with an earlier public practice question (wider audit, issue #1), so its origin can't be shown to be original. Rewording would not fix provenance; a clean-room replacement covers the subtopic where depth required one.",
+      "notes": "Removed earlier on 2026-11-07 because its scenario overlapped a public practice-question set; restored the same day at the owner's decision, since a public look-alike is not a defect in an original question. The decision and the key are unchanged, so the id is kept; the stem now has its own scenario (an invented company and the deciding facts spelled out) so it reads as this bank's question.",
       "replacement_id": null,
       "original": {
         "question": "A project's default network tier was set to Standard to save egress cost. The team now needs a global external Application Load Balancer with one anycast IP for users on three continents. What must they do?",
@@ -7353,7 +7353,7 @@
     },
     {
       "id": "ace-s2-052",
-      "verdict": "removed",
+      "verdict": "restored",
       "ac": {
         "AC1": "pass",
         "AC2": "pass",
@@ -7361,9 +7361,9 @@
         "AC4": "pass",
         "AC5": "pass",
         "AC6": "pass",
-        "AC7": "fail"
+        "AC7": "pass"
       },
-      "notes": "Removed: the stem shares its scenario with an earlier public practice question (wider audit, issue #1), so its origin can't be shown to be original. Rewording would not fix provenance; a clean-room replacement covers the subtopic where depth required one.",
+      "notes": "Removed earlier on 2026-11-07 because its scenario overlapped a public practice-question set; restored the same day at the owner's decision, since a public look-alike is not a defect in an original question. The decision and the key are unchanged, so the id is kept; the stem now has its own scenario (an invented company and the deciding facts spelled out) so it reads as this bank's question.",
       "replacement_id": null,
       "original": {
         "question": "In a Shared VPC, the host project has subnets for five teams. Team A's developers must be able to create VMs in team A's subnet only, not in any other team's. What should you grant?",
@@ -9113,7 +9113,7 @@
     },
     {
       "id": "ace-s2-130",
-      "verdict": "removed",
+      "verdict": "restored",
       "ac": {
         "AC1": "pass",
         "AC2": "pass",
@@ -9121,9 +9121,9 @@
         "AC4": "pass",
         "AC5": "pass",
         "AC6": "pass",
-        "AC7": "fail"
+        "AC7": "pass"
       },
-      "notes": "Removed: the stem shares its scenario with an earlier public practice question (wider audit, issue #1), so its origin can't be shown to be original. Rewording would not fix provenance; a clean-room replacement covers the subtopic where depth required one.",
+      "notes": "Removed earlier on 2026-11-07 because its scenario overlapped a public practice-question set; restored the same day at the owner's decision, since a public look-alike is not a defect in an original question. The decision and the key are unchanged, so the id is kept; the stem now has its own scenario (an invented company and the deciding facts spelled out) so it reads as this bank's question.",
       "replacement_id": null,
       "original": {
         "question": "Three engineers run Terraform against the same environment, and state files on their laptops have diverged, leading to conflicting changes. What should they configure?",
@@ -9493,7 +9493,7 @@
     },
     {
       "id": "ace-s3-013",
-      "verdict": "removed",
+      "verdict": "restored",
       "ac": {
         "AC1": "pass",
         "AC2": "pass",
@@ -9501,9 +9501,9 @@
         "AC4": "pass",
         "AC5": "pass",
         "AC6": "pass",
-        "AC7": "fail"
+        "AC7": "pass"
       },
-      "notes": "Removed: the stem shares its scenario with an earlier public practice question (wider audit, issue #1), so its origin can't be shown to be original. Rewording would not fix provenance; a clean-room replacement covers the subtopic where depth required one.",
+      "notes": "Removed earlier on 2026-11-07 because its scenario overlapped a public practice-question set; restored the same day at the owner's decision, since a public look-alike is not a defect in an original question. The decision and the key are unchanged, so the id is kept; the stem now has its own scenario (an invented company and the deciding facts spelled out) so it reads as this bank's question.",
       "replacement_id": null,
       "original": {
         "question": "You need a list of only the running Compute Engine instances in the current project, across all zones, showing each instance's name, zone and machine type. Which command does that?",
@@ -9683,7 +9683,7 @@
     },
     {
       "id": "ace-s3-021",
-      "verdict": "removed",
+      "verdict": "restored",
       "ac": {
         "AC1": "pass",
         "AC2": "pass",
@@ -9691,9 +9691,9 @@
         "AC4": "pass",
         "AC5": "pass",
         "AC6": "pass",
-        "AC7": "fail"
+        "AC7": "pass"
       },
-      "notes": "Removed: the stem shares its scenario with an earlier public practice question (wider audit, issue #1), so its origin can't be shown to be original. Rewording would not fix provenance; a clean-room replacement covers the subtopic where depth required one.",
+      "notes": "Removed earlier on 2026-11-07 because its scenario overlapped a public practice-question set; restored the same day at the owner's decision, since a public look-alike is not a defect in an original question. The decision and the key are unchanged, so the id is kept; the stem now has its own scenario (an invented company and the deciding facts spelled out) so it reads as this bank's question.",
       "replacement_id": null,
       "original": {
         "question": "A company runs about 200 Cloud SQL, AlloyDB and Spanner instances across 60 projects. The security lead wants one place to see which instances have no automated backups, have a public IP, or are not highly available. What should you use?",
@@ -9853,7 +9853,7 @@
     },
     {
       "id": "ace-s3-029",
-      "verdict": "removed",
+      "verdict": "restored",
       "ac": {
         "AC1": "pass",
         "AC2": "pass",
@@ -9861,9 +9861,9 @@
         "AC4": "pass",
         "AC5": "pass",
         "AC6": "pass",
-        "AC7": "fail"
+        "AC7": "pass"
       },
-      "notes": "Removed: the stem shares its scenario with an earlier public practice question (wider audit, issue #1), so its origin can't be shown to be original. Rewording would not fix provenance; a clean-room replacement covers the subtopic where depth required one.",
+      "notes": "Removed earlier on 2026-11-07 because its scenario overlapped a public practice-question set; restored the same day at the owner's decision, since a public look-alike is not a defect in an original question. The decision and the key are unchanged, so the id is kept; the stem now has its own scenario (an invented company and the deciding facts spelled out) so it reads as this bank's question.",
       "replacement_id": null,
       "original": {
         "question": "In the Logs Explorer you want to see only entries of severity ERROR or worse from the Cloud Run service named `api`. Which query should you use?",
@@ -10018,7 +10018,7 @@
     },
     {
       "id": "ace-s3-036",
-      "verdict": "removed",
+      "verdict": "restored",
       "ac": {
         "AC1": "pass",
         "AC2": "pass",
@@ -10026,9 +10026,9 @@
         "AC4": "pass",
         "AC5": "pass",
         "AC6": "pass",
-        "AC7": "fail"
+        "AC7": "pass"
       },
-      "notes": "Removed: the stem shares its scenario with an earlier public practice question (wider audit, issue #1), so its origin can't be shown to be original. Rewording would not fix provenance; a clean-room replacement covers the subtopic where depth required one.",
+      "notes": "Removed earlier on 2026-11-07 because its scenario overlapped a public practice-question set; restored the same day at the owner's decision, since a public look-alike is not a defect in an original question. The decision and the key are unchanged, so the id is kept; the stem now has its own scenario (an invented company and the deciding facts spelled out) so it reads as this bank's question.",
       "replacement_id": null,
       "original": {
         "question": "Managed collection for Google Cloud Managed Service for Prometheus is enabled on a GKE cluster. A new Deployment exposes Prometheus metrics on port 9090 at /metrics, but none of its metrics appear in Cloud Monitoring. What should you add?",
@@ -10293,7 +10293,7 @@
     },
     {
       "id": "ace-s3-047",
-      "verdict": "removed",
+      "verdict": "restored",
       "ac": {
         "AC1": "pass",
         "AC2": "pass",
@@ -10301,9 +10301,9 @@
         "AC4": "pass",
         "AC5": "pass",
         "AC6": "pass",
-        "AC7": "fail"
+        "AC7": "pass"
       },
-      "notes": "Removed: the stem shares its scenario with an earlier public practice question (wider audit, issue #1), so its origin can't be shown to be original. Rewording would not fix provenance; a clean-room replacement covers the subtopic where depth required one.",
+      "notes": "Removed earlier on 2026-11-07 because its scenario overlapped a public practice-question set; restored the same day at the owner's decision, since a public look-alike is not a defect in an original question. The decision and the key are unchanged, so the id is kept; the stem now has its own scenario (an invented company and the deciding facts spelled out) so it reads as this bank's question.",
       "replacement_id": null,
       "original": {
         "question": "A streaming Dataflow job reads from Pub/Sub and must be stopped so an incompatible new version can replace it. No message already read by the job may be lost. What should you do to the running job?",
@@ -10433,7 +10433,7 @@
     },
     {
       "id": "ace-s3-053",
-      "verdict": "removed",
+      "verdict": "restored",
       "ac": {
         "AC1": "pass",
         "AC2": "pass",
@@ -10441,9 +10441,9 @@
         "AC4": "pass",
         "AC5": "pass",
         "AC6": "pass",
-        "AC7": "fail"
+        "AC7": "pass"
       },
-      "notes": "Removed: the stem shares its scenario with an earlier public practice question (wider audit, issue #1), so its origin can't be shown to be original. Rewording would not fix provenance; a clean-room replacement covers the subtopic where depth required one.",
+      "notes": "Removed earlier on 2026-11-07 because its scenario overlapped a public practice-question set; restored the same day at the owner's decision, since a public look-alike is not a defect in an original question. The decision and the key are unchanged, so the id is kept; the stem now has its own scenario (an invented company and the deciding facts spelled out) so it reads as this bank's question.",
       "replacement_id": null,
       "original": {
         "question": "VMs in a VPC connected to the data centre over HA VPN must resolve names in corp.internal, which are served only by on-premises DNS servers at 192.168.10.53 and 192.168.10.54. What should you configure?",
@@ -10483,7 +10483,7 @@
     },
     {
       "id": "ace-s3-055",
-      "verdict": "removed",
+      "verdict": "restored",
       "ac": {
         "AC1": "pass",
         "AC2": "pass",
@@ -10491,9 +10491,9 @@
         "AC4": "pass",
         "AC5": "pass",
         "AC6": "pass",
-        "AC7": "fail"
+        "AC7": "pass"
       },
-      "notes": "Removed: the stem shares its scenario with an earlier public practice question (wider audit, issue #1), so its origin can't be shown to be original. Rewording would not fix provenance; a clean-room replacement covers the subtopic where depth required one.",
+      "notes": "Removed earlier on 2026-11-07 because its scenario overlapped a public practice-question set; restored the same day at the owner's decision, since a public look-alike is not a defect in an original question. The decision and the key are unchanged, so the id is kept; the stem now has its own scenario (an invented company and the deciding facts spelled out) so it reads as this bank's question.",
       "replacement_id": null,
       "original": {
         "question": "Private VMs with no external IPs call a partner's API, and the partner will only accept traffic from two fixed addresses it can allow-list. The VMs are recreated frequently by their instance group. What should you configure?",
@@ -10598,7 +10598,7 @@
     },
     {
       "id": "ace-s3-060",
-      "verdict": "removed",
+      "verdict": "restored",
       "ac": {
         "AC1": "pass",
         "AC2": "pass",
@@ -10606,9 +10606,9 @@
         "AC4": "pass",
         "AC5": "pass",
         "AC6": "pass",
-        "AC7": "fail"
+        "AC7": "pass"
       },
-      "notes": "Removed: the stem shares its scenario with an earlier public practice question (wider audit, issue #1), so its origin can't be shown to be original. Rewording would not fix provenance; a clean-room replacement covers the subtopic where depth required one.",
+      "notes": "Removed earlier on 2026-11-07 because its scenario overlapped a public practice-question set; restored the same day at the owner's decision, since a public look-alike is not a defect in an original question. The decision and the key are unchanged, so the id is kept; the stem now has its own scenario (an invented company and the deciding facts spelled out) so it reads as this bank's question.",
       "replacement_id": null,
       "original": {
         "question": "An application on Compute Engine VMs already exposes Prometheus metrics at localhost:9100/metrics. The team wants those metrics in Cloud Monitoring without running a Prometheus server. The Ops Agent is installed. What should it do?",
@@ -11898,7 +11898,7 @@
     },
     {
       "id": "ace-s3-116",
-      "verdict": "removed",
+      "verdict": "restored",
       "ac": {
         "AC1": "pass",
         "AC2": "pass",
@@ -11906,9 +11906,9 @@
         "AC4": "pass",
         "AC5": "pass",
         "AC6": "pass",
-        "AC7": "fail"
+        "AC7": "pass"
       },
-      "notes": "Removed: the stem shares its scenario with an earlier public practice question (wider audit, issue #1), so its origin can't be shown to be original. Rewording would not fix provenance; a clean-room replacement covers the subtopic where depth required one.",
+      "notes": "Removed earlier on 2026-11-07 because its scenario overlapped a public practice-question set; restored the same day at the owner's decision, since a public look-alike is not a defect in an original question. The decision and the key are unchanged, so the id is kept; the stem now has its own scenario (an invented company and the deciding facts spelled out) so it reads as this bank's question.",
       "replacement_id": null,
       "original": {
         "question": "Worker Pods on GKE pull from a Pub/Sub subscription. CPU stays low even when the backlog grows to millions of messages, so a CPU-based HPA never scales. What should the HPA use instead?",
@@ -12023,7 +12023,7 @@
     },
     {
       "id": "ace-s3-121",
-      "verdict": "removed",
+      "verdict": "restored",
       "ac": {
         "AC1": "pass",
         "AC2": "pass",
@@ -12031,9 +12031,9 @@
         "AC4": "pass",
         "AC5": "pass",
         "AC6": "pass",
-        "AC7": "fail"
+        "AC7": "pass"
       },
-      "notes": "Removed: the stem shares its scenario with an earlier public practice question (wider audit, issue #1), so its origin can't be shown to be original. Rewording would not fix provenance; a clean-room replacement covers the subtopic where depth required one.",
+      "notes": "Removed earlier on 2026-11-07 because its scenario overlapped a public practice-question set; restored the same day at the owner's decision, since a public look-alike is not a defect in an original question. The decision and the key are unchanged, so the id is kept; the stem now has its own scenario (an invented company and the deciding facts spelled out) so it reads as this bank's question.",
       "replacement_id": null,
       "original": {
         "question": "An administrator scheduled the only key version protecting a production database's CMEK key for destruction yesterday, by mistake. What should you do?",
@@ -12123,7 +12123,7 @@
     },
     {
       "id": "ace-s3-125",
-      "verdict": "removed",
+      "verdict": "restored",
       "ac": {
         "AC1": "pass",
         "AC2": "pass",
@@ -12131,9 +12131,9 @@
         "AC4": "pass",
         "AC5": "pass",
         "AC6": "pass",
-        "AC7": "fail"
+        "AC7": "pass"
       },
-      "notes": "Removed: the stem shares its scenario with an earlier public practice question (wider audit, issue #1), so its origin can't be shown to be original. Rewording would not fix provenance; a clean-room replacement covers the subtopic where depth required one.",
+      "notes": "Removed earlier on 2026-11-07 because its scenario overlapped a public practice-question set; restored the same day at the owner's decision, since a public look-alike is not a defect in an original question. The decision and the key are unchanged, so the id is kept; the stem now has its own scenario (an invented company and the deciding facts spelled out) so it reads as this bank's question.",
       "replacement_id": null,
       "original": {
         "question": "A BigQuery dataset holds 400 TB of logical data that compresses about 8:1, and it is rarely updated. Storage is the largest line on the bill. What change is most likely to cut storage cost?",
@@ -13018,7 +13018,7 @@
     },
     {
       "id": "ace-s4-006",
-      "verdict": "removed",
+      "verdict": "restored",
       "ac": {
         "AC1": "pass",
         "AC2": "pass",
@@ -13026,9 +13026,9 @@
         "AC4": "pass",
         "AC5": "pass",
         "AC6": "pass",
-        "AC7": "fail"
+        "AC7": "pass"
       },
-      "notes": "Removed: the stem shares its scenario with an earlier public practice question (wider audit, issue #1), so its origin can't be shown to be original. Rewording would not fix provenance; a clean-room replacement covers the subtopic where depth required one.",
+      "notes": "Removed earlier on 2026-11-07 because its scenario overlapped a public practice-question set; restored the same day at the owner's decision, since a public look-alike is not a defect in an original question. The decision and the key are unchanged, so the id is kept; the stem now has its own scenario (an invented company and the deciding facts spelled out) so it reads as this bank's question.",
       "replacement_id": null,
       "original": {
         "question": "Security designed a custom role for incident responders that must be granted in forty projects across the organisation, and it should be maintained in one place. Where should you create it?",
@@ -13143,7 +13143,7 @@
     },
     {
       "id": "ace-s4-011",
-      "verdict": "removed",
+      "verdict": "restored",
       "ac": {
         "AC1": "pass",
         "AC2": "pass",
@@ -13151,9 +13151,9 @@
         "AC4": "pass",
         "AC5": "pass",
         "AC6": "pass",
-        "AC7": "fail"
+        "AC7": "pass"
       },
-      "notes": "Removed: the stem shares its scenario with an earlier public practice question (wider audit, issue #1), so its origin can't be shown to be original. Rewording would not fix provenance; a clean-room replacement covers the subtopic where depth required one.",
+      "notes": "Removed earlier on 2026-11-07 because its scenario overlapped a public practice-question set; restored the same day at the owner's decision, since a public look-alike is not a defect in an original question. The decision and the key are unchanged, so the id is kept; the stem now has its own scenario (an invented company and the deciding facts spelled out) so it reads as this bank's question.",
       "replacement_id": null,
       "original": {
         "question": "When projects enable Compute Engine, the default compute service account is automatically granted the Editor role. Security wants that automatic grant to stop in every new project in the organisation. What should you do?",
@@ -13623,7 +13623,7 @@
     },
     {
       "id": "ace-s4-031",
-      "verdict": "removed",
+      "verdict": "restored",
       "ac": {
         "AC1": "pass",
         "AC2": "pass",
@@ -13631,9 +13631,9 @@
         "AC4": "pass",
         "AC5": "pass",
         "AC6": "pass",
-        "AC7": "fail"
+        "AC7": "pass"
       },
-      "notes": "Removed: the stem shares its scenario with an earlier public practice question (wider audit, issue #1), so its origin can't be shown to be original. Rewording would not fix provenance; a clean-room replacement covers the subtopic where depth required one.",
+      "notes": "Removed earlier on 2026-11-07 because its scenario overlapped a public practice-question set; restored the same day at the owner's decision, since a public look-alike is not a defect in an original question. The decision and the key are unchanged, so the id is kept; the stem now has its own scenario (an invented company and the deciding facts spelled out) so it reads as this bank's question.",
       "replacement_id": null,
       "original": {
         "question": "Terraform must grant the Pub/Sub service agent access to a Cloud KMS key before the first CMEK-protected topic is created, but the agent does not exist yet in the new project, so the grant fails. What should the pipeline do first?",
@@ -14249,6 +14249,1176 @@
         "AC7": "pass"
       },
       "notes": "New clean-room question (rewrite for excluded ace-dom5-043), written from the guide bullet and current docs; below the overlap thresholds against every audited source.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s1-056",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, multiple select (choose 2 of 5). Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s1-057",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, multiple select (choose 2 of 5). Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s1-058",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, multiple select (choose 2 of 5). Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s1-059",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, multiple select (choose 2 of 5). Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s1-060",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, multiple select (choose 2 of 5). Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s1-061",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, multiple select (choose 2 of 5). Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s2-136",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, multiple select (choose 2 of 5). Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s2-137",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, multiple select (choose 2 of 5). Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s2-138",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, multiple select (choose 2 of 5). Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s2-139",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, multiple select (choose 2 of 5). Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s2-140",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, multiple select (choose 2 of 5). Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s2-141",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, multiple select (choose 2 of 5). Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s2-142",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, multiple select (choose 2 of 5). Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s2-143",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, multiple select (choose 2 of 5). Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s2-144",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, multiple select (choose 2 of 5). Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s3-165",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, multiple select (choose 2 of 5). Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s3-166",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, multiple select (choose 2 of 5). Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s3-167",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, multiple select (choose 2 of 5). Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s3-168",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, multiple select (choose 2 of 5). Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s3-169",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, multiple select (choose 2 of 5). Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s3-170",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, multiple select (choose 2 of 5). Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s3-171",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, multiple select (choose 2 of 5). Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s3-172",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, multiple select (choose 2 of 5). Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s3-173",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, multiple select (choose 2 of 5). Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s4-060",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, multiple select (choose 2 of 5). Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s4-061",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, multiple select (choose 2 of 5). Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s4-062",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, multiple select (choose 2 of 5). Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s4-063",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, multiple select (choose 2 of 5). Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-001",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, multiple select (choose 2 of 5); cross-domain, also 2.1, 3.2; certifying mode only. Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-002",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, multiple select (choose 2 of 5); cross-domain, also 1.1, 4.1; certifying mode only. Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-003",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, multiple select (choose 2 of 5); cross-domain, also 3.1; certifying mode only. Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-004",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, cross-domain, also 2.1; certifying mode only. Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-005",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, cross-domain, also 2.1; certifying mode only. Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-006",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, multiple select (choose 2 of 5); cross-domain, also 2.4; certifying mode only. Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-007",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, cross-domain, also 2.2; certifying mode only. Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-008",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, multiple select (choose 2 of 5); cross-domain, also 3.2; certifying mode only. Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-009",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, cross-domain, also 1.1; certifying mode only. Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-010",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, multiple select (choose 2 of 5); cross-domain, also 3.3; certifying mode only. Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-011",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, cross-domain, also 1.1, 3.1; certifying mode only. Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-012",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, multiple select (choose 2 of 5); cross-domain, also 2.2; certifying mode only. Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-013",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, multiple select (choose 2 of 5); cross-domain, also 3.3; certifying mode only. Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-014",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, multiple select (choose 2 of 5); cross-domain, also 3.1; certifying mode only. Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-015",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, cross-domain, also 2.1; certifying mode only. Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-016",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, cross-domain, also 4.1; certifying mode only. Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-017",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, cross-domain, also 1.2; certifying mode only. Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-018",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, multiple select (choose 2 of 5); cross-domain, also 2.1; certifying mode only. Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-019",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, multiple select (choose 2 of 5); cross-domain, also 4.2; certifying mode only. Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-020",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, cross-domain, also 3.1; certifying mode only. Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-021",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, cross-domain, also 4.2; certifying mode only. Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-022",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, cross-domain, also 1.1; certifying mode only. Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-023",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, multiple select (choose 2 of 5); cross-domain, also 2.3, 4.1; certifying mode only. Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-024",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, cross-domain, also 4.1; certifying mode only. Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-025",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, multiple select (choose 2 of 5); cross-domain, also 4.1; certifying mode only. Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-026",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, cross-domain, also 3.1; certifying mode only. Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-027",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, cross-domain, also 3.4; certifying mode only. Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-028",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, cross-domain, also 3.2; certifying mode only. Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-029",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, cross-domain, also 4.2; certifying mode only. Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-030",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, multiple select (choose 2 of 5); cross-domain, also 3.1; certifying mode only. Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-031",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, cross-domain, also 2.1; certifying mode only. Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-032",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, cross-domain, also 3.2; certifying mode only. Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-033",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, cross-domain, also 2.3; certifying mode only. Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-034",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, multiple select (choose 2 of 5); cross-domain, also 1.1; certifying mode only. Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-035",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, cross-domain, also 4.2; certifying mode only. Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-036",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, cross-domain, also 4.1; certifying mode only. Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-037",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, multiple select (choose 2 of 5); cross-domain, also 3.3; certifying mode only. Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-038",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, cross-domain, also 2.1; certifying mode only. Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-039",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, cross-domain, also 2.1; certifying mode only. Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-040",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, cross-domain, also 1.1; certifying mode only. Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-041",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, multiple select (choose 2 of 5); cross-domain, also 2.1; certifying mode only. Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-042",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, multiple select (choose 2 of 5); cross-domain, also 1.1; certifying mode only. Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-043",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, multiple select (choose 2 of 5); cross-domain, also 1.1; certifying mode only. Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-044",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, cross-domain, also 1.2, 3.1; certifying mode only. Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-045",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, cross-domain, also 4.1; certifying mode only. Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-046",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, cross-domain, also 4.1; certifying mode only. Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-047",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, cross-domain, also 2.3; certifying mode only. Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-048",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, cross-domain, also 3.2; certifying mode only. Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-049",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, multiple select (choose 2 of 5); cross-domain, also 3.3; certifying mode only. Written from the guide bullet and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-050",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, cross-domain, also 1.2; certifying mode only. Written from the guide bullet and current documentation.",
       "replacement_id": null
     }
   ]

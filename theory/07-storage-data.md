@@ -161,6 +161,8 @@ transitions on that bucket.
 
 **Tools:** the **Pricing Calculator** before building; a BigQuery **dry run** before querying; **billing export**
 after; **Storage Insights** and Active Assist recommendations to find waste.
+To put a hard limit on BigQuery on-demand spend, set **custom quotas** on query usage per day, per project or per user:
+once reached, further queries fail until the next day. A budget only alerts.
 
 {: .cmds }
 | Task | Command |

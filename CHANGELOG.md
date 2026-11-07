@@ -17,8 +17,14 @@ All notable changes to this project are recorded here. The format follows
   (Coldline was cheaper than the keyed Nearline), `ace-dom2-040` and `ace-dom2-042` (Autopilot also met the stem),
   `ace-dom2-018` (the access pattern read two ways), `ace-dom1-015` (the scenario was impossible) and `ace-dom4-011`
   (BigQuery data-read logs are on by default).
-- **34 questions removed** because they shared a scenario with an earlier public question set, and **29 new
-  questions** added, written from the guide and current documentation (issue #1). The bank has 586 questions; every
+- **Multiple-select questions** ("Choose two"), as the real exam has them: checkboxes that lock once you've picked
+  enough, scored only when every pick is right, in the app, the PDF report and `kb.py`. 48 in the bank.
+- **50 cross-domain questions** (`ace-x-001`…`ace-x-050`) whose scenario needs two or three sections at once. They
+  appear only in certifying exams, five in each 50-question exam, counted in their main section's share.
+- **Every question has a GUID** (`uid`) that never changes, alongside its readable id.
+- **The 104 excluded questions are settled** (issue #1): 25 were rewritten from scratch as new questions and 79
+  dropped. 33 of the 34 questions removed for resembling a public question set are back, each with its own scenario;
+  the 34th duplicated another question. 29 new questions filled thin subtopics. The bank has 697 questions; every
   guide bullet still has at least three. Removed ids are never reused (`data/retired.json`).
 - `python scripts/kb.py lint` checks questions against the standard; `scripts/audit_overlap.py` repeats the
   provenance audit against local reference files.

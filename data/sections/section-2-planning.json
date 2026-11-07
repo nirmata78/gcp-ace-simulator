@@ -1,11 +1,45 @@
 {
   "domain": "Section 2: Planning and implementing a cloud solution",
   "version": 2,
-  "updated_at": "2026-11-07T14:36:24+00:00",
-  "count": 217,
+  "updated_at": "2026-11-07T17:00:51+00:00",
+  "count": 245,
   "questions": [
     {
+      "id": "ace-dom2-001",
+      "uid": "899e0cf5-02e5-4435-aabf-842bf68173f9",
+      "title": "Legacy app needing kernel-level control",
+      "objective": "2.1",
+      "subtopic": "Compute Platform Selection",
+      "summary": "Only Compute Engine gives OS-level control; managed container platforms abstract the kernel away.",
+      "tags": [
+        "compute-engine",
+        "migration",
+        "platform-selection"
+      ],
+      "source": "curated",
+      "question": "Orrin Labs runs a licensed spectroscopy package that loads its own kernel module at boot, checks a licence tied to a fixed MAC address, and needs root access to the operating system to install vendor patches. The team wants to move it to Google Cloud without changing the software. Which compute platform should you choose?",
+      "options": {
+        "A": "Google Kubernetes Engine",
+        "B": "Compute Engine virtual machines",
+        "C": "Cloud Run",
+        "D": "Cloud Run functions"
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "Only Compute Engine gives OS-level control and persistent VM identity; every managed container platform abstracts the kernel away.",
+        "option_breakdown": {
+          "A": "Containers share the node's kernel, and GKE manages the node images, so the app gets neither its own kernel module nor root on the OS.",
+          "B": "Correct. Only Compute Engine gives OS-level control and root on your own VM; every managed container platform abstracts the kernel away.",
+          "C": "Cloud Run runs containers in a sandbox with no access to the host kernel or OS.",
+          "D": "Functions run your code in a managed runtime with no OS access at all."
+        },
+        "gcloud_command": "gcloud compute instances create legacy-app --machine-type=n2-standard-4 --zone=us-central1-a",
+        "doc_ref": "https://cloud.google.com/compute/docs/instances"
+      }
+    },
+    {
       "id": "ace-dom2-002",
+      "uid": "004ef718-fc72-4b3f-9b85-25fb070dc3f0",
       "title": "Forty interdependent microservices",
       "objective": "2.1",
       "subtopic": "Compute Platform Selection",
@@ -38,6 +72,7 @@
     },
     {
       "id": "ace-dom2-003",
+      "uid": "5427f823-8317-4b3c-b64f-e3bec826002a",
       "title": "Spiky stateless API with no cluster to run",
       "objective": "2.1",
       "subtopic": "Compute Platform Selection",
@@ -70,6 +105,7 @@
     },
     {
       "id": "ace-dom2-004",
+      "uid": "53778f9b-09f2-465d-961a-8f6b08131958",
       "title": "Small handler with no container pipeline",
       "objective": "2.1",
       "subtopic": "Compute Platform Selection",
@@ -102,6 +138,7 @@
     },
     {
       "id": "ace-dom2-005",
+      "uid": "e39cf6e3-7bb2-4e19-96a8-463e23f8e40f",
       "title": "No paying for idle capacity",
       "objective": "2.1",
       "subtopic": "Compute Platform Selection",
@@ -134,6 +171,7 @@
     },
     {
       "id": "ace-dom2-006",
+      "uid": "3012213f-fe62-42ea-bc41-2597b3edf95f",
       "title": "Reuse existing Helm charts",
       "objective": "2.1",
       "subtopic": "Compute Platform Selection",
@@ -166,6 +204,7 @@
     },
     {
       "id": "ace-dom2-007",
+      "uid": "be4ec186-0ae8-42b1-929e-c7505ad2821a",
       "title": "Custom machine shape on Spot capacity",
       "objective": "2.1",
       "subtopic": "Spot and Custom Machine Types",
@@ -198,6 +237,7 @@
     },
     {
       "id": "ace-dom2-008",
+      "uid": "020cf92f-419d-4a99-9c20-c9cb7a8080c7",
       "title": "Nightly two-hour batch at lowest cost",
       "objective": "2.1",
       "subtopic": "Spot and Custom Machine Types",
@@ -231,6 +271,7 @@
     },
     {
       "id": "ace-dom2-009",
+      "uid": "af981732-affd-4754-80b0-a6348c100887",
       "title": "Lift-and-shift MySQL, one region",
       "objective": "2.2",
       "subtopic": "Database Selection",
@@ -263,6 +304,7 @@
     },
     {
       "id": "ace-dom2-010",
+      "uid": "91684720-b601-4815-b73a-be283cc88b66",
       "title": "Globally consistent payments ledger",
       "objective": "2.2",
       "subtopic": "Database Selection",
@@ -295,6 +337,7 @@
     },
     {
       "id": "ace-dom2-011",
+      "uid": "0380086f-12b5-4c47-bd72-9591405d9001",
       "title": "Ad-hoc SQL over 900 TB of clickstream",
       "objective": "2.2",
       "subtopic": "Database Selection",
@@ -327,6 +370,7 @@
     },
     {
       "id": "ace-dom2-012",
+      "uid": "e1439fde-5e24-4c6e-b0af-07c87716000e",
       "title": "Two million sensor writes per second",
       "objective": "2.2",
       "subtopic": "Database Selection",
@@ -359,6 +403,7 @@
     },
     {
       "id": "ace-dom2-013",
+      "uid": "922d9293-8061-4517-94ca-55f834c8acb0",
       "title": "Mobile app that works offline",
       "objective": "2.2",
       "subtopic": "Database Selection",
@@ -391,6 +436,7 @@
     },
     {
       "id": "ace-dom2-014",
+      "uid": "1963e822-a4b3-4d12-a7eb-b1a9356bbc2d",
       "title": "Cache computed sessions sub-millisecond",
       "objective": "2.2",
       "subtopic": "Database Selection",
@@ -423,6 +469,7 @@
     },
     {
       "id": "ace-dom2-015",
+      "uid": "1f0fa4da-0b87-43fc-971a-485b527da7d6",
       "title": "PostgreSQL with heavy analytical queries",
       "objective": "2.2",
       "subtopic": "Database Selection",
@@ -455,6 +502,7 @@
     },
     {
       "id": "ace-dom2-016",
+      "uid": "48aa60b2-e52b-46d9-8171-3c1c372be719",
       "title": "Outgrown the largest Cloud SQL machine",
       "objective": "2.2",
       "subtopic": "Database Selection",
@@ -487,6 +535,7 @@
     },
     {
       "id": "ace-dom2-017",
+      "uid": "b2c9d25d-5892-45e3-9934-babe9bd81f35",
       "title": "Images served to a public website",
       "objective": "2.2",
       "subtopic": "Cloud Storage Classes",
@@ -519,6 +568,7 @@
     },
     {
       "id": "ace-dom2-018",
+      "uid": "6252b649-f1c1-4671-bfb3-7ca9a74ae76f",
       "title": "Monthly reporting extracts kept two years",
       "objective": "2.2",
       "subtopic": "Cloud Storage Classes",
@@ -551,6 +601,7 @@
     },
     {
       "id": "ace-dom2-019",
+      "uid": "09d8e28f-e1af-4f22-8937-c9b12371ff2a",
       "title": "Quarterly audit evidence, instant retrieval",
       "objective": "2.2",
       "subtopic": "Cloud Storage Classes",
@@ -583,6 +634,7 @@
     },
     {
       "id": "ace-dom2-020",
+      "uid": "381bebbf-c710-43e8-b71f-7140f4c7c88c",
       "title": "Seven years of regulatory records",
       "objective": "2.2",
       "subtopic": "Cloud Storage Classes",
@@ -615,6 +667,7 @@
     },
     {
       "id": "ace-dom2-021",
+      "uid": "d879126a-58df-48f6-9aba-02d91a28c087",
       "title": "Nightly backups restored monthly",
       "objective": "2.2",
       "subtopic": "Cloud Storage Classes",
@@ -647,6 +700,7 @@
     },
     {
       "id": "ace-dom2-022",
+      "uid": "fe368ce6-8167-47d6-a8d4-ba06c217d69d",
       "title": "Path routing with managed TLS worldwide",
       "objective": "2.3",
       "subtopic": "Load Balancer Selection",
@@ -679,6 +733,7 @@
     },
     {
       "id": "ace-dom2-023",
+      "uid": "a3f889b3-318a-4c53-b018-4081a0db1916",
       "title": "UDP game server preserving client IP",
       "objective": "2.3",
       "subtopic": "Load Balancer Selection",
@@ -711,6 +766,7 @@
     },
     {
       "id": "ace-dom2-024",
+      "uid": "fcdc3959-9d30-4ad4-826b-026098e2c3f4",
       "title": "Internal HTTPS with host-based routing",
       "objective": "2.3",
       "subtopic": "Load Balancer Selection",
@@ -743,6 +799,7 @@
     },
     {
       "id": "ace-dom2-025",
+      "uid": "5a070d78-80cf-4ab9-9229-af6d97335afe",
       "title": "Insert third-party firewall appliances",
       "objective": "2.3",
       "subtopic": "Load Balancer Selection",
@@ -775,6 +832,7 @@
     },
     {
       "id": "ace-dom2-026",
+      "uid": "8b24b49d-6f15-42ff-a91f-49802a8a1c3c",
       "title": "TLS offload for a non-HTTP TCP service",
       "objective": "2.3",
       "subtopic": "Load Balancer Selection",
@@ -807,6 +865,7 @@
     },
     {
       "id": "ace-dom2-027",
+      "uid": "e8456af8-1dac-4bbb-a8ca-115a75ccc723",
       "title": "Cloud CDN and Cloud Armor in front of an app",
       "objective": "2.3",
       "subtopic": "Load Balancer Selection",
@@ -838,7 +897,41 @@
       }
     },
     {
+      "id": "ace-dom2-028",
+      "uid": "77436a11-ebd2-4432-98cd-13ea0e3a5e12",
+      "title": "Central network team, many app projects",
+      "objective": "2.3",
+      "subtopic": "VPC Design",
+      "summary": "Shared VPC separates network ownership (host project) from workload ownership (service projects).",
+      "tags": [
+        "governance",
+        "shared-vpc",
+        "vpc"
+      ],
+      "source": "curated",
+      "question": "Brightwater Insurance has twelve application teams, each with its own project. The central network team must keep exclusive control of subnets, routes and firewall rules, while the application teams deploy VMs into those subnets. What should you set up?",
+      "options": {
+        "A": "Set up Shared VPC: one host project, with the app projects as service projects.",
+        "B": "Connect each team's VPC to a central VPC with VPC Network Peering.",
+        "C": "Give each team its own custom-mode VPC in its own project.",
+        "D": "Grant the network team Compute Network Admin in each of the twelve projects."
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "Shared VPC is designed for exactly this separation: the host project owns the network objects while service projects deploy resources into subnets they cannot modify.",
+        "option_breakdown": {
+          "A": "Correct. Shared VPC separates the roles: the host project owns subnets, routes and firewall rules, while service projects deploy into subnets they can't modify.",
+          "B": "Each team would still own, and could change, its own VPC.",
+          "C": "Each team would control its own subnets and firewall rules, the opposite of what's required.",
+          "D": "The network team gets rights, but project owners keep theirs, so control is not exclusive."
+        },
+        "gcloud_command": "gcloud compute shared-vpc enable HOST_PROJECT\ngcloud compute shared-vpc associated-projects add SERVICE_PROJECT --host-project=HOST_PROJECT",
+        "doc_ref": "https://cloud.google.com/vpc/docs/shared-vpc"
+      }
+    },
+    {
       "id": "ace-dom2-029",
+      "uid": "283677b9-6dc6-4c97-aab1-7fd17bc1836c",
       "title": "Private traffic between two organisations",
       "objective": "2.3",
       "subtopic": "VPC Design",
@@ -871,6 +964,7 @@
     },
     {
       "id": "ace-dom2-030",
+      "uid": "7b7fa642-c233-4639-82df-6de3dda8eaf4",
       "title": "Address plan must match on-premises",
       "objective": "2.3",
       "subtopic": "VPC Design",
@@ -903,6 +997,7 @@
     },
     {
       "id": "ace-dom2-031",
+      "uid": "6edb3425-55e2-4ebf-bb98-16c68858a881",
       "title": "Peering is not transitive",
       "objective": "2.3",
       "subtopic": "VPC Design",
@@ -935,6 +1030,7 @@
     },
     {
       "id": "ace-dom2-032",
+      "uid": "3d63091a-c438-417a-990e-581da72f1a32",
       "title": "Cross-project private communication without a mesh",
       "objective": "2.3",
       "subtopic": "VPC Design",
@@ -967,6 +1063,7 @@
     },
     {
       "id": "ace-dom2-033",
+      "uid": "62320fa4-ff53-4c0e-96b4-f4aed6b12b66",
       "title": "Tier-to-tier rule in a shared subnet",
       "objective": "2.3",
       "subtopic": "Secure Tags and Service Accounts in Rules",
@@ -998,7 +1095,41 @@
       }
     },
     {
+      "id": "ace-dom2-034",
+      "uid": "6d7d7f49-36fc-41ca-9dd0-7fffb9838648",
+      "title": "All backends unhealthy behind a new LB",
+      "objective": "2.3",
+      "subtopic": "Firewall Rules and Policies",
+      "summary": "Health check probes come from Google's dedicated ranges and must be explicitly allowed.",
+      "tags": [
+        "firewall",
+        "health-checks",
+        "load-balancing"
+      ],
+      "source": "curated",
+      "question": "Delmar Outfitters put its catalogue VMs behind a new external Application Load Balancer, and every backend shows as unhealthy. The application answers correctly when you curl it from another VM in the same VPC, and the VPC has only the rules the team created for internal traffic. What should you configure?",
+      "options": {
+        "A": "Assign external IP addresses to the backend VMs.",
+        "B": "Allow ingress from 35.235.240.0/20, the IAP TCP forwarding range.",
+        "C": "Allow ingress from Google's health check ranges, 35.191.0.0/16 and 130.211.0.0/22.",
+        "D": "Allow egress from the backends to 0.0.0.0/0."
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "Health check probes originate from Google's dedicated ranges; if those are not explicitly allowed to reach the backends, every instance fails its check regardless of application health.",
+        "option_breakdown": {
+          "A": "The load balancer reaches backends on their internal addresses; external IPs aren't needed.",
+          "B": "That range carries IAP TCP forwarding, such as SSH, not health check probes.",
+          "C": "Correct. Health check probes come from Google's dedicated ranges; unless an ingress rule allows them, every backend fails its check whatever the application's state.",
+          "D": "Egress is allowed by default, and probes are inbound connections."
+        },
+        "gcloud_command": "gcloud compute firewall-rules create allow-hc --network=prod-vpc \\\n  --direction=INGRESS --action=ALLOW --rules=tcp:80 \\\n  --source-ranges=35.191.0.0/16,130.211.0.0/22 --target-tags=web",
+        "doc_ref": "https://cloud.google.com/load-balancing/docs/health-check-concepts"
+      }
+    },
+    {
       "id": "ace-dom2-035",
+      "uid": "22baad7a-22d2-4403-b32c-7a1c31125f21",
       "title": "SSH to VMs with no external IP",
       "objective": "2.3",
       "subtopic": "Firewall Rules and Policies",
@@ -1031,6 +1162,7 @@
     },
     {
       "id": "ace-dom2-036",
+      "uid": "8e5adfca-3cd7-43e6-a6db-b5e6f5a73679",
       "title": "Restrict outbound to an approved mirror",
       "objective": "2.3",
       "subtopic": "Firewall Rules and Policies",
@@ -1063,6 +1195,7 @@
     },
     {
       "id": "ace-dom2-037",
+      "uid": "28fbfa01-9c31-438e-99b2-3d1773b00e89",
       "title": "RDP to the internet must be impossible",
       "objective": "2.3",
       "subtopic": "Firewall Rules and Policies",
@@ -1095,6 +1228,7 @@
     },
     {
       "id": "ace-dom2-038",
+      "uid": "886f047c-7b01-49e8-bb6f-1a04e02cf25f",
       "title": "Rules that survive autoscaling",
       "objective": "2.3",
       "subtopic": "Secure Tags and Service Accounts in Rules",
@@ -1127,6 +1261,7 @@
     },
     {
       "id": "ace-dom2-039",
+      "uid": "d4b23933-caf5-44d3-b648-fb7d75119f5f",
       "title": "Kubernetes without managing nodes",
       "objective": "2.1",
       "subtopic": "GKE Cluster Configurations",
@@ -1159,6 +1294,7 @@
     },
     {
       "id": "ace-dom2-040",
+      "uid": "778580f7-5535-421b-beec-69609aa5f9fa",
       "title": "Control plane must survive a zone loss",
       "objective": "2.1",
       "subtopic": "GKE Cluster Configurations",
@@ -1191,6 +1327,7 @@
     },
     {
       "id": "ace-dom2-041",
+      "uid": "43d2ce55-d931-43a4-a69d-7cde7317e367",
       "title": "No public IPs on nodes",
       "objective": "2.1",
       "subtopic": "GKE Cluster Configurations",
@@ -1223,6 +1360,7 @@
     },
     {
       "id": "ace-dom2-042",
+      "uid": "590e7caf-b8b5-42ab-8f16-094f1f4da77a",
       "title": "Dedicated nodes for one workload",
       "objective": "2.1",
       "subtopic": "GKE Cluster Configurations",
@@ -1255,6 +1393,7 @@
     },
     {
       "id": "ace-dom2-043",
+      "uid": "61f60548-257d-4c4a-8be9-bb9ba70d1d68",
       "title": "Security defaults that cannot be disabled",
       "objective": "2.1",
       "subtopic": "GKE Cluster Configurations",
@@ -1287,6 +1426,7 @@
     },
     {
       "id": "ace-dom2-044",
+      "uid": "c441362d-1ef6-41c1-b065-584b0e188358",
       "title": "Zero-RPO failover for one database VM",
       "objective": "2.1",
       "subtopic": "Storage for Compute Engine",
@@ -1319,6 +1459,7 @@
     },
     {
       "id": "ace-dom2-045",
+      "uid": "3d0d69df-8eb8-4ce5-84da-9c108954ffe5",
       "title": "Scratch space rebuilt every run",
       "objective": "2.1",
       "subtopic": "Storage for Compute Engine",
@@ -1351,6 +1492,7 @@
     },
     {
       "id": "ace-dom2-046",
+      "uid": "e8f6e8d3-e928-431d-ae92-176480e066ad",
       "title": "Forty VMs sharing one directory tree",
       "objective": "2.2",
       "subtopic": "Storage Products",
@@ -1383,6 +1525,7 @@
     },
     {
       "id": "ace-dom2-047",
+      "uid": "0b20178c-27c0-4c9b-bf4c-211c83f696e6",
       "title": "300,000 IOPS without over-buying capacity",
       "objective": "2.1",
       "subtopic": "Storage for Compute Engine",
@@ -1415,6 +1558,7 @@
     },
     {
       "id": "ace-dom2-048",
+      "uid": "ad91506a-badd-4178-b85c-5377fbf58614",
       "title": "Cheapest durable boot disk for a stateless VM",
       "objective": "2.1",
       "subtopic": "Storage for Compute Engine",
@@ -1447,6 +1591,7 @@
     },
     {
       "id": "ace-dom2-049",
+      "uid": "94407aff-e9fa-4696-8305-387e7e2fa1b1",
       "title": "Traffic triples every weekday morning",
       "objective": "2.1",
       "subtopic": "Managed Instance Groups",
@@ -1479,6 +1624,7 @@
     },
     {
       "id": "ace-dom2-050",
+      "uid": "5a372f30-b923-4eca-bc96-65237d94c7ed",
       "title": "VM alive but application hung",
       "objective": "2.1",
       "subtopic": "Managed Instance Groups",
@@ -1511,6 +1657,7 @@
     },
     {
       "id": "ace-dom2-051",
+      "uid": "898e63eb-1d5f-499d-bba0-ac39ae039ff5",
       "title": "Patch 30 instances without losing capacity",
       "objective": "2.1",
       "subtopic": "Managed Instance Groups",
@@ -1543,6 +1690,7 @@
     },
     {
       "id": "ace-dom2-052",
+      "uid": "32530998-f504-4886-9467-54129b566ad6",
       "title": "Serving tier spans zones automatically",
       "objective": "2.1",
       "subtopic": "Managed Instance Groups",
@@ -1575,6 +1723,7 @@
     },
     {
       "id": "ace-dom2-053",
+      "uid": "55f8f88c-2ce4-4054-8f35-40859408e472",
       "title": "Canary a version to 10 percent",
       "objective": "2.1",
       "subtopic": "Managed Instance Groups",
@@ -1607,6 +1756,7 @@
     },
     {
       "id": "ace-dom2-054",
+      "uid": "53fa2ac4-7ec7-471d-bc12-0042c6ef4880",
       "title": "Branch office connected this week",
       "objective": "2.3",
       "subtopic": "Hybrid Connectivity",
@@ -1638,7 +1788,41 @@
       }
     },
     {
+      "id": "ace-dom2-055",
+      "uid": "3e977779-f31b-4aaf-9498-f524634cfec2",
+      "title": "20 Gbps with predictable latency",
+      "objective": "2.3",
+      "subtopic": "Hybrid Connectivity",
+      "summary": "Dedicated Interconnect provides 10/100 Gbps circuits with deterministic performance.",
+      "tags": [
+        "bandwidth",
+        "hybrid",
+        "interconnect"
+      ],
+      "source": "curated",
+      "question": "Kestrel Genomics must move several petabytes from its data centre over the next year, sustaining 20 Gbps to Google Cloud with predictable latency. Its racks already sit in a colocation facility where Google has a point of presence, and its routers support 10 Gbps optics. Which connection should you choose?",
+      "options": {
+        "A": "VPC Network Peering",
+        "B": "Cross-Cloud Interconnect",
+        "C": "HA VPN",
+        "D": "Dedicated Interconnect"
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "Dedicated Interconnect provides 10 or 100 Gbps circuits with deterministic performance, and being present in a colocation facility is precisely its prerequisite.",
+        "option_breakdown": {
+          "A": "Peering connects two VPC networks; it can't reach a data centre.",
+          "B": "Cross-Cloud Interconnect connects Google Cloud to other cloud providers, not to your own data centre.",
+          "C": "Each HA VPN tunnel carries about 3 Gbps over the internet, so 20 Gbps means many tunnels, with internet latency.",
+          "D": "Correct. Dedicated Interconnect gives 10 or 100 Gbps circuits with predictable performance, and presence in a colocation facility is its prerequisite."
+        },
+        "gcloud_command": "gcloud compute interconnects create dc-link --customer-name='Example' \\\n  --interconnect-type=DEDICATED --link-type=LINK_TYPE_ETHERNET_10G_LR --requested-link-count=2",
+        "doc_ref": "https://cloud.google.com/network-connectivity/docs/interconnect/concepts/dedicated-overview"
+      }
+    },
+    {
       "id": "ace-dom2-056",
+      "uid": "67655807-010e-4c7c-839e-ffd3bb3dc443",
       "title": "1 Gbps without colocation presence",
       "objective": "2.3",
       "subtopic": "Hybrid Connectivity",
@@ -1671,6 +1855,7 @@
     },
     {
       "id": "ace-dom2-057",
+      "uid": "29e0d7d1-4252-46d7-af58-f8bf8aa757a3",
       "title": "Encrypted backup path for an Interconnect",
       "objective": "2.3",
       "subtopic": "Hybrid Connectivity",
@@ -1703,6 +1888,7 @@
     },
     {
       "id": "ace-dom2-058",
+      "uid": "2a3d0c87-2f58-4f27-9e3e-de9c3e3792f0",
       "title": "Reviewable multi-environment infrastructure",
       "objective": "2.4",
       "subtopic": "Infrastructure as Code",
@@ -1735,6 +1921,7 @@
     },
     {
       "id": "ace-dom2-059",
+      "uid": "cffe1acb-29e8-47aa-bd71-5225abcf2936",
       "title": "Provision cloud resources via kubectl",
       "objective": "2.4",
       "subtopic": "Infrastructure as Code",
@@ -1767,6 +1954,7 @@
     },
     {
       "id": "ace-dom2-060",
+      "uid": "f5be9614-f530-48cb-bbf1-a35587fb74ad",
       "title": "One app, four clusters, different values",
       "objective": "2.4",
       "subtopic": "Infrastructure as Code",
@@ -1799,6 +1987,7 @@
     },
     {
       "id": "ace-dom2-061",
+      "uid": "464932b4-0274-4a83-8238-575a208ddce6",
       "title": "Greenfield landing zone on Terraform",
       "objective": "2.4",
       "subtopic": "Infrastructure as Code",
@@ -1831,6 +2020,7 @@
     },
     {
       "id": "ace-dom2-063",
+      "uid": "3cde2708-7a3f-43b1-ac23-d55ac6da4814",
       "title": "Run a container on each new object",
       "objective": "2.1",
       "subtopic": "Serverless Deployment and Events",
@@ -1863,6 +2053,7 @@
     },
     {
       "id": "ace-dom2-064",
+      "uid": "56858c87-653b-4992-99ff-c079976d4dd9",
       "title": "React to VM deletions via audit logs",
       "objective": "2.1",
       "subtopic": "Serverless Deployment and Events",
@@ -1895,6 +2086,7 @@
     },
     {
       "id": "ace-dom2-065",
+      "uid": "104fb04e-1f4a-43f9-b7a7-78bb80c2ef96",
       "title": "Existing topic to a scale-to-zero service",
       "objective": "2.1",
       "subtopic": "Serverless Deployment and Events",
@@ -1927,6 +2119,7 @@
     },
     {
       "id": "ace-dom2-066",
+      "uid": "0012e558-a973-4182-add2-829034345784",
       "title": "Workers control their own throughput",
       "objective": "2.2",
       "subtopic": "Data Pipelines and Messaging",
@@ -1959,6 +2152,7 @@
     },
     {
       "id": "ace-dom2-067",
+      "uid": "3a3c4ac2-3f47-49b8-a1fa-1d4d695fe986",
       "title": "Nightly reconciliation at 02:00",
       "objective": "2.1",
       "subtopic": "Serverless Deployment and Events",
@@ -1991,6 +2185,7 @@
     },
     {
       "id": "ace-dom2-068",
+      "uid": "cfeb2665-2875-4b0c-bb93-fb3151a373a4",
       "title": "Custom CUDA kernels must run unchanged",
       "objective": "2.1",
       "subtopic": "GPUs or TPUs",
@@ -2023,6 +2218,7 @@
     },
     {
       "id": "ace-dom2-069",
+      "uid": "d5849324-821a-4f61-b579-b53c7bbae740",
       "title": "Large JAX model, best price-performance",
       "objective": "2.1",
       "subtopic": "GPUs or TPUs",
@@ -2055,6 +2251,7 @@
     },
     {
       "id": "ace-dom2-070",
+      "uid": "c46b758a-4c00-426f-b4c8-2666a47dff86",
       "title": "Global anycast IP for lowest latency",
       "objective": "2.3",
       "subtopic": "Network Service Tiers",
@@ -2087,6 +2284,7 @@
     },
     {
       "id": "ace-dom2-071",
+      "uid": "2904839f-0cc2-4187-bb4f-c5ae573db42c",
       "title": "Large regional egress, cost dominant",
       "objective": "2.3",
       "subtopic": "Network Service Tiers",
@@ -2119,6 +2317,7 @@
     },
     {
       "id": "ace-dom2-072",
+      "uid": "85730183-3949-4f8f-9521-37d534d30953",
       "title": "Accelerators will not fix a serial bottleneck",
       "objective": "2.1",
       "subtopic": "GPUs or TPUs",
@@ -2151,6 +2350,7 @@
     },
     {
       "id": "ace-dom2-073",
+      "uid": "5f133cda-eb74-4294-a22b-60c743fad213",
       "title": "Unbounded user uploads served worldwide",
       "objective": "2.2",
       "subtopic": "Storage Products",
@@ -2183,6 +2383,7 @@
     },
     {
       "id": "ace-dom2-074",
+      "uid": "89d4ff6e-c6e0-432a-af85-c471b405c456",
       "title": "Unmodifiable app needs a POSIX mount",
       "objective": "2.2",
       "subtopic": "Storage Products",
@@ -2215,6 +2416,7 @@
     },
     {
       "id": "ace-dom2-075",
+      "uid": "36f40c38-3133-4778-aacb-c2f01fcfda42",
       "title": "SMB shares with snapshots and replication",
       "objective": "2.2",
       "subtopic": "Storage Products",
@@ -2247,6 +2449,7 @@
     },
     {
       "id": "ace-dom2-076",
+      "uid": "983f3474-e5af-4d60-858e-af6aa9bfcc99",
       "title": "HPC scratch at hundreds of GB/s",
       "objective": "2.2",
       "subtopic": "Storage Products",
@@ -2279,6 +2482,7 @@
     },
     {
       "id": "ace-dom2-077",
+      "uid": "25921599-1809-4f30-b413-c2d9d89bd54d",
       "title": "Two petabytes from another cloud, on a schedule",
       "objective": "2.2",
       "subtopic": "Loading Data",
@@ -2311,6 +2515,7 @@
     },
     {
       "id": "ace-dom2-078",
+      "uid": "b9b9d61e-063c-47c4-b2ec-2bac0d40a331",
       "title": "One-off 40 GB upload from a workstation",
       "objective": "2.2",
       "subtopic": "Loading Data",
@@ -2343,6 +2548,7 @@
     },
     {
       "id": "ace-dom3-006",
+      "uid": "c491a204-50f5-4c6a-88df-ae8ee24c6538",
       "title": "Twelve interchangeable stateless replicas",
       "objective": "2.1",
       "subtopic": "Deploying to GKE",
@@ -2375,6 +2581,7 @@
     },
     {
       "id": "ace-dom3-007",
+      "uid": "33aa52a1-4b6e-4339-89c5-2ad8b0dd4637",
       "title": "Clustered database needing stable identity",
       "objective": "2.1",
       "subtopic": "Deploying to GKE",
@@ -2407,6 +2614,7 @@
     },
     {
       "id": "ace-dom3-008",
+      "uid": "d9a9bcf7-e00a-46ad-a364-04be494a2177",
       "title": "Log agent on every node including new ones",
       "objective": "2.1",
       "subtopic": "Deploying to GKE",
@@ -2439,6 +2647,7 @@
     },
     {
       "id": "ace-dom3-009",
+      "uid": "33f084ec-467e-43f4-8c55-f2e861a3ea76",
       "title": "One-off migration that must retry then stop",
       "objective": "2.1",
       "subtopic": "Deploying to GKE",
@@ -2471,6 +2680,7 @@
     },
     {
       "id": "ace-dom3-010",
+      "uid": "47e275b4-cdac-4e4f-a974-629c928e414d",
       "title": "Two services, one hostname, path routing",
       "objective": "2.1",
       "subtopic": "Deploying to GKE",
@@ -2503,6 +2713,7 @@
     },
     {
       "id": "ace-dom3-011",
+      "uid": "b189fa5e-22fc-4c45-a38a-1cc1ff1fa59e",
       "title": "Expose a non-HTTP TCP service externally",
       "objective": "2.1",
       "subtopic": "Deploying to GKE",
@@ -2535,6 +2746,7 @@
     },
     {
       "id": "ace-dom3-012",
+      "uid": "543d65af-8dc3-427c-9378-e57f3401c15d",
       "title": "kubectl reports no configured cluster",
       "objective": "2.1",
       "subtopic": "kubectl Setup",
@@ -2567,6 +2779,7 @@
     },
     {
       "id": "ace-dom3-031",
+      "uid": "0c513a28-212b-4b90-9769-308210676de2",
       "title": "Specialise a generic image at boot",
       "objective": "2.1",
       "subtopic": "Launching Instances",
@@ -2599,6 +2812,7 @@
     },
     {
       "id": "ace-dom3-032",
+      "uid": "b9b67525-aa4d-4db3-842c-81f2ef3337c2",
       "title": "Uniform instances for a managed group",
       "objective": "2.1",
       "subtopic": "Managed Instance Groups",
@@ -2631,6 +2845,7 @@
     },
     {
       "id": "ace-dom3-033",
+      "uid": "bedc95a0-8c90-4b6f-a89a-5bb02108ca88",
       "title": "SSH access tied to IAM identities",
       "objective": "2.1",
       "subtopic": "OS Login",
@@ -2663,6 +2878,7 @@
     },
     {
       "id": "ace-dom3-036",
+      "uid": "0d57aea3-bb44-4dc6-90a4-6053c52780a0",
       "title": "Two-factor on production Linux logins",
       "objective": "2.1",
       "subtopic": "OS Login",
@@ -2695,6 +2911,7 @@
     },
     {
       "id": "ace-dom3-040",
+      "uid": "9d71c5f4-f4ed-4ede-8da8-efcb606ab733",
       "title": "Show reviewers the infrastructure diff",
       "objective": "2.4",
       "subtopic": "Infrastructure as Code",
@@ -2727,6 +2944,7 @@
     },
     {
       "id": "ace-s2-001",
+      "uid": "c471edda-ab12-489c-93a0-c9f13de18ddf",
       "title": "Hosting an agent without building serving infrastructure",
       "objective": "2.1",
       "subtopic": "Compute Platform Selection",
@@ -2759,6 +2977,7 @@
     },
     {
       "id": "ace-s2-002",
+      "uid": "cf1939af-9dc6-457b-9eff-3f96baff9e8e",
       "title": "Monthly OS patching across hundreds of VMs",
       "objective": "2.1",
       "subtopic": "VM Manager",
@@ -2791,6 +3010,7 @@
     },
     {
       "id": "ace-s2-003",
+      "uid": "6bd5ce05-c18e-45a6-ab4b-e7f2c10ceaab",
       "title": "Patch job reports that no agent was found",
       "objective": "2.1",
       "subtopic": "VM Manager",
@@ -2823,6 +3043,7 @@
     },
     {
       "id": "ace-s2-004",
+      "uid": "b735ef16-ecd4-4683-badb-f4eae6b265bb",
       "title": "Stop one VM accepting project-wide SSH keys",
       "objective": "2.1",
       "subtopic": "Launching Instances",
@@ -2855,6 +3076,7 @@
     },
     {
       "id": "ace-s2-005",
+      "uid": "acfc8842-0748-4f50-a28e-1fa09419eab0",
       "title": "kubectl cannot find the GKE authentication plugin",
       "objective": "2.1",
       "subtopic": "kubectl Setup",
@@ -2887,6 +3109,7 @@
     },
     {
       "id": "ace-s2-006",
+      "uid": "7551e69c-adb0-43b0-8141-96c75f0bc883",
       "title": "Moving Kafka applications without rewriting clients",
       "objective": "2.2",
       "subtopic": "Data Pipelines and Messaging",
@@ -2919,6 +3142,7 @@
     },
     {
       "id": "ace-s2-007",
+      "uid": "7c812d0d-b5e8-4813-acae-9fd91c429755",
       "title": "Serverless messaging for a new Cloud Run application",
       "objective": "2.2",
       "subtopic": "Data Pipelines and Messaging",
@@ -2951,6 +3175,7 @@
     },
     {
       "id": "ace-s2-008",
+      "uid": "95555d39-65f2-4529-b776-06a468517976",
       "title": "Replace a BigQuery table from a CSV with a header",
       "objective": "2.2",
       "subtopic": "Loading Data",
@@ -2983,6 +3208,7 @@
     },
     {
       "id": "ace-s2-009",
+      "uid": "500994c0-8701-46dc-8d0f-41cbb46bf31b",
       "title": "A 15-minute RPO for objects across two regions",
       "objective": "2.2",
       "subtopic": "Multi-region Redundancy",
@@ -3016,6 +3242,7 @@
     },
     {
       "id": "ace-s2-010",
+      "uid": "74919b27-e131-4dc5-9ac1-61d68a9ea070",
       "title": "Recover Cloud SQL in another region if the primary region fails",
       "objective": "2.2",
       "subtopic": "Multi-region Redundancy",
@@ -3048,6 +3275,7 @@
     },
     {
       "id": "ace-s2-011",
+      "uid": "cadc6d17-e155-4846-a44a-1c343a1a6ab4",
       "title": "A Firestore database that survives a regional outage",
       "objective": "2.2",
       "subtopic": "Multi-region Redundancy",
@@ -3080,6 +3308,7 @@
     },
     {
       "id": "ace-s2-012",
+      "uid": "54fab024-b601-4f35-a65d-454c82db9427",
       "title": "Egress allowed only to a partner hostname whose IPs change",
       "objective": "2.3",
       "subtopic": "Firewall Rules and Policies",
@@ -3113,6 +3342,7 @@
     },
     {
       "id": "ace-s2-013",
+      "uid": "5387bab6-466d-48a9-8401-4b7b9c9ab46e",
       "title": "Enforce one rule centrally and delegate the rest",
       "objective": "2.3",
       "subtopic": "Firewall Rules and Policies",
@@ -3145,6 +3375,7 @@
     },
     {
       "id": "ace-s2-014",
+      "uid": "48b8352d-cbe7-4a36-bc69-594655b5ca0e",
       "title": "Only the platform team may place a VM in a firewall group",
       "objective": "2.3",
       "subtopic": "Secure Tags and Service Accounts in Rules",
@@ -3178,6 +3409,7 @@
     },
     {
       "id": "ace-s2-015",
+      "uid": "df075fc8-5b6d-45d1-96d8-9730065caec3",
       "title": "A firewall policy rule that never matches a network tag",
       "objective": "2.3",
       "subtopic": "Secure Tags and Service Accounts in Rules",
@@ -3210,6 +3442,7 @@
     },
     {
       "id": "ace-s2-016",
+      "uid": "0d00c5d8-286a-43d1-a1ad-fd34a9d62157",
       "title": "Self-service from governed architecture templates",
       "objective": "2.4",
       "subtopic": "AI-assisted Planning",
@@ -3242,6 +3475,7 @@
     },
     {
       "id": "ace-s2-017",
+      "uid": "1c04fd58-9de3-4769-8a3c-1adeea873d44",
       "title": "An AI agent in the terminal that writes and runs infrastructure code",
       "objective": "2.4",
       "subtopic": "AI-assisted Planning",
@@ -3275,6 +3509,7 @@
     },
     {
       "id": "ace-s2-018",
+      "uid": "1cee67be-ab6a-4077-bd46-753182764808",
       "title": "Applying infrastructure code an AI assistant generated",
       "objective": "2.4",
       "subtopic": "AI-assisted Planning",
@@ -3308,6 +3543,7 @@
     },
     {
       "id": "ace-s2-019",
+      "uid": "8363bbeb-569c-4c14-9899-6b066a951dad",
       "title": "An agent-first development platform",
       "objective": "2.4",
       "subtopic": "AI-assisted Planning",
@@ -3340,6 +3576,7 @@
     },
     {
       "id": "ace-s2-020",
+      "uid": "b9d1f354-6978-45c5-8174-a5f366f90dbe",
       "title": "Patching without taking out a zone",
       "objective": "2.1",
       "subtopic": "VM Manager",
@@ -3372,6 +3609,7 @@
     },
     {
       "id": "ace-s2-021",
+      "uid": "a186686c-a1f3-4096-aed8-98de2199aae1",
       "title": "An emergency patch on production VMs, now",
       "objective": "2.1",
       "subtopic": "VM Manager",
@@ -3404,6 +3642,7 @@
     },
     {
       "id": "ace-s2-022",
+      "uid": "ec937f2a-e9fe-462b-8b10-e83e57600c59",
       "title": "Pointing kubectl at a different cluster",
       "objective": "2.1",
       "subtopic": "kubectl Setup",
@@ -3436,6 +3675,7 @@
     },
     {
       "id": "ace-s2-023",
+      "uid": "ba65c00e-ce0e-47df-be9a-80caa4790f49",
       "title": "Stop typing -n shop on every command",
       "objective": "2.1",
       "subtopic": "kubectl Setup",
@@ -3468,6 +3708,7 @@
     },
     {
       "id": "ace-s2-024",
+      "uid": "471460fa-4960-4c40-ab5f-aa5d5b8a2143",
       "title": "A partner's engineer needs SSH through OS Login",
       "objective": "2.1",
       "subtopic": "OS Login",
@@ -3500,6 +3741,7 @@
     },
     {
       "id": "ace-s2-025",
+      "uid": "1c2b8f95-8ed2-4d8d-88ee-c9bae1997fe8",
       "title": "OS Login to a VM that runs as a service account",
       "objective": "2.1",
       "subtopic": "OS Login",
@@ -3532,6 +3774,7 @@
     },
     {
       "id": "ace-s2-026",
+      "uid": "7282c7a9-e93b-4e9b-bb87-ced15af8cd02",
       "title": "Accelerating a video transcoding farm",
       "objective": "2.1",
       "subtopic": "GPUs or TPUs",
@@ -3564,6 +3807,7 @@
     },
     {
       "id": "ace-s2-027",
+      "uid": "6198ec20-6e51-4da6-9a57-e3f6285262a0",
       "title": "PyTorch training on TPUs without a rewrite",
       "objective": "2.1",
       "subtopic": "GPUs or TPUs",
@@ -3596,6 +3840,7 @@
     },
     {
       "id": "ace-s2-028",
+      "uid": "7706fa56-f1ac-46e5-a7be-32815c8d2ae8",
       "title": "An upload trigger that never fires",
       "objective": "2.1",
       "subtopic": "Serverless Deployment and Events",
@@ -3628,6 +3873,7 @@
     },
     {
       "id": "ace-s2-029",
+      "uid": "2478c76e-3839-418d-a3d8-63924e12ad58",
       "title": "A container batch that must run to completion nightly",
       "objective": "2.1",
       "subtopic": "Serverless Deployment and Events",
@@ -3660,6 +3906,7 @@
     },
     {
       "id": "ace-s2-030",
+      "uid": "48122736-bdae-41d3-a405-c79860d5f9ef",
       "title": "A new machine series rejects the disk type",
       "objective": "2.1",
       "subtopic": "Storage for Compute Engine",
@@ -3692,6 +3939,7 @@
     },
     {
       "id": "ace-s2-031",
+      "uid": "ac96e612-c10b-423e-9b80-d19ace7d57d0",
       "title": "The same model weights on forty inference VMs",
       "objective": "2.1",
       "subtopic": "Storage for Compute Engine",
@@ -3724,6 +3972,7 @@
     },
     {
       "id": "ace-s2-032",
+      "uid": "b8f2de2b-3a6b-466d-9c41-551e2e10315f",
       "title": "A container job that runs to completion",
       "objective": "2.1",
       "subtopic": "Compute Platform Selection",
@@ -3756,6 +4005,7 @@
     },
     {
       "id": "ace-s2-033",
+      "uid": "38f9f186-938c-4652-b889-4e9fc404be71",
       "title": "A licensed Windows Server application",
       "objective": "2.1",
       "subtopic": "Compute Platform Selection",
@@ -3788,6 +4038,7 @@
     },
     {
       "id": "ace-s2-034",
+      "uid": "9b08f474-6fa1-4548-9f61-0e4205a3bde5",
       "title": "A clean-up task every night at 02:00",
       "objective": "2.1",
       "subtopic": "Deploying to GKE",
@@ -3820,6 +4071,7 @@
     },
     {
       "id": "ace-s2-035",
+      "uid": "d981cc66-a6c0-4d2d-80b2-03c38ce29170",
       "title": "How many nodes a regional cluster really creates",
       "objective": "2.1",
       "subtopic": "GKE Cluster Configurations",
@@ -3852,6 +4104,7 @@
     },
     {
       "id": "ace-s2-036",
+      "uid": "75a21b09-9112-46c2-b813-94049b2023f4",
       "title": "What gcloud compute ssh does the first time",
       "objective": "2.1",
       "subtopic": "Launching Instances",
@@ -3884,6 +4137,7 @@
     },
     {
       "id": "ace-s2-037",
+      "uid": "b9cae0cf-7e96-42ef-a6d7-53f3c2e7b92b",
       "title": "More memory per vCPU than any standard shape",
       "objective": "2.1",
       "subtopic": "Spot and Custom Machine Types",
@@ -3916,6 +4170,7 @@
     },
     {
       "id": "ace-s2-038",
+      "uid": "eadffb08-0c3f-408d-9d7e-0b1e138bd21f",
       "title": "Relational data with zero loss across regions",
       "objective": "2.2",
       "subtopic": "Multi-region Redundancy",
@@ -3948,6 +4203,7 @@
     },
     {
       "id": "ace-s2-039",
+      "uid": "a4cc4f53-5914-42ed-a76a-43f2cf6178f1",
       "title": "Objects that must stay in two named regions",
       "objective": "2.2",
       "subtopic": "Multi-region Redundancy",
@@ -3980,6 +4236,7 @@
     },
     {
       "id": "ace-s2-040",
+      "uid": "e00cddc1-edf8-45e9-ab0f-bb6c07ffbe3a",
       "title": "600 TB over a 200 Mbps link",
       "objective": "2.2",
       "subtopic": "Loading Data",
@@ -4012,6 +4269,7 @@
     },
     {
       "id": "ace-s2-041",
+      "uid": "11db3966-91ae-4016-81ab-f3fb4b2bf896",
       "title": "Daily loads into BigQuery from Amazon S3",
       "objective": "2.2",
       "subtopic": "Loading Data",
@@ -4043,7 +4301,41 @@
       }
     },
     {
+      "id": "ace-s2-042",
+      "uid": "7883fce3-d1d2-4aaa-bd7b-186de9d2ae11",
+      "title": "A global load balancer in a Standard Tier project",
+      "objective": "2.3",
+      "subtopic": "Network Service Tiers",
+      "summary": "Global external load balancers and global anycast IPs require Premium Tier.",
+      "tags": [
+        "load-balancing",
+        "network-tiers",
+        "premium-tier"
+      ],
+      "source": "curated",
+      "question": "To save on egress, Ironbark Games set its project's default network tier to Standard. The team now needs a global external Application Load Balancer with one anycast IP address, serving players in Europe, Asia and North America. What must they do?",
+      "options": {
+        "A": "Keep Standard Tier; global load balancers work with either tier.",
+        "B": "Use Premium Tier for the load balancer's IP address and forwarding rule.",
+        "C": "Create one regional load balancer per continent on Standard Tier with the same IP.",
+        "D": "Switch to Standard Tier's global mode on the forwarding rule."
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "Global load balancing and global anycast IPs exist only on Premium Tier, which carries traffic on Google's backbone to the nearest edge; the tier can be set per resource even when the project default is Standard.",
+        "option_breakdown": {
+          "A": "Standard Tier is regional only and cannot front a global load balancer.",
+          "B": "Correct. Global load balancing and global anycast IPs exist only on Premium Tier, which carries traffic on Google's backbone to the nearest edge; the tier can be set per resource even when the project default is Standard.",
+          "C": "Regional load balancers each have their own regional IP; one IP cannot be shared across them.",
+          "D": "Standard Tier has no global mode."
+        },
+        "gcloud_command": "gcloud compute addresses create web-ip --global --network-tier=PREMIUM",
+        "doc_ref": "https://cloud.google.com/network-tiers/docs/overview"
+      }
+    },
+    {
       "id": "ace-s2-043",
+      "uid": "7ccae8e0-9746-45bb-973f-6b5ce8915092",
       "title": "Standard Tier for every new resource in a project",
       "objective": "2.3",
       "subtopic": "Network Service Tiers",
@@ -4076,6 +4368,7 @@
     },
     {
       "id": "ace-s2-044",
+      "uid": "cd13ea7f-5976-4db5-b046-ee37bb9a723b",
       "title": "One cheap regional endpoint in a Premium project",
       "objective": "2.3",
       "subtopic": "Network Service Tiers",
@@ -4108,6 +4401,7 @@
     },
     {
       "id": "ace-s2-045",
+      "uid": "04e8be59-9a4d-4f63-abb3-1c11109efc37",
       "title": "Secure tags that follow autoscaled GKE nodes",
       "objective": "2.3",
       "subtopic": "Secure Tags and Service Accounts in Rules",
@@ -4140,6 +4434,7 @@
     },
     {
       "id": "ace-s2-046",
+      "uid": "7fbb7dff-6b47-4fd8-87df-30deefe0d9f6",
       "title": "Who may attach a secure tag to a VM",
       "objective": "2.3",
       "subtopic": "Secure Tags and Service Accounts in Rules",
@@ -4172,6 +4467,7 @@
     },
     {
       "id": "ace-s2-047",
+      "uid": "5552ea46-95d7-4cab-9531-7016cd54dfd0",
       "title": "Allowing only the app tier to reach the database tier",
       "objective": "2.3",
       "subtopic": "Secure Tags and Service Accounts in Rules",
@@ -4204,6 +4500,7 @@
     },
     {
       "id": "ace-s2-048",
+      "uid": "e2e9b357-027c-442a-8998-67b1fdb61b93",
       "title": "Allow and deny at the same priority",
       "objective": "2.3",
       "subtopic": "Firewall Rules and Policies",
@@ -4236,6 +4533,7 @@
     },
     {
       "id": "ace-s2-049",
+      "uid": "479072d4-545a-4abf-9a5d-fd5babbe33ad",
       "title": "A new custom VPC with no rules at all",
       "objective": "2.3",
       "subtopic": "Firewall Rules and Policies",
@@ -4268,6 +4566,7 @@
     },
     {
       "id": "ace-s2-050",
+      "uid": "3fd46df1-0401-4b1e-894c-8659a22df6e1",
       "title": "Blocking traffic from specific countries",
       "objective": "2.3",
       "subtopic": "Firewall Rules and Policies",
@@ -4300,6 +4599,7 @@
     },
     {
       "id": "ace-s2-051",
+      "uid": "a2add226-170d-4024-bba8-09841c6a0496",
       "title": "Converting an auto-mode VPC",
       "objective": "2.3",
       "subtopic": "VPC Design",
@@ -4331,7 +4631,41 @@
       }
     },
     {
+      "id": "ace-s2-052",
+      "uid": "f7e33a9d-9e31-4ea4-8b99-56c8ef4dc1d9",
+      "title": "A service project team may use only its own subnet",
+      "objective": "2.3",
+      "subtopic": "VPC Design",
+      "summary": "Grant compute.networkUser on individual subnets of the host project for least privilege.",
+      "tags": [
+        "least-privilege",
+        "network-user",
+        "shared-vpc"
+      ],
+      "source": "curated",
+      "question": "Harbourline Shipping uses Shared VPC: the host project has one subnet for each of five teams. Developers in the customs team must create VMs in the customs subnet from their own service project, and must not be able to use any other team's subnet. What should you grant?",
+      "options": {
+        "A": "roles/compute.networkUser on the host project to team A's group.",
+        "B": "roles/compute.networkAdmin on the host project to team A's group.",
+        "C": "roles/compute.xpnAdmin on the organisation to team A's group.",
+        "D": "roles/compute.networkUser on team A's subnet to team A's group."
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "Network User granted on a single subnet lets the group create resources in that subnet and no other.",
+        "option_breakdown": {
+          "A": "Project-level Network User covers every subnet in the host project.",
+          "B": "Network Admin lets the team change the network itself.",
+          "C": "Shared VPC Admin enables host projects and attaches service projects — far beyond the need.",
+          "D": "Correct. Network User granted on a single subnet lets the group create resources in that subnet and no other."
+        },
+        "gcloud_command": "gcloud compute networks subnets add-iam-policy-binding team-a --region=REGION \\\n  --project=HOST_PROJECT --member=group:team-a@example.com --role=roles/compute.networkUser",
+        "doc_ref": "https://cloud.google.com/vpc/docs/shared-vpc"
+      }
+    },
+    {
       "id": "ace-s2-053",
+      "uid": "c99c952b-fc42-4f35-921e-def6b90d252f",
       "title": "Who can turn a project into a Shared VPC host",
       "objective": "2.3",
       "subtopic": "VPC Design",
@@ -4364,6 +4698,7 @@
     },
     {
       "id": "ace-s2-054",
+      "uid": "1bcb7eb7-3398-463c-9d39-6c106e9cc41f",
       "title": "On-premises routes visible in only one region",
       "objective": "2.3",
       "subtopic": "Hybrid Connectivity",
@@ -4396,6 +4731,7 @@
     },
     {
       "id": "ace-s2-055",
+      "uid": "af43351c-15f5-4683-9a88-47745edcb13f",
       "title": "Encrypting traffic on a Dedicated Interconnect",
       "objective": "2.3",
       "subtopic": "Hybrid Connectivity",
@@ -4428,6 +4764,7 @@
     },
     {
       "id": "ace-s2-056",
+      "uid": "6bcb598c-afdb-4c9c-afbe-e5ab5744efca",
       "title": "A private link to AWS without the internet",
       "objective": "2.3",
       "subtopic": "Hybrid Connectivity",
@@ -4460,6 +4797,7 @@
     },
     {
       "id": "ace-s2-057",
+      "uid": "f7da86b2-7060-46a5-b2c5-3682e2aed21b",
       "title": "A custom domain and WAF for Cloud Run",
       "objective": "2.3",
       "subtopic": "Load Balancer Selection",
@@ -4492,6 +4830,7 @@
     },
     {
       "id": "ace-s2-058",
+      "uid": "dfe36cdc-1d70-4124-875a-9a52368cd629",
       "title": "Internal UDP service that must see client addresses",
       "objective": "2.3",
       "subtopic": "Load Balancer Selection",
@@ -4524,6 +4863,7 @@
     },
     {
       "id": "ace-s2-059",
+      "uid": "ebac3964-92e7-402b-89e3-ade78ce696d3",
       "title": "A managed certificate stuck in provisioning",
       "objective": "2.3",
       "subtopic": "Load Balancer Selection",
@@ -4556,6 +4896,7 @@
     },
     {
       "id": "ace-s2-060",
+      "uid": "fa144cf2-7a41-4e35-b53d-24a95d442274",
       "title": "A console change that keeps reverting itself",
       "objective": "2.4",
       "subtopic": "Infrastructure as Code",
@@ -4588,6 +4929,7 @@
     },
     {
       "id": "ace-s2-061",
+      "uid": "013a7a76-dc14-48d7-8a5f-0ba806eb2981",
       "title": "What an AI terminal agent is allowed to change",
       "objective": "2.4",
       "subtopic": "AI-assisted Planning",
@@ -4620,6 +4962,7 @@
     },
     {
       "id": "ace-s2-062",
+      "uid": "c56f02e0-38a9-4d2e-9f2c-d938f8e144c8",
       "title": "Undoing a bad Helm upgrade",
       "objective": "2.4",
       "subtopic": "Infrastructure as Code",
@@ -4652,6 +4995,7 @@
     },
     {
       "id": "ace-s2-063",
+      "uid": "67de6cb3-f38c-4546-9144-b34272b98e30",
       "title": "A hand-made bucket brought under Terraform",
       "objective": "2.4",
       "subtopic": "Infrastructure as Code",
@@ -4684,6 +5028,7 @@
     },
     {
       "id": "ace-s2-064",
+      "uid": "320271f8-c4d8-4dfa-bdb6-02edb0d89214",
       "title": "Terraform without running it yourself",
       "objective": "2.4",
       "subtopic": "Infrastructure as Code",
@@ -4716,6 +5061,7 @@
     },
     {
       "id": "ace-s2-065",
+      "uid": "13a02114-558a-4a17-b64c-5f11f007737d",
       "title": "AlloyDB that must outlive its region",
       "objective": "2.2",
       "subtopic": "Multi-region Redundancy",
@@ -4748,6 +5094,7 @@
     },
     {
       "id": "ace-s2-066",
+      "uid": "0dbf585c-ba78-4300-8515-658f2b1237af",
       "title": "A BigQuery dataset copy kept in a second region",
       "objective": "2.2",
       "subtopic": "Multi-region Redundancy",
@@ -4780,6 +5127,7 @@
     },
     {
       "id": "ace-s2-067",
+      "uid": "bd0c3e2e-6e8f-4f15-ada1-1d251f19aaef",
       "title": "BigQuery failover that brings compute with the data",
       "objective": "2.2",
       "subtopic": "Multi-region Redundancy",
@@ -4812,6 +5160,7 @@
     },
     {
       "id": "ace-s2-068",
+      "uid": "d9930150-f464-40ed-9b97-679999722081",
       "title": "No connection-string change after a Cloud SQL regional failover",
       "objective": "2.2",
       "subtopic": "Multi-region Redundancy",
@@ -4844,6 +5193,7 @@
     },
     {
       "id": "ace-s2-069",
+      "uid": "b8ef8438-9ca9-4c84-bf71-cae5b215b375",
       "title": "A planned Cloud SQL region move with zero data loss",
       "objective": "2.2",
       "subtopic": "Multi-region Redundancy",
@@ -4876,6 +5226,7 @@
     },
     {
       "id": "ace-s2-070",
+      "uid": "2198a85e-4fd9-4a19-9169-86c13b4a1bd1",
       "title": "Five nines inside one country for a relational database",
       "objective": "2.2",
       "subtopic": "Multi-region Redundancy",
@@ -4908,6 +5259,7 @@
     },
     {
       "id": "ace-s2-071",
+      "uid": "5776a440-dc31-4b7b-9488-65a34bf92f82",
       "title": "Putting a Spanner leader next to the writers",
       "objective": "2.2",
       "subtopic": "Multi-region Redundancy",
@@ -4940,6 +5292,7 @@
     },
     {
       "id": "ace-s2-072",
+      "uid": "0111b782-8f64-4bba-9a83-e9ee8548806e",
       "title": "Stale reads after adding a Bigtable cluster in another region",
       "objective": "2.2",
       "subtopic": "Multi-region Redundancy",
@@ -4972,6 +5325,7 @@
     },
     {
       "id": "ace-s2-073",
+      "uid": "65bcd0df-f188-422b-8844-15666c863b7e",
       "title": "A VM data disk replicated to another region every minute",
       "objective": "2.2",
       "subtopic": "Multi-region Redundancy",
@@ -5004,6 +5358,7 @@
     },
     {
       "id": "ace-s2-074",
+      "uid": "9da551ca-b854-4f60-83a2-d365f9021bec",
       "title": "The RPO of a multi-region bucket you have not tuned",
       "objective": "2.2",
       "subtopic": "Multi-region Redundancy",
@@ -5036,6 +5391,7 @@
     },
     {
       "id": "ace-s2-075",
+      "uid": "c6bb7b4f-1883-42ce-93d9-5719836b6d31",
       "title": "NetApp volumes that survive a regional outage",
       "objective": "2.2",
       "subtopic": "Multi-region Redundancy",
@@ -5068,6 +5424,7 @@
     },
     {
       "id": "ace-s2-076",
+      "uid": "9fcea213-5aee-4f59-902c-4fdfd5303b79",
       "title": "Cloud SQL backups stored outside the instance's region",
       "objective": "2.2",
       "subtopic": "Multi-region Redundancy",
@@ -5100,6 +5457,7 @@
     },
     {
       "id": "ace-s2-077",
+      "uid": "184fda59-47f2-4495-a1cd-924e54e4b19f",
       "title": "An existing MongoDB application moving to a serverless database",
       "objective": "2.2",
       "subtopic": "Database Selection",
@@ -5132,6 +5490,7 @@
     },
     {
       "id": "ace-s2-078",
+      "uid": "e8ad7e6b-7676-4281-962c-a4171d6dff50",
       "title": "NFS that keeps serving when a zone fails",
       "objective": "2.2",
       "subtopic": "Storage Products",
@@ -5164,6 +5523,7 @@
     },
     {
       "id": "ace-s2-079",
+      "uid": "50a90061-7d99-48f7-a9ac-284547dffe39",
       "title": "A BigQuery multi-region is not a second region",
       "objective": "2.2",
       "subtopic": "Multi-region Redundancy",
@@ -5196,6 +5556,7 @@
     },
     {
       "id": "ace-s2-080",
+      "uid": "0288840d-29cf-4b36-b2a8-04d670070899",
       "title": "Daily Filestore protection that survives the region",
       "objective": "2.2",
       "subtopic": "Multi-region Redundancy",
@@ -5228,6 +5589,7 @@
     },
     {
       "id": "ace-s2-081",
+      "uid": "d6e8a1ef-0cf2-4169-aac7-e131bac05f59",
       "title": "A Bigtable backup kept outside the source region",
       "objective": "2.2",
       "subtopic": "Multi-region Redundancy",
@@ -5260,6 +5622,7 @@
     },
     {
       "id": "ace-s2-082",
+      "uid": "c5bce2a8-498e-4a73-ae95-1e97664e1ac2",
       "title": "Standing instructions for Gemini CLI in a repository",
       "objective": "2.4",
       "subtopic": "AI-assisted Planning",
@@ -5292,6 +5655,7 @@
     },
     {
       "id": "ace-s2-083",
+      "uid": "627eb827-ad4b-4581-9510-13db30094a2e",
       "title": "Giving Gemini CLI a new tool through MCP",
       "objective": "2.4",
       "subtopic": "AI-assisted Planning",
@@ -5324,6 +5688,7 @@
     },
     {
       "id": "ace-s2-084",
+      "uid": "18863e6b-10f3-4f86-85eb-1fbfe9230030",
       "title": "From a plain-language description to a deployable design",
       "objective": "2.4",
       "subtopic": "AI-assisted Planning",
@@ -5356,6 +5721,7 @@
     },
     {
       "id": "ace-s2-085",
+      "uid": "df5ef42d-c1bb-4cec-9aef-573774cdf672",
       "title": "Gemini Cloud Assist from a third-party AI tool",
       "objective": "2.4",
       "subtopic": "AI-assisted Planning",
@@ -5388,6 +5754,7 @@
     },
     {
       "id": "ace-s2-086",
+      "uid": "8e68292a-791a-44c1-b42b-d94dfeaaf70a",
       "title": "Remote 3D design workstations",
       "objective": "2.1",
       "subtopic": "GPUs or TPUs",
@@ -5420,6 +5787,7 @@
     },
     {
       "id": "ace-s2-087",
+      "uid": "2ca1b242-4459-4820-a738-4699b6efea3a",
       "title": "Training across thousands of tightly linked accelerators",
       "objective": "2.1",
       "subtopic": "GPUs or TPUs",
@@ -5452,6 +5820,7 @@
     },
     {
       "id": "ace-s2-088",
+      "uid": "c4c33448-a697-44bb-b681-54fb7160c9a7",
       "title": "Filestore that can be promoted in another region",
       "objective": "2.2",
       "subtopic": "Multi-region Redundancy",
@@ -5484,6 +5853,7 @@
     },
     {
       "id": "ace-s2-089",
+      "uid": "bc4d2e67-9ffb-4408-b692-2f1f2874a23c",
       "title": "Memorystore Standard Tier is not cross-region",
       "objective": "2.2",
       "subtopic": "Multi-region Redundancy",
@@ -5516,6 +5886,7 @@
     },
     {
       "id": "ace-s2-090",
+      "uid": "f60e5c02-d980-431d-8c75-d4c5e29bdfd2",
       "title": "Local reads for users on another continent",
       "objective": "2.2",
       "subtopic": "Multi-region Redundancy",
@@ -5548,6 +5919,7 @@
     },
     {
       "id": "ace-s2-091",
+      "uid": "e1ea44c3-2455-461a-9c03-bb7ad230806e",
       "title": "How far behind the DR replica is",
       "objective": "2.2",
       "subtopic": "Multi-region Redundancy",
@@ -5580,6 +5952,7 @@
     },
     {
       "id": "ace-s2-092",
+      "uid": "cc84eea7-5e32-4ab3-9690-69c657093209",
       "title": "Faster Spanner reads in a region outside the configuration",
       "objective": "2.2",
       "subtopic": "Multi-region Redundancy",
@@ -5612,6 +5985,7 @@
     },
     {
       "id": "ace-s2-093",
+      "uid": "5d9444b5-ef53-435a-8961-67c40fadd9aa",
       "title": "A one-off copy of a BigQuery dataset to another region",
       "objective": "2.2",
       "subtopic": "Multi-region Redundancy",
@@ -5644,6 +6018,7 @@
     },
     {
       "id": "ace-s2-094",
+      "uid": "484aacf0-a34f-4842-bc19-ccc67fb9471d",
       "title": "Spanner backups that survive the instance's region",
       "objective": "2.2",
       "subtopic": "Multi-region Redundancy",
@@ -5676,6 +6051,7 @@
     },
     {
       "id": "ace-s2-095",
+      "uid": "1060109a-5c3d-497c-80f9-7bb7ecd05907",
       "title": "A Firestore database created in the wrong location",
       "objective": "2.2",
       "subtopic": "Multi-region Redundancy",
@@ -5708,6 +6084,7 @@
     },
     {
       "id": "ace-s2-096",
+      "uid": "d86d3e17-ef93-4f0d-9489-67d386f16d56",
       "title": "A global front end that fails over between Cloud Run regions",
       "objective": "2.2",
       "subtopic": "Multi-region Redundancy",
@@ -5740,6 +6117,7 @@
     },
     {
       "id": "ace-s2-097",
+      "uid": "fdfdff16-8a98-4b53-874b-a42c61e7d53e",
       "title": "Keeping batch scans away from Bigtable serving traffic",
       "objective": "2.2",
       "subtopic": "Multi-region Redundancy",
@@ -5772,6 +6150,7 @@
     },
     {
       "id": "ace-s2-098",
+      "uid": "161798bc-87e2-452e-9e18-3dddd39b7af1",
       "title": "Spanner for a team that knows PostgreSQL",
       "objective": "2.2",
       "subtopic": "Database Selection",
@@ -5804,6 +6183,7 @@
     },
     {
       "id": "ace-s2-099",
+      "uid": "7b3d1118-a645-41c1-ac97-09b9b2aedb7f",
       "title": "Vector search next to operational PostgreSQL data",
       "objective": "2.2",
       "subtopic": "Database Selection",
@@ -5836,6 +6216,7 @@
     },
     {
       "id": "ace-s2-100",
+      "uid": "471064d3-e73f-4ae9-8f73-6f26cd6ac6a0",
       "title": "An open-source Redis-compatible managed cache",
       "objective": "2.2",
       "subtopic": "Database Selection",
@@ -5868,6 +6249,7 @@
     },
     {
       "id": "ace-s2-101",
+      "uid": "78f409b5-f618-45a4-a8be-ca9d9ec23792",
       "title": "Pub/Sub messages straight into BigQuery",
       "objective": "2.2",
       "subtopic": "Data Pipelines and Messaging",
@@ -5900,6 +6282,7 @@
     },
     {
       "id": "ace-s2-102",
+      "uid": "c2e38c7e-2b59-4d7e-9ff3-918f20550ea0",
       "title": "A standard pipeline without writing Beam code",
       "objective": "2.2",
       "subtopic": "Data Pipelines and Messaging",
@@ -5932,6 +6315,7 @@
     },
     {
       "id": "ace-s2-103",
+      "uid": "5d757683-2697-40bb-bba3-440d8c0faee5",
       "title": "Atomic folder renames for an analytics lake",
       "objective": "2.2",
       "subtopic": "Storage Products",
@@ -5964,6 +6348,7 @@
     },
     {
       "id": "ace-s2-104",
+      "uid": "b270bc2a-5000-44bc-8009-6fad485a89a3",
       "title": "Faster repeated reads of training data from a multi-region bucket",
       "objective": "2.2",
       "subtopic": "Storage Products",
@@ -5996,6 +6381,7 @@
     },
     {
       "id": "ace-s2-105",
+      "uid": "98b71612-e166-48ec-bf91-9641f044b369",
       "title": "Unknown access patterns across millions of objects",
       "objective": "2.2",
       "subtopic": "Cloud Storage Classes",
@@ -6028,6 +6414,7 @@
     },
     {
       "id": "ace-s2-106",
+      "uid": "3b74f434-2743-4723-b04c-f9e51bc51961",
       "title": "Moving an on-premises NFS share into Cloud Storage",
       "objective": "2.2",
       "subtopic": "Loading Data",
@@ -6060,6 +6447,7 @@
     },
     {
       "id": "ace-s2-107",
+      "uid": "af0b7c4f-dc03-42e2-a121-ec7b7842198a",
       "title": "Thousands of batch tasks on VMs without a scheduler to run",
       "objective": "2.1",
       "subtopic": "Compute Platform Selection",
@@ -6092,6 +6480,7 @@
     },
     {
       "id": "ace-s2-108",
+      "uid": "fe5c98dd-87a1-429a-b2c1-28d3b7d9adee",
       "title": "Leaving the data centre without leaving vSphere",
       "objective": "2.1",
       "subtopic": "Compute Platform Selection",
@@ -6124,6 +6513,7 @@
     },
     {
       "id": "ace-s2-109",
+      "uid": "423cebba-15c6-4852-bd03-cd79c29de52b",
       "title": "Per-core licences that need physical isolation",
       "objective": "2.1",
       "subtopic": "Compute Platform Selection",
@@ -6156,6 +6546,7 @@
     },
     {
       "id": "ace-s2-110",
+      "uid": "9707fa11-37bd-4dc9-8190-75ba04fd4f72",
       "title": "Oracle Exadata close to Google Cloud applications",
       "objective": "2.1",
       "subtopic": "Compute Platform Selection",
@@ -6188,6 +6579,7 @@
     },
     {
       "id": "ace-s2-111",
+      "uid": "f6683ec7-f509-4142-b2be-278cc046bbe3",
       "title": "Data encrypted while it is being processed",
       "objective": "2.1",
       "subtopic": "Launching Instances",
@@ -6220,6 +6612,7 @@
     },
     {
       "id": "ace-s2-112",
+      "uid": "b17861a3-c440-4967-a3b2-5ea5d4daccc4",
       "title": "Guaranteed capacity for a known event next month",
       "objective": "2.1",
       "subtopic": "Launching Instances",
@@ -6252,6 +6645,7 @@
     },
     {
       "id": "ace-s2-113",
+      "uid": "37676398-d1e1-42a8-82ea-8f8779b793ee",
       "title": "Synchronous two-zone replication for a Hyperdisk workload",
       "objective": "2.1",
       "subtopic": "Storage for Compute Engine",
@@ -6284,6 +6678,7 @@
     },
     {
       "id": "ace-s2-114",
+      "uid": "80b37a3a-c9d2-4c06-b1da-7c6920e34678",
       "title": "Sharing performance across many small Hyperdisks",
       "objective": "2.1",
       "subtopic": "Storage for Compute Engine",
@@ -6316,6 +6711,7 @@
     },
     {
       "id": "ace-s2-115",
+      "uid": "6229becd-5cb9-48be-a3d5-27b6f4983f9f",
       "title": "Getting scarce GPU VMs in whichever zone has them",
       "objective": "2.1",
       "subtopic": "Managed Instance Groups",
@@ -6348,6 +6744,7 @@
     },
     {
       "id": "ace-s2-116",
+      "uid": "deb34717-b585-48be-a472-65188aef04cc",
       "title": "Keeping a required agent installed on every VM",
       "objective": "2.1",
       "subtopic": "VM Manager",
@@ -6380,6 +6777,7 @@
     },
     {
       "id": "ace-s2-117",
+      "uid": "af38c451-8847-4a39-8a0c-d44bf21c5815",
       "title": "Spot VMs that should stop, not disappear",
       "objective": "2.1",
       "subtopic": "Spot and Custom Machine Types",
@@ -6412,6 +6810,7 @@
     },
     {
       "id": "ace-s2-118",
+      "uid": "f56f8918-f85c-48e5-b9b1-e2fabeb245e0",
       "title": "Production clusters that upgrade conservatively",
       "objective": "2.1",
       "subtopic": "GKE Cluster Configurations",
@@ -6444,6 +6843,7 @@
     },
     {
       "id": "ace-s2-119",
+      "uid": "d765af53-a7f7-44d5-a176-de9b9217db13",
       "title": "kubectl from anywhere without authorised networks or a bastion",
       "objective": "2.1",
       "subtopic": "GKE Cluster Configurations",
@@ -6476,6 +6876,7 @@
     },
     {
       "id": "ace-s2-120",
+      "uid": "5f2adf75-5302-4aae-8a17-3c8e83b6021e",
       "title": "Keeping enough replicas up during node upgrades",
       "objective": "2.1",
       "subtopic": "Deploying to GKE",
@@ -6508,6 +6909,7 @@
     },
     {
       "id": "ace-s2-121",
+      "uid": "148a11ee-0765-4e6a-b9ed-c7d57e80bdba",
       "title": "Reacting to a new Firestore document",
       "objective": "2.1",
       "subtopic": "Serverless Deployment and Events",
@@ -6540,6 +6942,7 @@
     },
     {
       "id": "ace-s2-122",
+      "uid": "7f9bae6a-d28c-4c4e-bea9-303ca16aa170",
       "title": "Cloud Run reaching a private IP without a connector",
       "objective": "2.1",
       "subtopic": "Serverless Deployment and Events",
@@ -6572,6 +6975,7 @@
     },
     {
       "id": "ace-s2-123",
+      "uid": "2d0e6a78-0323-4444-adab-04385b1ed35e",
       "title": "GPUs for a training job that can wait for capacity",
       "objective": "2.1",
       "subtopic": "GPUs or TPUs",
@@ -6604,6 +7008,7 @@
     },
     {
       "id": "ace-s2-124",
+      "uid": "515f90c8-9014-4f90-94cf-d87057fc8073",
       "title": "Intrusion prevention between tiers",
       "objective": "2.3",
       "subtopic": "Firewall Rules and Policies",
@@ -6636,6 +7041,7 @@
     },
     {
       "id": "ace-s2-125",
+      "uid": "d8228f9a-f4bf-43fa-98b0-13a08eb94e1a",
       "title": "Forty partner ranges used in six rules",
       "objective": "2.3",
       "subtopic": "Firewall Rules and Policies",
@@ -6668,6 +7074,7 @@
     },
     {
       "id": "ace-s2-126",
+      "uid": "fd07d13e-968b-426d-8a31-36977924ebe5",
       "title": "A secure tag that will not work in a second VPC",
       "objective": "2.3",
       "subtopic": "Secure Tags and Service Accounts in Rules",
@@ -6700,6 +7107,7 @@
     },
     {
       "id": "ace-s2-127",
+      "uid": "1b0cba4c-9474-4c3d-af45-23121ddc9d35",
       "title": "Transitive connectivity among many VPCs",
       "objective": "2.3",
       "subtopic": "VPC Design",
@@ -6732,6 +7140,7 @@
     },
     {
       "id": "ace-s2-128",
+      "uid": "ce3dd65b-1e96-401a-a5fe-bb10a538eb04",
       "title": "An internal service that must fail over between regions",
       "objective": "2.3",
       "subtopic": "Load Balancer Selection",
@@ -6764,6 +7173,7 @@
     },
     {
       "id": "ace-s2-129",
+      "uid": "6484a4ac-13f3-498d-b65a-b3547e4984bf",
       "title": "How many tunnels an HA VPN to AWS needs",
       "objective": "2.3",
       "subtopic": "Hybrid Connectivity",
@@ -6795,7 +7205,41 @@
       }
     },
     {
+      "id": "ace-s2-130",
+      "uid": "aaa8bad0-007b-4cbf-867b-60a6d8c673d0",
+      "title": "Terraform state for a team, not a laptop",
+      "objective": "2.4",
+      "subtopic": "Infrastructure as Code",
+      "summary": "Store Terraform state in a Cloud Storage backend, which also provides state locking.",
+      "tags": [
+        "cloud-storage",
+        "state",
+        "terraform"
+      ],
+      "source": "curated",
+      "question": "Three engineers at Thornbury Energy run Terraform against the same staging environment from their laptops. Their local state files have diverged, and two applies last week overwrote each other's changes. What should they configure?",
+      "options": {
+        "A": "A gcs backend in a versioned Cloud Storage bucket, with locking.",
+        "B": "Commit terraform.tfstate to the Git repository after every apply.",
+        "C": "Run terraform refresh before every plan.",
+        "D": "Give each engineer a separate workspace in the same local directory."
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "A remote gcs backend gives one shared state with locking, so two applies cannot run at once; bucket versioning allows recovery of earlier state.",
+        "option_breakdown": {
+          "A": "Correct. A remote gcs backend gives one shared state with locking, so two applies cannot run at once; bucket versioning allows recovery of earlier state.",
+          "B": "State in Git is often stale, can conflict, and may contain secrets.",
+          "C": "Refresh updates state from real resources but does not share or lock it.",
+          "D": "Workspaces on one laptop do not share state across engineers."
+        },
+        "gcloud_command": "terraform {\n  backend \"gcs\" {\n    bucket = \"acme-tf-state\"\n    prefix = \"prod/network\"\n  }\n}",
+        "doc_ref": "https://developer.hashicorp.com/terraform/language/backend/gcs"
+      }
+    },
+    {
       "id": "ace-s2-131",
+      "uid": "591e6cfa-be9f-491c-8763-66dda31c4cfc",
       "title": "Turning a console form into gcloud or Terraform",
       "objective": "2.4",
       "subtopic": "AI-assisted Planning",
@@ -6828,6 +7272,7 @@
     },
     {
       "id": "ace-s2-132",
+      "uid": "dd532d22-cb10-4316-b07c-bf0a8b4fa351",
       "title": "OS Login with sudo",
       "objective": "2.1",
       "subtopic": "OS Login",
@@ -6860,6 +7305,7 @@
     },
     {
       "id": "ace-s2-133",
+      "uid": "50d4d5c4-3e69-41b7-b14d-d391319ae7a5",
       "title": "Saving work when a Spot VM is reclaimed",
       "objective": "2.1",
       "subtopic": "Spot and Custom Machine Types",
@@ -6891,6 +7337,7 @@
     },
     {
       "id": "ace-s2-134",
+      "uid": "33cc1a92-a592-4a79-815b-f4268eaddadb",
       "title": "kubectl too far behind the cluster",
       "objective": "2.1",
       "subtopic": "kubectl Setup",
@@ -6922,6 +7369,7 @@
     },
     {
       "id": "ace-s2-135",
+      "uid": "20653b59-06af-427d-8c52-04004d319301",
       "title": "A VM that must stay up through host maintenance",
       "objective": "2.1",
       "subtopic": "Launching Instances",
@@ -6950,6 +7398,784 @@
         "gcloud_command": "gcloud compute instances set-scheduling app-1 --zone=ZONE --maintenance-policy=MIGRATE",
         "doc_ref": "https://docs.cloud.google.com/compute/docs/instances/live-migration-process"
       }
+    },
+    {
+      "id": "ace-s2-136",
+      "uid": "6c37097d-3cee-4839-a666-a1816c90d5a4",
+      "title": "A private VM that still calls Google APIs",
+      "objective": "2.1",
+      "subtopic": "Launching Instances",
+      "summary": "Create the VM without an external IP, and enable Private Google Access on its subnet so it can still reach Google APIs.",
+      "tags": [
+        "compute-engine",
+        "external-ip",
+        "private-google-access"
+      ],
+      "source": "curated",
+      "question": "Wardle Insurance is launching a claims-processing VM that must have no external IP address. It reads and writes objects in Cloud Storage, and the subnet has no Cloud NAT. Which two actions should you take? (Choose two.)",
+      "options": {
+        "A": "Create a VPC peering connection to Google's services network.",
+        "B": "Reserve a static external IP and attach it only during processing.",
+        "C": "Enable Private Google Access on the VM's subnet.",
+        "D": "Allow egress to 0.0.0.0/0 on TCP 443 in a new firewall rule.",
+        "E": "Create the VM with no external IP address."
+      },
+      "correct_answer": "C,E",
+      "explanation": {
+        "summary": "Without an external IP, a VM can't reach the internet, but Private Google Access lets VMs in that subnet reach Google APIs such as Cloud Storage through Google's network.",
+        "option_breakdown": {
+          "A": "Peering with a services network is for private services access, such as Cloud SQL private IP, not for Google APIs.",
+          "B": "Any external IP, even part-time, breaks the requirement.",
+          "C": "Correct. Private Google Access is enabled per subnet and gives private VMs access to Google APIs.",
+          "D": "Egress is already allowed by the implied rule; the VM has no path out, not a blocked one.",
+          "E": "Correct. The VM has only an internal address, as required."
+        },
+        "gcloud_command": "gcloud compute networks subnets update claims-subnet --region=REGION --enable-private-ip-google-access\ngcloud compute instances create claims-1 --zone=ZONE --subnet=claims-subnet --no-address",
+        "doc_ref": "https://cloud.google.com/vpc/docs/configure-private-google-access"
+      }
+    },
+    {
+      "id": "ace-s2-137",
+      "uid": "031c474f-8b97-4404-ba43-038f0446d123",
+      "title": "A rolling update that never drops below full capacity",
+      "objective": "2.1",
+      "subtopic": "Managed Instance Groups",
+      "summary": "In a MIG rolling update, maxUnavailable 0 keeps every serving VM up, and maxSurge of at least 1 creates new VMs before old ones are removed.",
+      "tags": [
+        "mig",
+        "rolling-update",
+        "zero-downtime"
+      ],
+      "source": "curated",
+      "question": "Hollis Air rolls out a new instance template to a regional managed instance group of 12 VMs. Capacity must never drop below 12 serving VMs during the update, and the project has quota for a few extra VMs. Which two update settings should you use? (Choose two.)",
+      "options": {
+        "A": "maxSurge set to 0",
+        "B": "A replacement method of RECREATE with maxSurge 0",
+        "C": "maxUnavailable set to 3",
+        "D": "maxUnavailable set to 0",
+        "E": "maxSurge set to 3"
+      },
+      "correct_answer": "D,E",
+      "explanation": {
+        "summary": "maxUnavailable limits how many VMs may be offline at once during the update; maxSurge allows extra VMs above the target size. With 0 unavailable and a surge of 3, new VMs come up before old ones are taken down.",
+        "option_breakdown": {
+          "A": "With no surge and no unavailability, the update can't make progress.",
+          "B": "Recreate replaces VMs in place, so each one is unavailable while it is rebuilt.",
+          "C": "Three VMs could be down at once, dropping capacity to nine.",
+          "D": "Correct. No VM is taken out of service before its replacement is ready.",
+          "E": "Correct. Up to three extra VMs are created first, so capacity stays at 12."
+        },
+        "gcloud_command": "gcloud compute instance-groups managed rolling-action start-update web-mig --region=REGION \\\n  --version=template=web-v2 --max-unavailable=0 --max-surge=3",
+        "doc_ref": "https://cloud.google.com/compute/docs/instance-groups/updating-migs"
+      }
+    },
+    {
+      "id": "ace-s2-138",
+      "uid": "c4c9ba80-1151-4ce8-a6b9-fc7fdcda70b1",
+      "title": "SSH access through OS Login, with sudo for admins",
+      "objective": "2.1",
+      "subtopic": "OS Login",
+      "summary": "Enable OS Login through metadata, then grant Compute OS Login for normal access or Compute OS Admin Login for sudo.",
+      "tags": [
+        "iam",
+        "os-login",
+        "ssh"
+      ],
+      "source": "curated",
+      "question": "Today, engineers at Pagett Systems add their own SSH keys to project metadata, and access is never removed. Security wants Linux VM access tied to each engineer's Google identity through IAM, and two platform admins must also have sudo. Which two actions should you take? (Choose two.)",
+      "options": {
+        "A": "Grant the platform admins Compute OS Admin Login on the project.",
+        "B": "Set enable-oslogin to TRUE in the project's metadata.",
+        "C": "Grant the platform admins Service Account Admin on the project.",
+        "D": "Keep project-wide SSH keys and rotate them monthly.",
+        "E": "Give each engineer a service account key for SSH."
+      },
+      "correct_answer": "A,B",
+      "explanation": {
+        "summary": "With OS Login enabled, SSH access is decided by IAM on the user's Google identity, and removing a role or account ends access. Compute OS Login grants normal access; Compute OS Admin Login adds sudo.",
+        "option_breakdown": {
+          "A": "Correct. OS Admin Login gives the admins SSH with sudo.",
+          "B": "Correct. OS Login replaces metadata SSH keys with IAM-controlled access.",
+          "C": "Service Account Admin manages service accounts; it has nothing to do with SSH.",
+          "D": "Rotated metadata keys are still unmanaged keys outside IAM.",
+          "E": "Service account keys aren't how people sign in to VMs, and they're long-lived secrets."
+        },
+        "gcloud_command": "gcloud compute project-info add-metadata --metadata=enable-oslogin=TRUE\ngcloud projects add-iam-policy-binding PROJECT_ID \\\n  --member=group:platform-admins@pagett.example --role=roles/compute.osAdminLogin",
+        "doc_ref": "https://cloud.google.com/compute/docs/oslogin/set-up-oslogin"
+      }
+    },
+    {
+      "id": "ace-s2-139",
+      "uid": "97e51f67-3924-4f0f-84ab-5aefa02ee303",
+      "title": "Two Deployments behind one address, by path",
+      "objective": "2.1",
+      "subtopic": "Deploying to GKE",
+      "summary": "On GKE, an Ingress backed by a Service for each Deployment creates one external Application Load Balancer with path-based routing.",
+      "tags": [
+        "gke",
+        "ingress",
+        "load-balancing",
+        "services"
+      ],
+      "source": "curated",
+      "question": "On a GKE cluster at Tolworth Media, the web Deployment must be reachable at /, and the api Deployment at /api, both on one public IP address with HTTPS. Which two actions should you take? (Choose two.)",
+      "options": {
+        "A": "Create a Service for each Deployment.",
+        "B": "Create a Service of type LoadBalancer for each Deployment.",
+        "C": "Create an Ingress that routes / to the web Service and /api to the api Service.",
+        "D": "Expose each Pod with hostPort 443.",
+        "E": "Create a Cloud NAT gateway for the cluster's nodes."
+      },
+      "correct_answer": "A,C",
+      "explanation": {
+        "summary": "An Ingress on GKE provisions an external Application Load Balancer whose URL map sends paths to Services. Each Deployment needs a Service as the Ingress backend.",
+        "option_breakdown": {
+          "A": "Correct. The Ingress routes to Services, not to Deployments directly.",
+          "B": "Each LoadBalancer Service gets its own passthrough load balancer and IP, with no path routing.",
+          "C": "Correct. One Ingress gives one IP, HTTPS, and routing by path to the two Services.",
+          "D": "hostPort binds to individual nodes, with no single IP, no load balancing and no path routing.",
+          "E": "Cloud NAT is for outbound traffic from the nodes, not for exposing services."
+        },
+        "gcloud_command": "kubectl apply -f services.yaml\nkubectl apply -f ingress.yaml   # rules: path / -> web:80, path /api -> api:80",
+        "doc_ref": "https://cloud.google.com/kubernetes-engine/docs/concepts/ingress"
+      }
+    },
+    {
+      "id": "ace-s2-140",
+      "uid": "0e36e23f-b149-4a9b-b5f2-026d4446549d",
+      "title": "A nightly batch task with retries",
+      "objective": "2.1",
+      "subtopic": "Serverless Deployment and Events",
+      "summary": "A Cloud Run job runs a container to completion with retries; Cloud Scheduler can start it on a schedule.",
+      "tags": [
+        "batch",
+        "cloud-run-jobs",
+        "cloud-scheduler"
+      ],
+      "source": "curated",
+      "question": "Each night at 02:00, Calder Water must run a containerised task that reconciles meter readings for about 40 minutes and then exits. A failed task should be retried, and nothing should run or cost money the rest of the day. Which two actions should you take? (Choose two.)",
+      "options": {
+        "A": "Deploy the container as a Cloud Run job, with a retry limit.",
+        "B": "Deploy the container as a Cloud Run service with min instances set to 1.",
+        "C": "Add a lifecycle rule to a bucket that starts the task each night.",
+        "D": "Create a Cloud Scheduler job that executes the Cloud Run job at 02:00.",
+        "E": "Run the task on a Compute Engine VM that stays on all day."
+      },
+      "correct_answer": "A,D",
+      "explanation": {
+        "summary": "Cloud Run jobs run tasks to completion rather than serving requests, with a retry limit for failed tasks. Cloud Scheduler triggers the job's execution at the set time, and nothing runs in between.",
+        "option_breakdown": {
+          "A": "Correct. A job fits work that runs and exits, and it retries failed tasks.",
+          "B": "Services serve requests, and one minimum instance runs and bills all day.",
+          "C": "Lifecycle rules change storage classes or delete objects; they can't start a task.",
+          "D": "Correct. Scheduler starts the job every night at 02:00.",
+          "E": "An always-on VM costs money all day for 40 minutes of work."
+        },
+        "gcloud_command": "gcloud run jobs create reconcile --image=REGION-docker.pkg.dev/PROJECT_ID/jobs/reconcile:1 \\\n  --region=REGION --max-retries=3 --task-timeout=60m\n# Console > Cloud Run > Jobs > reconcile > Triggers > Add scheduler trigger (0 2 * * *)",
+        "doc_ref": "https://cloud.google.com/run/docs/execute/jobs-on-schedule"
+      }
+    },
+    {
+      "id": "ace-s2-141",
+      "uid": "d27065ab-f961-496a-b8bd-f5405687b030",
+      "title": "Pub/Sub messages for one account in order",
+      "objective": "2.2",
+      "subtopic": "Data Pipelines and Messaging",
+      "summary": "Pub/Sub delivers messages in order only when the subscription has message ordering enabled and publishers set an ordering key.",
+      "tags": [
+        "ordering",
+        "ordering-key",
+        "pubsub"
+      ],
+      "source": "curated",
+      "question": "Banking events at Lowry Credit go through Pub/Sub, and the consumer must process events for the same account in the order they were published. Events for different accounts may be processed in any order, and throughput matters. Which two actions should you take? (Choose two.)",
+      "options": {
+        "A": "Enable message ordering on the subscription.",
+        "B": "Sort messages by publish time in the consumer after pulling them.",
+        "C": "Use a single subscriber thread to process every message.",
+        "D": "Create one topic per account.",
+        "E": "Publish each event with the account ID as its ordering key."
+      },
+      "correct_answer": "A,E",
+      "explanation": {
+        "summary": "With ordering enabled on the subscription, Pub/Sub delivers messages that share an ordering key in publish order. Different keys are delivered independently, so throughput stays high.",
+        "option_breakdown": {
+          "A": "Correct. Ordering must be enabled on the subscription when it's created.",
+          "B": "Redeliveries and batching mean sorting after the fact can't guarantee order.",
+          "C": "One thread throttles everything and still doesn't guarantee the delivery order.",
+          "D": "A topic per account is unmanageable at scale and isn't how ordering is done.",
+          "E": "Correct. The account ID as the key orders each account's events while other accounts run in parallel."
+        },
+        "gcloud_command": "gcloud pubsub subscriptions create account-events-sub --topic=account-events --enable-message-ordering",
+        "doc_ref": "https://cloud.google.com/pubsub/docs/ordering"
+      }
+    },
+    {
+      "id": "ace-s2-142",
+      "uid": "abf92a13-e6ea-42d4-a168-4efb3ea5558c",
+      "title": "A private HTTP service for VMs in one region",
+      "objective": "2.3",
+      "subtopic": "Load Balancer Selection",
+      "summary": "A regional internal Application Load Balancer serves HTTP inside the VPC and needs a proxy-only subnet in the region for its proxies.",
+      "tags": [
+        "internal",
+        "load-balancing",
+        "proxy-only-subnet"
+      ],
+      "source": "curated",
+      "question": "At Nettleton Rail, an internal HTTP inventory API on a managed instance group in europe-west2 must be reachable only from VMs in the same VPC, with URL-based routing to two backend groups. Which two actions should you take? (Choose two.)",
+      "options": {
+        "A": "Give each backend VM an external IP address.",
+        "B": "Create a proxy-only subnet in europe-west2 in that VPC.",
+        "C": "Create a regional internal Application Load Balancer in europe-west2.",
+        "D": "Create a global external Application Load Balancer with a Cloud Armor allow list.",
+        "E": "Create an internal passthrough Network Load Balancer with URL maps."
+      },
+      "correct_answer": "B,C",
+      "explanation": {
+        "summary": "Internal Application Load Balancers are Envoy-based proxies with URL maps, reachable only inside the VPC. They need a proxy-only subnet in the region, from which the proxies connect to the backends.",
+        "option_breakdown": {
+          "A": "Backends of an internal load balancer don't need external IPs, and they would expose the VMs.",
+          "B": "Correct. The load balancer's proxies take their addresses from the proxy-only subnet.",
+          "C": "Correct. It gives a private IP with URL-based routing in that region.",
+          "D": "An external load balancer is reachable from the internet, which the API must not be.",
+          "E": "Passthrough Network Load Balancers work at layer 4 and have no URL maps."
+        },
+        "gcloud_command": "gcloud compute networks subnets create proxy-only-ew2 --purpose=REGIONAL_MANAGED_PROXY \\\n  --role=ACTIVE --region=europe-west2 --network=NETWORK --range=10.129.0.0/23",
+        "doc_ref": "https://cloud.google.com/load-balancing/docs/l7-internal"
+      }
+    },
+    {
+      "id": "ace-s2-143",
+      "uid": "a6526eee-723a-4aa5-a7b4-97df7b829ed6",
+      "title": "Bringing hand-made resources under Terraform",
+      "objective": "2.4",
+      "subtopic": "Infrastructure as Code",
+      "summary": "To manage existing resources with Terraform, write configuration that matches them and import them into state, rather than recreating them.",
+      "tags": [
+        "iac",
+        "import",
+        "terraform"
+      ],
+      "source": "curated",
+      "question": "Years ago, engineers at Corbridge Foods created a production VPC and three Cloud SQL instances by hand. The team now wants Terraform to manage them, without downtime and without recreating anything. Which two actions should you take? (Choose two.)",
+      "options": {
+        "A": "Delete the resources and let terraform apply create them again.",
+        "B": "Import the existing resources into Terraform state, then check that terraform plan shows no changes.",
+        "C": "Edit the terraform.tfstate file by hand to add the resources.",
+        "D": "Write Terraform resource blocks that describe the existing resources.",
+        "E": "Run terraform refresh so that Terraform discovers the resources by itself."
+      },
+      "correct_answer": "B,D",
+      "explanation": {
+        "summary": "Terraform only manages what is in its state. Importing maps each existing resource to a resource block in the configuration; a clean plan afterwards shows the configuration matches reality.",
+        "option_breakdown": {
+          "A": "Deleting production databases and the VPC causes downtime and data loss.",
+          "B": "Correct. Import adds them to state without changing them, and an empty plan confirms the match.",
+          "C": "Hand-editing state is error-prone and unsupported for this.",
+          "D": "Correct. Import needs a resource block for each existing resource.",
+          "E": "Refresh updates resources already in state; it never adopts new ones."
+        },
+        "gcloud_command": "terraform import google_sql_database_instance.orders projects/PROJECT_ID/instances/orders-db\nterraform plan",
+        "doc_ref": "https://cloud.google.com/docs/terraform/resource-management/import"
+      }
+    },
+    {
+      "id": "ace-s2-144",
+      "uid": "f0575016-9e2c-4f62-b057-d5897f3bb5d4",
+      "title": "kubectl on a new laptop for an existing cluster",
+      "objective": "2.1",
+      "subtopic": "kubectl Setup",
+      "summary": "kubectl needs the GKE auth plugin to authenticate, and gcloud container clusters get-credentials writes the cluster's entry into kubeconfig.",
+      "tags": [
+        "gke",
+        "kubeconfig",
+        "kubectl"
+      ],
+      "source": "curated",
+      "question": "A new engineer at Ferris Logistics has the gcloud CLI installed and IAM access to the GKE cluster ops-1. Running kubectl get pods fails because kubectl isn't set up. Which two actions should the engineer take? (Choose two.)",
+      "options": {
+        "A": "Create a service account key and point kubectl at it.",
+        "B": "Install kubectl and the gke-gcloud-auth-plugin.",
+        "C": "Enable the Kubernetes Engine API again in the project.",
+        "D": "SSH to a cluster node and run kubectl there.",
+        "E": "Run gcloud container clusters get-credentials for ops-1."
+      },
+      "correct_answer": "B,E",
+      "explanation": {
+        "summary": "kubectl authenticates to GKE through the gke-gcloud-auth-plugin, using the engineer's gcloud credentials. get-credentials writes the cluster's endpoint and auth settings into kubeconfig.",
+        "option_breakdown": {
+          "A": "A key isn't needed, since kubectl can use the engineer's own identity, and keys are long-lived secrets.",
+          "B": "Correct. Both are needed on the laptop, and both install through gcloud components or a package manager.",
+          "C": "The API is already enabled since the cluster exists.",
+          "D": "Nodes aren't where you administer the cluster, and node access isn't granted for this.",
+          "E": "Correct. It adds ops-1 to kubeconfig and makes it the current context."
+        },
+        "gcloud_command": "gcloud components install kubectl gke-gcloud-auth-plugin\ngcloud container clusters get-credentials ops-1 --location=LOCATION",
+        "doc_ref": "https://cloud.google.com/kubernetes-engine/docs/how-to/cluster-access-for-kubectl"
+      }
+    },
+    {
+      "id": "ace-x-003",
+      "uid": "348e61c7-7da6-4b5a-8c2e-60d1ea03fac7",
+      "title": "Cloud Run reachable only through the load balancer",
+      "objective": "2.3",
+      "subtopic": "Load Balancer Selection",
+      "summary": "Put Cloud Run behind an external Application Load Balancer with a serverless NEG, and set the service's ingress to internal and Cloud Load Balancing so the run.app URL stops accepting internet traffic.",
+      "tags": [
+        "cloud-armor",
+        "cloud-run",
+        "ingress",
+        "load-balancing"
+      ],
+      "source": "curated",
+      "question": "Pinecrest Tours serves a public booking API on Cloud Run. Security requires every request to pass through Cloud Armor, so the service's default run.app URL must stop accepting traffic from the internet, while customers keep reaching the API on the company's domain. Which two actions should you take? (Choose two.)",
+      "options": {
+        "A": "Configure Direct VPC egress for the service with all traffic routed to the VPC.",
+        "B": "Create a VPC firewall rule that denies ingress from 0.0.0.0/0 to the Cloud Run service.",
+        "C": "Create an external Application Load Balancer with a serverless NEG for the service, and attach a Cloud Armor policy to its backend service.",
+        "D": "Set the service's ingress to internal and Cloud Load Balancing.",
+        "E": "Remove the allUsers Cloud Run Invoker binding from the service."
+      },
+      "correct_answer": "C,D",
+      "explanation": {
+        "summary": "Cloud Armor attaches to a load balancer's backend service, and a serverless NEG lets the load balancer front Cloud Run. The ingress setting decides which paths may reach the service; internal and Cloud Load Balancing closes the run.app URL to the internet.",
+        "option_breakdown": {
+          "A": "Egress settings control the service's outbound calls; they do nothing to who can reach it.",
+          "B": "VPC firewall rules apply to resources in the VPC, not to requests arriving at a Cloud Run service's URL.",
+          "C": "Correct. The load balancer with a serverless NEG is where Cloud Armor applies to Cloud Run traffic.",
+          "D": "Correct. This ingress setting rejects requests that don't come through a load balancer or the VPC, so the run.app URL stops serving the internet.",
+          "E": "Without allUsers, anonymous customers get 403 on every path, including the load balancer, so the public API breaks."
+        },
+        "gcloud_command": "gcloud run services update booking-api --region=REGION \\\n  --ingress=internal-and-cloud-load-balancing",
+        "doc_ref": "https://cloud.google.com/run/docs/securing/ingress"
+      },
+      "also_tests": [
+        "3.1"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-010",
+      "uid": "7fbfce6c-9253-4097-9091-dd2c17141d40",
+      "title": "Recreating VMs whose application hangs",
+      "objective": "2.1",
+      "subtopic": "Managed Instance Groups",
+      "summary": "MIG autohealing needs a health check on the group and a firewall rule that admits Google's health-check probe ranges.",
+      "tags": [
+        "autohealing",
+        "firewall",
+        "health-check",
+        "mig"
+      ],
+      "source": "curated",
+      "question": "On Rydal Games' matchmaking servers, the process sometimes hangs while the VM stays running, so the VM keeps receiving traffic. The servers run in a regional managed instance group on a custom VPC that has only rules for its own subnets. Hung VMs must be recreated automatically. Which two actions should you take? (Choose two.)",
+      "options": {
+        "A": "Set the VMs' availability policy to restart them automatically after a failure.",
+        "B": "Create an uptime check on the load balancer's address that alerts the on-call team.",
+        "C": "Allow ingress from 35.191.0.0/16 and 130.211.0.0/22 on the matchmaking port.",
+        "D": "Install the Ops Agent on each VM so that process metrics reach Cloud Monitoring.",
+        "E": "Create a health check for the matchmaking port and set it as the group's autohealing policy."
+      },
+      "correct_answer": "C,E",
+      "explanation": {
+        "summary": "Autohealing recreates a VM when the group's health check reports it unhealthy. The probes come from Google's health-check ranges, which a custom VPC with no matching rule would block, making every VM look unhealthy.",
+        "option_breakdown": {
+          "A": "Automatic restart reacts to a VM crash or host event; the VM here is still running.",
+          "B": "An uptime check alerts people; it doesn't recreate anything in the group.",
+          "C": "Correct. Without ingress from the probe ranges, the health checks fail on every VM.",
+          "D": "The Ops Agent collects metrics and logs; it has no part in autohealing.",
+          "E": "Correct. An autohealing policy with an application health check detects the hung process, not just a stopped VM."
+        },
+        "gcloud_command": "gcloud compute instance-groups managed update mm-mig --region=REGION \\\n  --health-check=mm-hc --initial-delay=120",
+        "doc_ref": "https://cloud.google.com/compute/docs/instance-groups/autohealing-instances-in-migs"
+      },
+      "also_tests": [
+        "3.3"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-013",
+      "uid": "1431228e-6517-449a-8db4-9d1738d7660e",
+      "title": "HA VPN that qualifies for the 99.99% SLA",
+      "objective": "2.3",
+      "subtopic": "Hybrid Connectivity",
+      "summary": "HA VPN reaches its 99.99% SLA only with two tunnels from both gateway interfaces and dynamic (BGP) routing through Cloud Router.",
+      "tags": [
+        "bgp",
+        "cloud-router",
+        "ha-vpn",
+        "hybrid"
+      ],
+      "source": "curated",
+      "question": "Tilbury Steel is connecting a VPC to its plant's two on-premises VPN devices with HA VPN, and the link must qualify for the 99.99% availability SLA. Routes to new plant subnets should appear in the VPC without manual changes. Which two actions should you take? (Choose two.)",
+      "options": {
+        "A": "Use Classic VPN with route-based tunnels for the plant subnets.",
+        "B": "Create one tunnel from interface 0, and add a second tunnel later if needed.",
+        "C": "Add static routes for each plant subnet that point at the tunnels.",
+        "D": "Use a Cloud Router with BGP sessions on the tunnels to exchange routes.",
+        "E": "Create tunnels from both interfaces of the HA VPN gateway to the peer devices."
+      },
+      "correct_answer": "D,E",
+      "explanation": {
+        "summary": "HA VPN's SLA requires a tunnel from each of the gateway's two interfaces. HA VPN uses dynamic routing only, so a Cloud Router runs BGP on each tunnel and learns new plant subnets as they are advertised.",
+        "option_breakdown": {
+          "A": "Classic VPN offers a lower SLA than HA VPN, so it can't meet 99.99%.",
+          "B": "A single tunnel has no redundancy and doesn't qualify for the 99.99% SLA.",
+          "C": "Static routes need a change for every new subnet, and HA VPN tunnels use BGP rather than static routing.",
+          "D": "Correct. BGP through Cloud Router exchanges routes, so new subnets appear without manual changes.",
+          "E": "Correct. Two tunnels, one per interface, is the topology the 99.99% SLA requires."
+        },
+        "gcloud_command": "gcloud compute vpn-tunnels create tunnel-0 --vpn-gateway=ha-gw --interface=0 \\\n  --peer-external-gateway=plant-gw --peer-external-gateway-interface=0 \\\n  --router=plant-router --ike-version=2 --shared-secret=SECRET --region=REGION",
+        "doc_ref": "https://cloud.google.com/network-connectivity/docs/vpn/concepts/topologies"
+      },
+      "also_tests": [
+        "3.3"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-017",
+      "uid": "8483b527-8f94-4bcf-830f-52610a3ccc2e",
+      "title": "The cheapest VMs for restartable render jobs",
+      "objective": "2.1",
+      "subtopic": "Spot and Custom Machine Types",
+      "summary": "Spot VMs are the cheapest Compute Engine capacity for fault-tolerant work that can be stopped at any time; commitments suit steady usage over one or three years.",
+      "tags": [
+        "batch",
+        "cost",
+        "mig",
+        "spot-vms"
+      ],
+      "source": "curated",
+      "question": "Averill Animation renders frames for six weeks before each film release. Each job checkpoints to Cloud Storage every few minutes and can restart on any VM, and Google Cloud may reclaim VMs at any time without harm. The render farm must cost as little as possible. Which approach should you choose?",
+      "options": {
+        "A": "A managed instance group whose template uses the Spot provisioning model.",
+        "B": "A three-year resource-based committed use discount for the render machines.",
+        "C": "Standard VMs, counting on sustained use discounts over the six weeks.",
+        "D": "Sole-tenant nodes so render VMs never share hosts with other customers."
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "Spot VMs are heavily discounted because Compute Engine can stop them at any time. Checkpointed, restartable jobs tolerate that, and a managed instance group recreates reclaimed VMs when capacity returns.",
+        "option_breakdown": {
+          "A": "Correct. Spot pricing is the lowest, and the group keeps the farm at size as VMs are reclaimed.",
+          "B": "A three-year commitment bills for capacity all year, while the farm runs only six weeks at a time.",
+          "C": "Sustained use discounts are far smaller than the Spot discount for interruptible work.",
+          "D": "Sole-tenant nodes cost more and solve an isolation requirement the stem doesn't have."
+        },
+        "gcloud_command": "gcloud compute instance-templates create render-spot --machine-type=c3-standard-22 \\\n  --provisioning-model=SPOT --instance-termination-action=DELETE",
+        "doc_ref": "https://cloud.google.com/compute/docs/instances/spot"
+      },
+      "also_tests": [
+        "1.2"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-021",
+      "uid": "6979b939-6142-482f-931a-96111592948b",
+      "title": "Only the web tier may receive load balancer traffic",
+      "objective": "2.3",
+      "subtopic": "Secure Tags and Service Accounts in Rules",
+      "summary": "A firewall rule can target VMs by the service account they run as, which only people allowed to act as that account can change.",
+      "tags": [
+        "firewall",
+        "load-balancing",
+        "service-accounts"
+      ],
+      "source": "curated",
+      "question": "At Quenby Insurance, web VMs run as web-sa and batch VMs as batch-sa, in the same subnet. Only the web VMs may accept TCP 443 from Google's load balancer ranges, and a developer who can edit VM network tags must not be able to extend that access to a batch VM. How should you write the allow rule's target?",
+      "options": {
+        "A": "Target every instance in the network, with a source of the subnet's range.",
+        "B": "Target the web VMs' internal IP addresses as a destination range.",
+        "C": "Target the network tag web on the web VMs.",
+        "D": "Target the service account web-sa."
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "Network tags can be added by anyone who can edit an instance, so they don't prove which VM is which. A target service account changes only when someone with permission to act as that account attaches it.",
+        "option_breakdown": {
+          "A": "Every instance would match, batch VMs included, and the source should be the load balancer ranges.",
+          "B": "Internal addresses change when VMs are recreated, and listing them doesn't stop a new VM taking one.",
+          "C": "The developer can add the web tag to a batch VM, which would open 443 on it.",
+          "D": "Correct. Only VMs running as web-sa match, and changing a VM's service account needs actAs on the new account."
+        },
+        "gcloud_command": "gcloud compute firewall-rules create allow-lb-web --network=NETWORK --allow=tcp:443 \\\n  --source-ranges=35.191.0.0/16,130.211.0.0/22 \\\n  --target-service-accounts=web-sa@PROJECT_ID.iam.gserviceaccount.com",
+        "doc_ref": "https://cloud.google.com/firewall/docs/firewalls#service-accounts-vs-tags"
+      },
+      "also_tests": [
+        "4.2"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-022",
+      "uid": "5c6583b8-c4fb-40d8-9596-7daf0d0c8033",
+      "title": "Product images that survive a region outage within minutes",
+      "objective": "2.2",
+      "subtopic": "Multi-region Redundancy",
+      "summary": "A dual-region Cloud Storage bucket with turbo replication replicates new objects to both regions within 15 minutes (RPO), in the two regions you choose.",
+      "tags": [
+        "cloud-storage",
+        "dual-region",
+        "rpo",
+        "turbo-replication"
+      ],
+      "source": "curated",
+      "question": "Ingleby Retail serves product images from Cloud Storage. Data must stay in two named EU regions, europe-west1 and europe-west4, and if one region fails, every image uploaded more than 15 minutes earlier must be available from the other. There should be no copy jobs to run. What should you create?",
+      "options": {
+        "A": "A bucket in the EU multi-region with default replication",
+        "B": "A dual-region bucket in europe-west1 and europe-west4 with turbo replication",
+        "C": "A regional bucket in europe-west1, copied nightly to europe-west4 by Storage Transfer Service",
+        "D": "A regional bucket in europe-west1 with object versioning enabled"
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "Dual-region buckets keep data in exactly the two regions you choose. Turbo replication adds a 15-minute recovery point objective for newly written objects; default replication has no such target.",
+        "option_breakdown": {
+          "A": "The EU multi-region doesn't let you name the two regions, and default replication has no 15-minute RPO.",
+          "B": "Correct. The bucket lives in the two named regions, and turbo replication meets the 15-minute RPO.",
+          "C": "A nightly copy can lose a day of uploads, and it's a job to run.",
+          "D": "Versioning protects against overwrites and deletions, not against the loss of a region."
+        },
+        "gcloud_command": "gcloud storage buckets create gs://ingleby-images --location=EU \\\n  --placement=europe-west1,europe-west4 --rpo=ASYNC_TURBO",
+        "doc_ref": "https://cloud.google.com/storage/docs/turbo-replication"
+      },
+      "also_tests": [
+        "1.1"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-026",
+      "uid": "234f567d-8e51-489f-81fd-c5b01d802766",
+      "title": "Paying per Pod with no nodes to manage",
+      "objective": "2.1",
+      "subtopic": "GKE Cluster Configurations",
+      "summary": "GKE Autopilot manages nodes and bills for the Pods' resource requests, so the team sets requests and nothing else.",
+      "tags": [
+        "autopilot",
+        "cost",
+        "gke"
+      ],
+      "source": "curated",
+      "question": "Brisco Health's small platform team wants to run about forty containerised services on Kubernetes. They don't want to choose machine types, size node pools or patch nodes, and they want to pay for the CPU and memory their Pods request rather than for idle node capacity. Which option should you choose?",
+      "options": {
+        "A": "A GKE Standard cluster with the cluster autoscaler enabled",
+        "B": "Self-managed Kubernetes on a managed instance group",
+        "C": "A GKE Autopilot cluster",
+        "D": "A GKE Standard cluster with node auto-provisioning on Spot VMs"
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "In Autopilot, Google provisions and manages the nodes, and you pay for the resources your Pods request. Standard clusters bill for the nodes, used or idle, and the team manages them.",
+        "option_breakdown": {
+          "A": "The autoscaler resizes node pools, but the team still picks machine types and pays for whole nodes.",
+          "B": "Self-managed Kubernetes adds control plane and node management, the opposite of what the team wants.",
+          "C": "Correct. No node management, and billing follows Pod resource requests.",
+          "D": "Auto-provisioning creates node pools, but billing is still per node, and the team owns the configuration."
+        },
+        "gcloud_command": "gcloud container clusters create-auto platform --location=REGION",
+        "doc_ref": "https://cloud.google.com/kubernetes-engine/docs/concepts/autopilot-overview"
+      },
+      "also_tests": [
+        "3.1"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-028",
+      "uid": "b0e90c3e-d989-4e49-bb85-a5d1e1033f93",
+      "title": "Orders kept while the consumer is down for hours",
+      "objective": "2.2",
+      "subtopic": "Data Pipelines and Messaging",
+      "summary": "Pub/Sub decouples producers and consumers and retains unacknowledged messages in a subscription for up to seven days by default.",
+      "tags": [
+        "decoupling",
+        "messaging",
+        "pubsub"
+      ],
+      "source": "curated",
+      "question": "At Tarrant Outfitters, the storefront sends each order to a fulfilment service that is sometimes down for maintenance for up to six hours. No order may be lost, the storefront must not slow down while fulfilment is down, and fulfilment should catch up afterwards. What should you use between them?",
+      "options": {
+        "A": "A Pub/Sub topic with a pull subscription for the fulfilment service",
+        "B": "Direct HTTPS calls from the storefront, retried until fulfilment answers",
+        "C": "A Cloud SQL table that fulfilment polls every minute",
+        "D": "A shared Filestore directory where the storefront writes one file per order"
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "Pub/Sub accepts messages whether or not subscribers are running, and keeps unacknowledged messages in the subscription for seven days by default. The consumer pulls the backlog when it returns.",
+        "option_breakdown": {
+          "A": "Correct. Publishing is quick and independent of the consumer, and the backlog waits in the subscription.",
+          "B": "Retrying synchronously ties the storefront to fulfilment's downtime and slows checkout.",
+          "C": "A polled table works but adds a database to run and scale for what is a messaging job.",
+          "D": "Files on a shared directory need their own locking and clean-up and give no delivery guarantees."
+        },
+        "gcloud_command": "gcloud pubsub topics create orders\ngcloud pubsub subscriptions create fulfilment --topic=orders --ack-deadline=60",
+        "doc_ref": "https://cloud.google.com/pubsub/docs/overview"
+      },
+      "also_tests": [
+        "3.2"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-032",
+      "uid": "7549117c-205e-47d0-a492-8d56cbf661c2",
+      "title": "Processing each upload as it arrives",
+      "objective": "2.1",
+      "subtopic": "Serverless Deployment and Events",
+      "summary": "An Eventarc trigger on Cloud Storage's object-finalized event delivers each new object to a Cloud Run service, with no polling.",
+      "tags": [
+        "cloud-run",
+        "cloud-storage",
+        "eventarc",
+        "events"
+      ],
+      "source": "curated",
+      "question": "Customers of Pellow Insurance upload claim photos to a Cloud Storage bucket. Each new photo must be resized within seconds of upload by a containerised service, with no servers to manage and nothing that polls the bucket. What should you set up?",
+      "options": {
+        "A": "A Cloud Scheduler job that runs a Cloud Run job every minute to list new objects",
+        "B": "An object lifecycle rule that runs the resizer when an object is created",
+        "C": "A Compute Engine VM that watches the bucket with gcloud storage ls in a loop",
+        "D": "A Cloud Run service with an Eventarc trigger for the bucket's object-finalized events"
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "Cloud Storage emits an object-finalized event when an upload completes. Eventarc routes it to a Cloud Run service, which scales with the uploads and runs only when there is work.",
+        "option_breakdown": {
+          "A": "Listing every minute is polling, and it adds up to a minute of delay.",
+          "B": "Lifecycle rules only change storage classes or delete objects; they can't run code.",
+          "C": "A watching VM is a server to manage, and the loop is polling.",
+          "D": "Correct. Each finished upload triggers the service within seconds, with no servers and no polling."
+        },
+        "gcloud_command": "gcloud eventarc triggers create photo-upload --location=REGION \\\n  --destination-run-service=resizer --destination-run-region=REGION \\\n  --event-filters=type=google.cloud.storage.object.v1.finalized --event-filters=bucket=claim-photos \\\n  --service-account=trigger-sa@PROJECT_ID.iam.gserviceaccount.com",
+        "doc_ref": "https://cloud.google.com/eventarc/docs/run/route-trigger-cloud-storage"
+      },
+      "also_tests": [
+        "3.2"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-037",
+      "uid": "06872e0c-d4cb-41bc-bf1d-6f5b7133d726",
+      "title": "UDP game traffic that must keep client addresses",
+      "objective": "2.3",
+      "subtopic": "Load Balancer Selection",
+      "summary": "An external passthrough Network Load Balancer handles UDP and preserves client source IPs, so backend firewall rules must admit the clients' addresses.",
+      "tags": [
+        "firewall",
+        "load-balancing",
+        "passthrough",
+        "udp"
+      ],
+      "source": "curated",
+      "question": "Dunmore Games runs UDP game servers on port 7777 in one region, on a managed instance group. Players connect from the internet, and the servers must see each player's real IP address. The VPC currently allows only health-check traffic to the servers. Which two actions should you take? (Choose two.)",
+      "options": {
+        "A": "Allow ingress on UDP 7777 from 0.0.0.0/0 to the game servers.",
+        "B": "Create an external passthrough Network Load Balancer for UDP 7777 with the group as its backend.",
+        "C": "Create an external proxy Network Load Balancer for the game servers.",
+        "D": "Create a Cloud NAT gateway for the game servers' subnet.",
+        "E": "Create a global external Application Load Balancer for the game servers."
+      },
+      "correct_answer": "A,B",
+      "explanation": {
+        "summary": "A passthrough Network Load Balancer forwards packets without proxying, so UDP works and the source IP is the player's. Because packets keep the client source, the backends' firewall must allow the players' traffic, not just the load balancer's.",
+        "option_breakdown": {
+          "A": "Correct. Passthrough traffic arrives from players' addresses, so the rule must admit them on UDP 7777.",
+          "B": "Correct. It supports UDP and preserves each player's IP address.",
+          "C": "Proxy Network Load Balancers terminate TCP and don't carry UDP, and the backends would see the proxy's address.",
+          "D": "Cloud NAT handles outbound connections from private VMs, not inbound players.",
+          "E": "Application Load Balancers handle HTTP(S), not raw UDP."
+        },
+        "gcloud_command": "gcloud compute firewall-rules create allow-game-udp --network=NETWORK \\\n  --allow=udp:7777 --source-ranges=0.0.0.0/0 --target-tags=game",
+        "doc_ref": "https://cloud.google.com/load-balancing/docs/network"
+      },
+      "also_tests": [
+        "3.3"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-044",
+      "uid": "8eb88172-aa8e-4d36-a921-41ec366a653f",
+      "title": "An API used only in office hours",
+      "objective": "2.1",
+      "subtopic": "Compute Platform Selection",
+      "summary": "Cloud Run runs stateless containers, scales to zero when idle and bills for the time requests are processed by default.",
+      "tags": [
+        "cloud-run",
+        "cost",
+        "serverless"
+      ],
+      "source": "curated",
+      "question": "Hartwell Surveyors has a stateless HTTP API in a container. It gets traffic only from 08:00 to 18:00 on weekdays, sometimes in bursts of 200 requests a second, and none at night or weekends. The team wants no servers to manage and to pay nothing while there is no traffic. Which platform should you choose?",
+      "options": {
+        "A": "A single large Compute Engine VM on a schedule",
+        "B": "A Compute Engine managed instance group with autoscaling",
+        "C": "Cloud Run, with the minimum number of instances at zero",
+        "D": "A GKE Standard cluster with the cluster autoscaler"
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "Cloud Run scales container instances with requests, down to zero when there are none, and with the default request-based billing charges only while requests are being handled.",
+        "option_breakdown": {
+          "A": "One VM is a server to manage, and it may not handle the bursts.",
+          "B": "A managed instance group keeps at least one VM running and is a fleet to manage.",
+          "C": "Correct. It handles the bursts, costs nothing when idle and has no servers to manage.",
+          "D": "Standard clusters bill for nodes even when idle, and nodes are the team's to manage."
+        },
+        "gcloud_command": "gcloud run deploy survey-api --image=REGION-docker.pkg.dev/PROJECT_ID/apps/api:1.0 \\\n  --region=REGION --min-instances=0",
+        "doc_ref": "https://cloud.google.com/run/docs/about-instance-autoscaling"
+      },
+      "also_tests": [
+        "1.2",
+        "3.1"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-049",
+      "uid": "502d7415-1a75-4304-9b3a-31db676feeb5",
+      "title": "Two teams' VPCs talking over private addresses",
+      "objective": "2.3",
+      "subtopic": "VPC Design",
+      "summary": "VPC Network Peering connects two VPCs over internal IPs while each team keeps its own administration; firewall rules in each VPC still decide what's allowed.",
+      "tags": [
+        "firewall",
+        "networking",
+        "vpc-peering"
+      ],
+      "source": "curated",
+      "question": "At Bramley Labs, the analytics VPC (10.10.0.0/16) in one project must reach a PostgreSQL VM in the research VPC (10.20.0.0/16) in another project, on TCP 5432 over internal IPs. Each team must keep administering its own VPC, and the research VPC has only rules for its own traffic. Which two actions should you take? (Choose two.)",
+      "options": {
+        "A": "In the research VPC, allow ingress on TCP 5432 from 10.10.0.0/16 to the database VM.",
+        "B": "Give the database VM an external IP and allow 5432 from the internet.",
+        "C": "Create a VPC Network Peering connection from each VPC to the other.",
+        "D": "Move both projects into one Shared VPC host project.",
+        "E": "Create Cloud NAT in the analytics VPC so its VMs reach the research VPC."
+      },
+      "correct_answer": "A,C",
+      "explanation": {
+        "summary": "Peering exchanges subnet routes between the two VPCs once both sides create it, and each VPC stays separately administered. Peering doesn't open any traffic: the research VPC still needs an ingress rule for the analytics range.",
+        "option_breakdown": {
+          "A": "Correct. The implied deny ingress rule blocks peered traffic until a rule allows it.",
+          "B": "An external IP sends the traffic over the internet, not over internal IPs.",
+          "C": "Correct. Peering needs a connection created from each side, and then the subnet routes are exchanged.",
+          "D": "Shared VPC puts the network under one host project, so the teams would no longer administer their own VPCs.",
+          "E": "Cloud NAT is for outbound internet access, not for traffic between VPCs."
+        },
+        "gcloud_command": "gcloud compute networks peerings create analytics-to-research --network=analytics \\\n  --peer-project=RESEARCH_PROJECT --peer-network=research",
+        "doc_ref": "https://cloud.google.com/vpc/docs/vpc-peering"
+      },
+      "also_tests": [
+        "3.3"
+      ],
+      "certifying_only": true
     }
   ]
 }

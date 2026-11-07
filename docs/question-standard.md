@@ -82,6 +82,21 @@ its items: the no-exam-content rule in [CONTRIBUTING.md](../CONTRIBUTING.md) com
   of `scripts/audit_overlap.py` against every audited source.
 - Product names are current (check the docs, not memory). A fact likely to change is marked *verify* in the theory.
 
+## Multiple-select and cross-domain questions
+
+The exam mixes multiple-choice and multiple-select items, and many of its scenarios need more than one section of the
+guide. The bank has both.
+
+- **Multiple select.** Four or five options, two or three of them correct (`"correct_answer": "A,D"`), and at least
+  two wrong. The stem ends with "(Choose two.)" or "(Choose three.)", in words, and only a multiple-select stem says
+  it. Each correct option must be needed: if one correct option alone would meet the stem, it's a single-answer
+  question. Every correct option's rationale starts with "Correct."; the others say why they fail. A pick scores only
+  when every letter matches, as on the exam. Single-answer questions keep exactly four options.
+- **Cross-domain.** `also_tests` lists the other guide objectives the scenario needs, at least one in another section.
+  The question's own `objective` and `subtopic` are the decision it ends on, and it counts in that section's share.
+  Cross-domain questions are `certifying_only` and use ids `ace-x-NNN`; five are drawn into each 50-question exam.
+- **Ids and GUIDs.** Every question has a readable `id` and a random `uid` (a GUID) that never changes.
+
 ## How a reviewed question changes
 
 - **Keep the id when the decision tested and the correct option stay the same, under the same letter.** Wording,
@@ -99,12 +114,13 @@ Every reviewed question gets one entry in the ledger:
 ```json
 {
   "id": "ace-dom2-018",
-  "verdict": "pass | revised | removed | new",
+  "verdict": "pass | revised | restored | removed | new",
   "ac": {"AC1": "pass", "AC2": "fail", "AC3": "pass", "AC4": "fail", "AC5": "pass", "AC6": "pass", "AC7": "pass"},
   "notes": "“Read once at the start of each month” also reads as one read per object, which makes Archive right.",
   "replacement_id": null
 }
 ```
 
+`restored` marks a question that was removed and brought back unchanged in decision and key, so it keeps its id.
 `scripts/review_report.py` turns the ledger into a readable report. For each question that changed, it shows the
 original against the refined version, the audit against the seven criteria, and the final question.

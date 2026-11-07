@@ -5,7 +5,7 @@
 [![Theory](https://img.shields.io/badge/theory-GitHub%20Pages-blue)](https://nirmata78.github.io/gcp-ace-simulator/theory/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Release](https://img.shields.io/github/v/release/nirmata78/gcp-ace-simulator)](https://github.com/nirmata78/gcp-ace-simulator/blob/main/CHANGELOG.md)
-![586 questions](https://img.shields.io/badge/questions-586-orange)
+![697 questions](https://img.shields.io/badge/questions-697-orange)
 ![Exam guide: June 2026](https://img.shields.io/badge/exam%20guide-June%202026-purple)
 ![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue)
 
@@ -17,8 +17,9 @@ This project has three parts:
 
 - **[A theory course](https://nirmata78.github.io/gcp-ace-simulator/theory/)** that teaches every bullet of the new
   guide, in dependency order, with a recall card per part. It is a website: nothing to install.
-- **A question bank of 586 items.** Each one names the guide section, objective and subtopic it tests, explains all
-  four options, and links to the documentation behind the answer.
+- **A question bank of 697 items.** Each one names the guide section, objective and subtopic it tests, explains every
+  option, and links to the documentation behind the answer. 48 are multiple-select ("Choose two"), as on the real
+  exam, and 50 are cross-domain scenarios that span several sections and appear only in certifying exams.
 - **An exam shell** that imitates the delivery window: 50 questions sampled at the guide's weights, 120 minutes, a
   question palette, deferred grading, and a score report you read in the app, with a PDF to download.
 
@@ -139,10 +140,14 @@ Keeping state outside the image is one setting, `ACE_STATE_DIR`. It also works w
 - **Unseen questions first.** Questions from earlier attempts are drawn only after the unseen ones in each objective
   run out, so repeated attempts measure knowledge rather than memory of the items.
 - **No topic hints.** As in the real delivery window, the item's topic is not shown while you sit.
+- **Multiple-select and cross-domain questions.** A "Choose two" question shows checkboxes; once you have ticked
+  enough, the rest lock, and it scores only if every pick is right, as on the exam. About one question in ten (5 of 50)
+  is a cross-domain scenario that needs several sections at once, counted in its main section's share.
 
 ### Learning
 
 Untimed. Filter by section, objective and subtopic, or tick **Only topics introduced by the June 2026 guide**.
+Cross-domain questions are kept for certifying exams, so practising never uses them up.
 
 A **study panel** slides in on the right; switch it off with the toggle above the question. Drag the divider between
 the question and the panel to resize it (arrow keys work too, and a double-click resets it); your browser remembers the
@@ -170,10 +175,10 @@ width. On a narrow window the panel moves under the question.
 
 Below the objectives sit the guide's **94 bullets**, 24 of them new in June 2026, and a closed list of **87
 subtopics**. **A question must use one of those subtopics**, so anything the guide does not test cannot enter the
-bank: validation rejects it on load. Every bullet has at least three questions, and 242 questions sit on bullets the
+bank: validation rejects it on load. Every bullet has at least three questions, and 256 questions sit on bullets the
 June 2026 guide introduced.
 
-The bank holds 90 / 220 / 212 / 69 questions by section. That is not the exam's split, and it does not need to be:
+The bank holds 112 / 245 / 258 / 82 questions by section. That is not the exam's split, and it does not need to be:
 the sampler draws by the published weights.
 
 ---
@@ -233,13 +238,14 @@ python scripts/kb.py add --stem "How do you restrict egress to one FQDN?" --sect
 Questions **may test the same concept**, because a second scenario on a weak topic is how it gets learned. What they
 may not do is repeat each other. `kb.py check`, `kb.py add` and the test suite enforce:
 
-- **Structure.** Ids and titles are unique, the four options are distinct, every option has a rationale, and every
-  question sits on the blueprint.
+- **Structure.** Ids, GUIDs (`uid`) and titles are unique, the options are distinct (four, or four or five for a
+  multiple-select question), every option has a rationale, and every question sits on the blueprint.
 - **A different statement.** No two stems in a section overlap at 0.70 or more (Jaccard overlap of content words).
 - **Different answer options.** Two questions with the same correct answer may not share more than two identical
   options, because the second would then be answerable from memory of the first.
 - **Coverage.** Every objective has at least three times its share of a 50-item exam.
-- **Letter spread.** Every answer letter is correct in 20–30% of questions.
+- **Letter spread.** Every answer letter is correct in 20–30% of single-answer questions, and no letter is in more
+  than about half of the multiple-select keys.
 
 ---
 
@@ -251,8 +257,10 @@ item is knowingly drawn from a real exam.**
 Before publishing, every stem was compared with a well-known public practice-test dump, and the 104 questions whose
 origin could not be shown to be original were held out. In November 2026 the comparison was widened to three public
 question sets and Google's sample questions (`scripts/audit_overlap.py`, [issue #1](https://github.com/nirmata78/gcp-ace-simulator/issues/1)):
-34 more questions that shared a scenario with an earlier public question were removed, and new questions were written
-from the guide and the documentation where a topic needed depth. A test keeps removed questions from coming back. No
+34 questions that shared a scenario with an earlier public question were removed, then 33 of them restored with their
+own scenarios: a public look-alike of a common exam topic is not a reason to drop an original question (the 34th was
+a duplicate of another question). Of the 104, 25 were rewritten from scratch and 79 dropped, and a test keeps those
+from coming back. No
 comparison can prove there is no resemblance to anything else: **if you recognise an item,
 [open an issue](https://github.com/nirmata78/gcp-ace-simulator/issues) and it will go.**
 

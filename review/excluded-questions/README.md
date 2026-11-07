@@ -14,5 +14,11 @@ options or scenario; it gets a new id. No question was kept. Removed and exclude
 [`data/retired.json`](../../data/retired.json) and are never reused. `tests/test_question_standard.py` keeps them out
 of the bank: it compares every stem with salted hashes of their tokens (`tests/fixtures/guarded_stems.json`).
 
+**Final state, 2026-11-07.** The 25 rewrites are in the bank (`replacement_id` in `decisions.json`) and the 79
+drops stay out. The same audit had removed 34 current bank questions for sharing a scenario with an earlier public
+set; at the owner's decision, 33 of them were restored with their own scenarios, because a public look-alike of a
+common exam topic isn't a defect in an original question (the 34th duplicated another question and stays retired).
+The 28 topic-only matches listed in `audit.json` stay too.
+
 Rerun the audit with `scripts/audit_overlap.py`; keep the reference files locally, never commit them.
 If you own text that resembled a question here, open an issue.
