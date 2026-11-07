@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generated_at": "2026-11-03T18:24:03+00:00",
+  "generated_at": "2026-11-06T18:34:51+00:00",
   "total": 591,
   "guide": "Associate Cloud Engineer exam guide, live from 2026-06-30",
   "counts_by_domain": {
@@ -527,7 +527,7 @@
         "sso"
       ],
       "source": "curated",
-      "fingerprint": "30a96ea28918",
+      "fingerprint": "b09e76667fa8",
       "file": "sections/section-1-setup.json"
     },
     {
@@ -9180,19 +9180,19 @@
     },
     {
       "id": "ace-s3-147",
-      "title": "An age rule that never frees versioned storage",
+      "title": "A live-only age rule that never frees versioned storage",
       "domain": "S3 · Operate",
       "objective": "3.2",
       "subtopic": "Object Lifecycle",
       "new_in_2026": false,
-      "summary": "With Object Versioning on, a Delete action on a live object makes it noncurrent; removing old versions needs its own rule.",
+      "summary": "With Object Versioning on, a Delete rule limited to isLive true only makes live objects noncurrent; removing those versions needs a rule that can match them.",
       "tags": [
         "cloud-storage",
         "lifecycle",
         "versioning"
       ],
       "source": "curated",
-      "fingerprint": "eea0f0601902",
+      "fingerprint": "7088cd92abbb",
       "file": "sections/section-3-operations.json"
     },
     {

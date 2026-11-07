@@ -62,6 +62,10 @@ Classes: `key` · `trap` · `tip` · `watch` · `note` · `new`. Write cross-ref
 such as `[§4.4](04-networking.md#s4-4)`, and use `<mark markdown="span">` sparingly, for about one fact per section. Avoid double curly
 braces and a curly brace followed by a percent sign: GitHub Pages treats both as Liquid and the build fails.
 
+After changing a section heading, adding a section or editing `appendix-a-guide-map.md`, run
+`python scripts/build_study_links.py` and commit `data/study_links.json`: the app's study panel and the PDF report read
+it, and a test fails when it's out of date.
+
 You do not need to build the PDF. It is an optional local output; [`theory/README.md`](theory/README.md) explains it.
 
 ## Changing the engine
@@ -72,6 +76,8 @@ changes, and link the new guide in the PR.
 
 ## Ground rules
 
+- **Follow the [release process](https://github.com/nirmata78/gcp-ace-simulator/blob/main/RELEASE.md).** Keep pull requests small, and add a line to `CHANGELOG.md` under
+  `Unreleased` for anything a user would notice.
 - **Never commit your own attempts.** `data/history.json`, `reports/` and `private/` are gitignored; don't force-add
   them.
 - **No real employer data** in scenarios. Use invented companies.

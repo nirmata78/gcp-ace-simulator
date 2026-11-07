@@ -58,9 +58,18 @@ relative_links:
 
 exclude:
   - app.py
+  - CHANGELOG.md
   - CLAUDE.md
+  - RELEASE.md
+  - VERSION
+  - docs/
   - LICENSE
   - requirements.txt
+  - requirements.lock
+  - requirements-dev.lock
+  - pyproject.toml
+  - Dockerfile
+  - compose.yaml
   - data/
   - private/
   - reports/

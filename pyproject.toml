@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gcp-ace-simulator"
+description = "A timed Google Cloud Associate Cloud Engineer practice exam and theory course."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.11"
+dynamic = ["version"]
+dependencies = [
+    "streamlit>=1.66.1",  # browser-native exam UI; st.iframe, deferred downloads
+    "pydantic>=2.9.0",    # question and attempt schemas
+    "reportlab>=4.2.0",   # PDF score report
+]
+
+[project.optional-dependencies]
+# Only LLM-backed question authoring needs this: kb.py add --topic / --stem.
+llm = ["anthropic>=0.40.0"]
+dev = [
+    "pytest>=8.3.0",
+    "pytest-cov>=5.0.0",
+    "ruff>=0.6.0",
+    "mypy>=1.11.0",
+    "pyyaml>=6.0.0",
+]
+
+[tool.setuptools]
+# An application, not a library: nothing here is installed as a package.
+packages = []
+
+[tool.setuptools.dynamic]
+version = { file = "VERSION" }
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# tests/container needs Docker, so the default run skips it. `pytest tests/container` still runs it.
+norecursedirs = ["container"]
+
+[tool.coverage.run]
+branch = true
+# Name the sources. scripts/ is not a package, so --cov=. silently leaves unimported scripts out of the total.
+source = ["app", "src", "scripts"]
+omit = [
+    "scripts/recap_content.py",  # prose data
+    "scripts/retro_content.py",  # private, not in the repository
+]

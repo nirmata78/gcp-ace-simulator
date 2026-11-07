@@ -1,0 +1,453 @@
+# Machine-readable delivery plan. Execute tasks in dependency order, one pull request per task.
+# Tracking issue: https://github.com/nirmata78/gcp-ace-simulator/issues/3
+# Process rules: RELEASE.md. Mark progress by editing `status` on a task in the same PR that completes it.
+
+schema_version: 1
+id: docker-launch
+title: One-command local launch with Docker, plus the tech debt that blocks it
+issue: 3
+target_release: 1.2.0 # was 1.1.0; 1.1.0 shipped first with compose, bin/ scripts and the study features
+semver_rationale: >
+  MINOR. Adds a new way to run the simulator and new configuration. The existing venv flow, the history file,
+  the bank schema and the kb.py commands keep working.
+status: in_progress # proposed | in_progress | done
+created: 2026-11-04
+
+goal: >
+  A person with Docker and no Python can run one command, open http://localhost:8501, sit a full exam, download the
+  PDF report, stop the container, start it again and still see their history.
+
+target_experience:
+  no_clone: docker run --rm -p 127.0.0.1:8501:8501 -v ace-state:/state ghcr.io/nirmata78/gcp-ace-simulator:1
+  from_clone: docker compose up
+
+success_criteria:
+  - id: SC1
+    statement: From a machine with Docker and no Python, a first exam can start with one command and no other setup.
+    verify: Follow the README on a clean Linux amd64 VM and on macOS arm64; record both in the release PR.
+  - id: SC2
+    statement: History survives stopping, removing and re-creating the container.
+    verify: Task T13's end-to-end test.
+  - id: SC3
+    statement: The published image contains no personal data and no excluded question text.
+    verify: Task T13's image content check.
+  - id: SC4
+    statement: The container runs as non-root on a read-only root filesystem, and the published port binds to localhost only.
+    verify: Task T13's security checks.
+  - id: SC5
+    statement: The simulator starts and completes an exam with no internet access.
+    verify: Task T05's blocked-socket test.
+  - id: SC6
+    statement: The venv flow in the README still works unchanged.
+    verify: CI keeps running the venv path on every supported Python.
+
+baseline:
+  measured: 2026-11-04
+  commit: 85d8259
+  tests: 89 passing, in one file (tests/test_simulator.py)
+  ci: pytest and kb.py checks on Python 3.12 only. No lint, type check, coverage or dependency lock.
+  coverage:
+    method: pytest-cov with branch coverage; --cov=app --cov=src --cov=scripts; tests, theory and the private scripts/retro_content.py omitted
+    total_percent: 32
+    warning: >
+      Running with --cov=. reports 65%, which is wrong. scripts/ is not a package, so unimported scripts are silently
+      left out of the total. The source list must name app, src and scripts explicitly.
+    per_file_percent:
+      app.py: 0
+      scripts/kb.py: 0
+      scripts/retrospective.py: 0
+      scripts/recap.py: 0
+      scripts/recap_content.py: 0
+      scripts/check_network.py: 52
+      src/pdf_generator.py: 90
+      src/models.py: 94
+      src/exam_engine.py: 97
+      src/blueprint.py: 99
+  verified_facts:
+    - app.py exits the whole server at startup when offline (os._exit(1)), though nothing in the app calls an LLM.
+      ACE_SKIP_NETWORK_CHECK=1 is the only way past it.
+    - The only LLM call is in scripts/kb.py, which imports anthropic lazily and has its own require_network() check.
+    - HISTORY_PATH and REPORTS_DIR are fixed relative to the source tree. REPORTS_DIR is defined twice (src/exam_engine.py, src/pdf_generator.py).
+    - History writes are atomic (temp file, then rename), so a killed container can't corrupt history.json.
+    - The results page already has a PDF download button, so a host bind mount is not needed to get reports out.
+    - pdf_generator handles webbrowser.open failing and shows a message instead. No custom font files are registered.
+    - .streamlit/config.toml sets gatherUsageStats=false.
+    - streamlit pulls in pandas, pyarrow and numpy, so the image will not be small.
+    - requirements.txt mixes runtime, optional LLM and test dependencies, with lower bounds only.
+  assumptions_to_verify:
+    - id: A1
+      statement: webbrowser.open returns False, rather than raising or hanging, in a container with no browser.
+      verify_in: T11
+    - id: A2
+      statement: Streamlit runs on a read-only root filesystem with HOME and /tmp on tmpfs.
+      verify_in: T11
+    - id: A3
+      statement: A named volume mounted at /state is writable by the image's non-root user on first run.
+      verify_in: T11
+
+delivery_notes:
+  - date: 2026-11-05
+    pull_request: "T01, T05, T06, T11, T12 and T13 shipped in one PR, with the parts of T15 that are true before an image is published. This departs from the one-task-one-PR rule because the owner asked for a single PR that gets Docker running."
+    assumptions_verified:
+      A1: "True. webbrowser.open returned False at once in the container."
+      A2: "True. Streamlit ran read-only with HOME=/tmp and /tmp on tmpfs; the end-to-end test sat a full exam."
+      A3: "True. A new named volume was writable by UID 10001."
+    image_size: "630 MB on disk, measured with du inside the container, under the 700 MB limit in T11. 480 MB is the virtualenv, of which pyarrow is 155 MB and pandas 84 MB; both are Streamlit requirements."
+    changed_from_plan:
+      - "T13 ships before T04, so its workflow pins its own actions by SHA. It installs Playwright directly, not from a lock."
+      - "T13 skips the excluded-question scan: the guard fixture from issue 1 doesn't exist yet. Add it when that issue lands."
+      - "compose.yaml names the volume ace-state, so it matches the docker run form, and takes ACE_VOLUME, so tests can't touch a person's real history."
+      - "compose.yaml has no pull_policy build, because forcing a rebuild on every up could need the network. Updating takes docker compose up --build."
+      - "README leads with docker compose up, not docker run with the GHCR image, because no image is published until T14. T15 stays open to make the switch."
+    released_in: "1.1.0, with the compose flow, bin/start.sh and bin/stop.sh. The published image (T14) moves to 1.2.0; where to publish is issue 7."
+    remaining: "T02, T03, T04, T07, T08, T09, T10, T14, T15 (image-based README and the clean-machine walkthrough) and T16."
+
+decisions:
+  - id: D1
+    topic: Base image
+    choice: python:3.12-slim, pinned by digest and updated by Dependabot
+    alternatives_rejected:
+      - { option: alpine, reason: "musl needs slow source builds or missing wheels for pyarrow and numpy" }
+      - { option: distroless, reason: "harder to debug for a local tool; little benefit with no network-facing exposure beyond localhost" }
+  - id: D2
+    topic: Dependency management
+    choice: >
+      Declare direct dependencies in pyproject.toml (runtime; extras llm and dev) and generate hash-pinned lock files
+      with uv pip compile. The image installs with hashes required.
+    rationale: Hermetic, repeatable builds. Google's practice of pinning what you build from.
+  - id: D3
+    topic: Where user state lives
+    choice: >
+      A single resolver, src/paths.py, reads ACE_STATE_DIR. When set, history is $ACE_STATE_DIR/history.json and reports
+      are in $ACE_STATE_DIR/reports. When unset, the current locations are used, so existing users see no change.
+    rationale: The question bank is read-only product data; history and reports are user data. Containers need them separated.
+  - id: D4
+    topic: Default volume type
+    choice: Named volume
+    alternatives_rejected:
+      - { option: host bind mount, reason: "non-root UID mismatches on Linux; zsh doesn't export UID for compose; reports are already downloadable from the UI" }
+    note: Document a bind mount as an option for people who want the files on the host.
+  - id: D5
+    topic: Network gate
+    choice: Remove it from app.py and keep it only on the LLM path in kb.py. ACE_SKIP_NETWORK_CHECK becomes a documented no-op.
+    rationale: The app needs no network, and the README promises local use. The gate also makes offline testing awkward.
+  - id: D6
+    topic: Scope of the image
+    choice: The exam app and read-only kb.py commands. anthropic is not installed; kb.py add --topic and --stem stay on the venv path.
+    rationale: Smaller image and attack surface, and no API keys near the container. Contributors keep the venv flow.
+  - id: D7
+    topic: Image registry and tags
+    choice: GHCR, with tags 1.2.0, 1.2, 1 and latest, for linux/amd64 and linux/arm64. Reopened in issue 7, which weighs GHCR, Docker Hub and release tarballs
+    rationale: Free for public images and tied to the repository. Apple Silicon users need arm64. Tags are part of the public API (RELEASE.md).
+  - id: D8
+    topic: Network exposure
+    choice: Listen on 0.0.0.0 inside the container, publish to 127.0.0.1 only on the host.
+    rationale: The app has no authentication. It should never be reachable from the local network by default.
+  - id: D9
+    topic: Coverage target
+    choice: >
+      Not 100%. Per-file floors below, enforced with fail_under and raised only upward. Generated-style content
+      modules are omitted. Based on Google's guidance that coverage is a signal: 60% acceptable, 75% commendable,
+      90% exemplary, and that chasing a number past the point of value wastes effort.
+    source: https://testing.googleblog.com/2020/08/code-coverage-best-practices.html
+    floors_percent:
+      src/: 90
+      app.py: 70
+      scripts/kb.py: 75
+      scripts/check_network.py: 90
+      scripts/retrospective.py: 60
+      scripts/recap.py: 60
+      total: 75
+    omit:
+      - scripts/recap_content.py # prose data
+      - scripts/retro_content.py # private, not in the repository
+
+non_goals:
+  - Hosting the simulator as a shared or multi-user service. The app has no authentication.
+  - Authentication, accounts or cloud sync.
+  - LLM question authoring inside the container.
+  - Building the theory PDF or the videos in Docker.
+  - Rewriting the app away from Streamlit.
+  - A desktop installer.
+  - Kubernetes manifests.
+
+execution_rules:
+  - One task, one pull request, ideally under about 300 changed lines excluding lock files and tests. Split further if larger.
+  - Refactors and behaviour changes go in separate PRs.
+  - Every behaviour change or bug fix comes with a test.
+  - Every PR must pass the task's acceptance commands and the precheck below.
+  - Never read, print or commit data/history.json, reports/ or private/. Tests use tmp_path.
+  - Use the plan's decisions. If one proves wrong, change it in this file in the PR with the reason, rather than diverging silently.
+  - Add a CHANGELOG.md line under Unreleased in every user-visible PR.
+
+precheck:
+  - pytest -q
+  - python scripts/kb.py check
+  - python scripts/kb.py blueprint --min 3 --strict
+
+phases:
+  - { id: P1, title: "Foundations: packaging, lint, CI", tasks: [T01, T02, T03, T04] }
+  - { id: P2, title: "Behaviour changes Docker needs", tasks: [T05, T06] }
+  - { id: P3, title: "Test the untested code", tasks: [T07, T08, T09, T10] }
+  - { id: P4, title: Container, tasks: [T11, T12, T13] }
+  - { id: P5, title: Publish and release, tasks: [T14, T15, T16] }
+
+tasks:
+  - id: T01
+    title: Add pyproject.toml, split dependencies and lock them
+    status: done
+    size: M
+    depends_on: []
+    files: [pyproject.toml, requirements.txt, requirements.lock, requirements-dev.lock, CLAUDE.md]
+    steps:
+      - Declare project metadata with requires-python ">=3.11" and version read dynamically from the VERSION file.
+      - "Direct runtime dependencies: streamlit, pydantic, reportlab. Extras: llm = anthropic; dev = pytest, pytest-cov, ruff, mypy, pyyaml."
+      - Generate universal hash-pinned lock files with uv pip compile. Document the regeneration command in a comment at the top of each.
+      - Keep requirements.txt so the documented install still works, but make it include the runtime, llm and dev sets.
+      - Move coverage settings into pyproject, naming app, src and scripts in source and omitting content modules (D9).
+    acceptance:
+      - { run: "python -m venv /tmp/v && /tmp/v/bin/pip install -r requirements.txt && /tmp/v/bin/pytest -q", expect: "all tests pass" }
+      - { run: "uv pip compile --universal --generate-hashes pyproject.toml | diff - requirements.lock", expect: "no differences beyond the header" }
+
+  - id: T02
+    title: Adopt ruff, starting from a narrow rule set
+    status: todo
+    size: M
+    depends_on: [T01]
+    files: [pyproject.toml, app.py, src/, scripts/, tests/]
+    steps:
+      - Pin the ruff version. Select rules explicitly (E, F, I, B, UP), since this ruff version reported 595 findings with no config.
+      - Exclude theory/video and data modules, and set line length to match the existing code.
+      - Apply safe autofixes in one PR with no behaviour change. Review unused variables and blind excepts by hand.
+      - Don't run unsafe fixes in bulk.
+    acceptance:
+      - { run: "ruff check .", expect: "exit 0" }
+      - { run: "pytest -q", expect: "all tests pass" }
+
+  - id: T03
+    title: Type-check src/
+    status: todo
+    size: S
+    depends_on: [T01]
+    files: [pyproject.toml, src/]
+    steps:
+      - Run mypy with the pydantic plugin on src/ only. Fix or narrowly annotate findings.
+      - Leave app.py and scripts/ out for now, and note that in pyproject.
+    acceptance:
+      - { run: "mypy src", expect: "exit 0" }
+
+  - id: T04
+    title: Harden CI
+    status: todo
+    size: S
+    depends_on: [T02, T03]
+    files: [.github/workflows/test.yml, .github/dependabot.yml]
+    steps:
+      - Run on Python 3.11, 3.12, 3.13 and 3.14, matching what is declared and what is used locally.
+      - Add ruff and mypy jobs. Install from the lock file.
+      - Pin actions by full commit SHA. Set top-level permissions to contents read.
+      - Add Dependabot for pip and github-actions, weekly and grouped.
+      - Report coverage in the job summary, without enforcing it yet.
+    acceptance:
+      - { run: "gh run list --workflow test.yml --limit 1 --json conclusion -q '.[0].conclusion'", expect: "success" }
+      - { check: "Every uses line in .github/workflows is pinned to a 40-character SHA" }
+
+  - id: T05
+    title: Stop the app refusing to start when offline
+    status: done
+    size: S
+    depends_on: [T01]
+    semver: user-visible fix
+    files: [app.py, tests/, README.md, CHANGELOG.md]
+    steps:
+      - Remove the startup network gate from app.py (D5). Leave the kb.py LLM check as it is.
+      - Keep accepting ACE_SKIP_NETWORK_CHECK, with no effect. Update the README.
+      - Add a test that blocks socket connections and runs through engine sampling, scoring and report generation.
+    acceptance:
+      - { run: "pytest -q -k offline", expect: "passes with outbound sockets blocked" }
+      - { check: "kb.py add --topic still aborts with status 1 when offline, covered by a test" }
+
+  - id: T06
+    title: Add one state-path resolver with ACE_STATE_DIR
+    status: done
+    size: S
+    depends_on: [T01]
+    files: [src/paths.py, src/exam_engine.py, src/pdf_generator.py, app.py, scripts/retrospective.py, scripts/recap.py, tests/, README.md]
+    steps:
+      - Add src/paths.py per D3 and resolve at call time, so tests can set the variable.
+      - Remove the duplicate REPORTS_DIR definitions and point every caller at the resolver.
+      - Create directories on first write with a clear error if the location isn't writable.
+    acceptance:
+      - { check: "With ACE_STATE_DIR unset, paths equal data/history.json and reports/ exactly as before" }
+      - { check: "With ACE_STATE_DIR set, a full attempt writes only under it, shown by a test comparing directory listings" }
+      - { run: "git grep -n 'history.json' -- src app.py", expect: "only src/paths.py and docstrings" }
+
+  - id: T07
+    title: Test the app with Streamlit AppTest
+    status: todo
+    size: L
+    depends_on: [T05, T06]
+    files: [tests/test_app.py]
+    steps:
+      - Use streamlit.testing.v1.AppTest with ACE_STATE_DIR on tmp_path.
+      - "Cover: landing page, starting each mode, answering, flagging, palette navigation, timer expiry, submit, results breakdown, report failure path, history page."
+      - Split into smaller PRs if it grows; the highest-value path is start, answer, submit, history.
+    acceptance:
+      - { run: "pytest tests/test_app.py --cov=app --cov-branch --cov-fail-under=70", expect: "exit 0" }
+      - { run: "pytest -q", expect: "repository data/history.json unchanged" }
+
+  - id: T08
+    title: Test the kb.py command line
+    status: todo
+    size: M
+    depends_on: [T01]
+    files: [tests/test_kb.py]
+    steps:
+      - Run each subcommand against a small fixture bank in tmp_path, including check, blueprint, topics, list, show, search, stats, add --file, reindex.
+      - Test add --topic and --stem with a stubbed Anthropic client. CI must never call the live API.
+      - Separately and manually, run add --topic once with a real key to confirm the default model id claude-sonnet-5-5, which has never been exercised, and record the result in the PR.
+    acceptance:
+      - { run: "pytest tests/test_kb.py --cov=scripts --cov-report=term", expect: "scripts/kb.py at 75% or more" }
+      - { check: "Tests make no network calls, and the bank under data/ is unchanged afterwards" }
+
+  - id: T09
+    title: Smoke-test the PDF scripts
+    status: todo
+    size: S
+    depends_on: [T06]
+    files: [tests/test_reports.py]
+    steps:
+      - Run retrospective.py with a synthetic attempt and no private retro_content, covering the fallback notes and the no-history message.
+      - Run recap.py. Assert the output starts with %PDF, has pages, and contains expected text.
+      - Assert generic output doesn't depend on the private module being present.
+    acceptance:
+      - { run: "pytest tests/test_reports.py", expect: "passes in a clean clone, where scripts/retro_content.py does not exist" }
+
+  - id: T10
+    title: Enforce coverage floors
+    status: todo
+    size: S
+    depends_on: [T07, T08, T09]
+    files: [pyproject.toml, .github/workflows/test.yml, scripts/check_coverage.py]
+    steps:
+      - Set fail_under to the total in D9 and check the per-file floors from coverage JSON in a small script.
+      - Add missing check_network tests to reach its floor.
+      - Raise floors to just under measured values if they are well above target. They only move upward.
+    acceptance:
+      - { run: "pytest --cov --cov-branch && python scripts/check_coverage.py", expect: "exit 0" }
+      - { check: "Deleting a test file on a scratch branch makes CI fail" }
+
+  - id: T11
+    title: Write the Dockerfile
+    status: done
+    size: M
+    depends_on: [T01, T05, T06]
+    files: [Dockerfile, .dockerignore]
+    steps:
+      - Use two stages. The builder installs the runtime lock with --require-hashes into a virtualenv. The final stage copies it.
+      - Make .dockerignore deny everything and allow only app.py, src/, scripts/kb.py, scripts/check_network.py, data/sections/, data/register.json, .streamlit/, VERSION, LICENSE and the runtime lock.
+      - Create a non-root user with a fixed UID, and set ACE_STATE_DIR=/state, HOME=/tmp, PYTHONDONTWRITEBYTECODE=1, PYTHONUNBUFFERED=1.
+      - Create /state owned by that user before the VOLUME line, so a fresh named volume inherits ownership.
+      - "CMD: streamlit run app.py --server.address=0.0.0.0 --server.port=8501 --server.headless=true --server.fileWatcherType=none."
+      - Add a HEALTHCHECK using python urllib against /_stcore/health. Don't install curl.
+      - Add OCI labels (version, source, licenses). Verify assumptions A1, A2 and A3 and record the results here.
+      - Measure the image size and record it in this file as a baseline. Investigate if it is above 700 MB.
+    acceptance:
+      - { run: "docker build -t ace:dev .", expect: "exit 0" }
+      - { run: "docker run --rm ace:dev id -u", expect: "non-zero" }
+      - { run: "docker run --rm ace:dev sh -c 'test ! -e data/history.json && test ! -e reports && test ! -e private && test ! -e scripts/retro_content.py'", expect: "exit 0" }
+      - { run: "docker build with a planted data/history.json and private/x, then inspect", expect: "neither file is in the image" }
+
+  - id: T12
+    title: Add compose.yaml
+    status: done
+    size: S
+    depends_on: [T11]
+    files: [compose.yaml]
+    steps:
+      - "Publish 127.0.0.1:${ACE_PORT:-8501}:8501 and mount the named volume ace-state at /state."
+      - "Harden: read_only true, tmpfs /tmp, cap_drop ALL, no-new-privileges, init true."
+      - Build locally and tag with the image name, so docker compose up works from a clone.
+    acceptance:
+      - { run: "docker compose up -d --wait", expect: "service healthy" }
+      - { run: "curl -fsS http://127.0.0.1:8501/_stcore/health", expect: "ok" }
+      - { run: "docker compose port simulator 8501", expect: "bound to 127.0.0.1" }
+
+  - id: T13
+    title: Test the container end to end in CI
+    status: done
+    size: M
+    depends_on: [T12, T04]
+    files: [tests/container/test_e2e.py, .github/workflows/container.yml]
+    steps:
+      - Build the image on PRs and start it with the compose hardening.
+      - Use Playwright to start a short exam, answer, submit and download the PDF. Assert the file starts with %PDF.
+      - Run docker compose down without -v, then up. Assert the attempt is still in history.
+      - Assert non-root, read-only root and localhost-only binding. Scan the image filesystem for history, reports, private files and every excluded question id from the guard fixture in issue 1, if present.
+      - Scan with Trivy and fail on fixable critical findings.
+      - Keep these tests separate from the default pytest run, so the venv path doesn't need Docker.
+    acceptance:
+      - { run: "pytest tests/container", expect: "passes locally and in CI" }
+      - { check: "SC2, SC3 and SC4 are each covered by a named test" }
+
+  - id: T14
+    title: Publish the image on release tags
+    status: todo
+    size: M
+    depends_on: [T13]
+    files: [.github/workflows/publish.yml]
+    steps:
+      - Trigger only on v*.*.* tags. Fail if the tag doesn't match the VERSION file.
+      - Build linux/amd64 and linux/arm64 with Buildx. Use docker/metadata-action for the tags in D7.
+      - Enable provenance and SBOM attestations. Grant packages write only in this job. Pin actions by SHA.
+      - Do a dry run from a pre-release tag such as v1.2.0-rc.1, which must not move latest, 1 or 1.2.
+      - Smoke-test the pulled image on both architectures.
+    acceptance:
+      - { run: "docker manifest inspect ghcr.io/nirmata78/gcp-ace-simulator:1.2.0-rc.1", expect: "lists amd64 and arm64" }
+      - { run: "docker pull ghcr.io/nirmata78/gcp-ace-simulator:1.2.0-rc.1", expect: "works without logging in" }
+
+  - id: T15
+    title: Make Docker the first thing the README offers
+    status: todo
+    size: S
+    depends_on: [T14]
+    files: [README.md, CONTRIBUTING.md, CLAUDE.md, RELEASE.md]
+    steps:
+      - Lead section 1 with the docker run command. Keep the venv path, labelled for contributors and LLM authoring.
+      - "Explain where data lives, and how to back it up, restore it, move an existing data/history.json into the volume, change the port, update and uninstall."
+      - Add troubleshooting for Docker not running, a port in use, and the volume being deleted by docker compose down -v.
+      - Add the image tags and their stability to the public API list in RELEASE.md.
+      - Have a separate session follow the README literally on a clean machine and fix whatever trips it up.
+    acceptance:
+      - { check: "Every command in the new section has been run as written, on Linux amd64 and macOS arm64" }
+      - { check: "The Pages site still builds, with no Liquid errors and no broken links" }
+
+  - id: T16
+    title: Release v1.2.0
+    status: todo
+    size: S
+    depends_on: [T10, T15]
+    files: [VERSION, CHANGELOG.md, docs/plans/v1.1.0-docker.yaml]
+    steps:
+      - Check SC1 to SC6 and record the evidence in the release PR.
+      - Follow RELEASE.md. Set plan status to done.
+    acceptance:
+      - { run: "gh release view v1.2.0", expect: "published, with notes from CHANGELOG.md" }
+      - { run: "docker run --rm -p 127.0.0.1:8501:8501 -v ace-state:/state ghcr.io/nirmata78/gcp-ace-simulator:1", expect: "app reachable" }
+
+risks:
+  - { id: R1, risk: "A personal history file is copied into a public image", severity: high, mitigation: "Deny-all .dockerignore (T11), plus a CI check that plants files and inspects the image (T13)" }
+  - { id: R2, risk: "docker compose down -v deletes a user's history", severity: medium, mitigation: "Document it and give a backup command (T15)" }
+  - { id: R3, risk: "A floating 1 or latest tag breaks a user", severity: medium, mitigation: "Semantic version rules and rc dry run; pin a full version for repeatability (T14, RELEASE.md)" }
+  - { id: R4, risk: "Multi-arch builds are slow or flaky under emulation", severity: low, mitigation: "Use native arm64 runners if available; only build on tags" }
+  - { id: R5, risk: "An in-progress exam is lost if the container restarts, since it lives in session memory", severity: low, mitigation: "Existing behaviour. Document it, and don't set a restart policy" }
+  - { id: R6, risk: "AppTest can't exercise some UI behaviour such as JavaScript timers", severity: low, mitigation: "Cover those in the Playwright test in T13, and keep the logic in the engine" }
+  - { id: R7, risk: "Lock files drift between platforms", severity: low, mitigation: "Compile universally and check for drift in CI (T01, T04)" }
+
+rollback: >
+  Docker is additive, so the venv flow stays available throughout. If a published image is bad, publish a fixed PATCH
+  version and move the floating tags. Never rewrite or delete a released version tag.
+
+related:
+  - { issue: 1, note: "If it lands first, T13 also checks the image against its guard fixture" }
+  - { issue: 2, note: "Independent of this plan" }

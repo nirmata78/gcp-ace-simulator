@@ -1,0 +1,15 @@
+# Deny everything, then allow only what the image needs. A new file stays out by default, so personal
+# data (data/history.json, reports/, private/, scripts/retro_content.py) can't reach an image by accident.
+*
+!app.py
+!VERSION
+!LICENSE
+!requirements.lock
+!.streamlit/config.toml
+!src/
+!scripts/kb.py
+!scripts/check_network.py
+!data/sections/
+!data/register.json
+!data/study_links.json
+**/__pycache__

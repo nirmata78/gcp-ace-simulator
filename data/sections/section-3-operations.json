@@ -1,7 +1,7 @@
 {
   "domain": "Section 3: Ensuring the successful operation of a cloud solution",
   "version": 2,
-  "updated_at": "2026-11-03T18:24:03+00:00",
+  "updated_at": "2026-11-06T18:34:51+00:00",
   "count": 212,
   "questions": [
     {
@@ -850,17 +850,17 @@
       "source": "curated",
       "question": "A Windows instance with no external IP must be reachable over RDP by a small group of administrators. What should you do?",
       "options": {
-        "A": "gcloud compute start-iap-tunnel on port 3389, with a firewall rule allowing 35.235.240.0/20 and roles/iap.tunnelResourceAccessor for the administrators.",
-        "B": "Enable OS Login on the Windows instance.",
+        "A": "Enable OS Login on the Windows instance.",
+        "B": "gcloud compute start-iap-tunnel on port 3389, with a firewall rule allowing 35.235.240.0/20 and roles/iap.tunnelResourceAccessor for the administrators.",
         "C": "Temporarily attach an external IP whenever an administrator needs access.",
         "D": "Enable the interactive serial console for the administrators."
       },
       "correct_answer": "B",
       "explanation": {
-        "summary": "OS Login is for Linux accounts, and it is not a network path.",
+        "summary": "IAP TCP forwarding tunnels any TCP port — here RDP's 3389 — to an instance without a public address, authorised per user by IAM.",
         "option_breakdown": {
-          "A": "Correct. IAP TCP forwarding tunnels any TCP port — here RDP's 3389 — to an instance without a public address, authorised per user by IAM.",
-          "B": "Correct. OS Login is for Linux accounts, and it is not a network path.",
+          "A": "OS Login is for Linux accounts, and it is not a network path.",
+          "B": "Correct. IAP TCP forwarding tunnels any TCP port — here RDP's 3389 — to an instance without a public address, authorised per user by IAM.",
           "C": "An external IP exposes RDP to the internet whenever it is attached.",
           "D": "The serial console is for recovery; it is not a way to run RDP sessions."
         },
@@ -1106,18 +1106,18 @@
       "source": "curated",
       "question": "A team wants to be notified when a Cloud Run service's request latency at the 95th percentile exceeds one second. What should you configure?",
       "options": {
-        "A": "An alerting policy on run.googleapis.com/request_latencies with a 95th-percentile aligner, a 1,000 ms threshold and a notification channel.",
+        "A": "An uptime check against the service URL with a 1-second timeout.",
         "B": "A dashboard chart of p95 latency that the team checks each morning.",
-        "C": "An uptime check against the service URL with a 1-second timeout.",
+        "C": "An alerting policy on run.googleapis.com/request_latencies with a 95th-percentile aligner, a 1,000 ms threshold and a notification channel.",
         "D": "A log-based metric extracting latency from request logs, with no alerting policy."
       },
       "correct_answer": "C",
       "explanation": {
-        "summary": "An uptime check measures reachability from probe locations, not the service's own p95 across all requests.",
+        "summary": "Cloud Run already reports request latency as a distribution; aligning it to the 95th percentile gives the condition, and only an alerting policy notifies anyone.",
         "option_breakdown": {
-          "A": "Correct. Cloud Run already reports request latency as a distribution; aligning it to the 95th percentile gives the condition, and only an alerting policy notifies anyone.",
+          "A": "An uptime check measures reachability from probe locations, not the service's own p95 across all requests.",
           "B": "A dashboard shows the problem to whoever looks; it notifies nobody.",
-          "C": "Correct. An uptime check measures reachability from probe locations, not the service's own p95 across all requests.",
+          "C": "Correct. Cloud Run already reports request latency as a distribution; aligning it to the 95th percentile gives the condition, and only an alerting policy notifies anyone.",
           "D": "The metric already exists, and a metric without an alerting policy never notifies."
         },
         "gcloud_command": "gcloud alpha monitoring policies create --policy-from-file=latency-p95.yaml",
@@ -2034,17 +2034,17 @@
       "source": "curated",
       "question": "Compliance requires that the key protecting Persistent Disks be rotated every 90 days on an automatic schedule under the customer's control. What should you configure?",
       "options": {
-        "A": "Create the disks with a Cloud KMS key that has a 90-day rotation period (CMEK).",
-        "B": "Rotate the Google-managed encryption keys every 90 days from the console.",
+        "A": "Rotate the Google-managed encryption keys every 90 days from the console.",
+        "B": "Create the disks with a Cloud KMS key that has a 90-day rotation period (CMEK).",
         "C": "Supply a new customer-supplied encryption key with each disk operation every 90 days.",
         "D": "Re-create every disk every 90 days so it gets a new default key."
       },
       "correct_answer": "B",
       "explanation": {
-        "summary": "Google-managed keys are rotated by Google; the customer has no rotation setting to control.",
+        "summary": "A Cloud KMS key's rotation period creates a new primary version on schedule, under the customer's control, and Compute Engine uses it for new encryption.",
         "option_breakdown": {
-          "A": "Correct. A Cloud KMS key's rotation period creates a new primary version on schedule, under the customer's control, and Compute Engine uses it for new encryption.",
-          "B": "Correct. Google-managed keys are rotated by Google; the customer has no rotation setting to control.",
+          "A": "Google-managed keys are rotated by Google; the customer has no rotation setting to control.",
+          "B": "Correct. A Cloud KMS key's rotation period creates a new primary version on schedule, under the customer's control, and Compute Engine uses it for new encryption.",
           "C": "CSEK has no schedule: you would rotate and supply raw keys yourself on every call.",
           "D": "Re-creating disks is disruptive and still leaves the key under Google's control."
         },
@@ -6658,7 +6658,7 @@
         "option_breakdown": {
           "A": "A deleted instance no longer appears in the list; there is no 30-day listing period.",
           "B": "Correct. TERMINATED is the stopped state: the instance resource remains, it can be started, and its disks keep costing money.",
-          "C": "Stopping does not schedule a restart. Automatic restart applies to host-initiated failures on VMs configured for it.",
+          "C": "Stopping does not schedule a restart, and TERMINATED does not by itself mean a crash. Automatic restart applies when a VM configured for it crashes or Compute Engine stops it for a programmed stop, such as a maintenance event.",
           "D": "A suspended VM is reported as SUSPENDED, a different state from TERMINATED."
         },
         "gcloud_command": "gcloud compute instances list --filter='status=TERMINATED'",
@@ -6686,7 +6686,7 @@
       },
       "correct_answer": "C",
       "explanation": {
-        "summary": "Cloud Asset Inventory searches resources across a project, folder or organization scope, so one call covers every project the caller can see.",
+        "summary": "Cloud Asset Inventory searches resources across a project, folder or organization scope, so with the search permission granted on the organization, one command covers every project under it.",
         "option_breakdown": {
           "A": "gcloud compute instances list has no flag that spans all projects; it works on one project at a time.",
           "B": "The VM instances page shows the instances of the selected project.",
@@ -6721,7 +6721,7 @@
         "summary": "Lifecycle configuration belongs to the bucket, not to individual objects, so it is set by updating the bucket with the JSON file.",
         "option_breakdown": {
           "A": "Lifecycle rules are not an object property, so an object-level update cannot set them.",
-          "B": "Correct. buckets update with --lifecycle-file replaces the bucket's lifecycle configuration with the file's contents.",
+          "B": "Correct. buckets update with --lifecycle-file sets the bucket's lifecycle configuration from the file's contents.",
           "C": "Copying a file into a bucket only stores it as an object; no special file name configures the bucket.",
           "D": "The bucket already exists, and create would fail rather than change its configuration."
         },
@@ -6731,31 +6731,31 @@
     },
     {
       "id": "ace-s3-147",
-      "title": "An age rule that never frees versioned storage",
+      "title": "A live-only age rule that never frees versioned storage",
       "objective": "3.2",
       "subtopic": "Object Lifecycle",
-      "summary": "With Object Versioning on, a Delete action on a live object makes it noncurrent; removing old versions needs its own rule.",
+      "summary": "With Object Versioning on, a Delete rule limited to isLive true only makes live objects noncurrent; removing those versions needs a rule that can match them.",
       "tags": [
         "cloud-storage",
         "lifecycle",
         "versioning"
       ],
       "source": "curated",
-      "question": "A bucket has Object Versioning enabled and a lifecycle rule that deletes objects older than 365 days. A year later the rule is clearly firing, because old objects no longer show in a normal listing, yet the bucket's stored bytes keep growing. What should you change?",
+      "question": "A bucket has Object Versioning enabled and one lifecycle rule: Delete when age is 365 days and isLive is true. A year later the rule is clearly firing, because old objects no longer show in a normal listing, yet the bucket's stored bytes keep growing. What should you change?",
       "options": {
         "A": "Move the bucket to the Archive class, because lifecycle deletions do not apply to Standard objects.",
         "B": "Disable Object Versioning, which permanently removes all existing noncurrent versions.",
         "C": "Replace the lifecycle rule with a nightly script that deletes the old objects by name.",
-        "D": "Add a rule that deletes noncurrent versions, for example with a daysSinceNoncurrentTime or numNewerVersions condition."
+        "D": "Add a rule that deletes noncurrent versions, for example with a daysSinceNoncurrentTime condition."
       },
       "correct_answer": "D",
       "explanation": {
-        "summary": "On a versioned bucket, a Delete action applied to a live object turns it into a noncurrent version, which keeps being stored and billed. A separate condition has to target noncurrent versions.",
+        "summary": "On a versioned bucket, a Delete action applied to a live object turns it into a noncurrent version, which keeps being stored and billed. This rule requires isLive to be true, so it never matches those versions. Without that condition, an age rule would also delete noncurrent versions past that age on a later run.",
         "option_breakdown": {
           "A": "Lifecycle actions apply in every storage class, and Archive would add retrieval costs without removing anything.",
           "B": "Disabling versioning stops new versions being kept but leaves existing noncurrent versions in place.",
           "C": "A script deleting live objects has the same effect as the rule and leaves the same noncurrent versions behind.",
-          "D": "Correct. A rule conditioned on noncurrent state, such as daysSinceNoncurrentTime or numNewerVersions, removes the versions that are consuming the storage."
+          "D": "Correct. daysSinceNoncurrentTime is satisfied once a version has been noncurrent for the set number of days, so the rule removes the versions consuming the storage. numNewerVersions alone would not clear them all, because the newest noncurrent version of an object with no live version has no newer versions."
         },
         "gcloud_command": "gcloud storage buckets update gs://BUCKET --lifecycle-file=rules.json",
         "doc_ref": "https://docs.cloud.google.com/storage/docs/lifecycle"
@@ -6786,11 +6786,11 @@
         "option_breakdown": {
           "A": "This ignores the minimum duration, which is what makes short-lived data expensive in a cold class.",
           "B": "Early deletion succeeds; the consequence is a charge, not an error.",
-          "C": "Correct. Thirty days in Coldline is billed as 90, so Nearline or Standard can cost less for this pattern.",
+          "C": "Correct. Thirty days in Coldline is billed as 90, so a warmer class such as Nearline, whose minimum is only 30 days, can cost less for this pattern. Compare the rates for your location.",
           "D": "Coldline does have a minimum duration, and the charge is for the remaining storage time rather than a retrieval."
         },
         "gcloud_command": "",
-        "doc_ref": "https://docs.cloud.google.com/storage/pricing"
+        "doc_ref": "https://cloud.google.com/storage/pricing-examples#early-delete"
       }
     }
   ]

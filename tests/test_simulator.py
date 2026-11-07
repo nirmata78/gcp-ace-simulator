@@ -30,7 +30,7 @@ from src.models import (  # noqa: E402
     Question,
     QuestionBank,
 )
-from src.pdf_generator import build_report  # noqa: E402
+from src.retrospective import build_report  # noqa: E402
 
 DATA_DIR = ROOT / "data"
 
@@ -108,10 +108,27 @@ def test_correct_option_is_marked_correct_in_breakdown(bank: QuestionBank) -> No
         assert q.explanation.option_breakdown[q.correct_answer].startswith("Correct")
 
 
+def test_only_the_key_is_called_correct(bank: QuestionBank) -> None:
+    # Twelve questions once had the key on a distractor whose analysis was given a "Correct."
+    # prefix and copied into the summary, so the explanation contradicted the key.
+    bad = [q.id for q in bank.questions
+           if [k for k, v in q.explanation.option_breakdown.items() if v.startswith("Correct")]
+           != [q.correct_answer]]
+    assert bad == []
+    for q in bank.questions:
+        assert not q.explanation.summary.startswith("Correct"), q.id
+
+
 def test_doc_refs_point_at_google_cloud(bank: QuestionBank) -> None:
     for q in bank.questions:
         if q.explanation.doc_ref:
             assert q.explanation.doc_ref.startswith("https://")
+
+
+def test_live_only_lifecycle_question_keeps_its_premise(bank: QuestionBank) -> None:
+    """A plain age rule also deletes noncurrent versions, so the stem must say isLive."""
+    q = next(q for q in bank.questions if q.id == "ace-s3-147")
+    assert "isLive is true" in q.question
 
 
 def test_correct_answers_are_spread_across_letters(bank: QuestionBank) -> None:
@@ -643,11 +660,11 @@ def test_pdf_handles_an_all_blank_exam(tmp_path: Path, session: ExamSession) -> 
 
 
 def test_pdf_escaping_handles_markup_and_code_spans() -> None:
-    from src.pdf_generator import _esc
-    assert _esc("a & b <c>") == "a &amp; b &lt;c&gt;"
-    assert _esc("run `kubectl logs`") == 'run <font face="Courier">kubectl logs</font>'
+    from src.retrospective import code
+    assert code("a & b <c>") == "a &amp; b &lt;c&gt;"
+    assert code("run `kubectl logs`") == 'run <font face="Courier">kubectl logs</font>'
     # escaping must happen before the code span is wrapped, not after
-    assert "&lt;" in _esc("`a<b>`")
+    assert "&lt;" in code("`a<b>`")
 
 
 def test_pdf_escapes_reportlab_markup(tmp_path: Path, small_bank: QuestionBank) -> None:
@@ -791,3 +808,23 @@ def test_duplicate_detection_is_scoped_within_a_domain() -> None:
     same = QuestionBank.model_validate(
         {"questions": [make("a", "1.1", "Regions and Zones"), make("b", "1.1", "Resource Hierarchy")]})
     assert len(same.duplicate_pairs()) == 1
+
+
+def test_old_history_is_repaired_once_for_the_swapped_keys() -> None:
+    from src.models import Attempt
+    raw = {"attempt_id": "x", "mode": "learning", "started_at": "2026-11-06T17:00:00",
+           "finished_at": "2026-11-06T18:29:49", "duration_seconds": 60, "question_count": 2,
+           "correct_count": 0,
+           "answers": [  # A was the right text, recorded as wrong against the old key B
+               {"question_id": "ace-dom5-017", "domain": "d", "subtopic": "s", "selected": "A", "correct_answer": "B"},
+               {"question_id": "ace-s4-040", "domain": "d", "subtopic": "s", "selected": "B", "correct_answer": "C"}]}
+    att = Attempt.model_validate(raw)
+    assert att.answers[0].selected == "B" and att.answers[0].is_correct
+    assert att.answers[1].selected == "B" and not att.answers[1].is_correct  # untouched
+    assert att.correct_count == 1
+    again = Attempt.model_validate(att.model_dump(mode="json"))  # saved, then loaded: no second swap
+    assert again.answers[0].selected == "B" and again.correct_count == 1
+    from src.exam_engine import ExamSession
+    from src.exam_engine import load_bank
+    fresh = ExamSession(load_bank().questions[:2], mode="learning").build_attempt()
+    assert fresh.bank_fixes  # new attempts are born repaired

@@ -1,7 +1,7 @@
 {
   "domain": "Section 1: Setting up a cloud solution environment",
   "version": 2,
-  "updated_at": "2026-11-03T18:24:03+00:00",
+  "updated_at": "2026-11-06T18:34:51+00:00",
   "count": 90,
   "questions": [
     {
@@ -721,7 +721,7 @@
         "sso"
       ],
       "source": "curated",
-      "question": "Employees already authenticate against the corporate identity provider. Management insists they must not have a separate password for Google Cloud, though accounts themselves are already provisioned. What should you configure?",
+      "question": "Every employee already has a Cloud Identity account, synchronised from the corporate directory, and signs in to everything else through the corporate identity provider. Management insists they must not have a separate password for Google Cloud. What should you configure?",
       "options": {
         "A": "Configure Workforce Identity Federation so users access Google Cloud with their existing identity provider credentials.",
         "B": "Configure SAML-based single sign-on between the external identity provider and Cloud Identity.",
@@ -732,10 +732,10 @@
       "explanation": {
         "summary": "SAML SSO delegates authentication to the existing identity provider, so users sign in with their corporate credentials and no separate Google password exists.",
         "option_breakdown": {
-          "A": "Workforce Identity Federation grants access to external identities without Cloud Identity accounts at all; it does not populate a directory or manage licences.",
+          "A": "Workforce Identity Federation is for users who have no Cloud Identity account at all; these users already have accounts, so the need is to change how they sign in, not to add a second identity model.",
           "B": "Correct. SAML SSO delegates authentication to the existing identity provider, so users sign in with their corporate credentials and no separate Google password exists.",
           "C": "The transfer tool only addresses consumer accounts created with your domain before Cloud Identity existed; it is not a provisioning or authentication mechanism.",
-          "D": "Directory Sync provisions accounts from an existing LDAP or Active Directory; it is the wrong answer when no such directory exists, or when the need is federated sign-in rather than provisioning."
+          "D": "Directory Sync provisions accounts, and they already exist; it does not change how users authenticate, so they would still have a Google password."
         },
         "gcloud_command": "# Admin console > Security > Authentication > SSO with third-party IdP",
         "doc_ref": "https://support.google.com/a/answer/60224"
@@ -979,17 +979,17 @@
       "source": "curated",
       "question": "Before a Terraform run can create Cloud Run services in a fresh project, the pipeline must guarantee the necessary services are available, and the step must be safe to run on every execution. What should the pipeline do first?",
       "options": {
-        "A": "Run gcloud services enable run.googleapis.com (and the other APIs it needs) as the pipeline's first step.",
-        "B": "Grant the pipeline's service account roles/owner on the project.",
+        "A": "Grant the pipeline's service account roles/owner on the project.",
+        "B": "Run gcloud services enable run.googleapis.com (and the other APIs it needs) as the pipeline's first step.",
         "C": "Ask an administrator to enable the APIs in the console before each run.",
         "D": "Retry the Terraform run until the services become available."
       },
       "correct_answer": "B",
       "explanation": {
-        "summary": "Owner would let the pipeline enable APIs but does not enable them, and it is far broader than needed.",
+        "summary": "Enabling an API is idempotent — it succeeds whether or not the API is already on — so it is safe on every run and guarantees the prerequisite. (Terraform's google_project_service does the same declaratively.)",
         "option_breakdown": {
-          "A": "Correct. Enabling an API is idempotent — it succeeds whether or not the API is already on — so it is safe on every run and guarantees the prerequisite. (Terraform's google_project_service does the same declaratively.)",
-          "B": "Correct. Owner would let the pipeline enable APIs but does not enable them, and it is far broader than needed.",
+          "A": "Owner would let the pipeline enable APIs but does not enable them, and it is far broader than needed.",
+          "B": "Correct. Enabling an API is idempotent — it succeeds whether or not the API is already on — so it is safe on every run and guarantees the prerequisite. (Terraform's google_project_service does the same declaratively.)",
           "C": "A manual console step is not repeatable and cannot be guaranteed on every execution.",
           "D": "A disabled API never becomes available by itself; retrying only repeats the failure."
         },
@@ -1268,18 +1268,18 @@
       "question": "An engineer needs to find which project owns a Cloud Storage bucket, knowing only part of its name. What should they do?",
       "options": {
         "A": "Run gcloud storage ls in every project until the bucket appears.",
-        "B": "Search for the bucket in Cloud Asset Inventory across the organisation by name fragment.",
+        "B": "Search Admin Activity audit logs for bucket creation events.",
         "C": "Read the billing export for the storage SKU charges.",
-        "D": "Search Admin Activity audit logs for bucket creation events."
+        "D": "Search for the bucket in Cloud Asset Inventory across the organisation by name fragment."
       },
       "correct_answer": "D",
       "explanation": {
-        "summary": "Audit logs are kept for a limited time and record changes; a bucket created years ago may not appear.",
+        "summary": "gcloud asset search-all-resources (or the console's Asset Inventory search) matches a name fragment across the organisation and returns the full resource name, including the project.",
         "option_breakdown": {
           "A": "Listing project by project is slow and needs access to each project; it is the manual version of a search the platform already provides.",
-          "B": "Correct. gcloud asset search-all-resources (or the console's Asset Inventory search) matches a name fragment across the organisation and returns the full resource name, including the project.",
+          "B": "Audit logs are kept for a limited time and record changes; a bucket created years ago may not appear.",
           "C": "Billing data is aggregated by project and SKU, not by bucket name.",
-          "D": "Correct. Audit logs are kept for a limited time and record changes; a bucket created years ago may not appear."
+          "D": "Correct. gcloud asset search-all-resources (or the console's Asset Inventory search) matches a name fragment across the organisation and returns the full resource name, including the project."
         },
         "gcloud_command": "gcloud asset search-all-resources --scope=organizations/ORG_ID --query='name:archive'",
         "doc_ref": "https://cloud.google.com/asset-inventory/docs/searching-resources"
