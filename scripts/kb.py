@@ -416,6 +416,32 @@ Return ONLY a JSON array of {count} object(s) â€” no prose, no markdown fences â
 """
 
 
+def cmd_lint(args) -> int:
+    """The machine-checkable parts of docs/question-standard.md."""
+    from src.question_lint import LONGEST_KEY_LIMIT, key_spread, lint_bank, longest_key_rate
+
+    bank = load(args.data_dir)
+    qs = [q for q in bank.questions if not args.ids or q.id in args.ids]
+    found = lint_bank(bank.questions)
+    errors = warnings = 0
+    for q in qs:
+        for sev, code, msg in found.get(q.id, []):
+            if sev == "warning" and not args.warnings:
+                continue
+            errors += sev == "error"
+            warnings += sev == "warning"
+            tag = red("error") if sev == "error" else yellow("warn ")
+            print(f"{tag}  {q.id:<14} {code:<18} {msg}")
+    rate = longest_key_rate(bank.questions)
+    spread = "  ".join(f"{k} {v:.0%}" for k, v in key_spread(bank.questions).items())
+    ok = rate <= LONGEST_KEY_LIMIT
+    print(f"\n{bold('Key spread')}  {spread}")
+    print(f"{bold('Longest option is the key')}  "
+          + (green if ok else red)(f"{rate:.0%} (limit {LONGEST_KEY_LIMIT:.0%}, chance 25%)"))
+    print(f"{bold('Findings')}  {errors} errors" + (f", {warnings} warnings" if args.warnings else ""))
+    return 1 if errors or not ok else 0
+
+
 def _infer(bank: QuestionBank, brief: str, count: int, model: str,
            domain: Optional[str]) -> List[Question]:
     """Ask the model for fully-formed questions; return the ones that validate."""
@@ -633,6 +659,11 @@ def main() -> int:
                    help=f"stem-overlap threshold for near-duplicates (default {STEM_OVERLAP_LIMIT})")
     p.add_argument("--strict", action="store_true", help="exit 1 if anything is flagged")
     p.set_defaults(func=cmd_check)
+
+    p = sub.add_parser("lint", help="check questions against docs/question-standard.md")
+    p.add_argument("ids", nargs="*", help="only these ids (default: all)")
+    p.add_argument("--warnings", action="store_true", help="also show heuristic warnings")
+    p.set_defaults(func=cmd_lint)
 
     p = sub.add_parser("add", help="add a question, by LLM or from a file")
     src = p.add_mutually_exclusive_group(required=True)

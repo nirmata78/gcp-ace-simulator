@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generated_at": "2026-11-06T18:34:51+00:00",
+  "generated_at": "2026-11-07T13:24:11+00:00",
   "total": 591,
   "guide": "Associate Cloud Engineer exam guide, live from 2026-06-30",
   "counts_by_domain": {
@@ -135,7 +135,7 @@
         "org-policy"
       ],
       "source": "curated",
-      "fingerprint": "5fc569ef5939",
+      "fingerprint": "0b632f6b8651",
       "file": "sections/section-1-setup.json"
     },
     {
@@ -169,7 +169,7 @@
         "hierarchy"
       ],
       "source": "curated",
-      "fingerprint": "bbba56986fa6",
+      "fingerprint": "ba932898e275",
       "file": "sections/section-1-setup.json"
     },
     {
@@ -186,7 +186,7 @@
         "sandbox"
       ],
       "source": "curated",
-      "fingerprint": "b2ef544f45e4",
+      "fingerprint": "d00715774677",
       "file": "sections/section-1-setup.json"
     },
     {
@@ -203,7 +203,7 @@
         "least-privilege"
       ],
       "source": "curated",
-      "fingerprint": "64b670b4f50e",
+      "fingerprint": "894580fc7ad2",
       "file": "sections/section-4-security.json"
     },
     {
@@ -237,7 +237,7 @@
         "org-policy"
       ],
       "source": "curated",
-      "fingerprint": "ca67665e0564",
+      "fingerprint": "967516452265",
       "file": "sections/section-1-setup.json"
     },
     {
@@ -254,7 +254,7 @@
         "org-policy"
       ],
       "source": "curated",
-      "fingerprint": "46c1b9a88283",
+      "fingerprint": "3c28841af722",
       "file": "sections/section-1-setup.json"
     },
     {
@@ -271,7 +271,7 @@
         "service-accounts"
       ],
       "source": "curated",
-      "fingerprint": "db75730962f7",
+      "fingerprint": "d36ee912bb40",
       "file": "sections/section-1-setup.json"
     },
     {
@@ -288,7 +288,7 @@
         "residency"
       ],
       "source": "curated",
-      "fingerprint": "694e2aec37c0",
+      "fingerprint": "109ce194671b",
       "file": "sections/section-1-setup.json"
     },
     {
@@ -305,7 +305,7 @@
         "org-policy"
       ],
       "source": "curated",
-      "fingerprint": "a7a238e9f5e6",
+      "fingerprint": "bf5147b8c9be",
       "file": "sections/section-1-setup.json"
     },
     {
@@ -322,7 +322,7 @@
         "public-access"
       ],
       "source": "curated",
-      "fingerprint": "0c9bae15f7c3",
+      "fingerprint": "1131f7bb7ce1",
       "file": "sections/section-1-setup.json"
     },
     {
@@ -339,7 +339,7 @@
         "least-privilege"
       ],
       "source": "curated",
-      "fingerprint": "1196b582d867",
+      "fingerprint": "7180b8de6094",
       "file": "sections/section-1-setup.json"
     },
     {
@@ -373,7 +373,7 @@
         "projects"
       ],
       "source": "curated",
-      "fingerprint": "0c62b28ed858",
+      "fingerprint": "f2eecb133dcb",
       "file": "sections/section-1-setup.json"
     },
     {
@@ -390,7 +390,7 @@
         "organization"
       ],
       "source": "curated",
-      "fingerprint": "05d4b541edf2",
+      "fingerprint": "fe82c3573989",
       "file": "sections/section-1-setup.json"
     },
     {
@@ -407,7 +407,7 @@
         "iam"
       ],
       "source": "curated",
-      "fingerprint": "e6e8a0e0bfd4",
+      "fingerprint": "2cc581d53857",
       "file": "sections/section-1-setup.json"
     },
     {
@@ -424,7 +424,7 @@
         "budgets"
       ],
       "source": "curated",
-      "fingerprint": "f795a96e852a",
+      "fingerprint": "a089a37d46cf",
       "file": "sections/section-1-setup.json"
     },
     {
@@ -442,7 +442,7 @@
         "pubsub"
       ],
       "source": "curated",
-      "fingerprint": "e92e5a8e5637",
+      "fingerprint": "539b241e256b",
       "file": "sections/section-1-setup.json"
     },
     {
@@ -476,7 +476,7 @@
         "finops"
       ],
       "source": "curated",
-      "fingerprint": "48a25f5f2752",
+      "fingerprint": "a131ec9cf615",
       "file": "sections/section-1-setup.json"
     },
     {
@@ -493,7 +493,7 @@
         "labels"
       ],
       "source": "curated",
-      "fingerprint": "178114955312",
+      "fingerprint": "7ee69c6af02b",
       "file": "sections/section-1-setup.json"
     },
     {
@@ -612,7 +612,7 @@
         "quotas"
       ],
       "source": "curated",
-      "fingerprint": "7d0751be1740",
+      "fingerprint": "fea38400dd76",
       "file": "sections/section-1-setup.json"
     },
     {
@@ -714,7 +714,7 @@
         "regions-zones"
       ],
       "source": "curated",
-      "fingerprint": "a892b6abd00a",
+      "fingerprint": "3e22fb64e848",
       "file": "sections/section-1-setup.json"
     },
     {
@@ -918,7 +918,7 @@
         "platform-selection"
       ],
       "source": "curated",
-      "fingerprint": "08e036064805",
+      "fingerprint": "0ba67fd8aa72",
       "file": "sections/section-2-planning.json"
     },
     {
@@ -935,7 +935,7 @@
         "serverless"
       ],
       "source": "curated",
-      "fingerprint": "7effabace6c3",
+      "fingerprint": "195164878f09",
       "file": "sections/section-2-planning.json"
     },
     {
@@ -952,7 +952,7 @@
         "platform-selection"
       ],
       "source": "curated",
-      "fingerprint": "4e47bbaca5ec",
+      "fingerprint": "e1ffc8c194c5",
       "file": "sections/section-2-planning.json"
     },
     {
@@ -1055,7 +1055,7 @@
         "spanner"
       ],
       "source": "curated",
-      "fingerprint": "1139591ffaa2",
+      "fingerprint": "2e1daaf3d1d8",
       "file": "sections/section-2-planning.json"
     },
     {
@@ -1089,7 +1089,7 @@
         "iot"
       ],
       "source": "curated",
-      "fingerprint": "c0af7f6a1e90",
+      "fingerprint": "424a7716a332",
       "file": "sections/section-2-planning.json"
     },
     {
@@ -1191,7 +1191,7 @@
         "storage-class"
       ],
       "source": "curated",
-      "fingerprint": "7a6de436e4f0",
+      "fingerprint": "382c9442fbc6",
       "file": "sections/section-2-planning.json"
     },
     {
@@ -1208,7 +1208,7 @@
         "storage-class"
       ],
       "source": "curated",
-      "fingerprint": "65bad1228fab",
+      "fingerprint": "50c3102813db",
       "file": "sections/section-2-planning.json"
     },
     {
@@ -1242,7 +1242,7 @@
         "storage-class"
       ],
       "source": "curated",
-      "fingerprint": "d18e994d8544",
+      "fingerprint": "01ea9c9feb69",
       "file": "sections/section-2-planning.json"
     },
     {
@@ -1378,7 +1378,7 @@
         "vpc-peering"
       ],
       "source": "curated",
-      "fingerprint": "8b37d7d68a9a",
+      "fingerprint": "11465ddd9c19",
       "file": "sections/section-2-planning.json"
     },
     {
@@ -1480,7 +1480,7 @@
         "ssh"
       ],
       "source": "curated",
-      "fingerprint": "56bca9fa74a3",
+      "fingerprint": "6529ece07742",
       "file": "sections/section-2-planning.json"
     },
     {
@@ -1497,7 +1497,7 @@
         "hardening"
       ],
       "source": "curated",
-      "fingerprint": "588ac4b387c0",
+      "fingerprint": "cb06d054b31f",
       "file": "sections/section-2-planning.json"
     },
     {
@@ -1548,7 +1548,7 @@
         "managed"
       ],
       "source": "curated",
-      "fingerprint": "5bbbcd3f555e",
+      "fingerprint": "e35c115e1fc4",
       "file": "sections/section-2-planning.json"
     },
     {
@@ -1565,7 +1565,7 @@
         "regional"
       ],
       "source": "curated",
-      "fingerprint": "282a53daaa32",
+      "fingerprint": "e42b97c3396c",
       "file": "sections/section-2-planning.json"
     },
     {
@@ -1582,12 +1582,12 @@
         "private-cluster"
       ],
       "source": "curated",
-      "fingerprint": "3f0010169f85",
+      "fingerprint": "f1458ec2bda2",
       "file": "sections/section-2-planning.json"
     },
     {
       "id": "ace-dom2-042",
-      "title": "GPUs for one workload only",
+      "title": "Dedicated nodes for one workload",
       "domain": "S2 · Plan & build",
       "objective": "2.1",
       "subtopic": "GKE Cluster Configurations",
@@ -1599,7 +1599,7 @@
         "node-pools"
       ],
       "source": "curated",
-      "fingerprint": "7a95b7807cfd",
+      "fingerprint": "9d6a5545e976",
       "file": "sections/section-2-planning.json"
     },
     {
@@ -1718,7 +1718,7 @@
         "managed-instance-groups"
       ],
       "source": "curated",
-      "fingerprint": "dca51b85902f",
+      "fingerprint": "529d99ab24f8",
       "file": "sections/section-2-planning.json"
     },
     {
@@ -1735,7 +1735,7 @@
         "managed-instance-groups"
       ],
       "source": "curated",
-      "fingerprint": "e60024015aac",
+      "fingerprint": "5d2299ab6aab",
       "file": "sections/section-2-planning.json"
     },
     {
@@ -1752,7 +1752,7 @@
         "rolling-update"
       ],
       "source": "curated",
-      "fingerprint": "f86a7f9e5fac",
+      "fingerprint": "c7b98b659f75",
       "file": "sections/section-2-planning.json"
     },
     {
@@ -1769,7 +1769,7 @@
         "regional"
       ],
       "source": "curated",
-      "fingerprint": "3380b30f96ab",
+      "fingerprint": "0ec652bcf132",
       "file": "sections/section-2-planning.json"
     },
     {
@@ -1786,7 +1786,7 @@
         "managed-instance-groups"
       ],
       "source": "curated",
-      "fingerprint": "7b832b395546",
+      "fingerprint": "1a5d755b604e",
       "file": "sections/section-2-planning.json"
     },
     {
@@ -1837,7 +1837,7 @@
         "partner"
       ],
       "source": "curated",
-      "fingerprint": "44b879555d11",
+      "fingerprint": "20dea069910c",
       "file": "sections/section-2-planning.json"
     },
     {
@@ -1905,7 +1905,7 @@
         "kubernetes"
       ],
       "source": "curated",
-      "fingerprint": "a32ba2c0e4f4",
+      "fingerprint": "05d67c818f5a",
       "file": "sections/section-2-planning.json"
     },
     {
@@ -1922,7 +1922,7 @@
         "terraform"
       ],
       "source": "curated",
-      "fingerprint": "a93e8b87ef46",
+      "fingerprint": "2108e82c0764",
       "file": "sections/section-2-planning.json"
     },
     {
@@ -1939,7 +1939,7 @@
         "eventarc"
       ],
       "source": "curated",
-      "fingerprint": "2143774fc77c",
+      "fingerprint": "3386c71285ef",
       "file": "sections/section-2-planning.json"
     },
     {
@@ -2041,7 +2041,7 @@
         "tpu"
       ],
       "source": "curated",
-      "fingerprint": "07e601f8c6bc",
+      "fingerprint": "4d734163c9b6",
       "file": "sections/section-2-planning.json"
     },
     {
@@ -2092,7 +2092,7 @@
         "troubleshooting"
       ],
       "source": "curated",
-      "fingerprint": "79722caeb233",
+      "fingerprint": "65f96c7ec52c",
       "file": "sections/section-2-planning.json"
     },
     {
@@ -2126,7 +2126,7 @@
         "nfs"
       ],
       "source": "curated",
-      "fingerprint": "1336ec82104e",
+      "fingerprint": "10560ce3423d",
       "file": "sections/section-2-planning.json"
     },
     {
@@ -2245,7 +2245,7 @@
         "rollback"
       ],
       "source": "curated",
-      "fingerprint": "fc0570a1d3f4",
+      "fingerprint": "518c3be1d5bb",
       "file": "sections/section-3-operations.json"
     },
     {
@@ -2313,7 +2313,7 @@
         "statefulset"
       ],
       "source": "curated",
-      "fingerprint": "89d559957371",
+      "fingerprint": "c20ab6c6f3b8",
       "file": "sections/section-2-planning.json"
     },
     {
@@ -2330,7 +2330,7 @@
         "kubernetes"
       ],
       "source": "curated",
-      "fingerprint": "11bc2fab51e6",
+      "fingerprint": "418799612dea",
       "file": "sections/section-2-planning.json"
     },
     {
@@ -2347,7 +2347,7 @@
         "kubernetes"
       ],
       "source": "curated",
-      "fingerprint": "b37eb2e75588",
+      "fingerprint": "3e48a808d8c4",
       "file": "sections/section-2-planning.json"
     },
     {
@@ -2364,7 +2364,7 @@
         "load-balancing"
       ],
       "source": "curated",
-      "fingerprint": "7d23ec01f82a",
+      "fingerprint": "51936e6af869",
       "file": "sections/section-2-planning.json"
     },
     {
@@ -2381,7 +2381,7 @@
         "services"
       ],
       "source": "curated",
-      "fingerprint": "e37e7c748689",
+      "fingerprint": "d6a6a4118f49",
       "file": "sections/section-2-planning.json"
     },
     {
@@ -2398,7 +2398,7 @@
         "setup"
       ],
       "source": "curated",
-      "fingerprint": "cd03f9877a67",
+      "fingerprint": "6e75b83e579e",
       "file": "sections/section-2-planning.json"
     },
     {
@@ -2415,7 +2415,7 @@
         "troubleshooting"
       ],
       "source": "curated",
-      "fingerprint": "8d82367a3df5",
+      "fingerprint": "b205796f6c08",
       "file": "sections/section-3-operations.json"
     },
     {
@@ -2432,7 +2432,7 @@
         "logging"
       ],
       "source": "curated",
-      "fingerprint": "6aad09696220",
+      "fingerprint": "8e9e543b9a6f",
       "file": "sections/section-3-operations.json"
     },
     {
@@ -2568,7 +2568,7 @@
         "lifecycle"
       ],
       "source": "curated",
-      "fingerprint": "05b78ac17eb4",
+      "fingerprint": "0e9befc913c0",
       "file": "sections/section-3-operations.json"
     },
     {
@@ -2619,7 +2619,7 @@
         "vpa"
       ],
       "source": "curated",
-      "fingerprint": "dcfa2d0875f9",
+      "fingerprint": "44a49099f36f",
       "file": "sections/section-3-operations.json"
     },
     {
@@ -2653,7 +2653,7 @@
         "storage"
       ],
       "source": "curated",
-      "fingerprint": "2c9dae923cb3",
+      "fingerprint": "523c47477193",
       "file": "sections/section-3-operations.json"
     },
     {
@@ -2687,7 +2687,7 @@
         "snapshots"
       ],
       "source": "curated",
-      "fingerprint": "dcc8e953c736",
+      "fingerprint": "823bcfc9a3e0",
       "file": "sections/section-3-operations.json"
     },
     {
@@ -2721,7 +2721,7 @@
         "startup-script"
       ],
       "source": "curated",
-      "fingerprint": "645a72221cb2",
+      "fingerprint": "ff125190a748",
       "file": "sections/section-2-planning.json"
     },
     {
@@ -2789,7 +2789,7 @@
         "serial-console"
       ],
       "source": "curated",
-      "fingerprint": "582837b4e470",
+      "fingerprint": "c3c10f6f6e6c",
       "file": "sections/section-3-operations.json"
     },
     {
@@ -2857,7 +2857,7 @@
         "release-management"
       ],
       "source": "curated",
-      "fingerprint": "42a390aca6ca",
+      "fingerprint": "314bcac5d2a9",
       "file": "sections/section-3-operations.json"
     },
     {
@@ -2993,7 +2993,7 @@
         "logging"
       ],
       "source": "curated",
-      "fingerprint": "2b3cbb2da356",
+      "fingerprint": "672826ec5854",
       "file": "sections/section-3-operations.json"
     },
     {
@@ -3061,7 +3061,7 @@
         "logging"
       ],
       "source": "curated",
-      "fingerprint": "bb614880d948",
+      "fingerprint": "754448083796",
       "file": "sections/section-3-operations.json"
     },
     {
@@ -3112,7 +3112,7 @@
         "vpc"
       ],
       "source": "curated",
-      "fingerprint": "cb3997823a04",
+      "fingerprint": "bcd0789f97ed",
       "file": "sections/section-3-operations.json"
     },
     {
@@ -3163,7 +3163,7 @@
         "vpc"
       ],
       "source": "curated",
-      "fingerprint": "ed937fce7fe9",
+      "fingerprint": "6f2d16943d0d",
       "file": "sections/section-3-operations.json"
     },
     {
@@ -3180,7 +3180,7 @@
         "vpc"
       ],
       "source": "curated",
-      "fingerprint": "21e8c3ae8635",
+      "fingerprint": "e3ec926dfa4d",
       "file": "sections/section-3-operations.json"
     },
     {
@@ -3214,7 +3214,7 @@
         "versioning"
       ],
       "source": "curated",
-      "fingerprint": "b189be6ca1c3",
+      "fingerprint": "be38180d4307",
       "file": "sections/section-3-operations.json"
     },
     {
@@ -3248,7 +3248,7 @@
         "recovery"
       ],
       "source": "curated",
-      "fingerprint": "b6bac0a985dd",
+      "fingerprint": "b79738bdd09f",
       "file": "sections/section-3-operations.json"
     },
     {
@@ -3265,7 +3265,7 @@
         "recovery"
       ],
       "source": "curated",
-      "fingerprint": "d0044bf785ac",
+      "fingerprint": "313456b6fbce",
       "file": "sections/section-3-operations.json"
     },
     {
@@ -3980,7 +3980,7 @@
         "gcloud"
       ],
       "source": "curated",
-      "fingerprint": "c29f7cc623e8",
+      "fingerprint": "399aac9897f9",
       "file": "sections/section-1-setup.json"
     },
     {
@@ -4104,7 +4104,7 @@
     },
     {
       "id": "ace-s1-027",
-      "title": "Who changed a firewall rule's settings last week",
+      "title": "What a firewall rule looked like ten days ago",
       "domain": "S1 · Setup",
       "objective": "1.1",
       "subtopic": "Asset Inventory and Gemini Cloud Assist",
@@ -4575,7 +4575,7 @@
         "serverless"
       ],
       "source": "curated",
-      "fingerprint": "d393e04b745f",
+      "fingerprint": "357f488cded4",
       "file": "sections/section-2-planning.json"
     },
     {
@@ -4592,7 +4592,7 @@
         "cloud-storage"
       ],
       "source": "curated",
-      "fingerprint": "721d6d284830",
+      "fingerprint": "7128eeb868c7",
       "file": "sections/section-2-planning.json"
     },
     {
@@ -4835,7 +4835,7 @@
         "kubectl"
       ],
       "source": "curated",
-      "fingerprint": "3cd4696b35b1",
+      "fingerprint": "8a3b9ef43769",
       "file": "sections/section-2-planning.json"
     },
     {
@@ -4954,7 +4954,7 @@
         "cloud-scheduler"
       ],
       "source": "curated",
-      "fingerprint": "f947eb7a1321",
+      "fingerprint": "51abf7ecb1b2",
       "file": "sections/section-2-planning.json"
     },
     {
@@ -5294,7 +5294,7 @@
         "vpc"
       ],
       "source": "curated",
-      "fingerprint": "1beedbe08d32",
+      "fingerprint": "b9d2e5d82e5c",
       "file": "sections/section-2-planning.json"
     },
     {
@@ -5498,7 +5498,7 @@
         "least-privilege"
       ],
       "source": "curated",
-      "fingerprint": "9bbe458eb104",
+      "fingerprint": "547397650081",
       "file": "sections/section-2-planning.json"
     },
     {
@@ -6280,7 +6280,7 @@
         "hpc"
       ],
       "source": "curated",
-      "fingerprint": "28811873c48e",
+      "fingerprint": "a9580b26d487",
       "file": "sections/section-2-planning.json"
     },
     {
@@ -6706,7 +6706,7 @@
         "services"
       ],
       "source": "curated",
-      "fingerprint": "66a3f3f325cf",
+      "fingerprint": "ae8331a58897",
       "file": "sections/section-3-operations.json"
     },
     {
@@ -6912,7 +6912,7 @@
         "inventory"
       ],
       "source": "curated",
-      "fingerprint": "4916f3cbc12f",
+      "fingerprint": "da1d2e46f3b0",
       "file": "sections/section-3-operations.json"
     },
     {
@@ -7322,7 +7322,7 @@
         "resource-usage"
       ],
       "source": "curated",
-      "fingerprint": "e54edca1cb1f",
+      "fingerprint": "2190721d8615",
       "file": "sections/section-3-operations.json"
     },
     {
@@ -7339,7 +7339,7 @@
         "node-pools"
       ],
       "source": "curated",
-      "fingerprint": "a6a9865502d0",
+      "fingerprint": "d23c06cfa37f",
       "file": "sections/section-3-operations.json"
     },
     {
@@ -7560,7 +7560,7 @@
         "operations"
       ],
       "source": "curated",
-      "fingerprint": "0431dbae982a",
+      "fingerprint": "0864c9135782",
       "file": "sections/section-3-operations.json"
     },
     {
@@ -7764,7 +7764,7 @@
         "gcloud"
       ],
       "source": "curated",
-      "fingerprint": "76936962ad14",
+      "fingerprint": "98e817df0a88",
       "file": "sections/section-3-operations.json"
     },
     {
@@ -8087,7 +8087,7 @@
         "tpu-vm"
       ],
       "source": "curated",
-      "fingerprint": "25dd4e00921d",
+      "fingerprint": "9953ca267da6",
       "file": "sections/section-3-operations.json"
     },
     {
@@ -8461,7 +8461,7 @@
         "requests"
       ],
       "source": "curated",
-      "fingerprint": "37ce7ab3dda5",
+      "fingerprint": "bc62f08b00b6",
       "file": "sections/section-3-operations.json"
     },
     {
@@ -8716,7 +8716,7 @@
         "kubectl"
       ],
       "source": "curated",
-      "fingerprint": "e0e71ce500a6",
+      "fingerprint": "d2dd7558aa9c",
       "file": "sections/section-3-operations.json"
     },
     {
@@ -8869,7 +8869,7 @@
         "routing"
       ],
       "source": "curated",
-      "fingerprint": "8a8b085da9fd",
+      "fingerprint": "6b9b2feb90ff",
       "file": "sections/section-3-operations.json"
     },
     {
@@ -8954,7 +8954,7 @@
         "troubleshooting"
       ],
       "source": "curated",
-      "fingerprint": "80784af1533f",
+      "fingerprint": "585409109fe0",
       "file": "sections/section-3-operations.json"
     },
     {
@@ -8971,7 +8971,7 @@
         "troubleshooting"
       ],
       "source": "curated",
-      "fingerprint": "8005ad9ba54c",
+      "fingerprint": "932143663153",
       "file": "sections/section-3-operations.json"
     },
     {
@@ -9175,7 +9175,7 @@
         "lifecycle"
       ],
       "source": "curated",
-      "fingerprint": "02c6f27bf562",
+      "fingerprint": "08b1706d514f",
       "file": "sections/section-3-operations.json"
     },
     {
@@ -9330,7 +9330,7 @@
         "inheritance"
       ],
       "source": "curated",
-      "fingerprint": "e514768e8b47",
+      "fingerprint": "6e05ee1b301a",
       "file": "sections/section-4-security.json"
     },
     {

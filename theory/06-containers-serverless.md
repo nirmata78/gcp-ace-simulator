@@ -195,7 +195,7 @@ A **node pool** is a group of identically configured nodes — a managed instanc
 | Task | How |
 |:------------------------------------------|:----------------------------------------------------------------|
 | Add capacity of a **new kind** (GPUs, high memory, Spot, Arm) | `gcloud container node-pools create` with the new machine type and labels / taints |
-| Change machine type of existing nodes | **Create a new pool**, cordon and drain the old one, delete it — machine type is not editable in place |
+| Change machine type of existing nodes | `gcloud container node-pools update --machine-type` recreates the nodes with the pool's upgrade strategy (*verify*). To test first and keep a fallback, **create a new pool**, cordon and drain the old one, delete it later |
 | Resize | `gcloud container clusters resize CLUSTER --node-pool=POOL --num-nodes=N` |
 | Autoscale | `--enable-autoscaling --min-nodes --max-nodes` (per zone), or `--total-min-nodes` / `--total-max-nodes` |
 | Keep workloads on the right pool | **Node labels + `nodeSelector` / affinity**; **taints + tolerations** to keep everything else off |
@@ -473,7 +473,7 @@ Run, with promotion between targets, approvals and **canary** strategies.
 | 10% to v2 on GKE | **Gateway API HTTPRoute weights** |
 | More replicas on load | **HPA**; right-size requests: **VPA** |
 | Autopilot Pod got more memory than requested | **Minimum / ratio enforcement** on requests |
-| Change node machine type | **New node pool**, drain old |
+| Change node machine type | `node-pools update --machine-type` recreates nodes (upgrade strategy); to keep a fallback, **new node pool**, drain old |
 | `ImagePullBackOff` 403 from `pkg.dev` | Node SA needs **`artifactregistry.reader`** |
 | Pod reads a bucket, no key | **Workload Identity Federation for GKE** |
 | Source to URL, one command | `gcloud run deploy --source .` |
