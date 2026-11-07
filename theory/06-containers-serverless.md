@@ -42,7 +42,7 @@ VMs running your Pods. The two modes differ in who owns those nodes.
 | **Private nodes** | Nodes have **internal IPs only** (`--enable-private-nodes`); they need **Cloud NAT** to pull images from the internet, and Private Google Access for Artifact Registry |
 | **Control-plane endpoint** | Public endpoint limited by **authorized networks**, a private endpoint only (`--enable-private-endpoint`), or the **DNS-based endpoint** secured by IAM |
 | **VPC-native** | Pods and Services take IPs from subnet **secondary ranges** (alias IPs) — the default |
-| **Release channel** | Rapid · **Regular** (default) · Stable · Extended; with maintenance windows and exclusions |
+| **Release channel** | Rapid · **Regular** (default) · Stable · Extended; with maintenance windows and exclusions. An exclusion's scope is *no upgrades*, *no minor upgrades* or *no minor or node upgrades* (control-plane patches still allowed); channel clusters can't turn off node auto-upgrade |
 
 {: .cmds }
 | Task | Command |
@@ -316,9 +316,9 @@ idle.
 | **Ingress** | `all` · `internal` (VPC and some Google sources only) · `internal-and-cloud-load-balancing` |
 | **Egress to a VPC** | **Direct VPC egress** (recommended) or a Serverless VPC Access connector — for private IPs such as Cloud SQL or Memorystore |
 | **Static outbound IP** | Route all egress through the VPC and **Cloud NAT** with a static address |
-| **Custom domain / CDN / WAF** | A **global external Application LB with a serverless NEG** — then Cloud CDN, Cloud Armor, IAP |
+| **Custom domain / CDN / WAF** | A **global external Application LB with a serverless NEG** — then Cloud CDN, Cloud Armor, IAP (enable IAP on the backend service and grant users **IAP-secured Web App User**, `roles/iap.httpsResourceAccessor`; the same works for MIG backends) |
 | **Identity** | A **dedicated service account** per service, never the default Compute account |
-| **Secrets** | `--set-secrets=DB_PASS=db-password:latest` (env) or `/secrets/db=db-password:latest` (volume) ([§3.13](03-identity-access.md#s3-13)) |
+| **Secrets** | `--set-secrets=DB_PASS=db-password:latest` (env) or `/secrets/db=db-password:latest` (volume) ([§3.13](03-identity-access.md#s3-13)). An env var is resolved when the instance **starts**; a volume is read from Secret Manager **each time the file is read**, so it picks up rotation without a deploy. The runtime service account needs **Secret Accessor** on the secret |
 
 {: .tip }
 > *"Service A must call private service B"* — grant **B's `run.invoker` to A's service account**; A attaches an ID

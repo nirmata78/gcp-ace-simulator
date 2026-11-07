@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import random
 import subprocess
 import sys
 from pathlib import Path
@@ -16,7 +17,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 from src import study_links  # noqa: E402
 from src.blueprint import BULLET_LIST, SUBTOPICS  # noqa: E402
-from src.exam_engine import ExamSession, load_bank  # noqa: E402
+from src.exam_engine import ExamSession, load_bank, record_attempt, weighted_sample  # noqa: E402
 from src.models import QuestionBank  # noqa: E402
 from src.retrospective import EMPTY_ATTEMPT_NOTES, build, build_report, md_blocks, md_inline, verify  # noqa: E402
 
@@ -296,3 +297,18 @@ def test_a_removed_short_pdf_is_rebuilt_not_a_crash(tmp_path: Path) -> None:
     exec(fn, ns)
     cache = {"path": tmp_path / "gone.pdf"}
     assert ns["_report_pdf"](None, [], "T", cache, False)() == b"%PDF-new"
+
+
+def test_a_certifying_draw_avoids_questions_already_seen(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("ACE_STATE_DIR", str(tmp_path))
+    bank = QuestionBank.load(ROOT / "data")
+    first = ExamSession(weighted_sample(bank, 50, random.Random(21)), mode="certifying")
+    record_attempt(first.build_attempt(), tmp_path / "history.json")
+    app = AppTest.from_file(str(ROOT / "app.py"), default_timeout=30).run()
+    box = next(cb for cb in app.checkbox if cb.label == "Avoid questions I have already seen")
+    assert box.value
+    assert any(f"Seen so far: 50 of {len(bank.questions)}" in c.value for c in app.caption)
+    next(b for b in app.button if "Begin examination" in b.label).click()
+    app.run()
+    drawn = {q.id for q in app.session_state.session.questions}
+    assert len(drawn) == 50 and not drawn & {q.id for q in first.questions}

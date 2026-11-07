@@ -634,19 +634,26 @@ def screen_home() -> None:
             "report opens here, reviewing your missed and flagged questions, with a PDF to "
             "download."
         )
-        prefer_unseen = st.checkbox(
-            "Prefer questions I have not answered in earlier attempts", value=True,
-            help="Unseen questions are drawn first in every objective, so repeated attempts "
-                 "measure knowledge rather than recall of the items.",
+        seen_ids = seen_question_ids(history_path()) & {q.id for q in bank.questions}
+        avoid_seen = st.checkbox(
+            "Avoid questions I have already seen", value=True,
+            help="Every question of every recorded attempt, learning or certifying, answered or not, "
+                 "counts as seen. Seen questions are drawn only when no unseen one is left, so repeated "
+                 "attempts measure knowledge rather than recall of the items.",
         )
+        unseen = len(bank.questions) - len(seen_ids)
+        st.caption(f"Seen so far: {len(seen_ids)} of {len(bank.questions)} questions · {unseen} new to you"
+                   + ("" if unseen >= CERTIFYING_QUESTION_COUNT or not avoid_seen else
+                      f" · a {CERTIFYING_QUESTION_COUNT}-question exam will repeat "
+                      f"{CERTIFYING_QUESTION_COUNT - unseen}"))
         c1, c2, c3 = st.columns(3)
         n = c1.number_input("Questions", 10, min(200, len(bank.questions)),
                             CERTIFYING_QUESTION_COUNT, step=5)
         mins = c2.number_input("Minutes", 5, 240, EXAM_DURATION_SECONDS // 60, step=5)
         c3.markdown("<div style='height:1.85rem'></div>", unsafe_allow_html=True)
         if c3.button("▶  Begin examination", type="primary", use_container_width=True):
-            seen = seen_question_ids(history_path()) if prefer_unseen else None
-            start_exam("certifying", weighted_sample(bank, int(n), seen=seen), int(mins) * 60)
+            start_exam("certifying", weighted_sample(bank, int(n), seen=seen_ids if avoid_seen else None,
+                                                     avoid_seen=avoid_seen), int(mins) * 60)
             st.rerun()
 
         with st.expander("Blueprint used for sampling (per 50 questions)"):

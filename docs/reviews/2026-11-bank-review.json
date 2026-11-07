@@ -15420,6 +15420,381 @@
       },
       "notes": "New clean-room question, cross-domain, also 1.2; certifying mode only. Written from the guide bullet and current documentation.",
       "replacement_id": null
+    },
+    {
+      "id": "ace-x-066",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 4.1; certifying mode only. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-051",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 4.2; certifying mode only. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-053",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 3.2; certifying mode only. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-055",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 3.3; certifying mode only. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-056",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 3.3; certifying mode only. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-058",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 3.1; certifying mode only. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-062",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 3.1; certifying mode only. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-065",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 4.2; certifying mode only. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-071",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 3.3; certifying mode only. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-073",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 3.2; certifying mode only. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-074",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 3.1; certifying mode only. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-075",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 3.3; certifying mode only. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-054",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 4.2; certifying mode only. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-057",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 1.2; certifying mode only. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-059",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 2.2; certifying mode only. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-061",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 2.1; certifying mode only. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-063",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 2.3; certifying mode only. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-069",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 4.2; certifying mode only. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-070",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 2.2; certifying mode only. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-072",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 2.1; certifying mode only. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-052",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 2.1, 2.2; certifying mode only. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-060",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 3.2; certifying mode only. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-064",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 2.3; certifying mode only. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-067",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 2.1; certifying mode only. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-068",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 3.1; certifying mode only. Written from the guide bullets and current documentation.",
+      "replacement_id": null
     }
   ]
 }

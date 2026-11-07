@@ -8,7 +8,7 @@ Every question was reviewed against [the question standard](../question-standard
 | revised | 461 |
 | restored | 33 |
 | removed | 1 |
-| new | 107 |
+| new | 132 |
 
 ## ace-dom1-001 · revised
 
@@ -27965,8 +27965,8 @@ New clean-room question, cross-domain, also 2.1; certifying mode only. Written f
 
 Students at Ellery College each get a sandbox project with a $50 budget. When a project's actual spend reaches the budget, all its charges must stop automatically, even if the sandbox is lost. Nobody watches the alert emails. What should you configure?
 
-- **A.** Lower Compute Engine CPU and Cloud Storage quotas in each project to match the  budget.
-- **B.** A  spending limit on the billing account, applied to each sandbox project separately.
+- **A.** Lower Compute Engine CPU and Cloud Storage quotas in each project to match the budget.
+- **B.** A spending limit on the billing account, applied to each sandbox project separately.
 - **C.** A budget per project that emails the course administrators at 50%, 90% and 100% of the amount.
 - **D.** Budget notifications to Pub/Sub, and a function that disables billing on the project at 100%.  ← key
 
@@ -29668,4 +29668,922 @@ Explanation: Idle shutdown stops a Workbench instance after it has been idle for
 - D: Deleting instances depends on people remembering to and loses whatever isn't saved elsewhere.
 
 Reference: https://cloud.google.com/vertex-ai/docs/workbench/instances/idle-shutdown
+
+## ace-x-066 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 4.1; certifying mode only. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*Self-service projects only in one folder and in the EU* · 1.1 Organization Policy · multiple select · cross-domain, also 4.1 · certifying only · `b8c40f9d-b1ab-4995-926a-419f5fb7e36c`
+
+The data team may create its own projects, but only inside the folder data-eng, and every resource in those projects must be created in EU locations. Other teams must not be affected. Which two actions should you take? (Choose two.)
+
+- **A.** Grant the data team the Project Creator role on the data-eng folder.  ← key
+- **B.** Set the resource locations policy on the data-eng folder to in:eu-locations.  ← key
+- **C.** Create a VPC Service Controls perimeter around the projects in data-eng.
+- **D.** Set the resource locations policy on the organization to in:eu-locations.
+- **E.** Grant the data team the Project Creator role on the organization node.
+
+Explanation: IAM grants and organization policies are both inherited down the hierarchy. Setting both on the folder scopes them to the data team's projects.
+
+- A: Correct. A folder-level grant lets the team create projects there and nowhere else.
+- B: Correct. The constraint applies to every project in the folder, and only there.
+- C: A perimeter limits API data movement; it doesn't control where resources are created.
+- D: An organization-level constraint would restrict every other team as well.
+- E: An organization-level grant lets the team create projects anywhere in the organization.
+
+Reference: https://cloud.google.com/resource-manager/docs/organization-policy/defining-locations
+
+## ace-x-051 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 4.2; certifying mode only. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*An Eventarc trigger for new uploads that fails to create* · 2.1 Serverless Deployment and Events · cross-domain, also 4.2 · certifying only · `7615cc10-326f-4abd-84bb-169a6b92e5f7`
+
+You deployed a Cloud Run service that must process every image uploaded to the bucket intake-photos. When you create an Eventarc trigger for the object finalized event of that bucket, creation fails with a Pub/Sub permission error. You want to follow the principle of least privilege. What should you do?
+
+- **A.** Grant the project's Cloud Storage service agent the Pub/Sub Publisher role on the project.  ← key
+- **B.** Grant your own user account the Pub/Sub Admin role on the project, and create the trigger again.
+- **C.** Grant the Eventarc service agent the Storage Admin role on the intake-photos bucket.
+- **D.** Grant the Compute Engine default service account the Editor role on the project.
+
+Explanation: Cloud Storage delivers its events to Eventarc through Pub/Sub, and it publishes as the project's Cloud Storage service agent. That agent needs the Pub/Sub Publisher role before a Cloud Storage trigger can be created.
+
+- A: Correct. The Cloud Storage service agent publishes the bucket's events to Pub/Sub, so it needs Pub/Sub Publisher.
+- B: The error is about the identity that publishes the events, not about you, so a role on your own account doesn't fix it.
+- C: The Eventarc agent doesn't need to manage the bucket, and Storage Admin is far broader than anything the trigger needs.
+- D: Editor on the default compute account is over-broad and is not the identity that publishes Cloud Storage events.
+
+Reference: https://cloud.google.com/eventarc/docs/run/create-trigger-storage-gcloud
+
+## ace-x-053 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 3.2; certifying mode only. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*A Cloud SQL database that must survive a region outage* · 2.2 Multi-region Redundancy · cross-domain, also 3.2 · certifying only · `66471209-1dd1-422b-b8fa-09a839ea465b`
+
+Your Cloud SQL for MySQL instance in us-east4 is configured for high availability. The business now requires that the database can serve again within 30 minutes if the whole region becomes unavailable, losing at most a few minutes of data. You want to minimize cost and operational effort. What should you do?
+
+- **A.** Rely on the existing high availability configuration, which fails over to a standby in another region.
+- **B.** Export the database to a dual-region Cloud Storage bucket every night, and import it after a failure.
+- **C.** Create a cross-region read replica in another region, and promote it if us-east4 becomes unavailable.  ← key
+- **D.** Run a second primary instance in another region, and have the application write to both instances.
+
+Explanation: A cross-region read replica is kept current by asynchronous replication, so promoting it in another region loses only the last moments of writes and takes minutes.
+
+- A: The HA standby is in another zone of the same region, so a region outage takes both instances down.
+- B: A nightly export can lose up to a day of data, and importing a large database takes far longer than 30 minutes.
+- C: Correct. The replica lags by seconds to minutes, and promotion turns it into a standalone primary quickly.
+- D: Dual writes from the application are fragile, hard to keep consistent, and double the cost of the primary.
+
+Reference: https://cloud.google.com/sql/docs/mysql/replication/cross-region-replicas
+
+## ace-x-055 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 3.3; certifying mode only. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*On-premises servers reaching only VPC-SC supported APIs* · 2.3 Hybrid Connectivity · cross-domain, also 3.3 · certifying only · `22ab8b42-f9a4-4868-a0f3-20518377267d`
+
+Servers in your data center reach your VPC over Cloud Interconnect and have no internet access. They must read objects in Cloud Storage over the Interconnect, and the security team requires that only APIs supported by VPC Service Controls can be reached this way. What should you do?
+
+- **A.** Enable Private Google Access on the subnets in the region of the Interconnect attachments.
+- **B.** Create a Cloud NAT gateway in the region of the Interconnect that translates the on-premises ranges.
+- **C.** Advertise 199.36.153.4/30 from the Cloud Router, and resolve googleapis.com to restricted.googleapis.com on premises.  ← key
+- **D.** Advertise 199.36.153.8/30 from the Cloud Router, and resolve googleapis.com to private.googleapis.com on premises.
+
+Explanation: On-premises hosts reach Google APIs privately when Cloud Router advertises the VIP range and on-premises DNS maps the API domains to it. The restricted VIP, 199.36.153.4/30, only serves APIs that VPC Service Controls supports.
+
+- A: Private Google Access applies to VMs in those subnets, not to hosts on premises.
+- B: Cloud NAT translates traffic from Google Cloud resources; it doesn't serve on-premises hosts.
+- C: Correct. The restricted VIP is reachable over the Interconnect and only serves VPC Service Controls supported APIs.
+- D: The private VIP works over the Interconnect but serves most Google APIs, not only the supported ones.
+
+Reference: https://cloud.google.com/vpc/docs/configure-private-google-access-hybrid
+
+## ace-x-056 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 3.3; certifying mode only. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*Cloud Run reaching a private Memorystore instance cheaply* · 2.1 Serverless Deployment and Events · cross-domain, also 3.3 · certifying only · `e30dd3bd-cbe7-4c7c-b480-2cbed23fe4a6`
+
+A Cloud Run service must use a Memorystore for Redis instance that has only a private IP address in the VPC prod-vpc. You want the lowest cost and no extra VMs or connector instances to manage. What should you do?
+
+- **A.** Create a Serverless VPC Access connector in prod-vpc and attach it to the service.
+- **B.** Configure Direct VPC egress on the Cloud Run service to a subnet of prod-vpc.  ← key
+- **C.** Assign an external IP address to the Memorystore instance and restrict it with a firewall rule.
+- **D.** Create a Cloud NAT gateway in prod-vpc so that the service can reach the instance's address.
+
+Explanation: With Direct VPC egress, Cloud Run instances get IP addresses from a subnet you choose and send traffic straight into the VPC, so there is no connector to provision or pay for. Plan the subnet's size for the instances it must hold.
+
+- A: A connector works, but it runs instances you pay for and manage, which the stem wants to avoid.
+- B: Correct. Traffic goes straight into the VPC from the service's instances, with no connector VMs.
+- C: Memorystore instances have private addresses only; they can't take an external IP.
+- D: Cloud NAT gives VPC resources outbound internet access; it gives Cloud Run no path into the VPC.
+
+Reference: https://cloud.google.com/run/docs/configuring/vpc-direct-vpc
+
+## ace-x-058 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 3.1; certifying mode only. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*Rolling a new image without losing capacity* · 2.1 Managed Instance Groups · cross-domain, also 3.1 · certifying only · `45f505ab-e26c-4686-86db-5323f8fdbffd`
+
+A regional managed instance group of 9 VMs serves production traffic. You created a new instance template that uses a patched image. Serving capacity must never fall below 9 VMs during the rollout, and VMs must be replaced automatically. What should you do?
+
+- **A.** Set the new template on the group, and then delete the old VMs one at a time by hand.
+- **B.** Start a proactive rolling update to the new template with max unavailable 0 and max surge 3.  ← key
+- **C.** Start an opportunistic update to the new template with max unavailable set to 0.
+- **D.** Create a second group from the new template, and delete the old group when it is healthy.
+
+Explanation: With max unavailable 0, the group creates surge VMs from the new template and removes old VMs only when the new ones are running. A regional group spreads the surge across its zones, so max surge must be at least 3.
+
+- A: Manual deletion lowers capacity each time a VM is deleted, and the replacement isn't automatic.
+- B: Correct. New VMs are added before old ones go, so capacity never drops, and the group replaces every VM.
+- C: An opportunistic update applies only when VMs are recreated for other reasons, so nothing is replaced now.
+- D: A second group works, but it means rewiring the load balancer and cleaning up by hand.
+
+Reference: https://cloud.google.com/compute/docs/instance-groups/rolling-out-updates-to-managed-instance-groups
+
+## ace-x-062 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 3.1; certifying mode only. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*No GKE upgrades during a sales freeze* · 2.1 GKE Cluster Configurations · cross-domain, also 3.1 · certifying only · `c4fd1fcb-09a2-4762-b821-e404e4e432dc`
+
+Your production GKE Standard cluster is enrolled in the Regular release channel. During a two-week holiday sales period, no minor version upgrades and no node upgrades may happen, but security patches to the control plane are acceptable. What should you do?
+
+- **A.** Unenroll the cluster from the Regular release channel for the two weeks.
+- **B.** Set a recurring maintenance window that starts after the sales period ends.
+- **C.** Add a maintenance exclusion with the scope no minor or node upgrades.  ← key
+- **D.** Disable node auto-upgrade on every node pool, and re-enable it afterwards.
+
+Explanation: Maintenance exclusions block automatic upgrades for a period. The scope 'no minor or node upgrades' stops minor and node pool upgrades but still lets GKE apply control plane patches.
+
+- A: Changing channels is disruptive, and leaving a channel changes how the cluster is upgraded afterwards.
+- B: A maintenance window only says when maintenance may happen; it repeats and doesn't block a period.
+- C: Correct. The exclusion covers exactly the sales period and still allows control plane patches.
+- D: Clusters enrolled in a release channel can't turn off node auto-upgrade.
+
+Reference: https://cloud.google.com/kubernetes-engine/docs/concepts/maintenance-windows-and-exclusions
+
+## ace-x-065 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 4.2; certifying mode only. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*Dead-lettered messages that never arrive* · 2.2 Data Pipelines and Messaging · multiple select · cross-domain, also 4.2 · certifying only · `ce91edcc-18f2-460c-8a5e-3c56d88369e2`
+
+A Pub/Sub subscriber keeps failing on a few malformed messages, which are redelivered endlessly. You configured the subscription to forward a message to the topic orders-dead after 5 delivery attempts, but no messages ever reach orders-dead. Which two actions should you take? (Choose two.)
+
+- **A.** Raise the subscription's acknowledgement deadline to its maximum of 600 seconds.
+- **B.** Grant the Pub/Sub service agent the Pub/Sub Subscriber role on the original subscription.  ← key
+- **C.** Grant the subscriber application's service account the Pub/Sub Admin role on the project.
+- **D.** Enable message ordering on the original subscription.
+- **E.** Grant the Pub/Sub service agent the Pub/Sub Publisher role on the orders-dead topic.  ← key
+
+Explanation: Pub/Sub forwards undeliverable messages as its own service agent. That agent must be able to publish to the dead-letter topic and to acknowledge, as a subscriber, the messages on the source subscription.
+
+- A: A longer deadline only delays redelivery; malformed messages still fail every time.
+- B: Correct. The service agent removes the forwarded message from the source subscription, which needs Subscriber.
+- C: The application doesn't forward dead-lettered messages, and Admin is far broader than anything needed.
+- D: Ordering changes delivery order; it has nothing to do with dead-lettering.
+- E: Correct. Without Publisher on orders-dead, the service agent can't forward any message there.
+
+Reference: https://cloud.google.com/pubsub/docs/handling-failures
+
+## ace-x-071 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 3.3; certifying mode only. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*A peered VPC sharing the hub's VPN to on-premises* · 2.3 Hybrid Connectivity · multiple select · cross-domain, also 3.3 · certifying only · `aa8cb5d7-4606-48bb-b46a-2cb916781f29`
+
+The VPC hub-vpc connects to on-premises through HA VPN and a Cloud Router. The VPC app-vpc is peered with hub-vpc. VMs in app-vpc must reach on-premises, and on-premises must reach app-vpc, without creating a second VPN. Which two actions should you take? (Choose two.)
+
+- **A.** Peer app-vpc directly with the on-premises network over the existing VPN.
+- **B.** Enable global dynamic routing on app-vpc so that it learns the on-premises routes.
+- **C.** Configure the Cloud Router to advertise app-vpc's subnet ranges as custom advertised routes.  ← key
+- **D.** Create static routes in app-vpc whose next hop is the HA VPN tunnel in hub-vpc, one for each on-premises range.
+- **E.** Export custom routes on hub-vpc's side of the peering, and import them on app-vpc's side.  ← key
+
+Explanation: The dynamic routes that hub-vpc learns from on-premises reach app-vpc only if custom routes are exported and imported over the peering. On-premises learns app-vpc's ranges only if the Cloud Router advertises them, because by default it advertises only its own VPC's subnets.
+
+- A: VPC Network Peering connects Google Cloud VPC networks only, never an on-premises network.
+- B: app-vpc has no Cloud Router of its own; its routing mode doesn't import the peer's routes.
+- C: Correct. Custom advertisements tell on-premises how to reach app-vpc through the VPN.
+- D: A static route's next hop must be in the same VPC, so app-vpc can't point at hub-vpc's tunnel.
+- E: Correct. Exporting and importing custom routes shares the on-premises routes with app-vpc.
+
+Reference: https://cloud.google.com/vpc/docs/vpc-peering
+
+## ace-x-073 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 3.2; certifying mode only. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*Pub/Sub events into BigQuery with no pipeline code* · 2.2 Data Pipelines and Messaging · cross-domain, also 3.2 · certifying only · `a5157871-e804-4940-9ade-a6766bdaf7a1`
+
+Click events are published to the Pub/Sub topic clicks as JSON whose fields match the columns of a BigQuery table. Analysts need each event to be queryable in BigQuery within a minute. You want to minimize operational overhead and custom code. What should you do?
+
+- **A.** Run a Dataflow streaming job from a Google template that reads the topic and writes to the table.
+- **B.** Write a Cloud Run service that receives push messages and inserts rows with the streaming API.
+- **C.** Create a BigQuery subscription on the topic that writes to the table, using the table's schema.  ← key
+- **D.** Create a Cloud Storage subscription on the topic, and load its files into BigQuery every hour.
+
+Explanation: A BigQuery subscription writes messages into the table as they arrive, mapping JSON fields to columns when it uses the table schema. There is nothing to run or code; the Pub/Sub service agent needs BigQuery Data Editor on the table.
+
+- A: A template avoids writing code, but a streaming Dataflow job is still workers to run and pay for.
+- B: A custom service is code to write, deploy and maintain, which the stem wants to avoid.
+- C: Correct. Pub/Sub writes to BigQuery itself, so there is no job, service or code to operate.
+- D: Hourly loads miss the one-minute requirement and add a scheduled job to maintain.
+
+Reference: https://cloud.google.com/pubsub/docs/bigquery
+
+## ace-x-074 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 3.1; certifying mode only. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*Monthly OS patching with a compliance report* · 2.1 VM Manager · cross-domain, also 3.1 · certifying only · `cee24cc2-4d70-47ae-8b07-558baddb66eb`
+
+Your project has 300 Linux VMs. The security team requires that OS patches are applied every month during a maintenance window, and wants a report of which VMs are missing patches. You want to minimize custom scripting. What should you do?
+
+- **A.** Add a startup script to every VM that runs the package manager's upgrade command at boot.
+- **B.** Rebuild every VM each month from the newest public image with a Cloud Build pipeline.
+- **C.** Enable VM Manager for the VMs, and create a monthly patch deployment that targets them.  ← key
+- **D.** Turn on automatic restart for every VM so that the guest OS installs updates as it boots.
+
+Explanation: With VM Manager enabled, the OS Config agent on each VM reports its state. A patch deployment applies patches on a schedule inside a window, and patch compliance shows which VMs still need patches.
+
+- A: A startup script only runs at boot, gives no schedule or window, and produces no compliance report.
+- B: Rebuilding 300 VMs every month is heavy, risky automation, and still gives no compliance view.
+- C: Correct. Scheduled patch deployments and compliance reporting are built in, with no scripts.
+- D: Automatic restart brings a VM back after a crash; it doesn't install anything.
+
+Reference: https://cloud.google.com/compute/vm-manager/docs/patch/schedule-patch-jobs
+
+## ace-x-075 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 3.3; certifying mode only. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*Cutting egress cost for users in one country* · 2.3 Network Service Tiers · cross-domain, also 3.3 · certifying only · `bc23065d-d2f1-4717-9772-4298153ee1c7`
+
+A video service runs in europe-west3, and all of its users are in Germany. Internet egress is the largest item on the bill. You want to reduce egress cost, and you accept that traffic travels further over the public internet. Which setup should you use?
+
+- **A.** A regional external Application Load Balancer with a Standard Tier regional address.  ← key
+- **B.** A global external Application Load Balancer in the Premium Tier, the default tier.
+- **C.** A global external Application Load Balancer with a Standard Tier global address.
+- **D.** A cross-region internal Application Load Balancer with a Premium Tier address.
+
+Explanation: Standard Tier hands traffic to the internet close to the region, which costs less than Premium Tier's Google backbone. It's regional only, so it needs a regional load balancer and a regional address.
+
+- A: Correct. A regional load balancer can use a Standard Tier address, the cheaper egress option.
+- B: Premium Tier carries traffic on Google's network, which is faster but costs more for egress.
+- C: Global load balancers require Premium Tier; there are no Standard Tier global addresses.
+- D: An internal load balancer isn't reachable from the internet at all.
+
+Reference: https://cloud.google.com/network-tiers/docs/overview
+
+## ace-x-054 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 4.2; certifying mode only. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*A rotated password that Cloud Run picks up without a redeploy* · 3.1 Cloud Run Releases · multiple select · cross-domain, also 4.2 · certifying only · `c165ebf5-8bf6-4302-b624-0954ddeb90e9`
+
+A Cloud Run service reads its database password from Secret Manager. The security team rotates the password every week by adding a new secret version. The service must use the new password without a new deployment, and its service account must have only the access it needs. Which two actions should you take? (Choose two.)
+
+- **A.** Expose the secret to the service as an environment variable pinned to version 1.
+- **B.** Grant the service's service account Secret Manager Secret Accessor on the secret.  ← key
+- **C.** Mount the secret as a volume in the service, referencing the latest version.  ← key
+- **D.** Grant the service's service account the Secret Manager Admin role on the project.
+- **E.** Copy the password into a plain environment variable, and redeploy each week.
+
+Explanation: A secret mounted as a volume with the latest version is fetched when the file is read, so each new version reaches running instances without a deploy. An environment variable is resolved only when an instance starts. Reading needs Secret Accessor on that one secret.
+
+- A: A pinned version never changes, so the service would keep the old password after rotation.
+- B: Correct. Secret Accessor on the one secret lets the service read its versions and nothing else.
+- C: Correct. The mounted file reflects the latest version when it is read, with no new revision.
+- D: Admin can create, change and delete every secret in the project, far more than reading one.
+- E: A plain variable exposes the password in the service's configuration and needs a deploy every week.
+
+Reference: https://cloud.google.com/run/docs/configuring/services/secrets
+
+## ace-x-057 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 1.2; certifying mode only. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*Logging charges driven by debug entries* · 3.4 Log Buckets and Routing · cross-domain, also 1.2 · certifying only · `65ded49e-ccce-4dcd-a4aa-1d7bf837e9e9`
+
+Cloud Logging charges in your production project have tripled. Most of the volume is DEBUG entries written by containers in a GKE cluster. Audit logs and every entry of severity INFO and above must still be kept and searchable. You want to reduce cost with the least effort. What should you do?
+
+- **A.** Disable the Cloud Logging integration of the GKE cluster for its workloads.
+- **B.** Add an exclusion filter to the _Default sink for container entries below INFO.  ← key
+- **C.** Shorten the retention period of the _Default log bucket from 30 days to 1 day.
+- **D.** Create a sink that routes the GKE container entries to a Cloud Storage bucket.
+
+Explanation: Ingestion volume drives the cost. An exclusion filter on the _Default sink, such as resource.type="k8s_container" AND severity<INFO, stops those entries from being stored, and nothing else changes.
+
+- A: That drops the INFO and higher entries too, which the stem says must be kept.
+- B: Correct. Only the matching DEBUG entries are excluded before they are stored in the bucket.
+- C: Retention up to 30 days is included in the ingestion price, so shortening it saves nothing.
+- D: A new sink adds a copy; the _Default sink still ingests the same entries unless they are excluded.
+
+Reference: https://cloud.google.com/logging/docs/routing/overview
+
+## ace-x-059 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 2.2; certifying mode only. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*A single VM that must be rebuilt in another region* · 3.1 Snapshots and Images · cross-domain, also 2.2 · certifying only · `4196ec8d-c2a8-4683-aed4-e97b0968e3dc`
+
+A stateful application runs on one Compute Engine VM in europe-west1 with a 500 GB persistent disk. If europe-west1 becomes unavailable, you must be able to recreate the VM in europe-west4 with data no older than one day. You want to minimize cost and manual work. What should you do?
+
+- **A.** Change the disk to a regional persistent disk replicated between two zones of europe-west1.
+- **B.** Attach a snapshot schedule to the disk that takes daily snapshots stored in the eu multi-region.  ← key
+- **C.** Create a machine image of the VM each night from a Cloud Scheduler job, stored in europe-west1.
+- **D.** Create a second VM in europe-west4, and copy the files to it with rsync from a nightly cron job.
+
+Explanation: Scheduled snapshots are incremental and automatic. Stored in a multi-region location, they remain available if one region fails, and a new disk and VM can be created from them in europe-west4.
+
+- A: A regional disk replicates between two zones of the same region, so a region outage takes both copies.
+- B: Correct. Daily, incremental snapshots in the eu multi-region survive the loss of europe-west1.
+- C: Stored in europe-west1, the images are lost with the region, and the job is extra machinery to maintain.
+- D: A second running VM doubles the cost, and the copy scripts are manual work to maintain.
+
+Reference: https://cloud.google.com/compute/docs/disks/scheduled-snapshots
+
+## ace-x-061 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 2.1; certifying mode only. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*Right-sizing underused VMs with little analysis* · 3.4 Gemini and Active Assist · cross-domain, also 2.1 · certifying only · `6038818e-012a-4c6a-9bb6-3d54ae29bbe2`
+
+Over the last month, the 40 VMs in your project used on average 15% of their vCPUs, with some short peaks. Finance asks you to reduce the Compute Engine bill without causing performance problems. You want to minimize analysis effort. What should you do?
+
+- **A.** Change every VM to a machine type with half as many vCPUs and the same memory.
+- **B.** Export billing data to BigQuery, and calculate a new size for each VM from its cost.
+- **C.** Recreate all of the VMs as Spot VMs, which cost much less than standard VMs.
+- **D.** Review the machine type recommendations that Recommender shows, and apply them.  ← key
+
+Explanation: Recommender analyses each VM's observed CPU and memory use, peaks included, and suggests a machine type for it. You review the suggestions and apply them, with no analysis of your own.
+
+- A: A blanket halving ignores each VM's peaks, so some VMs would be short of capacity.
+- B: Billing data shows cost, not utilization, and building the analysis is the effort the stem wants to avoid.
+- C: Spot VMs can be stopped at any time, which risks the very performance problems finance wants to avoid.
+- D: Correct. The recommendations come from each VM's own utilization, so they cut cost with little risk.
+
+Reference: https://cloud.google.com/compute/docs/instances/apply-machine-type-recommendations-for-instances
+
+## ace-x-063 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 2.3; certifying mode only. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*Monitoring an internal service from outside its VMs* · 3.4 Resource Alerts · cross-domain, also 2.3 · certifying only · `df0835ab-6820-421f-90d1-6f3934621c7b`
+
+An internal HTTP service runs on Compute Engine VMs that have only internal IP addresses. You must be alerted when the service stops responding, measured from outside the VMs, without giving the VMs external IP addresses. What should you do?
+
+- **A.** Create a public uptime check that targets the VMs' internal IP addresses directly.
+- **B.** Install the Ops Agent, and alert when the service's process count drops to zero.
+- **C.** Create a Cloud NAT gateway so that public uptime checks can reach the VMs from the internet.
+- **D.** Create a private uptime check through Service Directory, and allow its range in the firewall.  ← key
+
+Explanation: A private uptime check probes an endpoint registered in Service Directory from inside Google's network, without external addresses. A firewall rule must allow the checkers' source range, 35.199.192.0/19.
+
+- A: Public uptime checks run from the internet and can't reach internal addresses.
+- B: A running process can still stop answering requests, and this isn't measured from outside the VM.
+- C: Cloud NAT handles outbound traffic only; it never lets probes in from the internet.
+- D: Correct. The private check probes the service over internal addresses, and the alert follows from it.
+
+Reference: https://cloud.google.com/monitoring/uptime-checks/private-checks
+
+## ace-x-069 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 4.2; certifying mode only. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*Application log files that never reach Cloud Logging* · 3.4 Ops Agent · multiple select · cross-domain, also 4.2 · certifying only · `f40904c0-873f-4344-b3b7-4ec79802a9ca`
+
+An application on 30 Compute Engine VMs writes its log to /var/log/shop/app.log. The entries never appear in Cloud Logging. The VMs run as a user-managed service account that has no roles. Which two actions should you take? (Choose two.)
+
+- **A.** Create a log sink that routes /var/log/shop/app.log into the _Default bucket.
+- **B.** Grant the VMs' service account the Logs Writer role on the project.  ← key
+- **C.** Enable Data Access audit logs for Compute Engine in the project's audit configuration.
+- **D.** Install the Ops Agent, and add a files receiver for /var/log/shop/*.log to its config.  ← key
+- **E.** Grant the VMs' service account the Logs Viewer role on the project.
+
+Explanation: Cloud Logging doesn't read files on a VM by itself. The Ops Agent tails the file through a files receiver and sends the entries as the VM's service account, which needs Logs Writer.
+
+- A: Sinks route entries that already reached Cloud Logging; they can't read a file on a VM.
+- B: Correct. Without Logs Writer, the agent's writes as the VM's service account are refused.
+- C: Audit logs record API calls to Google Cloud; they don't collect application log files.
+- D: Correct. A files receiver tells the agent which files to tail and send.
+- E: Logs Viewer reads logs; it gives no right to write entries.
+
+Reference: https://cloud.google.com/logging/docs/agent/ops-agent/configuration
+
+## ace-x-070 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 2.2; certifying mode only. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*Recovering overwritten objects for 30 days only* · 3.2 Object Lifecycle · multiple select · cross-domain, also 2.2 · certifying only · `1deff870-2fd1-4bf0-a536-90d57b8cc279`
+
+Applications overwrite and delete objects in the bucket contracts-prod. You must be able to recover any overwritten or deleted object for 30 days, and older versions must not be kept longer than that, to control cost. Which two actions should you take? (Choose two.)
+
+- **A.** Add a lifecycle rule that deletes live objects 30 days after they were created.
+- **B.** Add a lifecycle rule that deletes noncurrent versions 30 days after they become noncurrent.  ← key
+- **C.** Enable Object Versioning on the bucket.  ← key
+- **D.** Change the bucket's default storage class to Archive to reduce the cost of kept versions.
+- **E.** Set a 30-day retention policy on the bucket, and lock the policy.
+
+Explanation: With Object Versioning, an overwrite or delete keeps the old version as noncurrent, and it can be restored. A lifecycle rule on days since noncurrent time removes those versions after 30 days.
+
+- A: That deletes current objects the applications still use.
+- B: Correct. The rule counts from when a version became noncurrent, so each is kept exactly 30 days.
+- C: Correct. Versioning keeps the previous version of every overwritten or deleted object.
+- D: Archive has a 365-day minimum storage duration, so versions deleted at 30 days are charged for a year.
+- E: A locked retention policy blocks deletes and overwrites, which breaks the applications.
+
+Reference: https://cloud.google.com/storage/docs/object-versioning
+
+## ace-x-072 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 2.1; certifying mode only. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*Testing a Cloud Run revision before customers see it* · 3.1 Traffic Splitting · cross-domain, also 2.1 · certifying only · `873e3394-50de-4040-b7d3-abe824fc0676`
+
+You are about to deploy a new revision of the Cloud Run service checkout. QA must test the new revision at its own URL before any customer traffic reaches it. After QA approves, 10% of customers should be moved to it. What should you do?
+
+- **A.** Deploy with 10% of the traffic at once, and ask QA to test through the service's main URL.
+- **B.** Deploy normally, and roll back to the previous revision if QA then finds a problem in production.
+- **C.** Deploy the new revision as a second Cloud Run service, and split traffic between them with DNS.
+- **D.** Deploy with no traffic and a revision tag, test the tag's URL, then send 10% of traffic to it.  ← key
+
+Explanation: A revision deployed with no traffic receives no customer requests, and a tag gives it a dedicated URL. Moving 10% of traffic to it later is one update-traffic command.
+
+- A: Customers reach the revision before QA has tested it, and QA can't choose which revision answers.
+- B: A normal deploy sends all customers to the untested revision straight away.
+- C: A second service duplicates configuration, and DNS weights are slow and coarse to change.
+- D: Correct. The tag URL reaches only the new revision, and customers stay on the old one until you move traffic.
+
+Reference: https://cloud.google.com/run/docs/rollouts-rollbacks-traffic-migration
+
+## ace-x-052 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 2.1, 2.2; certifying mode only. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*GKE Pods reaching a private Cloud SQL instance without keys* · 4.2 Service Accounts for GKE · multiple select · cross-domain, also 2.1, 2.2 · certifying only · `4b12bb5f-1c9d-4e5b-950c-f588e21c3e01`
+
+Your application runs on a GKE Autopilot cluster and must connect to a Cloud SQL for PostgreSQL instance that has only a private IP address. Service account keys are not allowed, and connections must be authorized through IAM rather than by IP address range. You want to follow Google-recommended practices. Which two actions should you take? (Choose two.)
+
+- **A.** Grant Cloud SQL Client to the principal of the app's Kubernetes ServiceAccount.  ← key
+- **B.** Grant the Cloud SQL Admin role to the default Compute Engine service account of the nodes.
+- **C.** Run the Cloud SQL Auth Proxy as a sidecar container in the application's Pods.  ← key
+- **D.** Create a service account key, store it in a Kubernetes Secret, and mount the Secret into every Pod.
+- **E.** Add the cluster's Pod IP address range to the authorized networks of the Cloud SQL instance.
+
+Explanation: The Cloud SQL Auth Proxy authorizes each connection with IAM and encrypts it. With Workload Identity Federation for GKE, the Kubernetes ServiceAccount's principal gets Cloud SQL Client directly, so the proxy needs no key.
+
+- A: Correct. Workload Identity Federation for GKE lets the Pods act as that principal, which needs only Cloud SQL Client.
+- B: Admin is far more than connecting needs, and Autopilot workloads shouldn't rely on the node's service account.
+- C: Correct. The proxy connects with IAM authorization over an encrypted tunnel to the instance's private IP.
+- D: Keys are forbidden by the stem, and a mounted key is a long-lived secret that can leak.
+- E: Authorized networks allow by IP range, which the stem rules out, and they apply to public IP connections.
+
+Reference: https://cloud.google.com/sql/docs/postgres/connect-kubernetes-engine
+
+## ace-x-060 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 3.2; certifying mode only. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*Analysts querying another project's dataset* · 4.1 IAM Policies and Inheritance · multiple select · cross-domain, also 3.2 · certifying only · `93fdac48-d231-48c0-acc7-f9ad3cae6424`
+
+Analysts in the group analysts@example.com run queries from the project analytics-prj, which must pay for the queries. The data is in the dataset sales in the project data-prj. The analysts may read only that dataset. You want to follow the principle of least privilege. Which two roles should you grant? (Choose two.)
+
+- **A.** BigQuery Job User on the data-prj project
+- **B.** BigQuery Job User on the analytics-prj project  ← key
+- **C.** BigQuery Admin on the analytics-prj project
+- **D.** BigQuery Data Viewer on the whole data-prj project
+- **E.** BigQuery Data Viewer on the sales dataset  ← key
+
+Explanation: Reading data and running jobs are separate permissions. Data Viewer on the dataset lets the analysts read only sales; Job User on analytics-prj lets them run query jobs there, so that project pays.
+
+- A: Jobs would run and be billed in data-prj, which isn't the project that must pay.
+- B: Correct. Query jobs run, and are billed, in the project where the analysts hold Job User.
+- C: Admin can manage every dataset and job in the project, far more than querying needs.
+- D: A project-level grant reads every dataset in data-prj, not just sales.
+- E: Correct. A dataset-level grant reads that dataset and no other.
+
+Reference: https://cloud.google.com/bigquery/docs/access-control
+
+## ace-x-064 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 2.3; certifying mode only. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*An internal web app for one group, without a VPN* · 4.1 IAM Policies and Inheritance · cross-domain, also 2.3 · certifying only · `fa53777e-ecfa-41d8-8a50-d1b698edcb5e`
+
+An internal reporting web app runs on a managed instance group behind a global external Application Load Balancer. Only employees in the group finance@example.com may use it, from anywhere and without a VPN, signing in with their Google accounts. You want to follow Google-recommended practices. What should you do?
+
+- **A.** Enable IAP on the backend service, and grant the group the IAP-secured Web App User role.  ← key
+- **B.** Add a Cloud Armor security policy that allows only the employees' home IP addresses.
+- **C.** Grant the finance group the Compute Viewer role on the project of the load balancer.
+- **D.** Move the app behind an internal Application Load Balancer, and give the group a VPN.
+
+Explanation: IAP checks each request's identity at the load balancer and lets through only principals who hold IAP-secured Web App User on the resource. Users sign in with their Google accounts from anywhere.
+
+- A: Correct. IAP enforces sign-in and the group's role at the load balancer, with no VPN.
+- B: Home IP addresses change and aren't identities, so an allow-list is fragile and coarse.
+- C: Compute Viewer lets people see resources in the console; it doesn't control access to the app.
+- D: The stem rules out a VPN, and an internal load balancer isn't reachable from anywhere.
+
+Reference: https://cloud.google.com/iap/docs/enabling-compute-howto
+
+## ace-x-067 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 2.1; certifying mode only. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*Cloud Build deploying to Cloud Run in another project* · 4.2 Service Account Permissions and Impersonation · multiple select · cross-domain, also 2.1 · certifying only · `410d4487-a344-4e5a-933d-c5f5a2c3d609`
+
+A Cloud Build pipeline in the project ci-prj builds images and must deploy them to the Cloud Run service checkout in the project app-prj. The service runs as runtime@app-prj.iam.gserviceaccount.com, and the build runs as builder@ci-prj.iam.gserviceaccount.com. app-prj can already pull the images. Following the principle of least privilege, which two grants should you make? (Choose two.)
+
+- **A.** Service Account User on the runtime service account, to the builder service account  ← key
+- **B.** Cloud Run Developer on app-prj, to the builder service account  ← key
+- **C.** Cloud Run Admin on ci-prj, to the runtime service account
+- **D.** Service Account Token Creator on the builder service account, to the runtime service account
+- **E.** Owner on app-prj, to the builder service account
+
+Explanation: Deploying a revision needs permission to update the service, and permission to act as the service account the revision will run as. Cloud Run Developer gives the first; Service Account User on the runtime account gives the second.
+
+- A: Correct. Deploying a service that runs as runtime@ requires actAs on that account.
+- B: Correct. Cloud Run Developer can deploy revisions but can't change the service's IAM policy.
+- C: The runtime account doesn't deploy anything, and ci-prj has no Cloud Run service to manage.
+- D: That lets the runtime account mint tokens for the builder, the wrong direction and not needed.
+- E: Owner would work, but it grants control of the whole project.
+
+Reference: https://cloud.google.com/build/docs/deploying-builds/deploy-cloud-run
+
+## ace-x-068 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 3.1; certifying mode only. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*A VM whose service account has the role but still gets a 403* · 4.2 Service Accounts and Least Privilege · cross-domain, also 3.1 · certifying only · `4f7fc15f-ca97-41be-baea-2d90d2fa9bb2`
+
+An application on a Compute Engine VM writes rows to BigQuery and fails with a 403 insufficient authentication scopes error. The VM runs as a user-managed service account that holds BigQuery Data Editor on the dataset, and it was created with the default access scopes. You want to follow Google-recommended practices. What should you do?
+
+- **A.** Grant the VM's service account the BigQuery Admin role on the whole project.
+- **B.** Change the access scopes while the VM runs; new tokens get them within minutes.
+- **C.** Create a key for the service account, and point GOOGLE_APPLICATION_CREDENTIALS at it.
+- **D.** Stop the VM, set its access scope to cloud-platform, and then start it again.  ← key
+
+Explanation: The default access scopes don't include BigQuery, so the VM's tokens can't call it whatever the IAM roles say. Google recommends the cloud-platform scope and controlling access with IAM roles. A VM's scopes can only be changed while it is stopped.
+
+- A: The error is about scopes, not roles, so a broader role changes nothing.
+- B: A VM's service account and scopes can't be changed while it is running.
+- C: A key works around the scope with a long-lived secret, which Google advises against.
+- D: Correct. With the cloud-platform scope, the service account's IAM roles decide access.
+
+Reference: https://cloud.google.com/compute/docs/access/service-accounts
 

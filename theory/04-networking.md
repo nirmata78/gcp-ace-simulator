@@ -261,7 +261,7 @@ global**, routes learned in one region are usable from all regions.
 | Need | Mechanism | How |
 |:----------------------------------------------|:----------------------------------|:----------------------------------------------|
 | VMs **without external IPs** reach Google APIs (Cloud Storage, BigQuery...) | **Private Google Access** | A **per-subnet** setting |
-| **On-premises** hosts reach Google APIs privately over VPN / Interconnect | Private Google Access for on-premises | `private.googleapis.com` (or `restricted.googleapis.com` with VPC Service Controls) via Cloud DNS and advertised routes |
+| **On-premises** hosts reach Google APIs privately over VPN / Interconnect | Private Google Access for on-premises | `private.googleapis.com` (`199.36.153.8/30`, most APIs) or `restricted.googleapis.com` (`199.36.153.4/30`, only APIs that support VPC Service Controls), via on-premises DNS and a Cloud Router **custom advertisement** of that range |
 | Reach Google APIs at an **internal IP you choose** in your VPC | **Private Service Connect endpoint** for Google APIs | A PSC forwarding rule |
 | Private IP for **Cloud SQL, Memorystore, Filestore, AlloyDB** | **Private services access** | Allocate a range; Google peers a service-producer VPC to yours |
 | Consume a **specific service** (another team's, a partner's, a Google service) by internal IP, no peering | **Private Service Connect** (consumer endpoint → producer service attachment) | No overlapping-range problems, no transitivity issues |

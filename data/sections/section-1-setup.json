@@ -1,8 +1,8 @@
 {
   "domain": "Section 1: Setting up a cloud solution environment",
   "version": 2,
-  "updated_at": "2026-11-07T17:00:51+00:00",
-  "count": 112,
+  "updated_at": "2026-11-07T19:46:36+00:00",
+  "count": 113,
   "questions": [
     {
       "id": "ace-dom1-001",
@@ -3425,8 +3425,8 @@
       "source": "curated",
       "question": "Students at Ellery College each get a sandbox project with a $50 budget. When a project's actual spend reaches the budget, all its charges must stop automatically, even if the sandbox is lost. Nobody watches the alert emails. What should you configure?",
       "options": {
-        "A": "Lower Compute Engine CPU and Cloud Storage quotas in each project to match the  budget.",
-        "B": "A  spending limit on the billing account, applied to each sandbox project separately.",
+        "A": "Lower Compute Engine CPU and Cloud Storage quotas in each project to match the budget.",
+        "B": "A spending limit on the billing account, applied to each sandbox project separately.",
         "C": "A budget per project that emails the course administrators at 50%, 90% and 100% of the amount.",
         "D": "Budget notifications to Pub/Sub, and a function that disables billing on the project at 100%."
       },
@@ -3743,6 +3743,46 @@
         },
         "gcloud_command": "gcloud resource-manager folders create --display-name=Production --organization=ORG_ID\ngcloud beta projects move PROJECT_ID --folder=FOLDER_ID",
         "doc_ref": "https://cloud.google.com/resource-manager/docs/cloud-platform-resource-hierarchy"
+      },
+      "also_tests": [
+        "4.1"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-066",
+      "uid": "b8c40f9d-b1ab-4995-926a-419f5fb7e36c",
+      "title": "Self-service projects only in one folder and in the EU",
+      "objective": "1.1",
+      "subtopic": "Organization Policy",
+      "summary": "Grant Project Creator on the folder, and set the resource locations constraint on the same folder; both are inherited by the projects created there and affect nobody else.",
+      "tags": [
+        "folders",
+        "organization-policy",
+        "project-creator",
+        "resource-locations"
+      ],
+      "source": "curated",
+      "question": "The data team may create its own projects, but only inside the folder data-eng, and every resource in those projects must be created in EU locations. Other teams must not be affected. Which two actions should you take? (Choose two.)",
+      "options": {
+        "A": "Grant the data team the Project Creator role on the data-eng folder.",
+        "B": "Set the resource locations policy on the data-eng folder to in:eu-locations.",
+        "C": "Create a VPC Service Controls perimeter around the projects in data-eng.",
+        "D": "Set the resource locations policy on the organization to in:eu-locations.",
+        "E": "Grant the data team the Project Creator role on the organization node."
+      },
+      "correct_answer": "A,B",
+      "explanation": {
+        "summary": "IAM grants and organization policies are both inherited down the hierarchy. Setting both on the folder scopes them to the data team's projects.",
+        "option_breakdown": {
+          "A": "Correct. A folder-level grant lets the team create projects there and nowhere else.",
+          "B": "Correct. The constraint applies to every project in the folder, and only there.",
+          "C": "A perimeter limits API data movement; it doesn't control where resources are created.",
+          "D": "An organization-level constraint would restrict every other team as well.",
+          "E": "An organization-level grant lets the team create projects anywhere in the organization."
+        },
+        "gcloud_command": "gcloud resource-manager folders add-iam-policy-binding FOLDER_ID \\\n  --member=group:data-team@example.com --role=roles/resourcemanager.projectCreator\ngcloud resource-manager org-policies allow gcp.resourceLocations in:eu-locations --folder=FOLDER_ID",
+        "doc_ref": "https://cloud.google.com/resource-manager/docs/organization-policy/defining-locations"
       },
       "also_tests": [
         "4.1"

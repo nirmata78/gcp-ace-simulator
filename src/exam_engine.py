@@ -81,6 +81,7 @@ def weighted_sample(
     rng: Optional[random.Random] = None,
     seen: Optional[Set[str]] = None,
     cross_share: float = CROSS_DOMAIN_SHARE,
+    avoid_seen: bool = False,
 ) -> List[Question]:
     """Draw ``count`` questions on the June 2026 blueprint.
 
@@ -98,6 +99,10 @@ def weighted_sample(
     new material until the bank is exhausted. A short objective or section
     hands its shortfall to the remaining stock rather than returning a short exam.
 
+    ``avoid_seen`` makes that strict: a seen question is drawn only when the whole bank has no
+    unseen one left. An objective that runs out hands its share to unseen questions elsewhere in
+    the same section first, so the section split holds while the section has unseen stock.
+
     Cross-domain questions (``also_tests``) fill ``cross_share`` of each section's quota first,
     counted against their own section, so the 10 / 15 / 15 / 10 split still holds.
     """
@@ -112,12 +117,22 @@ def weighted_sample(
     picked: List[Question] = []
     section_quota = _apportion(count, {d: DOMAIN_WEIGHTS[d] for d in DOMAINS})
     cross_quota = _apportion(round(count * cross_share), {d: DOMAIN_WEIGHTS[d] for d in DOMAINS}) if cross else {}
+    def fresh(pool: List[Question]) -> List[Question]:
+        return [q for q in pool if q.id not in seen] if avoid_seen and seen else pool
+
     for sec in SECTION_LIST:
-        mixed = _spread_pick([q for q in cross if q.domain == sec.label], cross_quota.get(sec.label, 0), rng, seen)
-        picked.extend(mixed)
+        mixed = _spread_pick(fresh([q for q in cross if q.domain == sec.label]), cross_quota.get(sec.label, 0),
+                             rng, seen)
+        got = list(mixed)
         objs = {o.id: obj_w[o.id] for o in objectives_in(sec.number)}
         for oid, n in _apportion(section_quota[sec.label] - len(mixed), objs).items():
-            picked.extend(_spread_pick(by_obj.get(oid, []), n, rng, seen))
+            got.extend(_spread_pick(fresh(by_obj.get(oid, [])), n, rng, seen))
+        short = section_quota[sec.label] - len(got)
+        if short > 0:  # an objective ran dry: fill from the rest of this section before leaving it
+            taken = {q.id for q in got}
+            got.extend(_spread_pick(fresh([q for q in single if q.domain == sec.label and q.id not in taken]),
+                                    short, rng, seen))
+        picked.extend(got)
 
     shortfall = count - len(picked)
     if shortfall > 0:

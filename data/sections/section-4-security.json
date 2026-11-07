@@ -1,8 +1,8 @@
 {
   "domain": "Section 4: Configuring access and security",
   "version": 2,
-  "updated_at": "2026-11-07T17:00:51+00:00",
-  "count": 82,
+  "updated_at": "2026-11-07T19:46:36+00:00",
+  "count": 87,
   "questions": [
     {
       "id": "ace-dom1-005",
@@ -2765,6 +2765,203 @@
       },
       "also_tests": [
         "3.2"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-052",
+      "uid": "4b12bb5f-1c9d-4e5b-950c-f588e21c3e01",
+      "title": "GKE Pods reaching a private Cloud SQL instance without keys",
+      "objective": "4.2",
+      "subtopic": "Service Accounts for GKE",
+      "summary": "Run the Cloud SQL Auth Proxy beside the app and give the Kubernetes ServiceAccount's principal Cloud SQL Client through Workload Identity Federation for GKE: IAM-authorized connections, no keys.",
+      "tags": [
+        "auth-proxy",
+        "cloud-sql",
+        "gke",
+        "workload-identity"
+      ],
+      "source": "curated",
+      "question": "Your application runs on a GKE Autopilot cluster and must connect to a Cloud SQL for PostgreSQL instance that has only a private IP address. Service account keys are not allowed, and connections must be authorized through IAM rather than by IP address range. You want to follow Google-recommended practices. Which two actions should you take? (Choose two.)",
+      "options": {
+        "A": "Grant Cloud SQL Client to the principal of the app's Kubernetes ServiceAccount.",
+        "B": "Grant the Cloud SQL Admin role to the default Compute Engine service account of the nodes.",
+        "C": "Run the Cloud SQL Auth Proxy as a sidecar container in the application's Pods.",
+        "D": "Create a service account key, store it in a Kubernetes Secret, and mount the Secret into every Pod.",
+        "E": "Add the cluster's Pod IP address range to the authorized networks of the Cloud SQL instance."
+      },
+      "correct_answer": "A,C",
+      "explanation": {
+        "summary": "The Cloud SQL Auth Proxy authorizes each connection with IAM and encrypts it. With Workload Identity Federation for GKE, the Kubernetes ServiceAccount's principal gets Cloud SQL Client directly, so the proxy needs no key.",
+        "option_breakdown": {
+          "A": "Correct. Workload Identity Federation for GKE lets the Pods act as that principal, which needs only Cloud SQL Client.",
+          "B": "Admin is far more than connecting needs, and Autopilot workloads shouldn't rely on the node's service account.",
+          "C": "Correct. The proxy connects with IAM authorization over an encrypted tunnel to the instance's private IP.",
+          "D": "Keys are forbidden by the stem, and a mounted key is a long-lived secret that can leak.",
+          "E": "Authorized networks allow by IP range, which the stem rules out, and they apply to public IP connections."
+        },
+        "gcloud_command": "gcloud projects add-iam-policy-binding PROJECT_ID --role=roles/cloudsql.client \\\n  --member=principal://iam.googleapis.com/projects/PROJECT_NUMBER/locations/global/workloadIdentityPools/PROJECT_ID.svc.id.goog/subject/ns/shop/sa/orders",
+        "doc_ref": "https://cloud.google.com/sql/docs/postgres/connect-kubernetes-engine"
+      },
+      "also_tests": [
+        "2.1",
+        "2.2"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-060",
+      "uid": "93fdac48-d231-48c0-acc7-f9ad3cae6424",
+      "title": "Analysts querying another project's dataset",
+      "objective": "4.1",
+      "subtopic": "IAM Policies and Inheritance",
+      "summary": "To query data in another project and bill the query to their own, users need BigQuery Data Viewer on the dataset and BigQuery Job User on the project that runs the job.",
+      "tags": [
+        "bigquery",
+        "cross-project",
+        "iam",
+        "least-privilege"
+      ],
+      "source": "curated",
+      "question": "Analysts in the group analysts@example.com run queries from the project analytics-prj, which must pay for the queries. The data is in the dataset sales in the project data-prj. The analysts may read only that dataset. You want to follow the principle of least privilege. Which two roles should you grant? (Choose two.)",
+      "options": {
+        "A": "BigQuery Job User on the data-prj project",
+        "B": "BigQuery Job User on the analytics-prj project",
+        "C": "BigQuery Admin on the analytics-prj project",
+        "D": "BigQuery Data Viewer on the whole data-prj project",
+        "E": "BigQuery Data Viewer on the sales dataset"
+      },
+      "correct_answer": "B,E",
+      "explanation": {
+        "summary": "Reading data and running jobs are separate permissions. Data Viewer on the dataset lets the analysts read only sales; Job User on analytics-prj lets them run query jobs there, so that project pays.",
+        "option_breakdown": {
+          "A": "Jobs would run and be billed in data-prj, which isn't the project that must pay.",
+          "B": "Correct. Query jobs run, and are billed, in the project where the analysts hold Job User.",
+          "C": "Admin can manage every dataset and job in the project, far more than querying needs.",
+          "D": "A project-level grant reads every dataset in data-prj, not just sales.",
+          "E": "Correct. A dataset-level grant reads that dataset and no other."
+        },
+        "gcloud_command": "gcloud projects add-iam-policy-binding analytics-prj \\\n  --member=group:analysts@example.com --role=roles/bigquery.jobUser\nbq add-iam-policy-binding --member=group:analysts@example.com \\\n  --role=roles/bigquery.dataViewer data-prj:sales",
+        "doc_ref": "https://cloud.google.com/bigquery/docs/access-control"
+      },
+      "also_tests": [
+        "3.2"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-064",
+      "uid": "fa53777e-ecfa-41d8-8a50-d1b698edcb5e",
+      "title": "An internal web app for one group, without a VPN",
+      "objective": "4.1",
+      "subtopic": "IAM Policies and Inheritance",
+      "summary": "Identity-Aware Proxy on the load balancer's backend service checks each user's identity; grant the group the IAP-secured Web App User role.",
+      "tags": [
+        "iam",
+        "iap",
+        "load-balancing",
+        "zero-trust"
+      ],
+      "source": "curated",
+      "question": "An internal reporting web app runs on a managed instance group behind a global external Application Load Balancer. Only employees in the group finance@example.com may use it, from anywhere and without a VPN, signing in with their Google accounts. You want to follow Google-recommended practices. What should you do?",
+      "options": {
+        "A": "Enable IAP on the backend service, and grant the group the IAP-secured Web App User role.",
+        "B": "Add a Cloud Armor security policy that allows only the employees' home IP addresses.",
+        "C": "Grant the finance group the Compute Viewer role on the project of the load balancer.",
+        "D": "Move the app behind an internal Application Load Balancer, and give the group a VPN."
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "IAP checks each request's identity at the load balancer and lets through only principals who hold IAP-secured Web App User on the resource. Users sign in with their Google accounts from anywhere.",
+        "option_breakdown": {
+          "A": "Correct. IAP enforces sign-in and the group's role at the load balancer, with no VPN.",
+          "B": "Home IP addresses change and aren't identities, so an allow-list is fragile and coarse.",
+          "C": "Compute Viewer lets people see resources in the console; it doesn't control access to the app.",
+          "D": "The stem rules out a VPN, and an internal load balancer isn't reachable from anywhere."
+        },
+        "gcloud_command": "gcloud iap web enable --resource-type=backend-services --service=reports-bs\ngcloud iap web add-iam-policy-binding --resource-type=backend-services --service=reports-bs \\\n  --member=group:finance@example.com --role=roles/iap.httpsResourceAccessor",
+        "doc_ref": "https://cloud.google.com/iap/docs/enabling-compute-howto"
+      },
+      "also_tests": [
+        "2.3"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-067",
+      "uid": "410d4487-a344-4e5a-933d-c5f5a2c3d609",
+      "title": "Cloud Build deploying to Cloud Run in another project",
+      "objective": "4.2",
+      "subtopic": "Service Account Permissions and Impersonation",
+      "summary": "A deployer needs a Cloud Run role in the target project and Service Account User (actAs) on the runtime service account it deploys the service to run as.",
+      "tags": [
+        "cloud-build",
+        "cloud-run",
+        "least-privilege",
+        "service-account-user"
+      ],
+      "source": "curated",
+      "question": "A Cloud Build pipeline in the project ci-prj builds images and must deploy them to the Cloud Run service checkout in the project app-prj. The service runs as runtime@app-prj.iam.gserviceaccount.com, and the build runs as builder@ci-prj.iam.gserviceaccount.com. app-prj can already pull the images. Following the principle of least privilege, which two grants should you make? (Choose two.)",
+      "options": {
+        "A": "Service Account User on the runtime service account, to the builder service account",
+        "B": "Cloud Run Developer on app-prj, to the builder service account",
+        "C": "Cloud Run Admin on ci-prj, to the runtime service account",
+        "D": "Service Account Token Creator on the builder service account, to the runtime service account",
+        "E": "Owner on app-prj, to the builder service account"
+      },
+      "correct_answer": "A,B",
+      "explanation": {
+        "summary": "Deploying a revision needs permission to update the service, and permission to act as the service account the revision will run as. Cloud Run Developer gives the first; Service Account User on the runtime account gives the second.",
+        "option_breakdown": {
+          "A": "Correct. Deploying a service that runs as runtime@ requires actAs on that account.",
+          "B": "Correct. Cloud Run Developer can deploy revisions but can't change the service's IAM policy.",
+          "C": "The runtime account doesn't deploy anything, and ci-prj has no Cloud Run service to manage.",
+          "D": "That lets the runtime account mint tokens for the builder, the wrong direction and not needed.",
+          "E": "Owner would work, but it grants control of the whole project."
+        },
+        "gcloud_command": "gcloud projects add-iam-policy-binding app-prj --role=roles/run.developer \\\n  --member=serviceAccount:builder@ci-prj.iam.gserviceaccount.com\ngcloud iam service-accounts add-iam-policy-binding runtime@app-prj.iam.gserviceaccount.com \\\n  --role=roles/iam.serviceAccountUser --member=serviceAccount:builder@ci-prj.iam.gserviceaccount.com",
+        "doc_ref": "https://cloud.google.com/build/docs/deploying-builds/deploy-cloud-run"
+      },
+      "also_tests": [
+        "2.1"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-068",
+      "uid": "4f7fc15f-ca97-41be-baea-2d90d2fa9bb2",
+      "title": "A VM whose service account has the role but still gets a 403",
+      "objective": "4.2",
+      "subtopic": "Service Accounts and Least Privilege",
+      "summary": "Access scopes limit what a VM's service account tokens can do. Google recommends the cloud-platform scope with IAM roles; changing scopes needs the VM to be stopped.",
+      "tags": [
+        "access-scopes",
+        "bigquery",
+        "compute-engine",
+        "service-accounts"
+      ],
+      "source": "curated",
+      "question": "An application on a Compute Engine VM writes rows to BigQuery and fails with a 403 insufficient authentication scopes error. The VM runs as a user-managed service account that holds BigQuery Data Editor on the dataset, and it was created with the default access scopes. You want to follow Google-recommended practices. What should you do?",
+      "options": {
+        "A": "Grant the VM's service account the BigQuery Admin role on the whole project.",
+        "B": "Change the access scopes while the VM runs; new tokens get them within minutes.",
+        "C": "Create a key for the service account, and point GOOGLE_APPLICATION_CREDENTIALS at it.",
+        "D": "Stop the VM, set its access scope to cloud-platform, and then start it again."
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "The default access scopes don't include BigQuery, so the VM's tokens can't call it whatever the IAM roles say. Google recommends the cloud-platform scope and controlling access with IAM roles. A VM's scopes can only be changed while it is stopped.",
+        "option_breakdown": {
+          "A": "The error is about scopes, not roles, so a broader role changes nothing.",
+          "B": "A VM's service account and scopes can't be changed while it is running.",
+          "C": "A key works around the scope with a long-lived secret, which Google advises against.",
+          "D": "Correct. With the cloud-platform scope, the service account's IAM roles decide access."
+        },
+        "gcloud_command": "gcloud compute instances stop loader-1 --zone=us-central1-a\ngcloud compute instances set-service-account loader-1 --zone=us-central1-a \\\n  --service-account=loader@PROJECT_ID.iam.gserviceaccount.com --scopes=cloud-platform\ngcloud compute instances start loader-1 --zone=us-central1-a",
+        "doc_ref": "https://cloud.google.com/compute/docs/access/service-accounts"
+      },
+      "also_tests": [
+        "3.1"
       ],
       "certifying_only": true
     }

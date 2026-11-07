@@ -18,13 +18,18 @@ All notable changes to this project are recorded here. The format follows
   `ace-dom2-018` (the access pattern read two ways), `ace-dom1-015` (the scenario was impossible) and `ace-dom4-011`
   (BigQuery data-read logs are on by default).
 - **Multiple-select questions** ("Choose two"), as the real exam has them: checkboxes that lock once you've picked
-  enough, scored only when every pick is right, in the app, the PDF report and `kb.py`. 48 in the bank.
-- **50 cross-domain questions** (`ace-x-001`…`ace-x-050`) whose scenario needs two or three sections at once. They
-  appear only in certifying exams, five in each 50-question exam, counted in their main section's share.
+  enough, scored only when every pick is right, in the app, the PDF report and `kb.py`. 57 in the bank.
+- **75 cross-domain questions** (`ace-x-001`…`ace-x-075`) whose scenario needs two or three sections at once. They
+  appear only in certifying exams, five in each 50-question exam, counted in their main section's share. The last 25
+  are written in the style of Google's sample questions: a scenario, a stated constraint such as least privilege or
+  minimal overhead, and options that are actions.
 - **Every question has a GUID** (`uid`) that never changes, alongside its readable id.
+- **Certifying exams avoid questions you have already seen.** Every question of every recorded attempt counts as
+  seen; the checkbox (on by default) draws only unseen questions, keeping the section split, and shows how many are
+  left. A seen question comes back only when the bank has no unseen one.
 - **The 104 excluded questions are settled** (issue #1): 25 were rewritten from scratch as new questions and 79
   dropped. 33 of the 34 questions removed for resembling a public question set are back, each with its own scenario;
-  the 34th duplicated another question. 29 new questions filled thin subtopics. The bank has 697 questions; every
+  the 34th duplicated another question. 29 new questions filled thin subtopics. The bank has 722 questions; every
   guide bullet still has at least three. Removed ids are never reused (`data/retired.json`).
 - `python scripts/kb.py lint` checks questions against the standard; `scripts/audit_overlap.py` repeats the
   provenance audit against local reference files.

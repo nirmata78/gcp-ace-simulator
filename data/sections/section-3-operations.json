@@ -1,8 +1,8 @@
 {
   "domain": "Section 3: Ensuring the successful operation of a cloud solution",
   "version": 2,
-  "updated_at": "2026-11-07T17:00:51+00:00",
-  "count": 258,
+  "updated_at": "2026-11-07T19:46:36+00:00",
+  "count": 266,
   "questions": [
     {
       "id": "ace-dom1-042",
@@ -8642,6 +8642,315 @@
       },
       "also_tests": [
         "1.2"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-054",
+      "uid": "c165ebf5-8bf6-4302-b624-0954ddeb90e9",
+      "title": "A rotated password that Cloud Run picks up without a redeploy",
+      "objective": "3.1",
+      "subtopic": "Cloud Run Releases",
+      "summary": "A secret mounted as a volume that references the latest version is read when the file is read, so new versions are picked up without a deploy; the runtime service account needs Secret Accessor on that secret.",
+      "tags": [
+        "cloud-run",
+        "least-privilege",
+        "rotation",
+        "secret-manager"
+      ],
+      "source": "curated",
+      "question": "A Cloud Run service reads its database password from Secret Manager. The security team rotates the password every week by adding a new secret version. The service must use the new password without a new deployment, and its service account must have only the access it needs. Which two actions should you take? (Choose two.)",
+      "options": {
+        "A": "Expose the secret to the service as an environment variable pinned to version 1.",
+        "B": "Grant the service's service account Secret Manager Secret Accessor on the secret.",
+        "C": "Mount the secret as a volume in the service, referencing the latest version.",
+        "D": "Grant the service's service account the Secret Manager Admin role on the project.",
+        "E": "Copy the password into a plain environment variable, and redeploy each week."
+      },
+      "correct_answer": "B,C",
+      "explanation": {
+        "summary": "A secret mounted as a volume with the latest version is fetched when the file is read, so each new version reaches running instances without a deploy. An environment variable is resolved only when an instance starts. Reading needs Secret Accessor on that one secret.",
+        "option_breakdown": {
+          "A": "A pinned version never changes, so the service would keep the old password after rotation.",
+          "B": "Correct. Secret Accessor on the one secret lets the service read its versions and nothing else.",
+          "C": "Correct. The mounted file reflects the latest version when it is read, with no new revision.",
+          "D": "Admin can create, change and delete every secret in the project, far more than reading one.",
+          "E": "A plain variable exposes the password in the service's configuration and needs a deploy every week."
+        },
+        "gcloud_command": "gcloud secrets add-iam-policy-binding db-password --role=roles/secretmanager.secretAccessor \\\n  --member=serviceAccount:orders-run@PROJECT_ID.iam.gserviceaccount.com\ngcloud run services update orders --region=us-central1 --update-secrets=/secrets/db-password=db-password:latest",
+        "doc_ref": "https://cloud.google.com/run/docs/configuring/services/secrets"
+      },
+      "also_tests": [
+        "4.2"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-057",
+      "uid": "65ded49e-ccce-4dcd-a4aa-1d7bf837e9e9",
+      "title": "Logging charges driven by debug entries",
+      "objective": "3.4",
+      "subtopic": "Log Buckets and Routing",
+      "summary": "Logging charges by volume ingested. An exclusion filter on the _Default sink drops unwanted entries before ingestion, while audit logs and other entries keep flowing.",
+      "tags": [
+        "cloud-logging",
+        "cost",
+        "exclusions",
+        "gke"
+      ],
+      "source": "curated",
+      "question": "Cloud Logging charges in your production project have tripled. Most of the volume is DEBUG entries written by containers in a GKE cluster. Audit logs and every entry of severity INFO and above must still be kept and searchable. You want to reduce cost with the least effort. What should you do?",
+      "options": {
+        "A": "Disable the Cloud Logging integration of the GKE cluster for its workloads.",
+        "B": "Add an exclusion filter to the _Default sink for container entries below INFO.",
+        "C": "Shorten the retention period of the _Default log bucket from 30 days to 1 day.",
+        "D": "Create a sink that routes the GKE container entries to a Cloud Storage bucket."
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "Ingestion volume drives the cost. An exclusion filter on the _Default sink, such as resource.type=\"k8s_container\" AND severity<INFO, stops those entries from being stored, and nothing else changes.",
+        "option_breakdown": {
+          "A": "That drops the INFO and higher entries too, which the stem says must be kept.",
+          "B": "Correct. Only the matching DEBUG entries are excluded before they are stored in the bucket.",
+          "C": "Retention up to 30 days is included in the ingestion price, so shortening it saves nothing.",
+          "D": "A new sink adds a copy; the _Default sink still ingests the same entries unless they are excluded."
+        },
+        "gcloud_command": "gcloud logging sinks update _Default \\\n  --add-exclusion=name=gke-debug,filter='resource.type=\"k8s_container\" AND severity<INFO'",
+        "doc_ref": "https://cloud.google.com/logging/docs/routing/overview"
+      },
+      "also_tests": [
+        "1.2"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-059",
+      "uid": "4196ec8d-c2a8-4683-aed4-e97b0968e3dc",
+      "title": "A single VM that must be rebuilt in another region",
+      "objective": "3.1",
+      "subtopic": "Snapshots and Images",
+      "summary": "A snapshot schedule with a multi-region storage location gives daily, automatic restore points that survive a regional outage.",
+      "tags": [
+        "disaster-recovery",
+        "resource-policies",
+        "snapshots"
+      ],
+      "source": "curated",
+      "question": "A stateful application runs on one Compute Engine VM in europe-west1 with a 500 GB persistent disk. If europe-west1 becomes unavailable, you must be able to recreate the VM in europe-west4 with data no older than one day. You want to minimize cost and manual work. What should you do?",
+      "options": {
+        "A": "Change the disk to a regional persistent disk replicated between two zones of europe-west1.",
+        "B": "Attach a snapshot schedule to the disk that takes daily snapshots stored in the eu multi-region.",
+        "C": "Create a machine image of the VM each night from a Cloud Scheduler job, stored in europe-west1.",
+        "D": "Create a second VM in europe-west4, and copy the files to it with rsync from a nightly cron job."
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "Scheduled snapshots are incremental and automatic. Stored in a multi-region location, they remain available if one region fails, and a new disk and VM can be created from them in europe-west4.",
+        "option_breakdown": {
+          "A": "A regional disk replicates between two zones of the same region, so a region outage takes both copies.",
+          "B": "Correct. Daily, incremental snapshots in the eu multi-region survive the loss of europe-west1.",
+          "C": "Stored in europe-west1, the images are lost with the region, and the job is extra machinery to maintain.",
+          "D": "A second running VM doubles the cost, and the copy scripts are manual work to maintain."
+        },
+        "gcloud_command": "gcloud compute resource-policies create snapshot-schedule daily-eu --region=europe-west1 \\\n  --daily-schedule --start-time=02:00 --max-retention-days=14 --storage-location=eu\ngcloud compute disks add-resource-policies app-disk --zone=europe-west1-b --resource-policies=daily-eu",
+        "doc_ref": "https://cloud.google.com/compute/docs/disks/scheduled-snapshots"
+      },
+      "also_tests": [
+        "2.2"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-061",
+      "uid": "6038818e-012a-4c6a-9bb6-3d54ae29bbe2",
+      "title": "Right-sizing underused VMs with little analysis",
+      "objective": "3.4",
+      "subtopic": "Gemini and Active Assist",
+      "summary": "Recommender's machine type recommendations are based on observed utilization, so they are the low-effort, low-risk way to right-size VMs.",
+      "tags": [
+        "compute-engine",
+        "cost",
+        "recommender",
+        "rightsizing"
+      ],
+      "source": "curated",
+      "question": "Over the last month, the 40 VMs in your project used on average 15% of their vCPUs, with some short peaks. Finance asks you to reduce the Compute Engine bill without causing performance problems. You want to minimize analysis effort. What should you do?",
+      "options": {
+        "A": "Change every VM to a machine type with half as many vCPUs and the same memory.",
+        "B": "Export billing data to BigQuery, and calculate a new size for each VM from its cost.",
+        "C": "Recreate all of the VMs as Spot VMs, which cost much less than standard VMs.",
+        "D": "Review the machine type recommendations that Recommender shows, and apply them."
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "Recommender analyses each VM's observed CPU and memory use, peaks included, and suggests a machine type for it. You review the suggestions and apply them, with no analysis of your own.",
+        "option_breakdown": {
+          "A": "A blanket halving ignores each VM's peaks, so some VMs would be short of capacity.",
+          "B": "Billing data shows cost, not utilization, and building the analysis is the effort the stem wants to avoid.",
+          "C": "Spot VMs can be stopped at any time, which risks the very performance problems finance wants to avoid.",
+          "D": "Correct. The recommendations come from each VM's own utilization, so they cut cost with little risk."
+        },
+        "gcloud_command": "gcloud recommender recommendations list --project=PROJECT_ID --location=us-central1-a \\\n  --recommender=google.compute.instance.MachineTypeRecommender",
+        "doc_ref": "https://cloud.google.com/compute/docs/instances/apply-machine-type-recommendations-for-instances"
+      },
+      "also_tests": [
+        "2.1"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-063",
+      "uid": "df0835ab-6820-421f-90d1-6f3934621c7b",
+      "title": "Monitoring an internal service from outside its VMs",
+      "objective": "3.4",
+      "subtopic": "Resource Alerts",
+      "summary": "Private uptime checks reach internal endpoints registered in Service Directory; the VPC must allow ingress from the uptime checkers' range.",
+      "tags": [
+        "firewall",
+        "monitoring",
+        "service-directory",
+        "uptime-checks"
+      ],
+      "source": "curated",
+      "question": "An internal HTTP service runs on Compute Engine VMs that have only internal IP addresses. You must be alerted when the service stops responding, measured from outside the VMs, without giving the VMs external IP addresses. What should you do?",
+      "options": {
+        "A": "Create a public uptime check that targets the VMs' internal IP addresses directly.",
+        "B": "Install the Ops Agent, and alert when the service's process count drops to zero.",
+        "C": "Create a Cloud NAT gateway so that public uptime checks can reach the VMs from the internet.",
+        "D": "Create a private uptime check through Service Directory, and allow its range in the firewall."
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "A private uptime check probes an endpoint registered in Service Directory from inside Google's network, without external addresses. A firewall rule must allow the checkers' source range, 35.199.192.0/19.",
+        "option_breakdown": {
+          "A": "Public uptime checks run from the internet and can't reach internal addresses.",
+          "B": "A running process can still stop answering requests, and this isn't measured from outside the VM.",
+          "C": "Cloud NAT handles outbound traffic only; it never lets probes in from the internet.",
+          "D": "Correct. The private check probes the service over internal addresses, and the alert follows from it."
+        },
+        "gcloud_command": "gcloud service-directory services create reports --namespace=internal --location=us-central1\ngcloud compute firewall-rules create allow-private-uptime --network=prod-vpc \\\n  --allow=tcp:80 --source-ranges=35.199.192.0/19",
+        "doc_ref": "https://cloud.google.com/monitoring/uptime-checks/private-checks"
+      },
+      "also_tests": [
+        "2.3"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-069",
+      "uid": "f40904c0-873f-4344-b3b7-4ec79802a9ca",
+      "title": "Application log files that never reach Cloud Logging",
+      "objective": "3.4",
+      "subtopic": "Ops Agent",
+      "summary": "The Ops Agent collects custom log files through a files receiver, and it writes as the VM's service account, which needs Logs Writer.",
+      "tags": [
+        "cloud-logging",
+        "logs-writer",
+        "ops-agent",
+        "service-accounts"
+      ],
+      "source": "curated",
+      "question": "An application on 30 Compute Engine VMs writes its log to /var/log/shop/app.log. The entries never appear in Cloud Logging. The VMs run as a user-managed service account that has no roles. Which two actions should you take? (Choose two.)",
+      "options": {
+        "A": "Create a log sink that routes /var/log/shop/app.log into the _Default bucket.",
+        "B": "Grant the VMs' service account the Logs Writer role on the project.",
+        "C": "Enable Data Access audit logs for Compute Engine in the project's audit configuration.",
+        "D": "Install the Ops Agent, and add a files receiver for /var/log/shop/*.log to its config.",
+        "E": "Grant the VMs' service account the Logs Viewer role on the project."
+      },
+      "correct_answer": "B,D",
+      "explanation": {
+        "summary": "Cloud Logging doesn't read files on a VM by itself. The Ops Agent tails the file through a files receiver and sends the entries as the VM's service account, which needs Logs Writer.",
+        "option_breakdown": {
+          "A": "Sinks route entries that already reached Cloud Logging; they can't read a file on a VM.",
+          "B": "Correct. Without Logs Writer, the agent's writes as the VM's service account are refused.",
+          "C": "Audit logs record API calls to Google Cloud; they don't collect application log files.",
+          "D": "Correct. A files receiver tells the agent which files to tail and send.",
+          "E": "Logs Viewer reads logs; it gives no right to write entries."
+        },
+        "gcloud_command": "# /etc/google-cloud-ops-agent/config.yaml\n# logging: receivers: shop: {type: files, include_paths: [/var/log/shop/*.log]}\n#          service: pipelines: shop: {receivers: [shop]}\ngcloud projects add-iam-policy-binding PROJECT_ID --role=roles/logging.logWriter \\\n  --member=serviceAccount:shop-vm@PROJECT_ID.iam.gserviceaccount.com",
+        "doc_ref": "https://cloud.google.com/logging/docs/agent/ops-agent/configuration"
+      },
+      "also_tests": [
+        "4.2"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-070",
+      "uid": "1deff870-2fd1-4bf0-a536-90d57b8cc279",
+      "title": "Recovering overwritten objects for 30 days only",
+      "objective": "3.2",
+      "subtopic": "Object Lifecycle",
+      "summary": "Object Versioning keeps noncurrent versions of overwritten and deleted objects; a lifecycle rule on days since noncurrent removes them after 30 days.",
+      "tags": [
+        "cloud-storage",
+        "cost",
+        "lifecycle",
+        "object-versioning"
+      ],
+      "source": "curated",
+      "question": "Applications overwrite and delete objects in the bucket contracts-prod. You must be able to recover any overwritten or deleted object for 30 days, and older versions must not be kept longer than that, to control cost. Which two actions should you take? (Choose two.)",
+      "options": {
+        "A": "Add a lifecycle rule that deletes live objects 30 days after they were created.",
+        "B": "Add a lifecycle rule that deletes noncurrent versions 30 days after they become noncurrent.",
+        "C": "Enable Object Versioning on the bucket.",
+        "D": "Change the bucket's default storage class to Archive to reduce the cost of kept versions.",
+        "E": "Set a 30-day retention policy on the bucket, and lock the policy."
+      },
+      "correct_answer": "B,C",
+      "explanation": {
+        "summary": "With Object Versioning, an overwrite or delete keeps the old version as noncurrent, and it can be restored. A lifecycle rule on days since noncurrent time removes those versions after 30 days.",
+        "option_breakdown": {
+          "A": "That deletes current objects the applications still use.",
+          "B": "Correct. The rule counts from when a version became noncurrent, so each is kept exactly 30 days.",
+          "C": "Correct. Versioning keeps the previous version of every overwritten or deleted object.",
+          "D": "Archive has a 365-day minimum storage duration, so versions deleted at 30 days are charged for a year.",
+          "E": "A locked retention policy blocks deletes and overwrites, which breaks the applications."
+        },
+        "gcloud_command": "gcloud storage buckets update gs://contracts-prod --versioning\ngcloud storage buckets update gs://contracts-prod --lifecycle-file=noncurrent-30d.json   # daysSinceNoncurrentTime: 30",
+        "doc_ref": "https://cloud.google.com/storage/docs/object-versioning"
+      },
+      "also_tests": [
+        "2.2"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-072",
+      "uid": "873e3394-50de-4040-b7d3-abe824fc0676",
+      "title": "Testing a Cloud Run revision before customers see it",
+      "objective": "3.1",
+      "subtopic": "Traffic Splitting",
+      "summary": "Deploy with --no-traffic and a revision tag: the tag gets its own URL for testing, then traffic is moved to the revision in steps.",
+      "tags": [
+        "canary",
+        "cloud-run",
+        "revision-tags",
+        "traffic-splitting"
+      ],
+      "source": "curated",
+      "question": "You are about to deploy a new revision of the Cloud Run service checkout. QA must test the new revision at its own URL before any customer traffic reaches it. After QA approves, 10% of customers should be moved to it. What should you do?",
+      "options": {
+        "A": "Deploy with 10% of the traffic at once, and ask QA to test through the service's main URL.",
+        "B": "Deploy normally, and roll back to the previous revision if QA then finds a problem in production.",
+        "C": "Deploy the new revision as a second Cloud Run service, and split traffic between them with DNS.",
+        "D": "Deploy with no traffic and a revision tag, test the tag's URL, then send 10% of traffic to it."
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "A revision deployed with no traffic receives no customer requests, and a tag gives it a dedicated URL. Moving 10% of traffic to it later is one update-traffic command.",
+        "option_breakdown": {
+          "A": "Customers reach the revision before QA has tested it, and QA can't choose which revision answers.",
+          "B": "A normal deploy sends all customers to the untested revision straight away.",
+          "C": "A second service duplicates configuration, and DNS weights are slow and coarse to change.",
+          "D": "Correct. The tag URL reaches only the new revision, and customers stay on the old one until you move traffic."
+        },
+        "gcloud_command": "gcloud run deploy checkout --image=IMAGE --no-traffic --tag=qa --region=us-central1\ngcloud run services update-traffic checkout --to-tags=qa=10 --region=us-central1",
+        "doc_ref": "https://cloud.google.com/run/docs/rollouts-rollbacks-traffic-migration"
+      },
+      "also_tests": [
+        "2.1"
       ],
       "certifying_only": true
     }

@@ -1,8 +1,8 @@
 {
   "domain": "Section 2: Planning and implementing a cloud solution",
   "version": 2,
-  "updated_at": "2026-11-07T17:00:51+00:00",
-  "count": 245,
+  "updated_at": "2026-11-07T19:46:36+00:00",
+  "count": 256,
   "questions": [
     {
       "id": "ace-dom2-001",
@@ -8171,6 +8171,427 @@
         },
         "gcloud_command": "gcloud compute networks peerings create analytics-to-research --network=analytics \\\n  --peer-project=RESEARCH_PROJECT --peer-network=research",
         "doc_ref": "https://cloud.google.com/vpc/docs/vpc-peering"
+      },
+      "also_tests": [
+        "3.3"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-051",
+      "uid": "7615cc10-326f-4abd-84bb-169a6b92e5f7",
+      "title": "An Eventarc trigger for new uploads that fails to create",
+      "objective": "2.1",
+      "subtopic": "Serverless Deployment and Events",
+      "summary": "Eventarc triggers for Cloud Storage events need the project's Cloud Storage service agent to hold Pub/Sub Publisher, because Cloud Storage publishes the events through Pub/Sub.",
+      "tags": [
+        "cloud-run",
+        "cloud-storage",
+        "eventarc",
+        "pubsub",
+        "service-agents"
+      ],
+      "source": "curated",
+      "question": "You deployed a Cloud Run service that must process every image uploaded to the bucket intake-photos. When you create an Eventarc trigger for the object finalized event of that bucket, creation fails with a Pub/Sub permission error. You want to follow the principle of least privilege. What should you do?",
+      "options": {
+        "A": "Grant the project's Cloud Storage service agent the Pub/Sub Publisher role on the project.",
+        "B": "Grant your own user account the Pub/Sub Admin role on the project, and create the trigger again.",
+        "C": "Grant the Eventarc service agent the Storage Admin role on the intake-photos bucket.",
+        "D": "Grant the Compute Engine default service account the Editor role on the project."
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "Cloud Storage delivers its events to Eventarc through Pub/Sub, and it publishes as the project's Cloud Storage service agent. That agent needs the Pub/Sub Publisher role before a Cloud Storage trigger can be created.",
+        "option_breakdown": {
+          "A": "Correct. The Cloud Storage service agent publishes the bucket's events to Pub/Sub, so it needs Pub/Sub Publisher.",
+          "B": "The error is about the identity that publishes the events, not about you, so a role on your own account doesn't fix it.",
+          "C": "The Eventarc agent doesn't need to manage the bucket, and Storage Admin is far broader than anything the trigger needs.",
+          "D": "Editor on the default compute account is over-broad and is not the identity that publishes Cloud Storage events."
+        },
+        "gcloud_command": "gcloud projects add-iam-policy-binding PROJECT_ID \\\n  --member=serviceAccount:service-PROJECT_NUMBER@gs-project-accounts.iam.gserviceaccount.com \\\n  --role=roles/pubsub.publisher",
+        "doc_ref": "https://cloud.google.com/eventarc/docs/run/create-trigger-storage-gcloud"
+      },
+      "also_tests": [
+        "4.2"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-053",
+      "uid": "66471209-1dd1-422b-b8fa-09a839ea465b",
+      "title": "A Cloud SQL database that must survive a region outage",
+      "objective": "2.2",
+      "subtopic": "Multi-region Redundancy",
+      "summary": "Cloud SQL HA protects against a zone failure only. For a region failure with a small RPO, add a cross-region read replica and promote it.",
+      "tags": [
+        "cloud-sql",
+        "disaster-recovery",
+        "high-availability",
+        "read-replica"
+      ],
+      "source": "curated",
+      "question": "Your Cloud SQL for MySQL instance in us-east4 is configured for high availability. The business now requires that the database can serve again within 30 minutes if the whole region becomes unavailable, losing at most a few minutes of data. You want to minimize cost and operational effort. What should you do?",
+      "options": {
+        "A": "Rely on the existing high availability configuration, which fails over to a standby in another region.",
+        "B": "Export the database to a dual-region Cloud Storage bucket every night, and import it after a failure.",
+        "C": "Create a cross-region read replica in another region, and promote it if us-east4 becomes unavailable.",
+        "D": "Run a second primary instance in another region, and have the application write to both instances."
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "A cross-region read replica is kept current by asynchronous replication, so promoting it in another region loses only the last moments of writes and takes minutes.",
+        "option_breakdown": {
+          "A": "The HA standby is in another zone of the same region, so a region outage takes both instances down.",
+          "B": "A nightly export can lose up to a day of data, and importing a large database takes far longer than 30 minutes.",
+          "C": "Correct. The replica lags by seconds to minutes, and promotion turns it into a standalone primary quickly.",
+          "D": "Dual writes from the application are fragile, hard to keep consistent, and double the cost of the primary."
+        },
+        "gcloud_command": "gcloud sql instances create orders-dr --master-instance-name=orders --region=us-west1\ngcloud sql instances promote-replica orders-dr   # only during a regional outage",
+        "doc_ref": "https://cloud.google.com/sql/docs/mysql/replication/cross-region-replicas"
+      },
+      "also_tests": [
+        "3.2"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-055",
+      "uid": "22ab8b42-f9a4-4868-a0f3-20518377267d",
+      "title": "On-premises servers reaching only VPC-SC supported APIs",
+      "objective": "2.3",
+      "subtopic": "Hybrid Connectivity",
+      "summary": "For on-premises access to Google APIs over Interconnect or VPN, advertise the VIP range from Cloud Router and point DNS at it; restricted.googleapis.com (199.36.153.4/30) reaches only APIs supported by VPC Service Controls.",
+      "tags": [
+        "cloud-router",
+        "dns",
+        "interconnect",
+        "private-google-access",
+        "vpc-service-controls"
+      ],
+      "source": "curated",
+      "question": "Servers in your data center reach your VPC over Cloud Interconnect and have no internet access. They must read objects in Cloud Storage over the Interconnect, and the security team requires that only APIs supported by VPC Service Controls can be reached this way. What should you do?",
+      "options": {
+        "A": "Enable Private Google Access on the subnets in the region of the Interconnect attachments.",
+        "B": "Create a Cloud NAT gateway in the region of the Interconnect that translates the on-premises ranges.",
+        "C": "Advertise 199.36.153.4/30 from the Cloud Router, and resolve googleapis.com to restricted.googleapis.com on premises.",
+        "D": "Advertise 199.36.153.8/30 from the Cloud Router, and resolve googleapis.com to private.googleapis.com on premises."
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "On-premises hosts reach Google APIs privately when Cloud Router advertises the VIP range and on-premises DNS maps the API domains to it. The restricted VIP, 199.36.153.4/30, only serves APIs that VPC Service Controls supports.",
+        "option_breakdown": {
+          "A": "Private Google Access applies to VMs in those subnets, not to hosts on premises.",
+          "B": "Cloud NAT translates traffic from Google Cloud resources; it doesn't serve on-premises hosts.",
+          "C": "Correct. The restricted VIP is reachable over the Interconnect and only serves VPC Service Controls supported APIs.",
+          "D": "The private VIP works over the Interconnect but serves most Google APIs, not only the supported ones."
+        },
+        "gcloud_command": "gcloud compute routers update onprem-router --region=us-central1 \\\n  --advertisement-mode=custom --set-advertisement-groups=all_subnets \\\n  --set-advertisement-ranges=199.36.153.4/30",
+        "doc_ref": "https://cloud.google.com/vpc/docs/configure-private-google-access-hybrid"
+      },
+      "also_tests": [
+        "3.3"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-056",
+      "uid": "e30dd3bd-cbe7-4c7c-b480-2cbed23fe4a6",
+      "title": "Cloud Run reaching a private Memorystore instance cheaply",
+      "objective": "2.1",
+      "subtopic": "Serverless Deployment and Events",
+      "summary": "Direct VPC egress gives a Cloud Run service an address in a VPC subnet with no connector instances to run or pay for.",
+      "tags": [
+        "cloud-run",
+        "direct-vpc-egress",
+        "memorystore",
+        "vpc"
+      ],
+      "source": "curated",
+      "question": "A Cloud Run service must use a Memorystore for Redis instance that has only a private IP address in the VPC prod-vpc. You want the lowest cost and no extra VMs or connector instances to manage. What should you do?",
+      "options": {
+        "A": "Create a Serverless VPC Access connector in prod-vpc and attach it to the service.",
+        "B": "Configure Direct VPC egress on the Cloud Run service to a subnet of prod-vpc.",
+        "C": "Assign an external IP address to the Memorystore instance and restrict it with a firewall rule.",
+        "D": "Create a Cloud NAT gateway in prod-vpc so that the service can reach the instance's address."
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "With Direct VPC egress, Cloud Run instances get IP addresses from a subnet you choose and send traffic straight into the VPC, so there is no connector to provision or pay for. Plan the subnet's size for the instances it must hold.",
+        "option_breakdown": {
+          "A": "A connector works, but it runs instances you pay for and manage, which the stem wants to avoid.",
+          "B": "Correct. Traffic goes straight into the VPC from the service's instances, with no connector VMs.",
+          "C": "Memorystore instances have private addresses only; they can't take an external IP.",
+          "D": "Cloud NAT gives VPC resources outbound internet access; it gives Cloud Run no path into the VPC."
+        },
+        "gcloud_command": "gcloud run services update api --region=us-central1 \\\n  --network=prod-vpc --subnet=run-egress --vpc-egress=private-ranges-only",
+        "doc_ref": "https://cloud.google.com/run/docs/configuring/vpc-direct-vpc"
+      },
+      "also_tests": [
+        "3.3"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-058",
+      "uid": "45f505ab-e26c-4686-86db-5323f8fdbffd",
+      "title": "Rolling a new image without losing capacity",
+      "objective": "2.1",
+      "subtopic": "Managed Instance Groups",
+      "summary": "A proactive rolling update with max unavailable 0 adds new VMs before removing old ones; a regional MIG needs max surge of at least the number of zones.",
+      "tags": [
+        "instance-templates",
+        "mig",
+        "rolling-update"
+      ],
+      "source": "curated",
+      "question": "A regional managed instance group of 9 VMs serves production traffic. You created a new instance template that uses a patched image. Serving capacity must never fall below 9 VMs during the rollout, and VMs must be replaced automatically. What should you do?",
+      "options": {
+        "A": "Set the new template on the group, and then delete the old VMs one at a time by hand.",
+        "B": "Start a proactive rolling update to the new template with max unavailable 0 and max surge 3.",
+        "C": "Start an opportunistic update to the new template with max unavailable set to 0.",
+        "D": "Create a second group from the new template, and delete the old group when it is healthy."
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "With max unavailable 0, the group creates surge VMs from the new template and removes old VMs only when the new ones are running. A regional group spreads the surge across its zones, so max surge must be at least 3.",
+        "option_breakdown": {
+          "A": "Manual deletion lowers capacity each time a VM is deleted, and the replacement isn't automatic.",
+          "B": "Correct. New VMs are added before old ones go, so capacity never drops, and the group replaces every VM.",
+          "C": "An opportunistic update applies only when VMs are recreated for other reasons, so nothing is replaced now.",
+          "D": "A second group works, but it means rewiring the load balancer and cleaning up by hand."
+        },
+        "gcloud_command": "gcloud compute instance-groups managed rolling-action start-update web-mig \\\n  --region=us-central1 --version=template=web-v2 --max-unavailable=0 --max-surge=3",
+        "doc_ref": "https://cloud.google.com/compute/docs/instance-groups/rolling-out-updates-to-managed-instance-groups"
+      },
+      "also_tests": [
+        "3.1"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-062",
+      "uid": "c4fd1fcb-09a2-4762-b821-e404e4e432dc",
+      "title": "No GKE upgrades during a sales freeze",
+      "objective": "2.1",
+      "subtopic": "GKE Cluster Configurations",
+      "summary": "A maintenance exclusion with the scope 'no minor or node upgrades' blocks minor and node upgrades for the period while still allowing control plane patches.",
+      "tags": [
+        "gke",
+        "maintenance-exclusions",
+        "release-channels",
+        "upgrades"
+      ],
+      "source": "curated",
+      "question": "Your production GKE Standard cluster is enrolled in the Regular release channel. During a two-week holiday sales period, no minor version upgrades and no node upgrades may happen, but security patches to the control plane are acceptable. What should you do?",
+      "options": {
+        "A": "Unenroll the cluster from the Regular release channel for the two weeks.",
+        "B": "Set a recurring maintenance window that starts after the sales period ends.",
+        "C": "Add a maintenance exclusion with the scope no minor or node upgrades.",
+        "D": "Disable node auto-upgrade on every node pool, and re-enable it afterwards."
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "Maintenance exclusions block automatic upgrades for a period. The scope 'no minor or node upgrades' stops minor and node pool upgrades but still lets GKE apply control plane patches.",
+        "option_breakdown": {
+          "A": "Changing channels is disruptive, and leaving a channel changes how the cluster is upgraded afterwards.",
+          "B": "A maintenance window only says when maintenance may happen; it repeats and doesn't block a period.",
+          "C": "Correct. The exclusion covers exactly the sales period and still allows control plane patches.",
+          "D": "Clusters enrolled in a release channel can't turn off node auto-upgrade."
+        },
+        "gcloud_command": "gcloud container clusters update shop-prod --location=us-central1 \\\n  --add-maintenance-exclusion-name=holiday --add-maintenance-exclusion-start=2026-12-10T00:00:00Z \\\n  --add-maintenance-exclusion-end=2026-12-24T00:00:00Z --add-maintenance-exclusion-scope=no_minor_or_node_upgrades",
+        "doc_ref": "https://cloud.google.com/kubernetes-engine/docs/concepts/maintenance-windows-and-exclusions"
+      },
+      "also_tests": [
+        "3.1"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-065",
+      "uid": "ce91edcc-18f2-460c-8a5e-3c56d88369e2",
+      "title": "Dead-lettered messages that never arrive",
+      "objective": "2.2",
+      "subtopic": "Data Pipelines and Messaging",
+      "summary": "Dead-lettering is done by the Pub/Sub service agent, which needs Publisher on the dead-letter topic and Subscriber on the source subscription.",
+      "tags": [
+        "dead-letter",
+        "iam",
+        "pubsub",
+        "service-agents"
+      ],
+      "source": "curated",
+      "question": "A Pub/Sub subscriber keeps failing on a few malformed messages, which are redelivered endlessly. You configured the subscription to forward a message to the topic orders-dead after 5 delivery attempts, but no messages ever reach orders-dead. Which two actions should you take? (Choose two.)",
+      "options": {
+        "A": "Raise the subscription's acknowledgement deadline to its maximum of 600 seconds.",
+        "B": "Grant the Pub/Sub service agent the Pub/Sub Subscriber role on the original subscription.",
+        "C": "Grant the subscriber application's service account the Pub/Sub Admin role on the project.",
+        "D": "Enable message ordering on the original subscription.",
+        "E": "Grant the Pub/Sub service agent the Pub/Sub Publisher role on the orders-dead topic."
+      },
+      "correct_answer": "B,E",
+      "explanation": {
+        "summary": "Pub/Sub forwards undeliverable messages as its own service agent. That agent must be able to publish to the dead-letter topic and to acknowledge, as a subscriber, the messages on the source subscription.",
+        "option_breakdown": {
+          "A": "A longer deadline only delays redelivery; malformed messages still fail every time.",
+          "B": "Correct. The service agent removes the forwarded message from the source subscription, which needs Subscriber.",
+          "C": "The application doesn't forward dead-lettered messages, and Admin is far broader than anything needed.",
+          "D": "Ordering changes delivery order; it has nothing to do with dead-lettering.",
+          "E": "Correct. Without Publisher on orders-dead, the service agent can't forward any message there."
+        },
+        "gcloud_command": "gcloud pubsub topics add-iam-policy-binding orders-dead \\\n  --member=serviceAccount:service-PROJECT_NUMBER@gcp-sa-pubsub.iam.gserviceaccount.com --role=roles/pubsub.publisher\ngcloud pubsub subscriptions add-iam-policy-binding orders-sub \\\n  --member=serviceAccount:service-PROJECT_NUMBER@gcp-sa-pubsub.iam.gserviceaccount.com --role=roles/pubsub.subscriber",
+        "doc_ref": "https://cloud.google.com/pubsub/docs/handling-failures"
+      },
+      "also_tests": [
+        "4.2"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-071",
+      "uid": "aa8cb5d7-4606-48bb-b46a-2cb916781f29",
+      "title": "A peered VPC sharing the hub's VPN to on-premises",
+      "objective": "2.3",
+      "subtopic": "Hybrid Connectivity",
+      "summary": "Peered VPCs can use a hub's hybrid connection when the hub exports custom routes and the spoke imports them, and the hub's Cloud Router advertises the spoke's ranges to on-premises.",
+      "tags": [
+        "cloud-router",
+        "custom-routes",
+        "ha-vpn",
+        "vpc-peering"
+      ],
+      "source": "curated",
+      "question": "The VPC hub-vpc connects to on-premises through HA VPN and a Cloud Router. The VPC app-vpc is peered with hub-vpc. VMs in app-vpc must reach on-premises, and on-premises must reach app-vpc, without creating a second VPN. Which two actions should you take? (Choose two.)",
+      "options": {
+        "A": "Peer app-vpc directly with the on-premises network over the existing VPN.",
+        "B": "Enable global dynamic routing on app-vpc so that it learns the on-premises routes.",
+        "C": "Configure the Cloud Router to advertise app-vpc's subnet ranges as custom advertised routes.",
+        "D": "Create static routes in app-vpc whose next hop is the HA VPN tunnel in hub-vpc, one for each on-premises range.",
+        "E": "Export custom routes on hub-vpc's side of the peering, and import them on app-vpc's side."
+      },
+      "correct_answer": "C,E",
+      "explanation": {
+        "summary": "The dynamic routes that hub-vpc learns from on-premises reach app-vpc only if custom routes are exported and imported over the peering. On-premises learns app-vpc's ranges only if the Cloud Router advertises them, because by default it advertises only its own VPC's subnets.",
+        "option_breakdown": {
+          "A": "VPC Network Peering connects Google Cloud VPC networks only, never an on-premises network.",
+          "B": "app-vpc has no Cloud Router of its own; its routing mode doesn't import the peer's routes.",
+          "C": "Correct. Custom advertisements tell on-premises how to reach app-vpc through the VPN.",
+          "D": "A static route's next hop must be in the same VPC, so app-vpc can't point at hub-vpc's tunnel.",
+          "E": "Correct. Exporting and importing custom routes shares the on-premises routes with app-vpc."
+        },
+        "gcloud_command": "gcloud compute networks peerings update hub-to-app --network=hub-vpc --export-custom-routes\ngcloud compute networks peerings update app-to-hub --network=app-vpc --import-custom-routes\ngcloud compute routers update hub-router --region=us-central1 --advertisement-mode=custom \\\n  --set-advertisement-groups=all_subnets --set-advertisement-ranges=10.20.0.0/16",
+        "doc_ref": "https://cloud.google.com/vpc/docs/vpc-peering"
+      },
+      "also_tests": [
+        "3.3"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-073",
+      "uid": "a5157871-e804-4940-9ade-a6766bdaf7a1",
+      "title": "Pub/Sub events into BigQuery with no pipeline code",
+      "objective": "2.2",
+      "subtopic": "Data Pipelines and Messaging",
+      "summary": "A BigQuery subscription writes each Pub/Sub message straight into a table, with no Dataflow job or code; the Pub/Sub service agent needs write access to the table.",
+      "tags": [
+        "bigquery-subscription",
+        "pubsub",
+        "streaming"
+      ],
+      "source": "curated",
+      "question": "Click events are published to the Pub/Sub topic clicks as JSON whose fields match the columns of a BigQuery table. Analysts need each event to be queryable in BigQuery within a minute. You want to minimize operational overhead and custom code. What should you do?",
+      "options": {
+        "A": "Run a Dataflow streaming job from a Google template that reads the topic and writes to the table.",
+        "B": "Write a Cloud Run service that receives push messages and inserts rows with the streaming API.",
+        "C": "Create a BigQuery subscription on the topic that writes to the table, using the table's schema.",
+        "D": "Create a Cloud Storage subscription on the topic, and load its files into BigQuery every hour."
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "A BigQuery subscription writes messages into the table as they arrive, mapping JSON fields to columns when it uses the table schema. There is nothing to run or code; the Pub/Sub service agent needs BigQuery Data Editor on the table.",
+        "option_breakdown": {
+          "A": "A template avoids writing code, but a streaming Dataflow job is still workers to run and pay for.",
+          "B": "A custom service is code to write, deploy and maintain, which the stem wants to avoid.",
+          "C": "Correct. Pub/Sub writes to BigQuery itself, so there is no job, service or code to operate.",
+          "D": "Hourly loads miss the one-minute requirement and add a scheduled job to maintain."
+        },
+        "gcloud_command": "gcloud pubsub subscriptions create clicks-bq --topic=clicks \\\n  --bigquery-table=PROJECT_ID:web.clicks --use-table-schema",
+        "doc_ref": "https://cloud.google.com/pubsub/docs/bigquery"
+      },
+      "also_tests": [
+        "3.2"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-074",
+      "uid": "cee24cc2-4d70-47ae-8b07-558baddb66eb",
+      "title": "Monthly OS patching with a compliance report",
+      "objective": "2.1",
+      "subtopic": "VM Manager",
+      "summary": "VM Manager's patch deployments apply OS patches on a schedule, and its patch compliance reporting shows which VMs are missing patches.",
+      "tags": [
+        "compliance",
+        "os-patch-management",
+        "vm-manager"
+      ],
+      "source": "curated",
+      "question": "Your project has 300 Linux VMs. The security team requires that OS patches are applied every month during a maintenance window, and wants a report of which VMs are missing patches. You want to minimize custom scripting. What should you do?",
+      "options": {
+        "A": "Add a startup script to every VM that runs the package manager's upgrade command at boot.",
+        "B": "Rebuild every VM each month from the newest public image with a Cloud Build pipeline.",
+        "C": "Enable VM Manager for the VMs, and create a monthly patch deployment that targets them.",
+        "D": "Turn on automatic restart for every VM so that the guest OS installs updates as it boots."
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "With VM Manager enabled, the OS Config agent on each VM reports its state. A patch deployment applies patches on a schedule inside a window, and patch compliance shows which VMs still need patches.",
+        "option_breakdown": {
+          "A": "A startup script only runs at boot, gives no schedule or window, and produces no compliance report.",
+          "B": "Rebuilding 300 VMs every month is heavy, risky automation, and still gives no compliance view.",
+          "C": "Correct. Scheduled patch deployments and compliance reporting are built in, with no scripts.",
+          "D": "Automatic restart brings a VM back after a crash; it doesn't install anything."
+        },
+        "gcloud_command": "gcloud compute os-config patch-deployments create monthly-linux --file=monthly.yaml\n# monthly.yaml: instanceFilter: all, recurringSchedule: monthly, duration: 4h",
+        "doc_ref": "https://cloud.google.com/compute/vm-manager/docs/patch/schedule-patch-jobs"
+      },
+      "also_tests": [
+        "3.1"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-075",
+      "uid": "bc23065d-d2f1-4717-9772-4298153ee1c7",
+      "title": "Cutting egress cost for users in one country",
+      "objective": "2.3",
+      "subtopic": "Network Service Tiers",
+      "summary": "Standard Tier egress costs less but works only with regional resources: a regional external load balancer and a regional Standard Tier address.",
+      "tags": [
+        "cost",
+        "egress",
+        "load-balancing",
+        "network-service-tiers"
+      ],
+      "source": "curated",
+      "question": "A video service runs in europe-west3, and all of its users are in Germany. Internet egress is the largest item on the bill. You want to reduce egress cost, and you accept that traffic travels further over the public internet. Which setup should you use?",
+      "options": {
+        "A": "A regional external Application Load Balancer with a Standard Tier regional address.",
+        "B": "A global external Application Load Balancer in the Premium Tier, the default tier.",
+        "C": "A global external Application Load Balancer with a Standard Tier global address.",
+        "D": "A cross-region internal Application Load Balancer with a Premium Tier address."
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "Standard Tier hands traffic to the internet close to the region, which costs less than Premium Tier's Google backbone. It's regional only, so it needs a regional load balancer and a regional address.",
+        "option_breakdown": {
+          "A": "Correct. A regional load balancer can use a Standard Tier address, the cheaper egress option.",
+          "B": "Premium Tier carries traffic on Google's network, which is faster but costs more for egress.",
+          "C": "Global load balancers require Premium Tier; there are no Standard Tier global addresses.",
+          "D": "An internal load balancer isn't reachable from the internet at all."
+        },
+        "gcloud_command": "gcloud compute addresses create video-ip --region=europe-west3 --network-tier=STANDARD",
+        "doc_ref": "https://cloud.google.com/network-tiers/docs/overview"
       },
       "also_tests": [
         "3.3"

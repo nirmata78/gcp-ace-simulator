@@ -1,32 +1,32 @@
 {
   "version": 2,
-  "generated_at": "2026-11-07T17:00:51+00:00",
-  "total": 697,
+  "generated_at": "2026-11-07T19:46:36+00:00",
+  "total": 722,
   "guide": "Associate Cloud Engineer exam guide, live from 2026-06-30",
   "counts_by_domain": {
-    "S1 · Setup": 112,
-    "S2 · Plan & build": 245,
-    "S3 · Operate": 258,
-    "S4 · Access": 82
+    "S1 · Setup": 113,
+    "S2 · Plan & build": 256,
+    "S3 · Operate": 266,
+    "S4 · Access": 87
   },
   "counts_by_objective": {
-    "1.1": 89,
+    "1.1": 90,
     "1.2": 23,
-    "2.1": 97,
-    "2.2": 70,
-    "2.3": 57,
+    "2.1": 102,
+    "2.2": 73,
+    "2.3": 60,
     "2.4": 21,
-    "3.1": 102,
-    "3.2": 57,
+    "3.1": 105,
+    "3.2": 58,
     "3.3": 31,
-    "3.4": 68,
-    "4.1": 23,
-    "4.2": 59
+    "3.4": 72,
+    "4.1": 25,
+    "4.2": 62
   },
   "counts_by_kind": {
-    "multiple_select": 48,
-    "cross_domain": 50,
-    "certifying_only": 50
+    "multiple_select": 57,
+    "cross_domain": 75,
+    "certifying_only": 75
   },
   "subtopics_by_domain": {
     "S1 · Setup": {
@@ -38,7 +38,7 @@
       "Cloud Identity and Users": 7,
       "Foundation Networking": 5,
       "Observability Setup": 5,
-      "Organization Policy": 12,
+      "Organization Policy": 13,
       "Project IAM Grants": 4,
       "Regions and Zones": 7,
       "Resource Hierarchy": 7,
@@ -50,27 +50,27 @@
       "AI-assisted Planning": 10,
       "Cloud Storage Classes": 6,
       "Compute Platform Selection": 14,
-      "Data Pipelines and Messaging": 7,
+      "Data Pipelines and Messaging": 9,
       "Database Selection": 12,
       "Deploying to GKE": 9,
       "Firewall Rules and Policies": 11,
-      "GKE Cluster Configurations": 9,
+      "GKE Cluster Configurations": 10,
       "GPUs or TPUs": 8,
-      "Hybrid Connectivity": 9,
+      "Hybrid Connectivity": 11,
       "Infrastructure as Code": 11,
       "Launching Instances": 7,
       "Load Balancer Selection": 13,
       "Loading Data": 6,
-      "Managed Instance Groups": 9,
-      "Multi-region Redundancy": 31,
-      "Network Service Tiers": 5,
+      "Managed Instance Groups": 10,
+      "Multi-region Redundancy": 32,
+      "Network Service Tiers": 6,
       "OS Login": 6,
       "Secure Tags and Service Accounts in Rules": 9,
-      "Serverless Deployment and Events": 10,
+      "Serverless Deployment and Events": 12,
       "Spot and Custom Machine Types": 6,
       "Storage Products": 8,
       "Storage for Compute Engine": 8,
-      "VM Manager": 5,
+      "VM Manager": 6,
       "VPC Design": 10,
       "kubectl Setup": 6
     },
@@ -84,7 +84,7 @@
       "CMEK and Key Management": 12,
       "Cloud DNS and Cloud NAT": 7,
       "Cloud Run Autoscaling": 6,
-      "Cloud Run Releases": 6,
+      "Cloud Run Releases": 7,
       "Connecting to Instances": 6,
       "Custom Metrics": 6,
       "Database Center": 7,
@@ -93,34 +93,34 @@
       "Firewall Operations": 11,
       "GKE Inventory": 4,
       "GKE Node Pools": 6,
-      "Gemini and Active Assist": 7,
+      "Gemini and Active Assist": 8,
       "Instance Inventory and Lifecycle": 5,
       "Job Status": 4,
       "Kubernetes Resources": 7,
-      "Log Buckets and Routing": 5,
+      "Log Buckets and Routing": 6,
       "Log Export": 6,
       "Managed Prometheus": 5,
       "Notebooks": 9,
-      "Object Lifecycle": 6,
-      "Ops Agent": 5,
+      "Object Lifecycle": 7,
+      "Ops Agent": 6,
       "Pod Autoscaling": 5,
       "Querying Data": 7,
-      "Resource Alerts": 8,
+      "Resource Alerts": 9,
       "Securing Cloud Storage Objects": 7,
       "Service Health and Cloud Hub": 8,
-      "Snapshots and Images": 6,
+      "Snapshots and Images": 7,
       "Storage Cost Estimation": 5,
       "Subnets, Addresses and Routes": 13,
-      "Traffic Splitting": 4,
+      "Traffic Splitting": 5,
       "Viewing and Filtering Logs": 4
     },
     "S4 · Access": {
       "Creating Service Accounts": 8,
-      "IAM Policies and Inheritance": 16,
+      "IAM Policies and Inheritance": 18,
       "Role Types and Custom Roles": 7,
-      "Service Account Permissions and Impersonation": 9,
-      "Service Accounts and Least Privilege": 9,
-      "Service Accounts for GKE": 9,
+      "Service Account Permissions and Impersonation": 10,
+      "Service Accounts and Least Privilege": 10,
+      "Service Accounts for GKE": 10,
       "Short-lived Credentials": 9,
       "Workload Identity Federation": 15
     }
@@ -14888,6 +14888,605 @@
       ],
       "certifying_only": true,
       "file": "sections/section-3-operations.json"
+    },
+    {
+      "id": "ace-x-051",
+      "uid": "7615cc10-326f-4abd-84bb-169a6b92e5f7",
+      "title": "An Eventarc trigger for new uploads that fails to create",
+      "domain": "S2 · Plan & build",
+      "objective": "2.1",
+      "subtopic": "Serverless Deployment and Events",
+      "new_in_2026": false,
+      "summary": "Eventarc triggers for Cloud Storage events need the project's Cloud Storage service agent to hold Pub/Sub Publisher, because Cloud Storage publishes the events through Pub/Sub.",
+      "tags": [
+        "cloud-run",
+        "cloud-storage",
+        "eventarc",
+        "pubsub",
+        "service-agents"
+      ],
+      "source": "curated",
+      "fingerprint": "80dfab3e59b3",
+      "choose": 1,
+      "also_tests": [
+        "4.2"
+      ],
+      "certifying_only": true,
+      "file": "sections/section-2-planning.json"
+    },
+    {
+      "id": "ace-x-052",
+      "uid": "4b12bb5f-1c9d-4e5b-950c-f588e21c3e01",
+      "title": "GKE Pods reaching a private Cloud SQL instance without keys",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Service Accounts for GKE",
+      "new_in_2026": false,
+      "summary": "Run the Cloud SQL Auth Proxy beside the app and give the Kubernetes ServiceAccount's principal Cloud SQL Client through Workload Identity Federation for GKE: IAM-authorized connections, no keys.",
+      "tags": [
+        "auth-proxy",
+        "cloud-sql",
+        "gke",
+        "workload-identity"
+      ],
+      "source": "curated",
+      "fingerprint": "fb1bdc872ec2",
+      "choose": 2,
+      "also_tests": [
+        "2.1",
+        "2.2"
+      ],
+      "certifying_only": true,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-x-053",
+      "uid": "66471209-1dd1-422b-b8fa-09a839ea465b",
+      "title": "A Cloud SQL database that must survive a region outage",
+      "domain": "S2 · Plan & build",
+      "objective": "2.2",
+      "subtopic": "Multi-region Redundancy",
+      "new_in_2026": true,
+      "summary": "Cloud SQL HA protects against a zone failure only. For a region failure with a small RPO, add a cross-region read replica and promote it.",
+      "tags": [
+        "cloud-sql",
+        "disaster-recovery",
+        "high-availability",
+        "read-replica"
+      ],
+      "source": "curated",
+      "fingerprint": "58ba56de624c",
+      "choose": 1,
+      "also_tests": [
+        "3.2"
+      ],
+      "certifying_only": true,
+      "file": "sections/section-2-planning.json"
+    },
+    {
+      "id": "ace-x-054",
+      "uid": "c165ebf5-8bf6-4302-b624-0954ddeb90e9",
+      "title": "A rotated password that Cloud Run picks up without a redeploy",
+      "domain": "S3 · Operate",
+      "objective": "3.1",
+      "subtopic": "Cloud Run Releases",
+      "new_in_2026": false,
+      "summary": "A secret mounted as a volume that references the latest version is read when the file is read, so new versions are picked up without a deploy; the runtime service account needs Secret Accessor on that secret.",
+      "tags": [
+        "cloud-run",
+        "least-privilege",
+        "rotation",
+        "secret-manager"
+      ],
+      "source": "curated",
+      "fingerprint": "1acd0d0484ee",
+      "choose": 2,
+      "also_tests": [
+        "4.2"
+      ],
+      "certifying_only": true,
+      "file": "sections/section-3-operations.json"
+    },
+    {
+      "id": "ace-x-055",
+      "uid": "22ab8b42-f9a4-4868-a0f3-20518377267d",
+      "title": "On-premises servers reaching only VPC-SC supported APIs",
+      "domain": "S2 · Plan & build",
+      "objective": "2.3",
+      "subtopic": "Hybrid Connectivity",
+      "new_in_2026": false,
+      "summary": "For on-premises access to Google APIs over Interconnect or VPN, advertise the VIP range from Cloud Router and point DNS at it; restricted.googleapis.com (199.36.153.4/30) reaches only APIs supported by VPC Service Controls.",
+      "tags": [
+        "cloud-router",
+        "dns",
+        "interconnect",
+        "private-google-access",
+        "vpc-service-controls"
+      ],
+      "source": "curated",
+      "fingerprint": "a64cd748941a",
+      "choose": 1,
+      "also_tests": [
+        "3.3"
+      ],
+      "certifying_only": true,
+      "file": "sections/section-2-planning.json"
+    },
+    {
+      "id": "ace-x-056",
+      "uid": "e30dd3bd-cbe7-4c7c-b480-2cbed23fe4a6",
+      "title": "Cloud Run reaching a private Memorystore instance cheaply",
+      "domain": "S2 · Plan & build",
+      "objective": "2.1",
+      "subtopic": "Serverless Deployment and Events",
+      "new_in_2026": false,
+      "summary": "Direct VPC egress gives a Cloud Run service an address in a VPC subnet with no connector instances to run or pay for.",
+      "tags": [
+        "cloud-run",
+        "direct-vpc-egress",
+        "memorystore",
+        "vpc"
+      ],
+      "source": "curated",
+      "fingerprint": "c4e20fee886f",
+      "choose": 1,
+      "also_tests": [
+        "3.3"
+      ],
+      "certifying_only": true,
+      "file": "sections/section-2-planning.json"
+    },
+    {
+      "id": "ace-x-057",
+      "uid": "65ded49e-ccce-4dcd-a4aa-1d7bf837e9e9",
+      "title": "Logging charges driven by debug entries",
+      "domain": "S3 · Operate",
+      "objective": "3.4",
+      "subtopic": "Log Buckets and Routing",
+      "new_in_2026": false,
+      "summary": "Logging charges by volume ingested. An exclusion filter on the _Default sink drops unwanted entries before ingestion, while audit logs and other entries keep flowing.",
+      "tags": [
+        "cloud-logging",
+        "cost",
+        "exclusions",
+        "gke"
+      ],
+      "source": "curated",
+      "fingerprint": "cbadf3af946a",
+      "choose": 1,
+      "also_tests": [
+        "1.2"
+      ],
+      "certifying_only": true,
+      "file": "sections/section-3-operations.json"
+    },
+    {
+      "id": "ace-x-058",
+      "uid": "45f505ab-e26c-4686-86db-5323f8fdbffd",
+      "title": "Rolling a new image without losing capacity",
+      "domain": "S2 · Plan & build",
+      "objective": "2.1",
+      "subtopic": "Managed Instance Groups",
+      "new_in_2026": false,
+      "summary": "A proactive rolling update with max unavailable 0 adds new VMs before removing old ones; a regional MIG needs max surge of at least the number of zones.",
+      "tags": [
+        "instance-templates",
+        "mig",
+        "rolling-update"
+      ],
+      "source": "curated",
+      "fingerprint": "1c92d0e653e4",
+      "choose": 1,
+      "also_tests": [
+        "3.1"
+      ],
+      "certifying_only": true,
+      "file": "sections/section-2-planning.json"
+    },
+    {
+      "id": "ace-x-059",
+      "uid": "4196ec8d-c2a8-4683-aed4-e97b0968e3dc",
+      "title": "A single VM that must be rebuilt in another region",
+      "domain": "S3 · Operate",
+      "objective": "3.1",
+      "subtopic": "Snapshots and Images",
+      "new_in_2026": false,
+      "summary": "A snapshot schedule with a multi-region storage location gives daily, automatic restore points that survive a regional outage.",
+      "tags": [
+        "disaster-recovery",
+        "resource-policies",
+        "snapshots"
+      ],
+      "source": "curated",
+      "fingerprint": "afe27ae1858c",
+      "choose": 1,
+      "also_tests": [
+        "2.2"
+      ],
+      "certifying_only": true,
+      "file": "sections/section-3-operations.json"
+    },
+    {
+      "id": "ace-x-060",
+      "uid": "93fdac48-d231-48c0-acc7-f9ad3cae6424",
+      "title": "Analysts querying another project's dataset",
+      "domain": "S4 · Access",
+      "objective": "4.1",
+      "subtopic": "IAM Policies and Inheritance",
+      "new_in_2026": false,
+      "summary": "To query data in another project and bill the query to their own, users need BigQuery Data Viewer on the dataset and BigQuery Job User on the project that runs the job.",
+      "tags": [
+        "bigquery",
+        "cross-project",
+        "iam",
+        "least-privilege"
+      ],
+      "source": "curated",
+      "fingerprint": "bb38cdb06169",
+      "choose": 2,
+      "also_tests": [
+        "3.2"
+      ],
+      "certifying_only": true,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-x-061",
+      "uid": "6038818e-012a-4c6a-9bb6-3d54ae29bbe2",
+      "title": "Right-sizing underused VMs with little analysis",
+      "domain": "S3 · Operate",
+      "objective": "3.4",
+      "subtopic": "Gemini and Active Assist",
+      "new_in_2026": true,
+      "summary": "Recommender's machine type recommendations are based on observed utilization, so they are the low-effort, low-risk way to right-size VMs.",
+      "tags": [
+        "compute-engine",
+        "cost",
+        "recommender",
+        "rightsizing"
+      ],
+      "source": "curated",
+      "fingerprint": "3ba6eaa9a5e0",
+      "choose": 1,
+      "also_tests": [
+        "2.1"
+      ],
+      "certifying_only": true,
+      "file": "sections/section-3-operations.json"
+    },
+    {
+      "id": "ace-x-062",
+      "uid": "c4fd1fcb-09a2-4762-b821-e404e4e432dc",
+      "title": "No GKE upgrades during a sales freeze",
+      "domain": "S2 · Plan & build",
+      "objective": "2.1",
+      "subtopic": "GKE Cluster Configurations",
+      "new_in_2026": false,
+      "summary": "A maintenance exclusion with the scope 'no minor or node upgrades' blocks minor and node upgrades for the period while still allowing control plane patches.",
+      "tags": [
+        "gke",
+        "maintenance-exclusions",
+        "release-channels",
+        "upgrades"
+      ],
+      "source": "curated",
+      "fingerprint": "24a94c384f57",
+      "choose": 1,
+      "also_tests": [
+        "3.1"
+      ],
+      "certifying_only": true,
+      "file": "sections/section-2-planning.json"
+    },
+    {
+      "id": "ace-x-063",
+      "uid": "df0835ab-6820-421f-90d1-6f3934621c7b",
+      "title": "Monitoring an internal service from outside its VMs",
+      "domain": "S3 · Operate",
+      "objective": "3.4",
+      "subtopic": "Resource Alerts",
+      "new_in_2026": false,
+      "summary": "Private uptime checks reach internal endpoints registered in Service Directory; the VPC must allow ingress from the uptime checkers' range.",
+      "tags": [
+        "firewall",
+        "monitoring",
+        "service-directory",
+        "uptime-checks"
+      ],
+      "source": "curated",
+      "fingerprint": "3514fedeee03",
+      "choose": 1,
+      "also_tests": [
+        "2.3"
+      ],
+      "certifying_only": true,
+      "file": "sections/section-3-operations.json"
+    },
+    {
+      "id": "ace-x-064",
+      "uid": "fa53777e-ecfa-41d8-8a50-d1b698edcb5e",
+      "title": "An internal web app for one group, without a VPN",
+      "domain": "S4 · Access",
+      "objective": "4.1",
+      "subtopic": "IAM Policies and Inheritance",
+      "new_in_2026": false,
+      "summary": "Identity-Aware Proxy on the load balancer's backend service checks each user's identity; grant the group the IAP-secured Web App User role.",
+      "tags": [
+        "iam",
+        "iap",
+        "load-balancing",
+        "zero-trust"
+      ],
+      "source": "curated",
+      "fingerprint": "17d713bb29b8",
+      "choose": 1,
+      "also_tests": [
+        "2.3"
+      ],
+      "certifying_only": true,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-x-065",
+      "uid": "ce91edcc-18f2-460c-8a5e-3c56d88369e2",
+      "title": "Dead-lettered messages that never arrive",
+      "domain": "S2 · Plan & build",
+      "objective": "2.2",
+      "subtopic": "Data Pipelines and Messaging",
+      "new_in_2026": true,
+      "summary": "Dead-lettering is done by the Pub/Sub service agent, which needs Publisher on the dead-letter topic and Subscriber on the source subscription.",
+      "tags": [
+        "dead-letter",
+        "iam",
+        "pubsub",
+        "service-agents"
+      ],
+      "source": "curated",
+      "fingerprint": "5e2af1b2a5e3",
+      "choose": 2,
+      "also_tests": [
+        "4.2"
+      ],
+      "certifying_only": true,
+      "file": "sections/section-2-planning.json"
+    },
+    {
+      "id": "ace-x-066",
+      "uid": "b8c40f9d-b1ab-4995-926a-419f5fb7e36c",
+      "title": "Self-service projects only in one folder and in the EU",
+      "domain": "S1 · Setup",
+      "objective": "1.1",
+      "subtopic": "Organization Policy",
+      "new_in_2026": false,
+      "summary": "Grant Project Creator on the folder, and set the resource locations constraint on the same folder; both are inherited by the projects created there and affect nobody else.",
+      "tags": [
+        "folders",
+        "organization-policy",
+        "project-creator",
+        "resource-locations"
+      ],
+      "source": "curated",
+      "fingerprint": "101996056635",
+      "choose": 2,
+      "also_tests": [
+        "4.1"
+      ],
+      "certifying_only": true,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-x-067",
+      "uid": "410d4487-a344-4e5a-933d-c5f5a2c3d609",
+      "title": "Cloud Build deploying to Cloud Run in another project",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Service Account Permissions and Impersonation",
+      "new_in_2026": false,
+      "summary": "A deployer needs a Cloud Run role in the target project and Service Account User (actAs) on the runtime service account it deploys the service to run as.",
+      "tags": [
+        "cloud-build",
+        "cloud-run",
+        "least-privilege",
+        "service-account-user"
+      ],
+      "source": "curated",
+      "fingerprint": "50e69ea7ae88",
+      "choose": 2,
+      "also_tests": [
+        "2.1"
+      ],
+      "certifying_only": true,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-x-068",
+      "uid": "4f7fc15f-ca97-41be-baea-2d90d2fa9bb2",
+      "title": "A VM whose service account has the role but still gets a 403",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Service Accounts and Least Privilege",
+      "new_in_2026": false,
+      "summary": "Access scopes limit what a VM's service account tokens can do. Google recommends the cloud-platform scope with IAM roles; changing scopes needs the VM to be stopped.",
+      "tags": [
+        "access-scopes",
+        "bigquery",
+        "compute-engine",
+        "service-accounts"
+      ],
+      "source": "curated",
+      "fingerprint": "375db0f1b389",
+      "choose": 1,
+      "also_tests": [
+        "3.1"
+      ],
+      "certifying_only": true,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-x-069",
+      "uid": "f40904c0-873f-4344-b3b7-4ec79802a9ca",
+      "title": "Application log files that never reach Cloud Logging",
+      "domain": "S3 · Operate",
+      "objective": "3.4",
+      "subtopic": "Ops Agent",
+      "new_in_2026": false,
+      "summary": "The Ops Agent collects custom log files through a files receiver, and it writes as the VM's service account, which needs Logs Writer.",
+      "tags": [
+        "cloud-logging",
+        "logs-writer",
+        "ops-agent",
+        "service-accounts"
+      ],
+      "source": "curated",
+      "fingerprint": "93c1cd57b6d1",
+      "choose": 2,
+      "also_tests": [
+        "4.2"
+      ],
+      "certifying_only": true,
+      "file": "sections/section-3-operations.json"
+    },
+    {
+      "id": "ace-x-070",
+      "uid": "1deff870-2fd1-4bf0-a536-90d57b8cc279",
+      "title": "Recovering overwritten objects for 30 days only",
+      "domain": "S3 · Operate",
+      "objective": "3.2",
+      "subtopic": "Object Lifecycle",
+      "new_in_2026": false,
+      "summary": "Object Versioning keeps noncurrent versions of overwritten and deleted objects; a lifecycle rule on days since noncurrent removes them after 30 days.",
+      "tags": [
+        "cloud-storage",
+        "cost",
+        "lifecycle",
+        "object-versioning"
+      ],
+      "source": "curated",
+      "fingerprint": "1f516b246760",
+      "choose": 2,
+      "also_tests": [
+        "2.2"
+      ],
+      "certifying_only": true,
+      "file": "sections/section-3-operations.json"
+    },
+    {
+      "id": "ace-x-071",
+      "uid": "aa8cb5d7-4606-48bb-b46a-2cb916781f29",
+      "title": "A peered VPC sharing the hub's VPN to on-premises",
+      "domain": "S2 · Plan & build",
+      "objective": "2.3",
+      "subtopic": "Hybrid Connectivity",
+      "new_in_2026": false,
+      "summary": "Peered VPCs can use a hub's hybrid connection when the hub exports custom routes and the spoke imports them, and the hub's Cloud Router advertises the spoke's ranges to on-premises.",
+      "tags": [
+        "cloud-router",
+        "custom-routes",
+        "ha-vpn",
+        "vpc-peering"
+      ],
+      "source": "curated",
+      "fingerprint": "94837e2cc1e0",
+      "choose": 2,
+      "also_tests": [
+        "3.3"
+      ],
+      "certifying_only": true,
+      "file": "sections/section-2-planning.json"
+    },
+    {
+      "id": "ace-x-072",
+      "uid": "873e3394-50de-4040-b7d3-abe824fc0676",
+      "title": "Testing a Cloud Run revision before customers see it",
+      "domain": "S3 · Operate",
+      "objective": "3.1",
+      "subtopic": "Traffic Splitting",
+      "new_in_2026": false,
+      "summary": "Deploy with --no-traffic and a revision tag: the tag gets its own URL for testing, then traffic is moved to the revision in steps.",
+      "tags": [
+        "canary",
+        "cloud-run",
+        "revision-tags",
+        "traffic-splitting"
+      ],
+      "source": "curated",
+      "fingerprint": "c74eca49149e",
+      "choose": 1,
+      "also_tests": [
+        "2.1"
+      ],
+      "certifying_only": true,
+      "file": "sections/section-3-operations.json"
+    },
+    {
+      "id": "ace-x-073",
+      "uid": "a5157871-e804-4940-9ade-a6766bdaf7a1",
+      "title": "Pub/Sub events into BigQuery with no pipeline code",
+      "domain": "S2 · Plan & build",
+      "objective": "2.2",
+      "subtopic": "Data Pipelines and Messaging",
+      "new_in_2026": true,
+      "summary": "A BigQuery subscription writes each Pub/Sub message straight into a table, with no Dataflow job or code; the Pub/Sub service agent needs write access to the table.",
+      "tags": [
+        "bigquery-subscription",
+        "pubsub",
+        "streaming"
+      ],
+      "source": "curated",
+      "fingerprint": "2267792bc78d",
+      "choose": 1,
+      "also_tests": [
+        "3.2"
+      ],
+      "certifying_only": true,
+      "file": "sections/section-2-planning.json"
+    },
+    {
+      "id": "ace-x-074",
+      "uid": "cee24cc2-4d70-47ae-8b07-558baddb66eb",
+      "title": "Monthly OS patching with a compliance report",
+      "domain": "S2 · Plan & build",
+      "objective": "2.1",
+      "subtopic": "VM Manager",
+      "new_in_2026": false,
+      "summary": "VM Manager's patch deployments apply OS patches on a schedule, and its patch compliance reporting shows which VMs are missing patches.",
+      "tags": [
+        "compliance",
+        "os-patch-management",
+        "vm-manager"
+      ],
+      "source": "curated",
+      "fingerprint": "a4a785128f1e",
+      "choose": 1,
+      "also_tests": [
+        "3.1"
+      ],
+      "certifying_only": true,
+      "file": "sections/section-2-planning.json"
+    },
+    {
+      "id": "ace-x-075",
+      "uid": "bc23065d-d2f1-4717-9772-4298153ee1c7",
+      "title": "Cutting egress cost for users in one country",
+      "domain": "S2 · Plan & build",
+      "objective": "2.3",
+      "subtopic": "Network Service Tiers",
+      "new_in_2026": false,
+      "summary": "Standard Tier egress costs less but works only with regional resources: a regional external load balancer and a regional Standard Tier address.",
+      "tags": [
+        "cost",
+        "egress",
+        "load-balancing",
+        "network-service-tiers"
+      ],
+      "source": "curated",
+      "fingerprint": "c9ec51ce8f28",
+      "choose": 1,
+      "also_tests": [
+        "3.3"
+      ],
+      "certifying_only": true,
+      "file": "sections/section-2-planning.json"
     }
   ]
 }

@@ -354,6 +354,23 @@ def test_weighted_sample_prefers_unseen_questions(bank: QuestionBank) -> None:
     assert not {q.id for q in first} & {q.id for q in second}
 
 
+def test_avoid_seen_draws_no_repeats_and_keeps_the_section_split(bank: QuestionBank) -> None:
+    rng = random.Random(11)
+    seen = {q.id for q in rng.sample(bank.questions, len(bank.questions) // 2)}
+    picked = weighted_sample(bank, 50, random.Random(12), seen=seen, avoid_seen=True)
+    assert not {q.id for q in picked} & seen
+    counts = {d: sum(q.domain == d for q in picked) for d in DOMAINS}
+    assert list(counts.values()) == [10, 15, 15, 10]
+
+
+def test_avoid_seen_repeats_only_when_the_bank_runs_out(bank: QuestionBank) -> None:
+    fresh = {q.id for q in random.Random(13).sample(bank.questions, 20)}
+    seen = {q.id for q in bank.questions} - fresh
+    picked = weighted_sample(bank, 50, random.Random(14), seen=seen, avoid_seen=True)
+    assert len({q.id for q in picked}) == 50
+    assert fresh <= {q.id for q in picked}
+
+
 def test_weighted_sample_spreads_across_subtopics(bank: QuestionBank) -> None:
     picked = weighted_sample(bank, 50, random.Random(10))
     assert len({q.subtopic for q in picked}) >= 40

@@ -5,7 +5,7 @@
 [![Theory](https://img.shields.io/badge/theory-GitHub%20Pages-blue)](https://nirmata78.github.io/gcp-ace-simulator/theory/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Release](https://img.shields.io/github/v/release/nirmata78/gcp-ace-simulator)](https://github.com/nirmata78/gcp-ace-simulator/blob/main/CHANGELOG.md)
-![697 questions](https://img.shields.io/badge/questions-697-orange)
+![697 questions](https://img.shields.io/badge/questions-722-orange)
 ![Exam guide: June 2026](https://img.shields.io/badge/exam%20guide-June%202026-purple)
 ![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue)
 
@@ -17,9 +17,9 @@ This project has three parts:
 
 - **[A theory course](https://nirmata78.github.io/gcp-ace-simulator/theory/)** that teaches every bullet of the new
   guide, in dependency order, with a recall card per part. It is a website: nothing to install.
-- **A question bank of 697 items.** Each one names the guide section, objective and subtopic it tests, explains every
-  option, and links to the documentation behind the answer. 48 are multiple-select ("Choose two"), as on the real
-  exam, and 50 are cross-domain scenarios that span several sections and appear only in certifying exams.
+- **A question bank of 722 items.** Each one names the guide section, objective and subtopic it tests, explains every
+  option, and links to the documentation behind the answer. 57 are multiple-select ("Choose two"), as on the real
+  exam, and 75 are cross-domain scenarios that span several sections and appear only in certifying exams.
 - **An exam shell** that imitates the delivery window: 50 questions sampled at the guide's weights, 120 minutes, a
   question palette, deferred grading, and a score report you read in the app, with a PDF to download.
 
@@ -137,8 +137,10 @@ Keeping state outside the image is one setting, `ACE_STATE_DIR`. It also works w
   1. **sections** at the published weights (10 / 15 / 15 / 10);
   2. **objectives** in proportion to their bullet counts;
   3. **subtopics** round-robin, so a 50-item draw covers about 45 distinct subtopics.
-- **Unseen questions first.** Questions from earlier attempts are drawn only after the unseen ones in each objective
-  run out, so repeated attempts measure knowledge rather than memory of the items.
+- **No repeats while unseen questions remain.** Every question of every recorded attempt counts as seen. With *Avoid
+  questions I have already seen* ticked (the default), a certifying draw takes only unseen questions, moving an empty
+  objective's share to other objectives of the same section, and the screen shows how many unseen questions are left.
+  Repeated attempts measure knowledge rather than memory of the items.
 - **No topic hints.** As in the real delivery window, the item's topic is not shown while you sit.
 - **Multiple-select and cross-domain questions.** A "Choose two" question shows checkboxes; once you have ticked
   enough, the rest lock, and it scores only if every pick is right, as on the exam. About one question in ten (5 of 50)
@@ -175,10 +177,10 @@ width. On a narrow window the panel moves under the question.
 
 Below the objectives sit the guide's **94 bullets**, 24 of them new in June 2026, and a closed list of **87
 subtopics**. **A question must use one of those subtopics**, so anything the guide does not test cannot enter the
-bank: validation rejects it on load. Every bullet has at least three questions, and 256 questions sit on bullets the
+bank: validation rejects it on load. Every bullet has at least three questions, and 260 questions sit on bullets the
 June 2026 guide introduced.
 
-The bank holds 112 / 245 / 258 / 82 questions by section. That is not the exam's split, and it does not need to be:
+The bank holds 113 / 256 / 266 / 87 questions by section. That is not the exam's split, and it does not need to be:
 the sampler draws by the published weights.
 
 ---
