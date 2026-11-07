@@ -35,12 +35,18 @@ bank from one of those sources, please open an issue. It will be removed.
    `doc_ref` should link to the page that proves the answer.
 3. `python scripts/kb.py add --file newq.json` previews it, checks overlap with the bank and validates it.
 4. Check it against the [question standard](docs/question-standard.md) and run `python scripts/kb.py lint`.
-5. Sit it once in Learning mode. Then check that `pytest -q` and `python scripts/kb.py check` are clean.
+5. Sit it once in Learning mode (a cross-domain question, which sets `also_tests`, appears only in certifying
+   exams). Then check that `pytest -q`, `python scripts/kb.py check` and `python scripts/kb.py lint` are clean.
+
+A question can also be **multiple-select** ("Choose two": four or five options, `"correct_answer": "A,D"`) or
+**cross-domain** (`also_tests` names the other objectives it needs); the [README](README.md#adding-questions) has the
+format and the [question standard](docs/question-standard.md#multiple-select-and-cross-domain-questions) the rules.
 
 A good item tests a decision, not a spelling. Every wrong option should be something a reasonable person might try,
 and should be wrong for a reason you can state. Avoid flag-name and console-label trivia.
 
-**Keep every id stable.** An id is a permanent key used by people's attempt history. New ids are minted for you.
+**Keep every id stable.** An id is a permanent key used by people's attempt history. New ids are minted for you. A removed
+question's id goes to `data/retired.json` and is never used again.
 
 **If you used an LLM** (including `kb.py add --topic`), you are still the author: check every answer against the
 documentation before opening the PR. Models are confidently wrong about recently renamed products.

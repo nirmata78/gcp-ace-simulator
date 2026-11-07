@@ -6,70 +6,77 @@ All notable changes to this project are recorded here. The format follows
 
 ## [Unreleased]
 
-### Changed
+## [1.2.0] - 2026-11-07
 
-- **Every question was reviewed** against a new [question standard](docs/question-standard.md); 461 were revised and
-  the review is recorded per question in `docs/reviews/2026-11-bank-review.json`. Answer options no longer give the
-  answer away by length (the longest option was the key in 60% of questions; now 26%, about chance). Stems name the
-  product they mean ("GKE cluster", not "cluster"), state the facts the answer depends on, and options describe a
-  decision instead of a command line to spell. Template questions that shared distractors now have their own.
-- **Answer keys corrected** where a second option was also right or the key was wrong, among them `ace-dom2-021`
-  (Coldline was cheaper than the keyed Nearline), `ace-dom2-040` and `ace-dom2-042` (Autopilot also met the stem),
-  `ace-dom2-018` (the access pattern read two ways), `ace-dom1-015` (the scenario was impossible) and `ace-dom4-011`
-  (BigQuery data-read logs are on by default).
+The question review of [issue #1](https://github.com/nirmata78/gcp-ace-simulator/issues/1), question formats the
+real exam uses, and the in-app score report. Existing history keeps loading; nothing to migrate.
+
+### Added
+
 - **Multiple-select questions** ("Choose two"), as the real exam has them: checkboxes that lock once you've picked
   enough, scored only when every pick is right, in the app, the PDF report and `kb.py`. 57 in the bank.
 - **75 cross-domain questions** (`ace-x-001`…`ace-x-075`) whose scenario needs two or three sections at once. They
   appear only in certifying exams, five in each 50-question exam, counted in their main section's share. The last 25
   are written in the style of Google's sample questions: a scenario, a stated constraint such as least privilege or
   minimal overhead, and options that are actions.
-- **Every question has a GUID** (`uid`) that never changes, alongside its readable id.
 - **Certifying exams avoid questions you have already seen.** Every question of every recorded attempt counts as
   seen; the checkbox (on by default) draws only unseen questions, keeping the section split, and shows how many are
   left. A seen question comes back only when the bank has no unseen one.
+- **The score report opens in the app** instead of a browser tab: your score against the pass line, sections, timing,
+  where to study next, then each reviewed question with every option explained, the course's theory, the command,
+  the tell to spot next time and links to read and rewatch. **Missed and flagged** or **Every question**, with
+  **Download PDF report** for the same review as a PDF. A PDF copy is still saved to `reports/` on submission.
+- Learning mode: drag the divider between the question and the study panel to resize it. Arrow keys work, a
+  double-click resets it, and the browser remembers the width. Below 1000px the panel moves under the question; on a
+  phone the navigation buttons show icons only.
+- **Every question has a GUID** (`uid`) that never changes, alongside its readable id.
+- A written [question standard](docs/question-standard.md), and `python scripts/kb.py lint`, which checks what a
+  machine can of it (now also run in CI). `scripts/audit_overlap.py` repeats the provenance audit against local
+  reference files.
+
+### Changed
+
+- **Every question was reviewed** against the question standard; 461 were revised and the review is recorded per
+  question in `docs/reviews/2026-11-bank-review.json`. Answer options no longer give the answer away by length (the
+  longest option was the key in 60% of questions; now 29%, near chance). Stems name the product they mean ("GKE
+  cluster", not "cluster"), state the facts the answer depends on, and options describe a decision instead of a
+  command line to spell. Template questions that shared distractors now have their own.
 - **The 104 excluded questions are settled** (issue #1): 25 were rewritten from scratch as new questions and 79
   dropped. 33 of the 34 questions removed for resembling a public question set are back, each with its own scenario;
   the 34th duplicated another question. 29 new questions filled thin subtopics. The bank has 722 questions; every
   guide bullet still has at least three. Removed ids are never reused (`data/retired.json`).
-- `python scripts/kb.py lint` checks questions against the standard; `scripts/audit_overlap.py` repeats the
-  provenance audit against local reference files.
-- Theory: GKE can now change a node pool's machine type in place (the nodes are recreated); a new pool and a drain is
-  still the way to keep a fallback.
-
-- The score report opens in the app instead of a browser tab: your score against the pass line, sections, timing,
-  where to study next, then each reviewed question with every option explained, the course's theory, the command,
-  the tell to spot next time and links to read and rewatch. **Missed and flagged** or **Every question**, with
-  **Download PDF report** for the same review as a PDF. A PDF copy is still saved to `reports/` on submission.
-- The layout fills the window. The header and the navigation bar have fixed heights, so nothing is clipped, and the
-  study panel fits between them and scrolls on its own.
-- Learning mode: drag the divider between the question and the study panel to resize it. Arrow keys work, a
-  double-click resets it, and the browser remembers the width. Below 1000px the panel moves under the question; on a
-  phone the navigation buttons show icons only.
-- Material 3 colours, shapes and type throughout, also set as the Streamlit theme.
-- Downloads are built when you download: a PDF removed from `reports/` is rebuilt, and a failed build shows its error
-  instead of an empty file. The review shows 10 questions at a time, with **Show more**.
-- Requires Streamlit 1.66.1 or later (`pyproject.toml`).
-- Type grows with the window, as browser zoom would: 16px on small screens, about 20px on a 1728px laptop, at most
-  24px. Answer options are set at the stem's size, stay readable after **Check answer**, and the right option (and a
-  wrong pick) is marked in the list.
+- The layout fills the window, in Material 3 colours, shapes and type (also set as the Streamlit theme). The header
+  and the navigation bar have fixed heights, so nothing is clipped, and the study panel fits between them and scrolls
+  on its own. Type grows with the window, as browser zoom would: 16px on small screens, about 20px on a 1728px laptop,
+  at most 24px. Answer options are set at the stem's size, stay readable after **Check answer**, and the right option
+  (and a wrong pick) is marked in the list.
 - Buttons: white on blue for the main action and blue on white for the others, with readable hover, pressed, focus
   and disabled states. The bottom bar's buttons are centred in it, with space between them.
+- Downloads are built when you download: a PDF removed from `reports/` is rebuilt, and a failed build shows its error
+  instead of an empty file. The review shows 10 questions at a time, with **Show more**.
+- Theory: GKE can change a node pool's machine type in place (the nodes are recreated); the restricted and private
+  Google API ranges; GKE maintenance-exclusion scopes; Cloud Run secrets as volumes versus environment variables; the
+  IAP web-app role; the roles Pub/Sub dead-lettering needs.
+- Requires Streamlit 1.66.1 or later (`pyproject.toml`).
 
 ### Fixed
 
-- **An answer was recorded wrongly in some new attempts.** Since the 2026-11-06 answer-key repair, a new attempt that
-  included one of the twelve repaired questions had that answer swapped when it was saved, as if it were an old record.
-  New attempts are now saved as answered, and affected attempts (finished after the repair shipped) are corrected once
-  when history is read.
-
+- **Answer keys corrected** where a second option was also right or the key was wrong, among them `ace-dom2-021`
+  (Coldline was cheaper than the keyed Nearline), `ace-dom2-040` and `ace-dom2-042` (Autopilot also met the stem),
+  `ace-dom2-018` (the access pattern read two ways), `ace-dom1-015` (the scenario was impossible) and `ace-dom4-011`
+  (BigQuery data-read logs are on by default).
 - Twelve questions had the answer key on a distractor whose explanation contradicted it ("Correct." on two options):
   `ace-dom1-033`, `ace-dom1-043`, `ace-dom2-005`, `ace-dom2-007`, `ace-dom2-021`, `ace-dom2-043`, `ace-dom2-053`,
   `ace-dom2-057`, `ace-dom3-033`, `ace-dom3-037`, `ace-dom4-006`, `ace-dom5-017`. The options were swapped so each key
   now points at the right answer and the answer-letter spread is unchanged; a test now allows only the key to be
-  called correct.
-- Attempts recorded before that fix are repaired once when history is read: the chosen letter for those twelve
-  questions is swapped the same way and the attempt re-scored, so a pick that was the right answer now counts as
-  correct (`Attempt.bank_fixes` records it, so it never applies twice).
+  called correct. Attempts recorded before that fix are repaired once when history is read: the chosen letter for
+  those twelve questions is swapped the same way and the attempt re-scored (`Attempt.bank_fixes` records it, so it
+  never applies twice).
+- **An answer was recorded wrongly in some new attempts.** After that repair shipped, a new attempt that included one
+  of the twelve questions had that answer swapped when it was saved, as if it were an old record. New attempts are now
+  saved as answered, and affected attempts (finished after the repair shipped) are corrected once when history is read.
+- `kb.py add` gave a cross-domain question (one with `also_tests`) an ordinary section id and left it in learning mode.
+  It now mints an `ace-x-` id, and a cross-domain question is always certifying-only.
 - The timing summary counted unanswered items as misses "answered in under 25 seconds". It now counts wrong answers
   only and states the unanswered ones separately; the results screen shows **Answered wrongly** beside
   **Unanswered** instead of counting unanswered items twice.
@@ -155,7 +162,8 @@ First release, built on Google's June 2026 Associate Cloud Engineer exam guide.
 - **The app needs internet at startup** unless `ACE_SKIP_NETWORK_CHECK=1` is set, even though the exam itself runs
   offline ([#3](https://github.com/nirmata78/gcp-ace-simulator/issues/3)).
 
-[Unreleased]: https://github.com/nirmata78/gcp-ace-simulator/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/nirmata78/gcp-ace-simulator/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/nirmata78/gcp-ace-simulator/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/nirmata78/gcp-ace-simulator/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/nirmata78/gcp-ace-simulator/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/nirmata78/gcp-ace-simulator/releases/tag/v1.0.0

@@ -92,3 +92,13 @@ def test_a_single_answer_question_has_exactly_four_options(bank):
     raw["explanation"]["option_breakdown"]["E"] = "Wrong."
     with pytest.raises(ValueError):
         Question.model_validate(raw)
+
+
+def test_a_cross_domain_question_is_always_certifying_only_and_gets_an_x_id(bank):
+    raw = next(q for q in bank.questions if q.is_cross_domain).model_dump(mode="json")
+    raw.pop("uid")
+    q = Question.model_validate({**raw, "id": "pending", "certifying_only": False})
+    assert q.certifying_only
+    used = max(int(x.id[6:]) for x in bank.questions if x.id.startswith("ace-x-"))
+    assert bank.next_id(q.domain, cross=True) == f"ace-x-{used + 1:03d}"
+    assert bank.next_id(q.domain).startswith("ace-s")

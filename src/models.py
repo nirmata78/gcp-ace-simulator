@@ -221,6 +221,8 @@ class Question(BaseModel):
             raise ValueError("also_tests repeats the question's own objective")
         if self.also_tests and not any(section_of(o).label != self.domain for o in self.also_tests):
             raise ValueError("a cross-domain question must also test an objective in another section")
+        if self.also_tests:
+            self.certifying_only = True  # cross-domain questions are drawn in certifying exams only
         return self
 
     @property
@@ -437,13 +439,14 @@ class QuestionBank(BaseModel):
             or n in q.subtopic.casefold() or any(n in t for t in q.tags)
         ]
 
-    def next_id(self, domain: str, retired: Iterable[str] = ()) -> str:
-        """Mint a new id in a section (``ace-s2-007``), above every id in use or retired.
+    def next_id(self, domain: str, retired: Iterable[str] = (), cross: bool = False) -> str:
+        """Mint a new id in a section (``ace-s2-007``), or a cross-domain one (``ace-x-051``), above
+        every id in use or retired.
 
         Ids are never reused: attempt history refers to questions by id, so a gap left by a removed
         question must stay a gap (``data/retired.json`` lists them).
         """
-        prefix = f"ace-{DOMAIN_SLUG[domain]}-"
+        prefix = "ace-x-" if cross else f"ace-{DOMAIN_SLUG[domain]}-"
         ids = [q.id for q in self.questions] + list(retired)
         used = [int(i[len(prefix):]) for i in ids if i.startswith(prefix) and i[len(prefix):].isdigit()]
         return f"{prefix}{max(used, default=0) + 1:03d}"

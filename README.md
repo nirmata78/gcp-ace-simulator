@@ -5,7 +5,7 @@
 [![Theory](https://img.shields.io/badge/theory-GitHub%20Pages-blue)](https://nirmata78.github.io/gcp-ace-simulator/theory/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Release](https://img.shields.io/github/v/release/nirmata78/gcp-ace-simulator)](https://github.com/nirmata78/gcp-ace-simulator/blob/main/CHANGELOG.md)
-![697 questions](https://img.shields.io/badge/questions-722-orange)
+![722 questions](https://img.shields.io/badge/questions-722-orange)
 ![Exam guide: June 2026](https://img.shields.io/badge/exam%20guide-June%202026-purple)
 ![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue)
 
@@ -196,6 +196,7 @@ python scripts/kb.py show ace-s2-015        # one question in full (by id or tit
 python scripts/kb.py search "secure tag"    # titles, stems, subtopics, tags
 python scripts/kb.py stats                  # counts by section/objective, answer-letter spread
 python scripts/kb.py check                  # schema, duplicates, per-objective depth, uncovered bullets
+python scripts/kb.py lint                   # the question standard: errors, and --warnings for a reviewer
 ```
 
 ### Adding questions
@@ -225,6 +226,13 @@ Give an `objective` and a `subtopic` from the closed list; the section is derive
 python scripts/kb.py add --file newq.json          # previews, checks overlap, then asks
 python scripts/kb.py add --file batch.json --yes   # a JSON list works too
 ```
+
+**Multiple-select.** Give four or five options (`A`–`E`), two or three correct, as `"correct_answer": "A,D"`, a
+rationale for every option, and end the stem with "(Choose two.)" or "(Choose three.)".
+
+**Cross-domain.** Add `"also_tests": ["4.2"]`, the other objectives the scenario needs, at least one in another
+section. The question is then certifying-only and gets an `ace-x-NNN` id. New ids are always above every id in use or
+in `data/retired.json`, so a removed question's id is never reused.
 
 **With Claude** (optional; needs `ANTHROPIC_API_KEY`). Give a topic or a rough stem. The prompt gives the model the
 closed subtopic list and tells it to write nothing outside the guide. Every candidate is previewed, checked for
@@ -262,8 +270,7 @@ question sets and Google's sample questions (`scripts/audit_overlap.py`, [issue 
 34 questions that shared a scenario with an earlier public question were removed, then 33 of them restored with their
 own scenarios: a public look-alike of a common exam topic is not a reason to drop an original question (the 34th was
 a duplicate of another question). Of the 104, 25 were rewritten from scratch and 79 dropped, and a test keeps those
-from coming back. No
-comparison can prove there is no resemblance to anything else: **if you recognise an item,
+from coming back. No comparison can prove there is no resemblance to anything else: **if you recognise an item,
 [open an issue](https://github.com/nirmata78/gcp-ace-simulator/issues) and it will go.**
 
 Every question is held to a written [question standard](docs/question-standard.md): one decision, a complete scenario,
@@ -299,13 +306,16 @@ gcp-ace-simulator/
 ├── src/
 │   ├── blueprint.py           # the June 2026 exam guide: sections, objectives, bullets, subtopics
 │   ├── models.py              # schemas, bank persistence, register, duplicate detection
+│   ├── question_lint.py       # the machine-checkable parts of the question standard
 │   ├── exam_engine.py         # three-level sampling, timer, navigation, scoring (no Streamlit imports)
 │   ├── paths.py               # where history and reports go (ACE_STATE_DIR)
 │   ├── retrospective.py       # the PDF report: score summary, then two pages per reviewed item
 │   ├── study_links.py         # theory sections, site links and video chapters for a question
 │   └── history_sync.py        # merges two histories, for bin/start.sh and bin/stop.sh
 ├── scripts/
-│   ├── kb.py                  # query / add / check / blueprint / reindex
+│   ├── kb.py                  # query / add / check / lint / blueprint / reindex
+│   ├── audit_overlap.py       # provenance audit against local reference question sets
+│   ├── review_report.py       # docs/reviews/*.md from the review ledger
 │   ├── check_network.py       # the connectivity check before LLM authoring
 │   ├── retrospective.py       # rebuild the report for an attempt in history
 │   ├── build_study_links.py   # regenerate data/study_links.json from the theory and the video
@@ -313,11 +323,13 @@ gcp-ace-simulator/
 ├── data/
 │   ├── sections/*.json        # the bank, source of truth, one file per guide section
 │   ├── register.json          # generated index; rebuilt on every write
+│   ├── retired.json           # removed question ids, never reused
 │   └── study_links.json       # generated: guide bullet -> theory sections, URLs, video chapters
 ├── bin/start.sh, bin/stop.sh  # run it in Docker, with your history
 ├── theory/                    # the site: one Markdown page per part
 │   ├── pdf/                   # optional local PDF build
 │   └── video/                 # sources of a narrated course (the videos are not in the repo)
+├── docs/                      # question-standard.md, reviews/ (the per-question review ledger), plans/
 ├── tests/                     # the default run; tests/container needs Docker
 ├── Dockerfile, compose.yaml   # the container; .dockerignore allows only what the image needs
 ├── pyproject.toml             # dependencies; requirements*.lock pin them with hashes
@@ -332,13 +344,13 @@ by hand, run `python scripts/kb.py reindex`.
 ## 8 · Testing
 
 ```bash
-pytest -q          # 130 tests; no Docker needed
+pytest -q          # 154 tests; no Docker needed
 ```
 
 They cover the schema and blueprint, bank integrity, the exact sampling split, navigation, flags, the timer, deferred
-grading and objective scoring, reading older history, the PDF report and its layout, the in-app report, the study links, the study panel and its splitter,
+grading and objective scoring, multiple-select scoring, cross-domain sampling, draws that avoid seen questions, the question standard, reading older history, the PDF report and its layout, the in-app report, the study links, the study panel and its splitter,
 merging histories, running offline and `ACE_STATE_DIR`. CI runs them
-on every pull request, with `kb.py check` and `kb.py blueprint --min 3 --strict`.
+on every pull request, with `kb.py check`, `kb.py lint` and `kb.py blueprint --min 3 --strict`.
 
 The container has its own tests, which sit an exam in a real browser against the hardened container:
 
@@ -373,7 +385,7 @@ file, so they don't touch your simulator or your history, but they do rebuild th
 ## Releases
 
 The project uses [semantic versioning](https://github.com/nirmata78/gcp-ace-simulator/blob/main/RELEASE.md). See the [changelog](https://github.com/nirmata78/gcp-ace-simulator/blob/main/CHANGELOG.md) for what changed and for known
-limitations, and the [roadmap](https://github.com/nirmata78/gcp-ace-simulator/blob/main/RELEASE.md#roadmap) for what is next, starting with a ready-made Docker image
+limitations, and the [roadmap](https://github.com/nirmata78/gcp-ace-simulator/blob/main/RELEASE.md#roadmap) for what is next, starting with a ready-made Docker image in 1.3.0
 ([#7](https://github.com/nirmata78/gcp-ace-simulator/issues/7)).
 
 ## Contributing
