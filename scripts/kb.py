@@ -692,7 +692,7 @@ def cmd_plan(args) -> int:
     try:
         grow = parse_grow(args.grow, len(bank.questions))
         p = plan(bank, grow, balance=args.balance, sections=args.sections, objective=args.objective,
-                 cross_share=args.cross_share, multi_share=args.multi_share, batch_size=args.batch_size,
+                 subtopics=args.subtopics, cross_share=args.cross_share, multi_share=args.multi_share, batch_size=args.batch_size,
                  request=args.grow)
     except ValueError as exc:
         print(f"[ERROR] {exc}", file=sys.stderr)
@@ -906,6 +906,8 @@ def main() -> int:
     p.add_argument("--section", dest="sections", type=int, action="append", choices=[1, 2, 3, 4],
                    help="only this section (repeatable)")
     p.add_argument("--objective", "-o", choices=sorted(OBJECTIVES), help="only this objective")
+    p.add_argument("--subtopic", dest="subtopics", action="append",
+                   help="only this subtopic, by its exact name (repeatable); the thinnest of them is filled first")
     p.add_argument("--cross-share", type=float, default=CROSS_SHARE,
                    help=f"share of cross-domain questions (default {CROSS_SHARE})")
     p.add_argument("--multi-share", type=float, default=MULTI_SHARE,

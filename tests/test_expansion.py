@@ -132,6 +132,15 @@ def test_a_plan_can_be_restricted(bank):
     assert {s["objective"] for s in plan(bank, 6, objective="2.4")["slots"]} == {"2.4"}
 
 
+def test_a_plan_can_be_aimed_at_subtopics(bank):
+    names = ["Role Types and Custom Roles", "Workload Identity Federation"]
+    p = plan(bank, 9, subtopics=names)
+    assert len(p["slots"]) == 9 and {s["subtopic"] for s in p["slots"]} <= set(names)
+    assert all(SUBTOPICS[s["subtopic"]].objective == s["objective"] for s in p["slots"])
+    with pytest.raises(ValueError):
+        plan(bank, 3, subtopics=["No such subtopic"])
+
+
 def test_slots_sit_on_the_blueprint_and_thin_subtopics_come_first(bank):
     p = plan(bank, 40)
     for s in p["slots"]:

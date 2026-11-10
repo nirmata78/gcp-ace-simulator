@@ -33,6 +33,7 @@ from src.blueprint import (
     OBJECTIVES,
     SECTION_LIST,
     SECTIONS,
+    SUBTOPICS,
     objective_weights,
     subtopics_in,
 )
@@ -120,7 +121,8 @@ def _spaced(count: int, total: int) -> List[int]:
 
 
 def plan(bank: QuestionBank, grow: int, *, balance: str = "exam", sections: Optional[Iterable[int]] = None,
-         objective: Optional[str] = None, cross_share: float = CROSS_SHARE, multi_share: float = MULTI_SHARE,
+         objective: Optional[str] = None, subtopics: Optional[Iterable[str]] = None,
+         cross_share: float = CROSS_SHARE, multi_share: float = MULTI_SHARE,
          batch_size: int = BATCH_SIZE, request: str = "") -> dict:
     """The slots of one run. Deterministic for a given bank and arguments."""
     if balance not in BALANCES:
@@ -141,15 +143,34 @@ def plan(bank: QuestionBank, grow: int, *, balance: str = "exam", sections: Opti
             ids = [o.id for o in OBJECTIVE_LIST if o.section == n]
             per_obj.update(_split(per_sec[str(n)], {i: have_obj[i] for i in ids}, {i: obj_w[i] for i in ids}, balance))
 
+    # A run can be aimed at named subtopics, for when the others have nothing new left to ask.
+    only = list(dict.fromkeys(subtopics or []))
+    unknown = [n for n in only if n not in SUBTOPICS]
+    if unknown:
+        raise ValueError(f"unknown subtopic(s): {', '.join(unknown)}")
+    if only:
+        chosen = [SUBTOPICS[n] for n in only]
+        level = {s.name: have_sub[s.name] for s in chosen}
+        aimed: Counter = Counter()
+        for _ in range(grow):
+            thin = min(chosen, key=lambda s: (level[s.name] / max(1, len(s.bullets)), chosen.index(s)))
+            level[thin.name] += 1
+            aimed[thin.name] += 1
+        per_obj = Counter()
+        for s in chosen:
+            per_obj[s.objective] += aimed[s.name]
+
     slots: List[dict] = []
     for obj in OBJECTIVE_LIST:
         subs = subtopics_in(obj.id)
         filled = {s.name: have_sub[s.name] for s in subs}
         picks: Counter = Counter()
-        for _ in range(per_obj.get(obj.id, 0)):
+        for _ in range(0 if only else per_obj.get(obj.id, 0)):
             thin = min(subs, key=lambda s: (filled[s.name] / max(1, len(s.bullets)), subs.index(s)))
             filled[thin.name] += 1
             picks[thin.name] += 1
+        if only:
+            picks = Counter({s.name: aimed[s.name] for s in subs if s.name in aimed})
         for s in subs:
             for _ in range(picks[s.name]):
                 slots.append({"section": obj.section, "objective": obj.id, "subtopic": s.name,
