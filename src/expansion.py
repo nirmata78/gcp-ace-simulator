@@ -38,7 +38,7 @@ from src.blueprint import (
     subtopics_in,
 )
 from src.models import OPTION_KEYS, Question, QuestionBank, _normalise, _recycles, _STOPWORDS
-from src.question_lint import DOC_HOSTS, lint_question
+from src.question_lint import lint_question
 
 Finding = Tuple[str, str, str]
 
@@ -127,13 +127,25 @@ def plan(bank: QuestionBank, grow: int, *, balance: str = "exam", sections: Opti
     """The slots of one run. Deterministic for a given bank and arguments."""
     if balance not in BALANCES:
         raise ValueError(f"balance must be one of {', '.join(BALANCES)}")
+    if batch_size < 1:
+        raise ValueError("batch size must be at least 1")
+    if not (0 <= cross_share <= 1 and 0 <= multi_share <= 1):
+        raise ValueError("cross and multi shares are fractions between 0 and 1")
+    only = list(dict.fromkeys(subtopics or []))
+    unknown = [n for n in only if n not in SUBTOPICS]
+    if unknown:
+        raise ValueError(f"unknown subtopic(s): {', '.join(unknown)}")
+    if only and (sections or objective):
+        raise ValueError("--subtopic already says where the questions go; do not combine it with --section or --objective")
     obj_w = objective_weights()
     have_obj = Counter(q.objective for q in bank.questions)
     have_sub = Counter(q.subtopic for q in bank.questions)
 
     # Sections, then the objectives inside each one, then the thinnest subtopics inside each objective.
     wanted = sorted(set(sections)) if sections else [s.number for s in SECTION_LIST]
-    if objective:
+    if only:
+        per_obj = {}
+    elif objective:
         per_obj = {objective: grow}
     else:
         have_sec = {str(n): sum(have_obj[o.id] for o in OBJECTIVE_LIST if o.section == n) for n in wanted}
@@ -144,10 +156,6 @@ def plan(bank: QuestionBank, grow: int, *, balance: str = "exam", sections: Opti
             per_obj.update(_split(per_sec[str(n)], {i: have_obj[i] for i in ids}, {i: obj_w[i] for i in ids}, balance))
 
     # A run can be aimed at named subtopics, for when the others have nothing new left to ask.
-    only = list(dict.fromkeys(subtopics or []))
-    unknown = [n for n in only if n not in SUBTOPICS]
-    if unknown:
-        raise ValueError(f"unknown subtopic(s): {', '.join(unknown)}")
     if only:
         chosen = [SUBTOPICS[n] for n in only]
         level = {s.name: have_sub[s.name] for s in chosen}
@@ -179,7 +187,7 @@ def plan(bank: QuestionBank, grow: int, *, balance: str = "exam", sections: Opti
     # Which slots are cross-domain and which are multiple-select.
     total = len(slots)
     cross = set(_spaced(math.floor(total * cross_share + 0.5), total))
-    multi = {i for n, i in enumerate(sorted(cross)) if n % CROSS_MULTI_EVERY == 1}
+    multi = {i for n, i in enumerate(sorted(cross)) if n % CROSS_MULTI_EVERY == 1} if multi_share > 0 else set()
     rest = [i for i in range(total) if i not in cross]
     more = max(0, math.floor(total * multi_share + 0.5) - len(multi))
     multi |= {rest[p] for p in _spaced(more, len(rest))} if rest else set()
@@ -295,7 +303,8 @@ def mark(p: dict, slot: int, status: str, **extra) -> None:
 # --------------------------------------------------------------------------
 
 _DROP = re.compile(r"(?is)<(script|style|nav|header|footer|svg|devsite-toc|devsite-feedback)\b.*?</\1\s*>")
-_BLOCK = re.compile(r"(?i)</?(p|div|li|ul|ol|h[1-6]|tr|table|section|article|pre|br|aside|devsite-[a-z-]+)\b[^>]*>")
+_BLOCK = re.compile(r"(?i)</?(p|div|li|ul|ol|h[1-6]|tr|td|th|table|caption|dl|dt|dd|blockquote|section|article|pre|br|"
+                    r"aside|devsite-[a-z-]+)\b[^>]*>")
 _TAG = re.compile(r"<[^>]+>")
 _PREVIEW = re.compile(r"Pre-GA Offerings Terms|\(Preview\)|\bis in Preview\b|\bPreview (feature|release|stage)\b|"
                       r"\bin (public |private )?preview\b", re.I)
@@ -314,7 +323,11 @@ def page_text(raw_html: str) -> str:
 
 
 def fetch_page(url: str, cache_dir: Optional[Path] = None, timeout: float = 25.0) -> str:
-    """Plain text of the page at ``url``, cached per URL so a run fetches each page once."""
+    """Plain text of the page at ``url``.
+
+    With ``cache_dir`` the text is kept per URL, so drafting and vetting fetch a page once. ``kb.py accept`` passes no
+    cache: the last check before a question enters the bank is against the page as it is now.
+    """
     if urlparse(url).scheme != "https":
         raise ValueError(f"not an https URL: {url}")
     cached = cache_dir / (hashlib.sha1(url.encode()).hexdigest()[:16] + ".txt") if cache_dir else None
@@ -380,7 +393,7 @@ def _jaccard(a: set, b: set) -> float:
 def blind_hash(q: Question) -> str:
     """Fingerprint of what a blind solver sees. Any edit to the stem or an option changes it."""
     seen = q.question + "".join(f"|{k}:{q.options[k]}" for k in q.keys)
-    return hashlib.sha1(_normalise(seen).encode()).hexdigest()[:12]
+    return hashlib.sha1(" ".join(seen.split()).encode()).hexdigest()[:12]
 
 
 def parse_candidate(raw: dict, index: int = 0) -> Question:
@@ -407,6 +420,10 @@ def blind_sheet(raws: List[dict]) -> str:
 def record_blind(raws: List[dict], answers: Dict[str, str]) -> List[Tuple[str, str, str, bool]]:
     """Store each blind answer on its candidate; returns ``(label, key, answer, agrees)`` rows."""
     rows = []
+    names = {str(raw.get("slot", i + 1)) for i, raw in enumerate(raws) if "skip" not in raw}
+    stray = sorted(set(answers) - names)
+    if stray:
+        raise ValueError(f"no candidate numbered {', '.join(stray)} in this file")
     for i, raw in enumerate(raws):
         if "skip" in raw:
             continue
@@ -414,7 +431,10 @@ def record_blind(raws: List[dict], answers: Dict[str, str]) -> List[Tuple[str, s
         if name not in answers:
             continue
         q = parse_candidate(raw, i)
-        given = ",".join(sorted(re.findall(r"[A-E]", answers[name].upper())))
+        letters = answers[name].upper().replace(" ", "")
+        if not re.fullmatch(r"[A-E](,[A-E])*", letters):
+            raise ValueError(f"answer for {name} must be option letters such as B or A,D, not {answers[name]!r}")
+        given = ",".join(sorted(set(letters.split(","))))
         agrees = given == q.correct_answer
         raw["blind"] = {"answer": given, "agrees": agrees, "hash": blind_hash(q)}
         rows.append((_label(raw, i), q.correct_answer, given, agrees))
@@ -524,7 +544,7 @@ def vet(bank: QuestionBank, raws: List[dict], *, plan: Optional[dict] = None,
         if len(quote.split()) < EVIDENCE_MIN_WORDS:
             out.append(("error", "evidence", f"give 'evidence': a sentence of {EVIDENCE_MIN_WORDS}+ words copied from "
                         "the doc_ref page that proves the key (AC5)"))
-        elif pages is not None and urlparse(q.explanation.doc_ref).hostname in DOC_HOSTS:
+        elif pages is not None and urlparse(q.explanation.doc_ref).scheme == "https":
             try:
                 page = pages(q.explanation.doc_ref)
             except Exception as exc:

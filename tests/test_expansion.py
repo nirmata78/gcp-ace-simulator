@@ -132,6 +132,13 @@ def test_a_plan_can_be_restricted(bank):
     assert {s["objective"] for s in plan(bank, 6, objective="2.4")["slots"]} == {"2.4"}
 
 
+def test_plan_arguments_are_checked(bank):
+    assert not [s for s in plan(bank, 40, multi_share=0)["slots"] if s["kind"] == "multi"]
+    for bad in (dict(batch_size=0), dict(multi_share=2), dict(subtopics=["Role Types and Custom Roles"], sections=[1])):
+        with pytest.raises(ValueError):
+            plan(bank, 10, **bad)
+
+
 def test_a_plan_can_be_aimed_at_subtopics(bank):
     names = ["Role Types and Custom Roles", "Workload Identity Federation"]
     p = plan(bank, 9, subtopics=names)
@@ -246,6 +253,18 @@ def test_a_preview_mention_is_surfaced(bank):
     assert ("warning", "preview") in {(s, c) for s, c, _ in found["slot 1"]}
 
 
+def test_table_cells_are_not_glued_together():
+    text = page_text("<div class='devsite-article-body'><table><tr><td>Nearline</td><td>30 days</td></tr></table></div>")
+    assert "Nearline30" not in text and has_quote(text, "Nearline 30 days")
+
+
+def test_evidence_is_checked_whatever_the_host(bank):
+    c = candidate()
+    c["explanation"]["doc_ref"] = "https://github.com/GoogleCloudPlatform/example/blob/main/README.md"
+    found, _ = vet(bank, [c], pages=lambda url: "A page that says something else entirely.")
+    assert "evidence" in codes(found)
+
+
 def test_page_text_keeps_the_article_and_drops_chrome():
     raw = ("<html><nav>Menu</nav><div class='devsite-article-body'><h1>Title</h1><p>One&nbsp;<code>two</code> three.</p>"
            "<script>var x = 1;</script></div></html>")
@@ -264,11 +283,17 @@ def test_final_vetting_needs_an_agreeing_blind_record_for_the_current_wording(ba
     found, _ = vet(bank, [c], final=True)
     assert "blind" in codes(found)
     assert record_blind([c], {"1": "b"}) == [("slot 1", "C", "B", False)]
+    for bad in ({"1": "none"}, {"1": "skipped"}, {"7": "C"}):
+        with pytest.raises(ValueError):
+            record_blind([c], bad)
     assert "blind" in codes(vet(bank, [c], final=True)[0])
     record_blind([c], {"1": " c "})
     assert c["blind"]["hash"] == blind_hash(parse_candidate(c)) and not codes(vet(bank, [c], final=True)[0])
     c["options"]["A"] = "In each project, by importing one shared role definition"
     assert "blind" in codes(vet(bank, [c], final=True)[0]), "an edit after the blind solve voids it"
+    record_blind([c], {"1": "C"})
+    c["question"] = c["question"].replace("40 projects", "400 projects").replace("Its ", "its ")
+    assert "blind" in codes(vet(bank, [c], final=True)[0]), "so does a change of a digit or of case"
 
 
 # -- adding a batch -----------------------------------------------------------

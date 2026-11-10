@@ -43,11 +43,14 @@ to look inside the theory use the Grep tool, or a plain `grep -n "term" theory/*
 2. Read the request. The first word is the amount: a share of the bank (`10%`) or a count (`25`). `--dry-run` is for
    you (see the end of this file). Every other option goes to `kb.py plan` unchanged. If there is no amount, print the
    usage line from this skill's `argument-hint` and stop.
-3. Run `git status --short`. If files under `data/`, `theory/` or `docs/reviews/` are modified, stop and tell the
-   user: the run commits those paths and must not mix in someone else's edits.
-4. Choose the run directory: `build/expand/<today's date>`, for example `build/expand/2026-11-10`. Call it `RUN`.
-   - If `RUN/plan.json` exists, run `.venv/bin/python scripts/kb.py slots RUN/plan.json`. If slots are open, **resume
-     that run** from Step 1 and do not plan again. If none are open, use `RUN-2`, `RUN-3`, and so on.
+3. Look for a run to resume: `ls build/expand`. For the newest directory that has a `plan.json`, run
+   `.venv/bin/python scripts/kb.py slots build/expand/<dir>/plan.json`. If slots are open, that directory is `RUN`:
+   **resume it** from Step 1, do not plan again, and skip point 4. A resumed run has uncommitted changes of its own
+   under `data/`, `theory/` and `docs/reviews/`; that is expected.
+4. For a new run only: run `git status --short`. If files under `data/`, `theory/` or `docs/reviews/` are modified,
+   stop and tell the user: the run commits those paths and must not mix in someone else's edits. Then choose the run
+   directory `build/expand/<today's date>`, for example `build/expand/2026-11-10`, and call it `RUN`. If that
+   directory already holds a finished plan, use `RUN-2`, `RUN-3`, and so on.
 5. Plan:
 
    ```bash
@@ -61,7 +64,9 @@ whether it is cross-domain, and the letter of the correct answer. Slots come in 
 
 ## Step 1. Work one batch at a time
 
-Repeat steps 1.1 to 1.6 until `kb.py slots` says the run is complete. Finish a batch before you start the next.
+Repeat steps 1.1 to 1.6 until `kb.py slots` says the run is complete. Accept batches in order. While a blind solver
+is working you may draft the next batch, but a batch is accepted only when every question in it has a current
+blind-solve record.
 
 ### 1.1 See the batch
 
@@ -211,8 +216,9 @@ option; or its "Problems" line says the reader needs a fact the stem does not gi
 limit, an assumption), or that an option is not real. Do not argue such a report away: put the missing fact in the
 stem. A remark that is only editorial (awkward wording, a formatting difference, "the key is unaffected") does not
 block the question: fix it if the fix is one phrase, and list the remark in your final report either way. Remember
-that any edit to a stem or an option needs a new blind solve; send reworked questions to the next batch's solver
-together with that batch's sheet. For every question that needs work:
+that any edit to a stem or an option needs a new blind solve by a **new** agent. To save a round, the reworked
+questions may go on the same sheet as the next batch's questions; for the last batch, start an agent for the
+reworked questions alone. For every question that needs work:
 
 1. Read the documentation again with `kb.py doc`. Decide who is right from the page, not from confidence.
 2. If your key was wrong, or two options are both right, rewrite the question or skip the slot.
@@ -230,8 +236,8 @@ Any edit to a stem or an option after a blind solve cancels that question's reco
 ```
 
 Use the run's date in the ledger name, and the same ledger for every batch of the run. `accept` checks everything
-again, including the evidence quotes against the live pages. It adds all of the batch or none of it, prints the new
-ids, and marks the slots filled or skipped.
+again, and fetches each `doc_ref` page afresh to check the evidence quote against the page as it is now. It adds all
+of the batch or none of it, prints the new ids, and marks the slots filled or skipped.
 
 Then, for each question added: `Grep` the fact behind its key in `theory/*.md`. If no page teaches it, add one or two
 sentences to the section of the page where it belongs, in the page's own style. Do not add or rename headings. Mark a

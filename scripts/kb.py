@@ -639,8 +639,11 @@ def _candidates(path: Path) -> list:
 
 
 def _write_json(path: Path, payload) -> None:
+    """Write through a temporary file, so an interrupted write never leaves half a file."""
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    tmp.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    tmp.replace(path)
 
 
 def _guarded(stem: str) -> Optional[str]:
@@ -659,10 +662,11 @@ def _guarded(stem: str) -> Optional[str]:
     return None
 
 
-def _vet(bank: QuestionBank, raws: list, plan: Optional[dict], offline: bool, final: bool):
+def _vet(bank: QuestionBank, raws: list, plan: Optional[dict], offline: bool, final: bool, live: bool = False):
     from src.expansion import fetch_page, vet
 
-    pages = None if offline else (lambda url: fetch_page(url, EXPAND_DIR / "cache"))
+    cache = None if live else EXPAND_DIR / "cache"
+    pages = None if offline else (lambda url: fetch_page(url, cache))
     found, parsed = vet(bank, raws, plan=plan, pages=pages, final=final)
     for label, q in parsed.items():
         hit = _guarded(q.question)
@@ -784,7 +788,12 @@ def cmd_accept(args) -> int:
     bank = load(args.data_dir)
     raws = _candidates(args.file)
     plan = _read_json(args.plan)
-    found, parsed = _vet(bank, raws, plan, args.offline, final=True)
+    for raw in raws:
+        if raw.get("id") and bank.get(raw["id"]):
+            print(f"[ERROR] slot {raw.get('slot')} is already in the bank as {raw['id']}: this file was accepted before.",
+                  file=sys.stderr)
+            return 1
+    found, parsed = _vet(bank, raws, plan, args.offline, final=True, live=True)
     if _print_findings(found, parsed, raws):
         print(red("\nNothing written. Fix the errors, or mark a slot {\"slot\": N, \"skip\": \"reason\"}."))
         return 1
@@ -809,10 +818,11 @@ def cmd_accept(args) -> int:
     if args.dry_run:
         print(dim(f"[DRY RUN] would add {len(added)} question(s); nothing written."))
         return 0
-    bank.save(args.data_dir)
-    _write_json(args.ledger, ledger)
-    _write_json(args.plan, plan)
+    # The batch file first: it carries the new ids, so a repeated accept is refused even if a later write is lost.
     _write_json(args.file, raws)
+    bank.save(args.data_dir)
+    _write_json(args.plan, plan)
+    _write_json(args.ledger, ledger)
     left = sum(s["status"] == "open" for s in plan["slots"])
     print(green(f"\n[OK] added {len(added)}: {' '.join(added)}"))
     print(f"Bank now {len(bank.questions)}. {left} slot(s) still open in the plan.")
