@@ -243,6 +243,40 @@ python scripts/kb.py add --topic "Cloud NAT and private instances" --count 2
 python scripts/kb.py add --stem "How do you restrict egress to one FQDN?" --section 2 --dry-run
 ```
 
+### Growing the bank with `/expand`
+
+The repository carries a [Claude Code](https://claude.com/claude-code) skill that adds a planned batch of questions.
+Pick the model and the effort on the command line:
+
+```bash
+claude "/expand 10%" --model opus --effort high        # grow the bank by a tenth, with you watching
+claude "/expand 25 --section 4" --model sonnet         # 25 questions, Section 4 only
+claude "/expand 8 --dry-run"                           # plan, write and check one batch; add nothing
+claude -p "/expand 5%" --model opus --effort high --permission-mode acceptEdits   # unattended
+```
+
+A run plans first and writes second, and code decides everything that code can decide:
+
+| Step | Command | What it settles |
+|---|---|---|
+| Plan | `kb.py plan 10% --out build/expand/RUN/plan.json` | How many questions each section, objective and subtopic gets; which are multiple-select or cross-domain; the letter of every key |
+| Brief | `kb.py slots PLAN` | The next eight slots, with what the bank already asks on those subtopics |
+| Read | `kb.py doc URL --find "term"` | The documentation page as plain text, to copy the evidence sentence from |
+| Vet | `kb.py vet FILE --plan PLAN` | The standard's machine checks, the slot, overlap with the bank, and the evidence quote against the live page |
+| Blind solve | `kb.py blind FILE` | A second agent answers without the key; a disagreement sends the question back or out |
+| Accept | `kb.py accept FILE --plan PLAN --ledger docs/reviews/expand-DATE.json` | All checks again, then the whole batch or nothing |
+
+By default the new questions go where the bank is furthest below the exam weights (20/30/30/20), so today a run adds
+to Sections 1 and 4 and leaves 2 and 3 alone. `--balance batch` splits the run itself 20/30/30/20, and
+`--balance current` grows every section by the same percentage. A tenth of a run is cross-domain and a tenth is
+multiple-select; `--cross-share` and `--multi-share` change that.
+
+The run ends on a new `expand/DATE` branch with one commit and pushes nothing. Its report lists the new ids, every
+slot it skipped and why, and the questions the blind solver sent back. A slot with nothing new to ask is skipped, so
+a run can end smaller than planned. You are still the reviewer: read the questions before you merge. The rules are in
+the [question standard](docs/question-standard.md#growing-the-bank), and the procedure a model follows is
+[`.claude/skills/expand/SKILL.md`](.claude/skills/expand/SKILL.md).
+
 ### Keeping questions unique
 
 Questions **may test the same concept**, because a second scenario on a weak topic is how it gets learned. What they

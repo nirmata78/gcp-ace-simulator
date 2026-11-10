@@ -40,7 +40,9 @@ __pycache__/
 .idea/
 .vscode/
 *.swp
-.claude/
+.claude/*
+!.claude/skills/
+!.claude/agents/
 .agents/
 
 # ── Python packaging ──

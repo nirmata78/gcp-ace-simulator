@@ -8,6 +8,12 @@ All notable changes to this project are recorded here. The format follows
 
 ### Added
 
+- **`/expand`: grow the bank by a planned amount.** `claude "/expand 10%" --model opus --effort high` plans where the
+  new questions go, steering the sections toward the exam weights, and mixes in multiple-select and cross-domain
+  questions. Each key is fixed in advance and proven by a sentence quoted from its documentation page; each question
+  is answered blind by a second agent before it is added. New commands behind it: `kb.py plan`, `slots`, `doc`, `vet`,
+  `blind` and `accept`.
+
 - **69 new questions** (bank 786) on concepts that are often confused: Cloud NAT IP modes and regions, static and
   promoted addresses, DNS forwarding in both directions, BGP and Cloud Router ASNs, dynamic routing mode, GKE Pod
   ranges, implied firewall rules, separate projects and Shared VPC hosts per environment, Assured Workloads, Directory
@@ -23,6 +29,9 @@ All notable changes to this project are recorded here. The format follows
 
 ### Changed
 
+- **Question standard.** It now says what makes a question distinct (a new decision or a variant, never a
+  restatement), requires quoted evidence and a blind solve for questions added in bulk, and adds rules on one decision
+  per question, volatile numbers, distractors that each fail for their own reason, and what earns an `also_tests` entry.
 - **A key never depends on a Preview feature.** The question standard (AC7) now says so, measured against Google Cloud
   in June 2026; Gemini Cloud Assist, which the guide names, is the one exception. Five questions whose keys relied on
   Preview features were retired and replaced (`ace-s1-043` liens, `ace-s1-047` Gemini in Billing, `ace-s2-085` the
