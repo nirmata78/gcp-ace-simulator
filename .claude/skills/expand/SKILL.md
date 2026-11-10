@@ -16,6 +16,11 @@ The tools below make most decisions for you. Your job is to write sound question
 
 Use `.venv/bin/python` for every command. If `.venv` is missing, create it as `CLAUDE.md` says.
 
+**One command per Bash call, written as shown here.** No `&&`, `;`, pipes, `head`, redirects or inline Python: the
+commands in this file are approved in advance, and anything joined to them needs an approval that an unattended run
+cannot get. To look inside the bank use `kb.py search "term"`, `kb.py list --subtopic "name" -v` and `kb.py show ID`;
+to look inside the theory use the Grep tool, or a plain `grep -n "term" theory/*.md` if there is no Grep tool. If a command from this file is refused, stop and report which one.
+
 ## Five rules that override everything else
 
 1. **No exam content.** Write only from the exam guide bullet and the documentation page you read in this run. Never
@@ -97,7 +102,8 @@ Read the page as plain text, never from memory and never through a summary:
 ```
 
 - Copy **one sentence, word for word,** that proves the correct answer. It is the question's `evidence`. A tool
-  checks later that this sentence is on the `doc_ref` page, so do not tidy or shorten it in the middle.
+  checks later that this sentence is on the `doc_ref` page, so do not tidy or shorten it in the middle. Choose the
+  sentence that states the deciding fact itself. A sentence that only mentions the feature proves nothing.
 - If the command prints `[PREVIEW MENTIONED]`, read that passage. If the feature your key needs is in Preview, choose
   another decision. A Preview feature may be a wrong option, never the answer (AC7).
 - If a wrong option depends on a fact you are not sure of, read its page too.
@@ -105,7 +111,8 @@ Read the page as plain text, never from memory and never through a summary:
 Then write the question **in this order**. The order prevents the usual defects.
 
 1. **The fact:** the evidence sentence, and in your own words what it means.
-2. **The decision and the correct option:** short and plain. Name the product, role or action.
+2. **The decision and the correct option:** short and plain. Name the product, role or action. An option says what
+   to do and stops: no "so that…", "because…" or "which lets…" clause. Reasons belong in the rationales.
 3. **Three wrong options** (four for a multiple-select slot, which has five options and two correct). Each one is a
    real product, role, setting or command that solves a *neighbouring* problem. For each, write down the fact in the
    scenario that makes it wrong. Each needs its **own** reason; if two fail for the same reason, replace one.
@@ -118,7 +125,8 @@ Then write the question **in this order**. The order prevents the usual defects.
 6. **The explanation:** `summary` states the mechanism. `option_breakdown` has one rationale per option: the correct
    one starts with `Correct.`, each wrong one says why it fails *in this scenario*, in a sentence not used elsewhere.
 7. **`gcloud_command`:** a real command that carries out the answer, taken from the documentation, or a console path
-   written as `# Console > IAM & Admin > Roles > Create role`.
+   written as `# Console > IAM & Admin > Roles > Create role`. Copy the command or the menu labels from a page you
+   read; do not compose them from memory. If the page gives neither, read the product's how-to page for it.
 8. **`title`** (under 60 characters, a label, no final full stop), **`summary`** (one sentence: the single idea
    tested), **`tags`** (two to five, lowercase, hyphenated).
 
@@ -195,11 +203,13 @@ this session, use a `general-purpose` agent and put the instructions from `.clau
 the sheet.) Wait for its reply. Then record its answers exactly as it gave them:
 
 ```bash
-.venv/bin/python scripts/kb.py blind RUN/batch-01.json --answers 3=C 5=A,D 6=B
+.venv/bin/python scripts/kb.py blind RUN/batch-01.json --answers 3:C 5:A,D 6:B
 ```
 
-For every `DISAGREE`, and for every question where the solver reports a second defensible option or a missing fact,
-even if its letter matches:
+A question needs work when the command prints `DISAGREE`, **and also** when the solver's letter matches but its
+"Also defensible" or "Problems" line says anything other than "none". Do not argue a report away. If the solver says
+the reader must know a fact the stem does not give (a time window, a default, a limit), put that fact in the stem.
+For every such question:
 
 1. Read the documentation again with `kb.py doc`. Decide who is right from the page, not from confidence.
 2. If your key was wrong, or two options are both right, rewrite the question or skip the slot.

@@ -762,10 +762,10 @@ def cmd_blind(args) -> int:
         if not args.answers:
             print(blind_sheet(raws))
             return 0
-        answers = dict(a.split("=", 1) for a in args.answers)
+        answers = dict(a.replace("=", ":").split(":", 1) for a in args.answers)
         rows = record_blind(raws, answers)
     except Exception as exc:
-        print(f"[ERROR] {' '.join(str(exc).split())}\nRun kb.py vet first; give answers as SLOT=LETTERS.",
+        print(f"[ERROR] {' '.join(str(exc).split())}\nRun kb.py vet first; give answers as SLOT:LETTERS.",
               file=sys.stderr)
         return 1
     _write_json(args.file, raws)
@@ -935,7 +935,7 @@ def main() -> int:
 
     p = sub.add_parser("blind", help="candidates without keys, and recording a blind solver's answers")
     p.add_argument("file", type=Path)
-    p.add_argument("--answers", nargs="+", metavar="SLOT=LETTERS", help="for example 12=B 13=A,D")
+    p.add_argument("--answers", nargs="+", metavar="SLOT:LETTERS", help="for example 12:B 13:A,D")
     p.set_defaults(func=cmd_blind)
 
     p = sub.add_parser("accept", help="add a vetted, blind-solved batch to the bank")

@@ -252,8 +252,13 @@ Pick the model and the effort on the command line:
 claude "/expand 10%" --model opus --effort high        # grow the bank by a tenth, with you watching
 claude "/expand 25 --section 4" --model sonnet         # 25 questions, Section 4 only
 claude "/expand 8 --dry-run"                           # plan, write and check one batch; add nothing
-claude -p "/expand 5%" --model opus --effort high --permission-mode acceptEdits   # unattended
+claude -p "/expand 5%" --model opus --effort high --permission-mode acceptEdits \
+  --allowedTools "Bash(.venv/bin/python scripts/kb.py *)" "Bash(.venv/bin/pytest *)" WebSearch WebFetch \
+                 "Bash(git checkout -b expand/*)" "Bash(git add *)" "Bash(git commit *)"   # unattended
 ```
+
+An unattended run cannot answer permission prompts, so it needs the `--allowedTools` list above (or the same rules in
+your own `.claude/settings.local.json`). Without them it stops at the first refused command and says which.
 
 A run plans first and writes second, and code decides everything that code can decide:
 

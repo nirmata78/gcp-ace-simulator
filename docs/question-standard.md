@@ -64,6 +64,8 @@ its items: the no-exam-content rule in [CONTRIBUTING.md](../CONTRIBUTING.md) com
   one. Across the bank the longest option is the key in at most 35% of single-answer questions (chance is 25%);
   `kb.py lint` reports the rate. Never use "all of the above" or "none of the above".
 - Absolute words ("always", "never", "only", "all") are not used to make an option wrong.
+- An option names the choice and stops. It does not argue for itself with "so that…" or "because…": the reasons
+  belong in the rationales, and an option that explains itself reads as the key.
 
 ### AC4. Exactly one correct answer
 
