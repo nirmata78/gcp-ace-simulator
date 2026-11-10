@@ -33,7 +33,6 @@ from src.blueprint import (
     OBJECTIVES,
     SECTION_LIST,
     SECTIONS,
-    SUBTOPIC_LIST,
     objective_weights,
     subtopics_in,
 )
