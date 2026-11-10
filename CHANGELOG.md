@@ -8,10 +8,13 @@ All notable changes to this project are recorded here. The format follows
 
 ### Added
 
-- **76 more questions** (bank 862), written by the first `/expand` run: 59 in Section 1 (projects and accounts 36,
-  billing 23), 15 in Section 4 (IAM), 2 in Section 2. Eight are cross-domain (`ace-x-079`…`ace-x-086`) and eight are
-  multiple-select. Section 1 is now at its exam weight; Section 4 is still below it. The theory gained the facts behind
-  them (standalone organizations, disabling APIs, quota types, billing account and export details, IAM policy tools).
+- **141 more questions** (bank 927), written by the first `/expand` runs: 59 in Section 1 (projects and accounts 36,
+  billing 23), 80 in Section 4 (IAM 28, service accounts 52) and 2 in Section 2. Sixteen are cross-domain
+  (`ace-x-079`…`ace-x-094`) and thirteen are multiple-select. The sections now sit at 20.1 / 30.5 / 30.7 / 18.7% against
+  exam weights of 20 / 30 / 30 / 20; Section 4 was 11.8%. The theory gained the facts behind them (standalone
+  organizations, disabling APIs, quota types, billing accounts and exports, IAM policy tools, custom role states,
+  service agents, default service accounts, impersonation, and operating Workload Identity Federation).
+- `kb.py plan --subtopic NAME` aims a run at named subtopics, for when the others have nothing new left to ask.
 - **`/expand`: grow the bank by a planned amount.** `claude "/expand 10%" --model opus --effort high` plans where the
   new questions go, steering the sections toward the exam weights, and mixes in multiple-select and cross-domain
   questions. Each key is fixed in advance and proven by a sentence quoted from its documentation page; each question

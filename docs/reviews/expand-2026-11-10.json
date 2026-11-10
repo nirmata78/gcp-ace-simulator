@@ -1748,6 +1748,1501 @@
         "answer": "C",
         "agrees": true
       }
+    },
+    {
+      "id": "ace-s4-084",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/roles-overview",
+        "quote": "Disabled roles still appear in your IAM policies and can be granted to principals, but they don't have any effect."
+      },
+      "blind_solve": {
+        "answer": "D",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-085",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/roles-overview",
+        "quote": "This includes updating roles as your users' responsibilities change, as well as updating roles to let users access new features that require additional permissions."
+      },
+      "blind_solve": {
+        "answer": "C",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-086",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/creating-custom-roles",
+        "quote": "To manage roles for a project: Role Administrator (roles/iam.roleAdmin) on the project that you want to manage roles for"
+      },
+      "blind_solve": {
+        "answer": "C",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-087",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/creating-custom-roles",
+        "quote": "at the organization or folder level, such as resourcemanager.organizations.get. If you try to add these permissions to a project-level custom role, you see an error message:"
+      },
+      "blind_solve": {
+        "answer": "B",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-088",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/roles-overview",
+        "quote": "To list the permissions contained in a role, see Getting the role metadata."
+      },
+      "blind_solve": {
+        "answer": "D",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-089",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/roles-overview",
+        "quote": "NOT_SUPPORTED The permission is not supported in custom roles."
+      },
+      "blind_solve": {
+        "answer": "B",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-090",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/roles-overview",
+        "quote": "These launch stages are informational; they help you keep track of whether each role is ready for widespread use."
+      },
+      "blind_solve": {
+        "answer": "C",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-091",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/service-account-types",
+        "quote": "This is because service agents that are created at a user's request aren't automatically granted roles."
+      },
+      "blind_solve": {
+        "answer": "C",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-092",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/service-account-types",
+        "quote": "This service account manages the roles that are granted to other service agents. It is visible only in audit logs."
+      },
+      "blind_solve": {
+        "answer": "D",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-093",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/service-account-types",
+        "quote": "To view the quota for a project, view your project's quotas in the Google Cloud console and search for Service Account Count."
+      },
+      "blind_solve": {
+        "answer": "B",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-094",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/service-account-types",
+        "quote": "If the default service account already has the Editor role, we recommend that you replace the Editor role with less permissive roles."
+      },
+      "blind_solve": {
+        "answer": "B,D",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-x-087",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/service-account-types",
+        "quote": "By default, the Google APIs Service Agent is granted the Instance Group Manager Service Agent role (roles/compute.instanceGroupManagerServiceAgent)."
+      },
+      "blind_solve": {
+        "answer": "B",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-095",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/service-account-types",
+        "quote": "then we recommend adding your service agents as exceptions in the deny rule. This helps ensure that your services continue to function properly."
+      },
+      "blind_solve": {
+        "answer": "D",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-096",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/service-account-types",
+        "quote": "Service agents aren't created in your projects, so you won't see them when viewing your projects' service accounts. You can't access them directly."
+      },
+      "blind_solve": {
+        "answer": "A",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-097",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/best-practices-service-accounts",
+        "quote": "Instead of relying on access scopes, create a dedicated service account and use fine-grained allow policies to restrict which resources the service account has access to."
+      },
+      "blind_solve": {
+        "answer": "C",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-098",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/best-practices-service-accounts",
+        "quote": "Applying the constraint doesn't remove the Editor role from existing default service accounts."
+      },
+      "blind_solve": {
+        "answer": "B",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-099",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/best-practices-service-accounts",
+        "quote": "If you apply this constraint, then default service accounts in new projects will not have any access to your Google Cloud resources."
+      },
+      "blind_solve": {
+        "answer": "D",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-100",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/best-practices-service-accounts",
+        "quote": "To access resources in your Google Cloud project, Google Cloud services use service agents, not the default service accounts."
+      },
+      "blind_solve": {
+        "answer": "A",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-101",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/best-practices-service-accounts",
+        "quote": "As a result, even though they don't have permission to impersonate the service account, they might still be able to use the service account's permissions to perform actions that they wouldn't be allowed to perform themselves."
+      },
+      "blind_solve": {
+        "answer": "D",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-102",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/best-practices-service-accounts",
+        "quote": "Use Credential Access Boundaries to downscope access tokens whenever you pass an access token to a different application, or to a different component of your application."
+      },
+      "blind_solve": {
+        "answer": "B",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-103",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/best-practices-service-accounts",
+        "quote": "Lateral movement insights identify roles that allow a service account in one project to impersonate a service account in another project."
+      },
+      "blind_solve": {
+        "answer": "D",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-x-088",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/monitoring/agent/ops-agent/authorization",
+        "quote": "In the Role drop-down menu, select the following roles: Monitoring > Monitoring Metric Writer. Logging > Logs Writer."
+      },
+      "blind_solve": {
+        "answer": "C,D",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-104",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/best-practices-service-accounts",
+        "quote": "To avoid such over-granting, don't manage access to service accounts at the Google Cloud project or folder level. Instead, individually manage access for each service account."
+      },
+      "blind_solve": {
+        "answer": "C",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-105",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/attach-service-accounts",
+        "quote": "Grant the Service Account Token Creator role (roles/iam.serviceAccountTokenCreator) to the service agents:"
+      },
+      "blind_solve": {
+        "answer": "C",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-106",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/compute/docs/instances/change-service-account",
+        "quote": "To change a VM's service account and access scopes, you must first stop the VM. After you make the necessary changes, you can restart the VM."
+      },
+      "blind_solve": {
+        "answer": "B",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-107",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/best-practices-service-accounts",
+        "quote": "As a principal, a service account can be granted access to resources, like a Cloud Storage bucket."
+      },
+      "blind_solve": {
+        "answer": "A",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-108",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/best-practices-service-accounts",
+        "quote": "You can't recreate default service accounts after deleting them. If there's a chance that you might use the default service accounts in the future, we recommend leaving them disabled instead of deleting them."
+      },
+      "blind_solve": {
+        "answer": "A",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-109",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/best-practices-service-accounts",
+        "quote": "These constraints prevent all users from creating and uploading service account keys, including those with iam.serviceAccountKeys.create permission on a service account."
+      },
+      "blind_solve": {
+        "answer": "B",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-x-089",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/sql/docs/mysql/connect-auth-proxy",
+        "quote": "This role contains the cloudsql.instances.connect permission, which authorizes a principal to connect to all Cloud SQL instances in a project."
+      },
+      "blind_solve": {
+        "answer": "C",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-110",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/sql/docs/mysql/connect-auth-proxy",
+        "quote": "Grant the attached service account the Cloud SQL Client (roles/cloudsql.client) predefined IAM role to connect using the Cloud SQL Auth Proxy or the Cloud SQL Admin API, and the Cloud SQL Instance User (roles/cloudsql.instanceUser) role if you use IAM database authentication."
+      },
+      "blind_solve": {
+        "answer": "B",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-111",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/docs/authentication/set-up-adc-local-dev-environment",
+        "quote": "Use service account impersonation to create a local ADC file: gcloud auth application-default login --impersonate-service-account SERVICE_ACCT_EMAIL"
+      },
+      "blind_solve": {
+        "answer": "D",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-112",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/best-practices-service-accounts",
+        "quote": "For example, if you grant a user the Service Account Token Creator role in a Google Cloud project, the user can impersonate any service account in the Google Cloud project."
+      },
+      "blind_solve": {
+        "answer": "B",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-113",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/create-short-lived-credentials-direct",
+        "quote": "Enable the IAM and Service Account Credentials APIs, if any are not already enabled:"
+      },
+      "blind_solve": {
+        "answer": "D,E",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-114",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/service-account-permissions",
+        "quote": "This role does not allow principals to create short-lived credentials for service accounts, or to use the --impersonate-service-account flag for the Google Cloud CLI."
+      },
+      "blind_solve": {
+        "answer": "A",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-x-090",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/service-account-permissions",
+        "quote": "signBlob() allows signing of arbitrary payloads (such as Cloud Storage-signed URLs), while signJwt() only allows signing well-formed JWTs."
+      },
+      "blind_solve": {
+        "answer": "B",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-115",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/service-account-permissions",
+        "quote": "When you use this flag, the gcloud CLI automatically creates short-lived credentials for the service account."
+      },
+      "blind_solve": {
+        "answer": "D",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-116",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/service-account-permissions",
+        "quote": "Once granted the required permissions, a user (or another service account) can impersonate the service account in a few common scenarios."
+      },
+      "blind_solve": {
+        "answer": "B",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-117",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/manage-access-service-accounts",
+        "quote": "This page describes how to grant, change, and revoke a principal's access to a single service account."
+      },
+      "blind_solve": {
+        "answer": "C",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-118",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/manage-access-service-accounts",
+        "quote": "To get the permissions that you need to manage access to a service account, ask your administrator to grant you the Service Account Admin (roles/iam.serviceAccountAdmin) IAM role on the service account or the project that owns the service account."
+      },
+      "blind_solve": {
+        "answer": "D",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-x-091",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/docs/terraform/authentication",
+        "quote": "You can use service account impersonation to set up a local ADC file. Terraform uses those credentials automatically."
+      },
+      "blind_solve": {
+        "answer": "A,D",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-119",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/compute/docs/access/authenticate-workloads",
+        "quote": "Access tokens expire after a short period of time. The metadata server caches access tokens until they have 5 minutes of remaining time before they expire."
+      },
+      "blind_solve": {
+        "answer": "B",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-120",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/kubernetes-engine/docs/concepts/workload-identity",
+        "quote": "To avoid untrusted access, place your clusters in separate projects to ensure that they get different workload identity pools, or ensure that the namespace names are distinct from each other to avoid a common principal identifier."
+      },
+      "blind_solve": {
+        "answer": "B",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-121",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/kubernetes-engine/docs/how-to/workload-identity",
+        "quote": "Workload Identity Federation for GKE must be enabled at the cluster level before you can enable Workload Identity Federation for GKE on node pools."
+      },
+      "blind_solve": {
+        "answer": "D,E",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-122",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/kubernetes-engine/docs/concepts/workload-identity",
+        "quote": "All Pods in a namespace, regardless of service account or cluster"
+      },
+      "blind_solve": {
+        "answer": "C",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-123",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/kubernetes-engine/docs/how-to/workload-identity",
+        "quote": "This prevents the workloads from using the service account that your nodes use and might result in disruptions."
+      },
+      "blind_solve": {
+        "answer": "A",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-x-092",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/kubernetes-engine/docs/concepts/workload-identity",
+        "quote": "If you see QUOTA_EXCEEDED errors, you can request an increase for the Token exchange requests per minute quota through the Quotas & System Limits page."
+      },
+      "blind_solve": {
+        "answer": "A",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-124",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/kubernetes-engine/docs/how-to/workload-identity",
+        "quote": "In Standard clusters only, add the following to the template.spec field to place the Pods on node pools that use Workload Identity Federation for GKE."
+      },
+      "blind_solve": {
+        "answer": "C",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-125",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/kubernetes-engine/docs/how-to/workload-identity",
+        "quote": "If a cluster has Workload Identity Federation for GKE enabled, you can selectively disable it on a specific node pool by explicitly specifying --workload-metadata=GCE_METADATA."
+      },
+      "blind_solve": {
+        "answer": "A",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-126",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/best-practices-for-using-workload-identity-federation",
+        "quote": "Instead of managing workload identity pools and providers across multiple projects, use a single, dedicated project to manage workload identity pools and providers."
+      },
+      "blind_solve": {
+        "answer": "B",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-127",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/best-practices-for-using-workload-identity-federation",
+        "quote": "You can prevent the creation of new workload identity pool providers by using the constraints/iam.workloadIdentityPoolProviders organizational policy constraint with a rule set to Deny All."
+      },
+      "blind_solve": {
+        "answer": "D",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-128",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/pubsub/docs/access-control",
+        "quote": "Pub/Sub Viewer (roles/pubsub.viewer) Provides access to view topics and subscriptions."
+      },
+      "blind_solve": {
+        "answer": "B",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-129",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/artifact-registry/docs/access-control",
+        "quote": "Artifact Registry Writer (roles/artifactregistry.writer) Read and write artifacts."
+      },
+      "blind_solve": {
+        "answer": "B",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-130",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/secret-manager/docs/access-control",
+        "quote": "The role roles/owner includes the `secretmanager.versions.access` permission, but the roles/editor and roles/viewer do not."
+      },
+      "blind_solve": {
+        "answer": "A",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-131",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/kms/docs/separation-of-duties",
+        "quote": "Key users: Principals who are authorized to use keys including encryption, decryption, signing, or signature verification—for example, users with the Cloud KMS CryptoKey Encrypter/Decrypter role."
+      },
+      "blind_solve": {
+        "answer": "C",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-x-093",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/compute/docs/access/iam",
+        "quote": "Permissions to create, modify, and delete disks, images, and snapshots."
+      },
+      "blind_solve": {
+        "answer": "A",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-132",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/kms/docs/separation-of-duties",
+        "quote": "Key managers: Principals who are authorized to manage key lifecycles including creation, deletion, rotation, and state changes—for example, users with the Cloud KMS Admin role."
+      },
+      "blind_solve": {
+        "answer": "A",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-133",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/service-accounts-create",
+        "quote": "To get the permissions that you need to create service accounts, ask your administrator to grant you the Create Service Accounts (roles/iam.serviceAccountCreator) IAM role on the project."
+      },
+      "blind_solve": {
+        "answer": "A",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-134",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/service-accounts-create",
+        "quote": "If you want to grant newly created service accounts access to your project, you also need the Project IAM admin (roles/resourcemanager.projectIamAdmin) role."
+      },
+      "blind_solve": {
+        "answer": "C",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-135",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/best-practices-service-accounts",
+        "quote": "They don't have a password and can't be used for browser-based sign-in."
+      },
+      "blind_solve": {
+        "answer": "C",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-136",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/kubernetes-engine/docs/concepts/workload-identity",
+        "quote": "Note: Enabling Workload Identity Federation for GKE on the cluster doesn't grant your workloads any additional IAM permissions."
+      },
+      "blind_solve": {
+        "answer": "D",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-137",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/best-practices-for-using-workload-identity-federation",
+        "quote": "If you have an identity provider such as Active Directory Federation Services (AD FS) in your environment that supports Integrated Windows Authentication, you can use these Kerberos credentials to authenticate to the identity provider and obtain an OAuth access token that uses the JWT format."
+      },
+      "blind_solve": {
+        "answer": "B",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-x-094",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/best-practices-for-using-workload-identity-federation",
+        "quote": "We recommend that you configure a Workload Identity Federation attribute condition to check that the token originated from a trusted tenant or, in the case of GitHub or Terraform Cloud, a trusted organization."
+      },
+      "blind_solve": {
+        "answer": "D",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-138",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/best-practices-for-using-workload-identity-federation",
+        "quote": "The first option requires two secrets, but the second option only requires one."
+      },
+      "blind_solve": {
+        "answer": "A",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-139",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/best-practices-for-using-workload-identity-federation",
+        "quote": "To avoid subject collisions, use a single provider per workload identity pool."
+      },
+      "blind_solve": {
+        "answer": "B",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-140",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/best-practices-for-using-workload-identity-federation",
+        "quote": "To prevent such ambiguities, use attribute mappings that exclusively rely on attributes that can't be reused over time, like a unique user ID."
+      },
+      "blind_solve": {
+        "answer": "A",
+        "agrees": true
+      }
     }
   ]
 }

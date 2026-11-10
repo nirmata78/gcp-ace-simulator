@@ -5,7 +5,7 @@
 [![Theory](https://img.shields.io/badge/theory-GitHub%20Pages-blue)](https://nirmata78.github.io/gcp-ace-simulator/theory/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Release](https://img.shields.io/github/v/release/nirmata78/gcp-ace-simulator)](https://github.com/nirmata78/gcp-ace-simulator/blob/main/CHANGELOG.md)
-![862 questions](https://img.shields.io/badge/questions-862-orange)
+![927 questions](https://img.shields.io/badge/questions-927-orange)
 ![Exam guide: June 2026](https://img.shields.io/badge/exam%20guide-June%202026-purple)
 ![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue)
 
@@ -17,7 +17,7 @@ This project has three parts:
 
 - **[A theory course](https://nirmata78.github.io/gcp-ace-simulator/theory/)** that teaches every bullet of the new
   guide, in dependency order, with a recall card per part. It is a website: nothing to install.
-- **A question bank of 862 items.** Each one names the guide section, objective and subtopic it tests, explains every
+- **A question bank of 927 items.** Each one names the guide section, objective and subtopic it tests, explains every
   option, and links to the documentation behind the answer. 58 are multiple-select ("Choose two"), as on the real
   exam, and 78 are cross-domain scenarios that span several sections and appear only in certifying exams.
 - **An exam shell** that imitates the delivery window: 50 questions sampled at the guide's weights, 120 minutes, a

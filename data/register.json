@@ -1,13 +1,13 @@
 {
   "version": 2,
-  "generated_at": "2026-11-10T12:28:55+00:00",
-  "total": 862,
+  "generated_at": "2026-11-10T17:44:44+00:00",
+  "total": 927,
   "guide": "Associate Cloud Engineer exam guide, live from 2026-06-30",
   "counts_by_domain": {
     "S1 · Setup": 186,
     "S2 · Plan & build": 283,
     "S3 · Operate": 285,
-    "S4 · Access": 108
+    "S4 · Access": 173
   },
   "counts_by_objective": {
     "1.1": 139,
@@ -20,13 +20,13 @@
     "3.2": 57,
     "3.3": 39,
     "3.4": 77,
-    "4.1": 40,
-    "4.2": 68
+    "4.1": 53,
+    "4.2": 120
   },
   "counts_by_kind": {
-    "multiple_select": 66,
-    "cross_domain": 86,
-    "certifying_only": 86
+    "multiple_select": 71,
+    "cross_domain": 94,
+    "certifying_only": 94
   },
   "subtopics_by_domain": {
     "S1 · Setup": {
@@ -115,14 +115,14 @@
       "Viewing and Filtering Logs": 4
     },
     "S4 · Access": {
-      "Creating Service Accounts": 10,
+      "Creating Service Accounts": 20,
       "IAM Policies and Inheritance": 32,
-      "Role Types and Custom Roles": 8,
-      "Service Account Permissions and Impersonation": 10,
-      "Service Accounts and Least Privilege": 12,
-      "Service Accounts for GKE": 10,
-      "Short-lived Credentials": 11,
-      "Workload Identity Federation": 15
+      "Role Types and Custom Roles": 21,
+      "Service Account Permissions and Impersonation": 20,
+      "Service Accounts and Least Privilege": 28,
+      "Service Accounts for GKE": 18,
+      "Short-lived Credentials": 12,
+      "Workload Identity Federation": 22
     }
   },
   "entries": [
@@ -16431,6 +16431,1218 @@
       "file": "sections/section-4-security.json"
     },
     {
+      "id": "ace-s4-084",
+      "uid": "90beb3c3-7446-44d3-98f3-b79637601634",
+      "title": "Switching a custom role off during an investigation",
+      "domain": "S4 · Access",
+      "objective": "4.1",
+      "subtopic": "Role Types and Custom Roles",
+      "new_in_2026": false,
+      "summary": "A custom role set to the DISABLED launch stage stays in every policy but grants nothing, and can be enabled again.",
+      "tags": [
+        "custom-roles",
+        "iam",
+        "launch-stage"
+      ],
+      "source": "curated",
+      "fingerprint": "b504d80b00f6",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-085",
+      "uid": "45d196c0-7f03-4dc6-a509-d201d20b09b7",
+      "title": "A new feature that custom-role users cannot use",
+      "domain": "S4 · Access",
+      "objective": "4.1",
+      "subtopic": "Role Types and Custom Roles",
+      "new_in_2026": false,
+      "summary": "Google updates predefined roles when features need new permissions; a custom role gets them only when its owner adds them.",
+      "tags": [
+        "custom-roles",
+        "iam",
+        "maintenance"
+      ],
+      "source": "curated",
+      "fingerprint": "0b29a5d9e41a",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-086",
+      "uid": "0c07ba64-840a-43d3-b6e0-131fc6b9680c",
+      "title": "Who may define custom roles in one project",
+      "domain": "S4 · Access",
+      "objective": "4.1",
+      "subtopic": "Role Types and Custom Roles",
+      "new_in_2026": false,
+      "summary": "Role Administrator on a project lets a principal create and manage that project's custom roles and nothing else.",
+      "tags": [
+        "custom-roles",
+        "iam",
+        "least-privilege"
+      ],
+      "source": "curated",
+      "fingerprint": "a31da508f206",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-087",
+      "uid": "f47a0bb2-602e-42a3-856b-b1c2eb47730b",
+      "title": "A permission a project-level custom role refuses",
+      "domain": "S4 · Access",
+      "objective": "4.1",
+      "subtopic": "Role Types and Custom Roles",
+      "new_in_2026": false,
+      "summary": "A permission that works only at the organization or folder level cannot go into a project-level custom role; the role must be an organization-level one.",
+      "tags": [
+        "custom-roles",
+        "iam",
+        "troubleshooting"
+      ],
+      "source": "curated",
+      "fingerprint": "d7e99dea0c34",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-088",
+      "uid": "ed69273f-1251-44b2-9343-3e832356f060",
+      "title": "What exactly does this predefined role contain",
+      "domain": "S4 · Access",
+      "objective": "4.1",
+      "subtopic": "Role Types and Custom Roles",
+      "new_in_2026": false,
+      "summary": "A role's metadata, read with gcloud iam roles describe, lists every permission the role contains.",
+      "tags": [
+        "gcloud",
+        "iam",
+        "predefined-roles"
+      ],
+      "source": "curated",
+      "fingerprint": "2feae467925b",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-089",
+      "uid": "d93da3b1-5e1a-44e6-a97a-d04e7a6c1bc8",
+      "title": "A permission that custom roles do not support",
+      "domain": "S4 · Access",
+      "objective": "4.1",
+      "subtopic": "Role Types and Custom Roles",
+      "new_in_2026": false,
+      "summary": "A permission with the support level NOT_SUPPORTED cannot be put in a custom role; it is obtained through a predefined role.",
+      "tags": [
+        "custom-roles",
+        "iam",
+        "permissions"
+      ],
+      "source": "curated",
+      "fingerprint": "23536b80a97f",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-090",
+      "uid": "1c7a1bfd-5be5-4178-891b-25ebd04af719",
+      "title": "Marking a custom role as on its way out",
+      "domain": "S4 · Access",
+      "objective": "4.1",
+      "subtopic": "Role Types and Custom Roles",
+      "new_in_2026": false,
+      "summary": "Launch stages other than DISABLED are informational: DEPRECATED tells administrators a role is no longer in use without changing what it grants.",
+      "tags": [
+        "custom-roles",
+        "iam",
+        "launch-stage"
+      ],
+      "source": "curated",
+      "fingerprint": "3611e57a98b7",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-091",
+      "uid": "4bf09671-01b9-4855-89e6-84cffd5b253d",
+      "title": "A service agent created ahead of time does nothing",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Creating Service Accounts",
+      "new_in_2026": false,
+      "summary": "A service agent created at a user's request is not granted its usual roles automatically; they must be granted by hand.",
+      "tags": [
+        "service-accounts",
+        "service-agents",
+        "troubleshooting"
+      ],
+      "source": "curated",
+      "fingerprint": "d6328625e072",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-092",
+      "uid": "e055e348-868c-4b48-9d1d-650615c2c31b",
+      "title": "An unknown account changed the project's allow policy",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Creating Service Accounts",
+      "new_in_2026": false,
+      "summary": "service-agent-manager@system.gserviceaccount.com is Google's role manager for service agents; its policy changes when a new API is used are expected.",
+      "tags": [
+        "audit-logs",
+        "service-accounts",
+        "service-agents"
+      ],
+      "source": "curated",
+      "fingerprint": "3e6d1890a348",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-093",
+      "uid": "916c367c-83ac-4f2c-be76-f8b81b832eac",
+      "title": "No more service accounts can be created",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Creating Service Accounts",
+      "new_in_2026": false,
+      "summary": "The number of service accounts in a project is a quota, Service Account Count, which can be viewed and raised like other quotas.",
+      "tags": [
+        "quotas",
+        "service-accounts"
+      ],
+      "source": "curated",
+      "fingerprint": "0045cad91946",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-094",
+      "uid": "fd5359a7-4feb-46ef-b8bb-b1ca98267962",
+      "title": "Taking Editor away from the default service account",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Creating Service Accounts",
+      "new_in_2026": false,
+      "summary": "A default service account that holds Editor is narrowed by finding what it uses and replacing Editor with less permissive roles.",
+      "tags": [
+        "default-service-account",
+        "least-privilege",
+        "service-accounts"
+      ],
+      "source": "curated",
+      "fingerprint": "9434b768a741",
+      "choose": 2,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-095",
+      "uid": "032ab6bb-6e2b-4daf-8844-d7a1d7f1be2f",
+      "title": "A deny rule for everyone that broke Google's services",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Creating Service Accounts",
+      "new_in_2026": false,
+      "summary": "A deny rule that targets all principals should list the service agents as exceptions, or Google Cloud services stop working.",
+      "tags": [
+        "deny-policies",
+        "service-agents",
+        "troubleshooting"
+      ],
+      "source": "curated",
+      "fingerprint": "daa16cf08417",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-096",
+      "uid": "6774f0da-bc83-4d0d-b7a4-ef429a41c225",
+      "title": "A script that wants to run as a service agent",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Creating Service Accounts",
+      "new_in_2026": false,
+      "summary": "Service agents are Google-managed and cannot be used directly; a workload of your own needs a user-managed service account.",
+      "tags": [
+        "service-accounts",
+        "service-agents",
+        "user-managed"
+      ],
+      "source": "curated",
+      "fingerprint": "bbda6c0c4ba1",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-097",
+      "uid": "883df8f9-72b3-48ac-95b6-161be8c40327",
+      "title": "A VM that may read one bucket and no other",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Service Accounts and Least Privilege",
+      "new_in_2026": false,
+      "summary": "Access scopes are coarse and cannot single out a bucket; a dedicated service account with a role on that bucket can.",
+      "tags": [
+        "access-scopes",
+        "compute-engine",
+        "least-privilege",
+        "service-accounts"
+      ],
+      "source": "curated",
+      "fingerprint": "57d7e5efd458",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-098",
+      "uid": "0a88ddef-d359-44ad-91e1-abc5b072a65f",
+      "title": "The constraint is on, yet Editor is still there",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Service Accounts and Least Privilege",
+      "new_in_2026": false,
+      "summary": "Enforcing the automatic-grants constraint stops future Editor grants to default service accounts but leaves existing grants in place.",
+      "tags": [
+        "default-service-account",
+        "organization-policy",
+        "service-accounts"
+      ],
+      "source": "curated",
+      "fingerprint": "b371af5c4be6",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-099",
+      "uid": "6d115de6-3e94-4fb9-b4e4-a5e13f0fb2e7",
+      "title": "A new project where the default account can do nothing",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Service Accounts and Least Privilege",
+      "new_in_2026": false,
+      "summary": "With automatic grants disabled, a default service account in a new project has no access; a workload needs an account with the roles it uses.",
+      "tags": [
+        "default-service-account",
+        "service-accounts",
+        "troubleshooting"
+      ],
+      "source": "curated",
+      "fingerprint": "42db2ceac07d",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-100",
+      "uid": "897d6249-dab9-4d54-9957-7847f3bd6d00",
+      "title": "What to check before Editor is taken away",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Service Accounts and Least Privilege",
+      "new_in_2026": false,
+      "summary": "Google's services act through service agents, not default service accounts, so removing Editor from a default account affects only the workloads that run as it.",
+      "tags": [
+        "default-service-account",
+        "service-accounts",
+        "service-agents"
+      ],
+      "source": "curated",
+      "fingerprint": "fb398a7e7ec9",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-101",
+      "uid": "4f45a3d0-ae45-4e28-9cb2-e83734247a59",
+      "title": "Junior admins on a VM with a powerful account",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Service Accounts and Least Privilege",
+      "new_in_2026": false,
+      "summary": "Anyone who can run code on a resource can act with its attached service account, so the attached account must hold only what the resource needs.",
+      "tags": [
+        "compute-engine",
+        "privilege-escalation",
+        "service-accounts"
+      ],
+      "source": "curated",
+      "fingerprint": "5a4d67120df0",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-102",
+      "uid": "fa565d85-ceaf-411e-b3f2-ab802cc0f3c6",
+      "title": "Handing an access token to another component",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Service Accounts and Least Privilege",
+      "new_in_2026": false,
+      "summary": "A Credential Access Boundary downscopes an access token so that a component it is passed to can reach only the Cloud Storage resources it needs.",
+      "tags": [
+        "access-tokens",
+        "cloud-storage",
+        "downscoping",
+        "service-accounts"
+      ],
+      "source": "curated",
+      "fingerprint": "28a71e3a9997",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-103",
+      "uid": "1c1d85f7-9f59-4474-9bee-3f36356efc13",
+      "title": "Service accounts that can hop between projects",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Service Accounts and Least Privilege",
+      "new_in_2026": false,
+      "summary": "Recommender's lateral movement insights find roles that let a service account in one project impersonate one in another.",
+      "tags": [
+        "impersonation",
+        "recommender",
+        "security",
+        "service-accounts"
+      ],
+      "source": "curated",
+      "fingerprint": "7add755e62a9",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-104",
+      "uid": "a99f7882-8fc4-4286-ae36-40929e842b77",
+      "title": "A deployer who may attach one service account",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Service Accounts and Least Privilege",
+      "new_in_2026": false,
+      "summary": "Roles on service accounts are granted on the individual account; a project-level grant covers every service account in the project.",
+      "tags": [
+        "act-as",
+        "least-privilege",
+        "service-accounts"
+      ],
+      "source": "curated",
+      "fingerprint": "dee227a51a6d",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-105",
+      "uid": "5080d0dc-becf-45d9-93f0-fc863bdb2771",
+      "title": "A central service account that will not attach",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Service Accounts and Least Privilege",
+      "new_in_2026": false,
+      "summary": "Attaching a service account from another project also requires the resource project's service agent to hold Token Creator on that account.",
+      "tags": [
+        "cross-project",
+        "service-accounts",
+        "service-agents"
+      ],
+      "source": "curated",
+      "fingerprint": "9d777f404d1d",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-106",
+      "uid": "bbb20eb4-07d0-490b-9cc5-dbcbc1a4503a",
+      "title": "Moving a running VM off the default account",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Service Accounts and Least Privilege",
+      "new_in_2026": false,
+      "summary": "A VM's service account can be changed only while the VM is stopped.",
+      "tags": [
+        "compute-engine",
+        "operations",
+        "service-accounts"
+      ],
+      "source": "curated",
+      "fingerprint": "e915e4db2a29",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-107",
+      "uid": "6e76c984-509a-477d-8c2f-7f847e33a765",
+      "title": "A job in one project reading a bucket in another",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Service Accounts and Least Privilege",
+      "new_in_2026": false,
+      "summary": "A service account is a principal that can be granted a role on a resource in any project; no second account is needed.",
+      "tags": [
+        "cloud-storage",
+        "cross-project",
+        "least-privilege",
+        "service-accounts"
+      ],
+      "source": "curated",
+      "fingerprint": "1e8e2388d466",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-108",
+      "uid": "ba31d6e1-7280-4de4-a0fe-c5e925784ebb",
+      "title": "Getting rid of an unused default service account",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Service Accounts and Least Privilege",
+      "new_in_2026": false,
+      "summary": "A deleted default service account cannot be recreated, so one that might be needed later is left disabled.",
+      "tags": [
+        "default-service-account",
+        "lifecycle",
+        "service-accounts"
+      ],
+      "source": "curated",
+      "fingerprint": "43fb269313c0",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-109",
+      "uid": "b2486439-fcce-4667-b5f9-f993ae31caae",
+      "title": "No service account keys in the production folder",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Service Accounts and Least Privilege",
+      "new_in_2026": false,
+      "summary": "The organization policy constraints that disable key creation and key upload stop everyone from making service account keys, whatever roles they hold.",
+      "tags": [
+        "organization-policy",
+        "service-account-keys",
+        "service-accounts"
+      ],
+      "source": "curated",
+      "fingerprint": "0424ccbdab34",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-110",
+      "uid": "92bf10dd-a355-4241-8be2-976410c25135",
+      "title": "The proxy connects, the IAM database login is refused",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Service Accounts and Least Privilege",
+      "new_in_2026": false,
+      "summary": "With IAM database authentication, a service account needs Cloud SQL Instance User in addition to Cloud SQL Client.",
+      "tags": [
+        "cloud-sql",
+        "iam-database-authentication",
+        "service-accounts"
+      ],
+      "source": "curated",
+      "fingerprint": "42b5a14ea99c",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-111",
+      "uid": "4b2e5c71-38b8-4455-8c74-cebb21919d75",
+      "title": "Local code that must run as a service account",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Service Account Permissions and Impersonation",
+      "new_in_2026": false,
+      "summary": "A local ADC file created with service account impersonation lets client libraries act as the account without a key.",
+      "tags": [
+        "adc",
+        "client-libraries",
+        "impersonation",
+        "service-accounts"
+      ],
+      "source": "curated",
+      "fingerprint": "e05d6b1ddd76",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-112",
+      "uid": "53001bd0-2dbd-4a50-ae71-d9b4a1f9f96a",
+      "title": "An engineer who can impersonate every account",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Service Account Permissions and Impersonation",
+      "new_in_2026": false,
+      "summary": "Service Account Token Creator granted on a project allows impersonating every service account in it; it belongs on the single account.",
+      "tags": [
+        "impersonation",
+        "least-privilege",
+        "service-accounts"
+      ],
+      "source": "curated",
+      "fingerprint": "535c8d079ddf",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-113",
+      "uid": "5988b95d-9877-417c-ba33-dae50a195bc9",
+      "title": "What a developer needs before impersonating",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Service Account Permissions and Impersonation",
+      "new_in_2026": false,
+      "summary": "Impersonation needs Service Account Token Creator on the account and the Service Account Credentials API enabled.",
+      "tags": [
+        "apis",
+        "impersonation",
+        "service-accounts"
+      ],
+      "source": "curated",
+      "fingerprint": "4d417a51e663",
+      "choose": 2,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-114",
+      "uid": "31ffc88e-f402-4225-8441-3ca2875407ef",
+      "title": "Service Account User, and the impersonation flag fails",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Service Account Permissions and Impersonation",
+      "new_in_2026": false,
+      "summary": "Service Account User attaches an account to resources; using the gcloud impersonation flag needs Service Account Token Creator.",
+      "tags": [
+        "gcloud",
+        "impersonation",
+        "service-accounts"
+      ],
+      "source": "curated",
+      "fingerprint": "834967180265",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-115",
+      "uid": "dfe09295-8804-40ca-ad0a-f1d7f1d06865",
+      "title": "One command as the service account, the rest as yourself",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Service Account Permissions and Impersonation",
+      "new_in_2026": false,
+      "summary": "The --impersonate-service-account flag makes a single gcloud command run as a service account without changing the configuration.",
+      "tags": [
+        "gcloud",
+        "impersonation",
+        "service-accounts"
+      ],
+      "source": "curated",
+      "fingerprint": "c13cd4f0dfba",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-116",
+      "uid": "bb1d9f55-49a0-44e5-9e19-1f8051b03b72",
+      "title": "A pipeline account that deploys as another account",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Service Account Permissions and Impersonation",
+      "new_in_2026": false,
+      "summary": "One service account impersonates another when it holds Service Account Token Creator on the target account.",
+      "tags": [
+        "ci-cd",
+        "impersonation",
+        "service-accounts"
+      ],
+      "source": "curated",
+      "fingerprint": "5caaf70f72d8",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-117",
+      "uid": "a3dd31ca-c8cb-4da5-92a9-7600cb199411",
+      "title": "Ending one person's right to impersonate",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Service Account Permissions and Impersonation",
+      "new_in_2026": false,
+      "summary": "A principal's access to one service account is revoked by removing its binding from that account's own allow policy.",
+      "tags": [
+        "impersonation",
+        "revoke",
+        "service-accounts"
+      ],
+      "source": "curated",
+      "fingerprint": "f66be4a22adc",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-118",
+      "uid": "780fb2a9-2f1e-4e3b-8c3c-25ed2ea74d0b",
+      "title": "Deciding who may use the project's service accounts",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Service Account Permissions and Impersonation",
+      "new_in_2026": false,
+      "summary": "Service Account Admin on a project lets a principal manage access to every service account in it, without rights over other resources.",
+      "tags": [
+        "delegation",
+        "iam",
+        "service-accounts"
+      ],
+      "source": "curated",
+      "fingerprint": "87da5920ea74",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-119",
+      "uid": "3d5d92e7-22d6-4251-9a52-46e583c232d8",
+      "title": "A token that works for an hour and then fails",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Short-lived Credentials",
+      "new_in_2026": false,
+      "summary": "Access tokens from the metadata server expire, so an application asks for a token when it needs one, or lets a client library do so.",
+      "tags": [
+        "access-tokens",
+        "compute-engine",
+        "metadata-server",
+        "service-accounts"
+      ],
+      "source": "curated",
+      "fingerprint": "63fda271f3f5",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-120",
+      "uid": "9f599651-3500-44b9-afb7-7e7f045200f8",
+      "title": "Two teams' clusters in one project",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Service Accounts for GKE",
+      "new_in_2026": false,
+      "summary": "Clusters in one project share a workload identity pool, so equal namespace and ServiceAccount names are one identity; untrusted clusters belong in separate projects.",
+      "tags": [
+        "gke",
+        "identity-sameness",
+        "security",
+        "workload-identity"
+      ],
+      "source": "curated",
+      "fingerprint": "4787f3ccf27d",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-121",
+      "uid": "56019373-4e72-4932-9051-8594b6396166",
+      "title": "Moving a Standard cluster's workload off the node account",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Service Accounts for GKE",
+      "new_in_2026": false,
+      "summary": "On a Standard cluster, Workload Identity Federation for GKE is enabled on the cluster first and then on the node pool that runs the workload.",
+      "tags": [
+        "gke",
+        "node-pools",
+        "workload-identity"
+      ],
+      "source": "curated",
+      "fingerprint": "9d22746a0e92",
+      "choose": 2,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-122",
+      "uid": "3de8ee67-1fff-4349-919c-ab418e2fc9e8",
+      "title": "Every Pod in one namespace may read the reports bucket",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Service Accounts for GKE",
+      "new_in_2026": false,
+      "summary": "A principal set for a namespace grants a role to all Pods in that namespace, whatever ServiceAccount they use.",
+      "tags": [
+        "gke",
+        "iam",
+        "principal-set",
+        "workload-identity"
+      ],
+      "source": "curated",
+      "fingerprint": "1c81fb8b8ed9",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-123",
+      "uid": "6aa72ad2-80fd-408c-bedf-7542acf44c07",
+      "title": "Switching a busy node pool without an outage",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Service Accounts for GKE",
+      "new_in_2026": false,
+      "summary": "Updating a node pool enables Workload Identity Federation for GKE for its running workloads at once, cutting them off from the node account; a new node pool allows a gradual move.",
+      "tags": [
+        "gke",
+        "migration",
+        "node-pools",
+        "workload-identity"
+      ],
+      "source": "curated",
+      "fingerprint": "af060738a406",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-124",
+      "uid": "ec4bb437-3e77-4b21-a0eb-a2e342975cdc",
+      "title": "A Pod that sometimes gets the node's identity",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Service Accounts for GKE",
+      "new_in_2026": false,
+      "summary": "In a Standard cluster with mixed node pools, a nodeSelector keeps a Pod on node pools that run the GKE metadata server.",
+      "tags": [
+        "gke",
+        "node-selector",
+        "troubleshooting",
+        "workload-identity"
+      ],
+      "source": "curated",
+      "fingerprint": "ca7ebfea8862",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-125",
+      "uid": "8ff6b0b5-bffb-4d62-8c81-055a627672c4",
+      "title": "One legacy agent that needs the node's own identity",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Service Accounts for GKE",
+      "new_in_2026": false,
+      "summary": "Workload Identity Federation for GKE can be turned off for a single node pool, which then exposes the node service account to its Pods.",
+      "tags": [
+        "gke",
+        "node-pools",
+        "workload-identity"
+      ],
+      "source": "curated",
+      "fingerprint": "7a32d5289617",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-126",
+      "uid": "4a275e1c-e366-471c-9fea-fc8d911c93c6",
+      "title": "Every team builds its own workload identity pool",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Workload Identity Federation",
+      "new_in_2026": true,
+      "summary": "Workload identity pools and providers are managed in one dedicated project so that trusted providers and mappings stay consistent.",
+      "tags": [
+        "governance",
+        "pools",
+        "workload-identity-federation"
+      ],
+      "source": "curated",
+      "fingerprint": "92f4da932d38",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-127",
+      "uid": "2b6f43ae-ec8f-441b-9dde-49237586e2dc",
+      "title": "No new federation providers outside the central project",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Workload Identity Federation",
+      "new_in_2026": true,
+      "summary": "The organization policy constraint for workload identity pool providers, set to deny all, prevents providers from being created.",
+      "tags": [
+        "governance",
+        "organization-policy",
+        "workload-identity-federation"
+      ],
+      "source": "curated",
+      "fingerprint": "03a7d5d93501",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-128",
+      "uid": "6e38a44e-98a1-46ac-b431-b1a5c6686241",
+      "title": "A dashboard that lists topics but must not read messages",
+      "domain": "S4 · Access",
+      "objective": "4.1",
+      "subtopic": "Role Types and Custom Roles",
+      "new_in_2026": false,
+      "summary": "Pub/Sub Viewer lets a principal see topics and subscriptions without publishing or consuming messages.",
+      "tags": [
+        "iam",
+        "least-privilege",
+        "predefined-roles",
+        "pubsub"
+      ],
+      "source": "curated",
+      "fingerprint": "fc314e1bda6c",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-129",
+      "uid": "b9853e5c-4f0d-46fd-aadb-1bb545184b96",
+      "title": "A build pipeline that pushes images",
+      "domain": "S4 · Access",
+      "objective": "4.1",
+      "subtopic": "Role Types and Custom Roles",
+      "new_in_2026": false,
+      "summary": "Artifact Registry Writer lets a principal read and write artifacts without administering repositories.",
+      "tags": [
+        "artifact-registry",
+        "iam",
+        "least-privilege",
+        "predefined-roles"
+      ],
+      "source": "curated",
+      "fingerprint": "7e854ba1ed33",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-130",
+      "uid": "210dc3c3-e563-4f92-9f14-423f04ff474f",
+      "title": "A project Editor who cannot read a secret",
+      "domain": "S4 · Access",
+      "objective": "4.1",
+      "subtopic": "Role Types and Custom Roles",
+      "new_in_2026": false,
+      "summary": "The basic Editor role does not include reading secret values; that needs Secret Manager Secret Accessor.",
+      "tags": [
+        "basic-roles",
+        "iam",
+        "least-privilege",
+        "secret-manager"
+      ],
+      "source": "curated",
+      "fingerprint": "bab18f3d55c5",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-131",
+      "uid": "3f9e1a5a-fb22-47db-b2eb-73bff2a31f0a",
+      "title": "An application that encrypts with one key",
+      "domain": "S4 · Access",
+      "objective": "4.1",
+      "subtopic": "Role Types and Custom Roles",
+      "new_in_2026": false,
+      "summary": "Using a key to encrypt and decrypt is the key user's role, Cloud KMS CryptoKey Encrypter/Decrypter, not a key management role.",
+      "tags": [
+        "cloud-kms",
+        "iam",
+        "least-privilege",
+        "predefined-roles"
+      ],
+      "source": "curated",
+      "fingerprint": "0c127e0fcb54",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-132",
+      "uid": "4f2e1276-5277-420e-a70b-eb6c591c7fff",
+      "title": "A key custodian who must never decrypt",
+      "domain": "S4 · Access",
+      "objective": "4.1",
+      "subtopic": "Role Types and Custom Roles",
+      "new_in_2026": false,
+      "summary": "Separation of duties in Cloud KMS gives key managers the Cloud KMS Admin role and keeps the encrypt and decrypt role away from them.",
+      "tags": [
+        "cloud-kms",
+        "iam",
+        "predefined-roles",
+        "separation-of-duties"
+      ],
+      "source": "curated",
+      "fingerprint": "cfd8e6d219b4",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-133",
+      "uid": "b1a5d5e5-9a01-4be1-b8dc-8e73b398bd06",
+      "title": "A team lead who may only create service accounts",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Creating Service Accounts",
+      "new_in_2026": false,
+      "summary": "The Create Service Accounts role lets a principal create service accounts; granting them access to the project needs a further role.",
+      "tags": [
+        "iam",
+        "least-privilege",
+        "service-accounts"
+      ],
+      "source": "curated",
+      "fingerprint": "d8937ecac09a",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-134",
+      "uid": "20820182-ebde-47c7-b7b8-909b3a508b9a",
+      "title": "The script creates accounts but cannot grant them roles",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Creating Service Accounts",
+      "new_in_2026": false,
+      "summary": "Creating a service account and granting it access to the project are separate permissions; the second needs Project IAM Admin.",
+      "tags": [
+        "automation",
+        "iam",
+        "service-accounts"
+      ],
+      "source": "curated",
+      "fingerprint": "9668e9bcc08a",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-135",
+      "uid": "21d8646e-8ede-4f4d-8df9-ab85ee927d65",
+      "title": "A vendor's engineer who asks for a service account login",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Creating Service Accounts",
+      "new_in_2026": false,
+      "summary": "A service account has no password and cannot sign in to the console; a person needs a user identity.",
+      "tags": [
+        "identity",
+        "service-accounts",
+        "user-accounts"
+      ],
+      "source": "curated",
+      "fingerprint": "3ee6d08ef58a",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-136",
+      "uid": "ded2a051-e0a8-448e-8d16-8c863588e0fb",
+      "title": "Pods lose access after the feature is enabled",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Service Accounts for GKE",
+      "new_in_2026": false,
+      "summary": "Enabling Workload Identity Federation for GKE grants nothing; each workload's Kubernetes identity must be given its own IAM access.",
+      "tags": [
+        "gke",
+        "migration",
+        "troubleshooting",
+        "workload-identity"
+      ],
+      "source": "curated",
+      "fingerprint": "c5976d38ddc1",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-137",
+      "uid": "2a451c86-22db-476d-a199-2f20fd9e7851",
+      "title": "A Windows service that only has Kerberos tickets",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Workload Identity Federation",
+      "new_in_2026": true,
+      "summary": "An ambient credential that federation does not accept can first be exchanged at an identity provider for a token that it does accept.",
+      "tags": [
+        "on-premises",
+        "token-exchange",
+        "workload-identity-federation"
+      ],
+      "source": "curated",
+      "fingerprint": "8e8c720e6a82",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-138",
+      "uid": "62b4cfee-76c3-4088-a235-893fbfba2520",
+      "title": "One secret to rotate, or two",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Workload Identity Federation",
+      "new_in_2026": true,
+      "summary": "An application that already authenticates to an OIDC or SAML provider can exchange that provider's tokens through federation and needs no service account key.",
+      "tags": [
+        "rotation",
+        "secrets",
+        "workload-identity-federation"
+      ],
+      "source": "curated",
+      "fingerprint": "813921ba3154",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-139",
+      "uid": "c409c100-6d44-427b-887e-69d7e0c7bfb3",
+      "title": "Two providers in one pool, one name in the logs",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Workload Identity Federation",
+      "new_in_2026": true,
+      "summary": "Each workload identity pool should have a single provider, so that subjects from different providers cannot collide.",
+      "tags": [
+        "audit-logs",
+        "pools",
+        "workload-identity-federation"
+      ],
+      "source": "curated",
+      "fingerprint": "363fb1b8ffe5",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-140",
+      "uid": "696abe2e-346e-47b5-8340-03d926df84d0",
+      "title": "A new hire inherits a former contractor's access",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Workload Identity Federation",
+      "new_in_2026": true,
+      "summary": "Attribute mappings should use an attribute that is never reused, such as a unique ID, not an email address.",
+      "tags": [
+        "attribute-mapping",
+        "security",
+        "workload-identity-federation"
+      ],
+      "source": "curated",
+      "fingerprint": "798de00ab08b",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
       "id": "ace-x-001",
       "uid": "4f59f304-4755-4780-9665-ba6421559735",
       "title": "A GKE Pod reading one bucket without keys",
@@ -18462,6 +19674,195 @@
       "choose": 2,
       "also_tests": [
         "3.2"
+      ],
+      "certifying_only": true,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-x-087",
+      "uid": "b5b574a7-13db-45a8-b4a8-550dcdacced2",
+      "title": "A managed instance group that stopped creating VMs",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Creating Service Accounts",
+      "new_in_2026": false,
+      "summary": "The Google APIs Service Agent runs internal Compute Engine processes such as managed instance groups, and needs its role on the project.",
+      "tags": [
+        "managed-instance-groups",
+        "service-agents",
+        "troubleshooting"
+      ],
+      "source": "curated",
+      "fingerprint": "70a2e6fb6992",
+      "choose": 1,
+      "also_tests": [
+        "2.1"
+      ],
+      "certifying_only": true,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-x-088",
+      "uid": "38dbda03-a8d6-49df-b40e-0e1996ef3333",
+      "title": "Roles for the service account behind the Ops Agent",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Service Accounts and Least Privilege",
+      "new_in_2026": false,
+      "summary": "A VM's service account needs Logs Writer and Monitoring Metric Writer for the Ops Agent to send logs and metrics, and nothing broader.",
+      "tags": [
+        "least-privilege",
+        "monitoring",
+        "ops-agent",
+        "service-accounts"
+      ],
+      "source": "curated",
+      "fingerprint": "90db1f480b55",
+      "choose": 2,
+      "also_tests": [
+        "3.4"
+      ],
+      "certifying_only": true,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-x-089",
+      "uid": "137c6998-48bf-4fcd-8743-660256aa3039",
+      "title": "The role an app needs to reach Cloud SQL through the proxy",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Service Accounts and Least Privilege",
+      "new_in_2026": false,
+      "summary": "A service account that connects through the Cloud SQL Auth Proxy needs Cloud SQL Client, which carries the connect permission and no administrative rights.",
+      "tags": [
+        "cloud-sql",
+        "least-privilege",
+        "service-accounts"
+      ],
+      "source": "curated",
+      "fingerprint": "7568f4907077",
+      "choose": 1,
+      "also_tests": [
+        "2.2"
+      ],
+      "certifying_only": true,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-x-090",
+      "uid": "20c2eb45-8b10-4b4e-98fd-aef4ad097905",
+      "title": "Signed URLs from a service with no key file",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Service Account Permissions and Impersonation",
+      "new_in_2026": false,
+      "summary": "Without a key file, signing a Cloud Storage URL uses signBlob, which the service account gets from Token Creator on itself.",
+      "tags": [
+        "cloud-storage",
+        "service-accounts",
+        "sign-blob",
+        "signed-urls"
+      ],
+      "source": "curated",
+      "fingerprint": "bbe1ae06b963",
+      "choose": 1,
+      "also_tests": [
+        "3.2"
+      ],
+      "certifying_only": true,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-x-091",
+      "uid": "d6032c73-e9ae-4f88-aa02-bb22f2b971d6",
+      "title": "Terraform from laptops, applied as a service account",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Service Account Permissions and Impersonation",
+      "new_in_2026": false,
+      "summary": "Terraform run locally acts as a service account when the engineer holds Token Creator on it and a local ADC file is created with impersonation.",
+      "tags": [
+        "adc",
+        "impersonation",
+        "service-accounts",
+        "terraform"
+      ],
+      "source": "curated",
+      "fingerprint": "b1809a4df3c5",
+      "choose": 2,
+      "also_tests": [
+        "2.4"
+      ],
+      "certifying_only": true,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-x-092",
+      "uid": "897da166-7a2c-4fc1-8c1d-f3fea48d470c",
+      "title": "QUOTA_EXCEEDED when Pods ask for tokens",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Service Accounts for GKE",
+      "new_in_2026": false,
+      "summary": "Token exchanges for Workload Identity Federation for GKE count against a Security Token Service quota that can be raised.",
+      "tags": [
+        "gke",
+        "quotas",
+        "troubleshooting",
+        "workload-identity"
+      ],
+      "source": "curated",
+      "fingerprint": "27e331803766",
+      "choose": 1,
+      "also_tests": [
+        "1.1"
+      ],
+      "certifying_only": true,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-x-093",
+      "uid": "d1c04717-5be9-4487-b119-d3943951758b",
+      "title": "The person who looks after images and snapshots",
+      "domain": "S4 · Access",
+      "objective": "4.1",
+      "subtopic": "Role Types and Custom Roles",
+      "new_in_2026": false,
+      "summary": "Compute Storage Admin manages disks, images and snapshots without rights over VM instances.",
+      "tags": [
+        "compute-engine",
+        "iam",
+        "predefined-roles",
+        "snapshots"
+      ],
+      "source": "curated",
+      "fingerprint": "6b3facdcd9f2",
+      "choose": 1,
+      "also_tests": [
+        "3.1"
+      ],
+      "certifying_only": true,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-x-094",
+      "uid": "0cefdda9-2945-4fa2-99ad-04fc07d6d907",
+      "title": "Any Terraform Cloud organization could get in",
+      "domain": "S4 · Access",
+      "objective": "4.2",
+      "subtopic": "Workload Identity Federation",
+      "new_in_2026": true,
+      "summary": "Multi-tenant identity providers use one issuer for all tenants, so the provider needs an attribute condition that accepts only the trusted organization.",
+      "tags": [
+        "attribute-conditions",
+        "terraform",
+        "workload-identity-federation"
+      ],
+      "source": "curated",
+      "fingerprint": "2a97779077f5",
+      "choose": 1,
+      "also_tests": [
+        "2.4"
       ],
       "certifying_only": true,
       "file": "sections/section-4-security.json"
