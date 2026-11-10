@@ -1,8 +1,8 @@
 {
   "domain": "Section 4: Configuring access and security",
   "version": 2,
-  "updated_at": "2026-11-07T19:46:36+00:00",
-  "count": 87,
+  "updated_at": "2026-11-09T09:42:59+00:00",
+  "count": 93,
   "questions": [
     {
       "id": "ace-dom1-005",
@@ -2119,39 +2119,6 @@
       }
     },
     {
-      "id": "ace-s4-053",
-      "uid": "3a4cfc42-7343-40ee-95f8-7faa341d7b30",
-      "title": "Which keys have not been used for months",
-      "objective": "4.2",
-      "subtopic": "Service Accounts and Least Privilege",
-      "summary": "Activity Analyzer shows when each service account and key was last used for authentication.",
-      "tags": [
-        "activity-analyzer",
-        "hygiene",
-        "service-account-keys"
-      ],
-      "source": "curated",
-      "question": "A project has 60 user-managed service account keys, and security wants to delete the ones not used to authenticate in the last 90 days. Where can you find the last authentication time of each key?",
-      "options": {
-        "A": "Billing reports filtered by service account.",
-        "B": "Cloud Asset Inventory's resource search for keys.",
-        "C": "Activity Analyzer's key authentication activity.",
-        "D": "VPC Flow Logs from the VMs."
-      },
-      "correct_answer": "C",
-      "explanation": {
-        "summary": "Activity Analyzer reports the last time each service account and key authenticated, which is what identifies unused keys.",
-        "option_breakdown": {
-          "A": "Billing is not attributed to keys.",
-          "B": "Asset search lists keys and creation times, not their use.",
-          "C": "Correct. Activity Analyzer reports the last time each service account and key authenticated, which is what identifies unused keys.",
-          "D": "Flow logs do not record credential use."
-        },
-        "gcloud_command": "gcloud policy-intelligence query-activity --activity-type=serviceAccountKeyLastAuthentication \\\n  --project=P",
-        "doc_ref": "https://docs.cloud.google.com/policy-intelligence/docs/activity-analyzer-service-account-authentication"
-      }
-    },
-    {
       "id": "ace-s4-054",
       "uid": "7e7d9efd-f517-4235-8ff3-868160159213",
       "title": "An S3-compatible tool that needs Cloud Storage access",
@@ -2456,6 +2423,237 @@
         },
         "gcloud_command": "gcloud organizations add-iam-policy-binding ORG_ID \\\n  --member=user:auditor@partner.example --role=roles/iam.securityReviewer",
         "doc_ref": "https://cloud.google.com/iam/docs/understanding-roles"
+      }
+    },
+    {
+      "id": "ace-s4-064",
+      "uid": "28846d09-5955-458d-9b82-c64365d3a097",
+      "title": "A service account deleted six weeks ago",
+      "objective": "4.2",
+      "subtopic": "Creating Service Accounts",
+      "summary": "A deleted service account can be undeleted only within 30 days; after that, create a new one and grant its roles again.",
+      "tags": [
+        "iam",
+        "service-accounts",
+        "undelete"
+      ],
+      "source": "curated",
+      "question": "A reporting job at Bramley Press fails because its service account was deleted 45 days ago. Its old role bindings still appear in two projects, prefixed with deleted:. What should you do?",
+      "options": {
+        "A": "Undelete the service account by its unique ID.",
+        "B": "Create a service account with the same name; the old bindings apply to it again.",
+        "C": "Create a new service account, grant it the roles, and remove the deleted: bindings.",
+        "D": "Restore the service account from the project's Cloud Asset Inventory history."
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "Undelete works for 30 days after deletion. After that the account is gone for good, and its old bindings refer to an identity that no longer exists.",
+        "option_breakdown": {
+          "A": "The 30-day undelete window has passed.",
+          "B": "A new account with the same name has a new unique ID, and the deleted: bindings don't apply to it.",
+          "C": "Correct. A new account with fresh grants restores the job, and removing the stale bindings tidies the policies.",
+          "D": "Asset history records past metadata; it can't restore a deleted identity."
+        },
+        "gcloud_command": "gcloud iam service-accounts create report-job --project=P\ngcloud projects add-iam-policy-binding P --member=serviceAccount:report-job@P.iam.gserviceaccount.com --role=ROLE",
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/service-accounts-delete-undelete"
+      }
+    },
+    {
+      "id": "ace-s4-065",
+      "uid": "1a1bc089-70dd-4359-abc3-45205a3b859e",
+      "title": "A recreated service account that still gets permission denied",
+      "objective": "4.2",
+      "subtopic": "Creating Service Accounts",
+      "summary": "Role bindings point at a service account's unique ID, so a new account with the same email doesn't inherit the deleted account's bindings.",
+      "tags": [
+        "iam",
+        "service-accounts",
+        "unique-id"
+      ],
+      "source": "curated",
+      "question": "Two days after a service account was deleted by mistake at Ferndale Foods, an engineer created a new one with the same name and email. The job using it still gets permission denied, although the project's IAM policy shows the roles granted to that email. What is the best fix?",
+      "options": {
+        "A": "Wait an hour for the old bindings to propagate to the new account.",
+        "B": "Delete the new account and undelete the original by its unique ID.",
+        "C": "Disable and re-enable the new service account.",
+        "D": "Grant the roles to the user who runs the job instead."
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "The existing bindings belong to the deleted account's unique ID, not to the new account that reuses its email. Within 30 days, undeleting the original brings back the identity those bindings name.",
+        "option_breakdown": {
+          "A": "Propagation won't help; the bindings belong to a different identity.",
+          "B": "Correct. Removing the look-alike frees the email, and undelete restores the original account its bindings refer to.",
+          "C": "Disabling and enabling doesn't change which identity the bindings belong to.",
+          "D": "Granting roles to a person replaces a workload identity with a human's access, which is the wrong design."
+        },
+        "gcloud_command": "gcloud iam service-accounts delete report-job@P.iam.gserviceaccount.com\ngcloud iam service-accounts undelete ORIGINAL_UNIQUE_ID",
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/service-accounts-delete-undelete"
+      }
+    },
+    {
+      "id": "ace-s4-066",
+      "uid": "5150cc15-d770-4859-bd2c-a567ab310e6d",
+      "title": "Which keys authenticated this month",
+      "objective": "4.2",
+      "subtopic": "Service Accounts and Least Privilege",
+      "summary": "Cloud Monitoring's service account key metrics record authentication events per key for six weeks, which shows which keys are still in use.",
+      "tags": [
+        "key-hygiene",
+        "monitoring",
+        "service-account-keys"
+      ],
+      "source": "curated",
+      "question": "Security at Westgate Credit wants to delete every user-managed service account key in a project that hasn't authenticated in the last 30 days. Only generally available tools may be used. Where should you look?",
+      "options": {
+        "A": "Cloud Asset Inventory's resource search for service account keys.",
+        "B": "The key authentication metric in Metrics Explorer, grouped by key ID.",
+        "C": "The billing report filtered by service account.",
+        "D": "The VPC Flow Logs of the project's subnets."
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "The metric iam.googleapis.com/service_account/key/authn_events_count counts authentications per key and is kept for six weeks, so keys with no data in the last 30 days are unused.",
+        "option_breakdown": {
+          "A": "Asset search lists which keys exist, not when they were last used.",
+          "B": "Correct. Grouping the key authentication metric by key ID shows which keys authenticated in the last 30 days.",
+          "C": "Billing doesn't record authentications.",
+          "D": "Flow logs show network connections, not which credential a caller used."
+        },
+        "gcloud_command": "# Metrics Explorer: iam.googleapis.com/service_account/key/authn_events_count, group by key_id, last 30 days\ngcloud iam service-accounts keys list --iam-account=SA_EMAIL --managed-by=user",
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/service-account-monitoring"
+      }
+    },
+    {
+      "id": "ace-s4-067",
+      "uid": "959247e9-6a17-4b01-a31b-e82ba8c10039",
+      "title": "An HMAC key that belongs to a person",
+      "objective": "4.2",
+      "subtopic": "Service Accounts and Least Privilege",
+      "summary": "HMAC keys for interoperability should belong to a service account with a role on the specific bucket, not to a user account.",
+      "tags": [
+        "cloud-storage",
+        "hmac",
+        "service-accounts"
+      ],
+      "source": "curated",
+      "question": "For a data migration, a developer at Calder Media created an HMAC key tied to their own user account and configured an S3-compatible tool with it. Security wants the tool's access to be scoped to the target bucket and independent of any person. What should you do?",
+      "options": {
+        "A": "Keep the developer's key and remove the developer's other project roles.",
+        "B": "Give the tool a service account JSON key instead of the HMAC key.",
+        "C": "Generate signed URLs for the tool, valid for seven days.",
+        "D": "Create an HMAC key for a service account with a role on the bucket only, and deactivate the user's key."
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "An HMAC key acts with the permissions of its owner. A service account that holds only a role on the target bucket keeps the tool's access scoped, and it survives the developer leaving.",
+        "option_breakdown": {
+          "A": "The key would still depend on a person's account and that person's remaining access.",
+          "B": "An S3-compatible tool can't use a JSON key, and JSON keys are the riskier credential.",
+          "C": "Signed URLs cover single objects and expire; they don't give a tool standing access to write a bucket.",
+          "D": "Correct. A service account HMAC key with a bucket-level role is scoped, revocable and independent of any person."
+        },
+        "gcloud_command": "gcloud storage hmac create migrate-sa@P.iam.gserviceaccount.com\ngcloud storage hmac update ACCESS_ID --deactivated",
+        "doc_ref": "https://docs.cloud.google.com/storage/docs/authentication/hmackeys"
+      }
+    },
+    {
+      "id": "ace-s4-068",
+      "uid": "98afc35f-8172-4178-80f4-44c062569b19",
+      "title": "Which endpoint an S3 tool must call",
+      "objective": "4.2",
+      "subtopic": "Service Accounts and Least Privilege",
+      "summary": "S3-compatible tools use Cloud Storage's XML API at https://storage.googleapis.com with an HMAC key.",
+      "tags": [
+        "cloud-storage",
+        "hmac",
+        "interoperability"
+      ],
+      "source": "curated",
+      "question": "A backup appliance at Ludlow Clinics has an access ID and secret from a Cloud Storage HMAC key. Its settings ask for an S3 endpoint URL. Which endpoint should you enter?",
+      "options": {
+        "A": "https://storage.googleapis.com",
+        "B": "https://s3.amazonaws.com with the bucket's region",
+        "C": "https://www.googleapis.com/storage/v1",
+        "D": "https://console.cloud.google.com/storage"
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "Cloud Storage's XML API, at storage.googleapis.com, accepts HMAC-signed requests from S3-compatible tools.",
+        "option_breakdown": {
+          "A": "Correct. The XML API endpoint is the interoperability endpoint that HMAC keys work with.",
+          "B": "That endpoint is Amazon S3 itself, which knows nothing of Cloud Storage buckets.",
+          "C": "The JSON API uses OAuth tokens, not HMAC signatures.",
+          "D": "The console is a web interface for people, not an API endpoint."
+        },
+        "gcloud_command": "# S3 tool: endpoint https://storage.googleapis.com, access key = HMAC access ID, secret = HMAC secret",
+        "doc_ref": "https://docs.cloud.google.com/storage/docs/interoperability"
+      }
+    },
+    {
+      "id": "ace-s4-069",
+      "uid": "5f9c3d2e-c1cb-4497-93a5-e816d77a4375",
+      "title": "A scheduled call to Cloud Run that returns 403",
+      "objective": "4.2",
+      "subtopic": "Short-lived Credentials",
+      "summary": "Cloud Run accepts Google-signed ID tokens; a Cloud Scheduler job must send an OIDC token, not an OAuth access token, for a service account with Invoker.",
+      "tags": [
+        "cloud-run",
+        "cloud-scheduler",
+        "oidc"
+      ],
+      "source": "curated",
+      "question": "A Cloud Scheduler job at Penrith Sport calls a Cloud Run service that requires authentication. The job sends an OAuth token for the service account sched-sa, which has the Cloud Run Invoker role on the service, and every run returns 403. What should you change?",
+      "options": {
+        "A": "Grant sched-sa the Editor role on the project.",
+        "B": "Allow unauthenticated invocations on the service.",
+        "C": "Configure the job to send an OIDC token for sched-sa instead.",
+        "D": "Store a key for sched-sa in Secret Manager and send it in a header."
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "Cloud Run authenticates callers with Google-signed ID tokens. An OAuth access token is for Google APIs, so Cloud Run rejects it even though the account has Invoker.",
+        "option_breakdown": {
+          "A": "The account already has the right role; Editor adds privilege without fixing the token type.",
+          "B": "Opening the service to everyone removes the authentication it requires.",
+          "C": "Correct. An OIDC token with the service's URL as audience is what Cloud Run verifies.",
+          "D": "Sending a key in a header isn't an authentication method Cloud Run accepts, and it creates a long-lived secret."
+        },
+        "gcloud_command": "gcloud scheduler jobs update http nightly --location=R \\\n  --oidc-service-account-email=sched-sa@P.iam.gserviceaccount.com --oidc-token-audience=SERVICE_URL",
+        "doc_ref": "https://docs.cloud.google.com/scheduler/docs/http-target-auth"
+      }
+    },
+    {
+      "id": "ace-s4-070",
+      "uid": "dc90c9dd-4ec0-48cc-932c-d42a55e16970",
+      "title": "A scheduled job that calls a Google API",
+      "objective": "4.2",
+      "subtopic": "Short-lived Credentials",
+      "summary": "Cloud Scheduler sends OAuth access tokens to Google APIs on *.googleapis.com, and OIDC tokens to your own endpoints such as Cloud Run.",
+      "tags": [
+        "cloud-scheduler",
+        "compute-engine",
+        "oauth"
+      ],
+      "source": "curated",
+      "question": "Every evening a Cloud Scheduler HTTP job at Tilbury Labs must call the Compute Engine API's instances.stop method directly to stop a test VM. The job runs as a service account with the Compute Instance Admin role. How should the job authenticate?",
+      "options": {
+        "A": "An OAuth access token for the service account.",
+        "B": "An OIDC token for the service account with the API's URL as audience.",
+        "C": "An API key added to the request's URL.",
+        "D": "No token; Cloud Scheduler's own identity is trusted by Google APIs."
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "Google APIs on googleapis.com expect OAuth access tokens. Scheduler mints one for the service account, whose role authorises stopping the VM.",
+        "option_breakdown": {
+          "A": "Correct. Google APIs are called with OAuth access tokens, which Scheduler creates for the chosen service account.",
+          "B": "OIDC tokens are for your own endpoints, such as Cloud Run or Cloud Run functions, not Google APIs.",
+          "C": "API keys identify a project, not a principal with IAM roles, and can't authorise stopping a VM.",
+          "D": "Scheduler acts as the service account you configure; without a token the call is anonymous and fails."
+        },
+        "gcloud_command": "gcloud scheduler jobs create http stop-test-vm --location=R --schedule='0 19 * * *' --http-method=POST \\\n  --uri=https://compute.googleapis.com/compute/v1/projects/P/zones/Z/instances/test-vm/stop \\\n  --oauth-service-account-email=ops-sa@P.iam.gserviceaccount.com",
+        "doc_ref": "https://docs.cloud.google.com/scheduler/docs/http-target-auth"
       }
     },
     {

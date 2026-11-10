@@ -17,6 +17,7 @@ theory/pdf/ACE-Theory-Recap.md
 theory/pdf/.build/
 theory/video/ACE-Video-Questions.md
 theory/video/publish/
+theory/video/shots/
 
 # ── Jekyll / GitHub Pages local builds ──
 _site/

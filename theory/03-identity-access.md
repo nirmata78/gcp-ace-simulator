@@ -318,7 +318,7 @@ policy:
 | *Why* can (or can't) this principal do this action on this resource? | **Policy Troubleshooter** |
 | *Who* can do X on Y? *What* can this principal reach? | **Policy Analyzer** (Asset Inventory) |
 | Which roles are more than this principal actually uses? | **IAM role recommender** (Active Assist) — based on ~90 days of usage |
-| Is this service account or key still used? | **Activity Analyzer** / service-account usage insights |
+| Is this service account or key still used? | **Usage metrics** in Cloud Monitoring: `iam.googleapis.com/service_account/key/authn_events_count` per key, kept 6 weeks (GA). Activity Analyzer's *last authenticated* view and unused-account insights are *Preview* |
 | What would a policy change break? | **Policy Simulator** |
 
 
@@ -452,7 +452,14 @@ is rotated only if you rotate it. Google's position, and the exam's: <mark markd
 
 **Controls when keys must exist:** `iam.disableServiceAccountKeyCreation` (block them), an expiry constraint
 (`iam.serviceAccountKeyExpiryHours`), rotation (`gcloud iam service-accounts keys create` / `delete`), and usage
-monitoring (Activity Analyzer, Security Command Center findings).
+monitoring (the service account and key **authentication metrics** in Cloud Monitoring's Metrics Explorer,
+which keep six weeks of data, and Security Command Center findings).
+
+{: .cmds }
+| Task | Command |
+|:------------------------------------|:----------------------------------------------------------------------|
+| List a service account's keys and their creation time | `gcloud iam service-accounts keys list --iam-account=SA_EMAIL --managed-by=user` |
+| Which keys authenticated recently | Metrics Explorer: `iam.googleapis.com/service_account/key/authn_events_count`, grouped by `key_id` |
 
 {: .trap }
 > **"Store the JSON key in Secret Manager" does not satisfy "no key material".** It is still a long-lived key that

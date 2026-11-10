@@ -7,8 +7,8 @@ Every question was reviewed against [the question standard](../question-standard
 | pass | 96 |
 | revised | 461 |
 | restored | 33 |
-| removed | 1 |
-| new | 132 |
+| removed | 6 |
+| new | 201 |
 
 ## ace-dom1-001 · revised
 
@@ -11031,26 +11031,6 @@ The shared-networking host project must never be deleted accidentally, even by s
 
 The key was the longest option; shortened.
 
-**3. Final question**
-
-*A project nobody can delete by accident* · 1.1 Resource Hierarchy · `722c08d1-5db8-4d21-abd7-8b6efa4d41cb`
-
-The shared-networking host project must never be deleted accidentally, even by someone with Owner on it. What can you place on the project?
-
-- **A.** Deletion protection on each VM in the project.
-- **B.** A label protected=true on the project.
-- **C.** A lien that restricts project deletion.  ← key
-- **D.** A budget alert on the project.
-
-Explanation: A lien prevents the project from being deleted until someone with permission to remove liens deletes it first, which adds a deliberate step.
-
-- A: VM deletion protection guards individual instances, not the project.
-- B: Labels are metadata and enforce nothing.
-- C: Correct. A lien prevents the project from being deleted until someone with permission to remove liens deletes it first, which adds a deliberate step.
-- D: Budgets watch spend.
-
-Reference: https://docs.cloud.google.com/resource-manager/docs/project-liens
-
 ## ace-s1-044 · revised
 
 **1. Original**
@@ -11210,26 +11190,6 @@ A manager with Billing Account Viewer asks why the bill rose 30% last month and 
 | AC7 Original and current | pass |
 
 The key was much the longest option; shortened.
-
-**3. Final question**
-
-*Explaining last month's bill increase* · 1.2 Billing Export and Cost Attribution · `0658b9f8-748c-4956-9cdf-40e0f460d147`
-
-A manager with Billing Account Viewer asks why the bill rose 30% last month and which services and projects drove it. They do not write SQL. What can they use in the console?
-
-- **A.** Gemini Cloud Assist in the Billing console.  ← key
-- **B.** The Pricing Calculator.
-- **C.** Active Assist idle-resource recommendations.
-- **D.** The billing account's payment history page.
-
-Explanation: Gemini Cloud Assist can analyse billing data in the Billing console and explain cost changes by service and project, within the user's billing permissions.
-
-- A: Correct. Gemini Cloud Assist can analyse billing data in the Billing console and explain cost changes by service and project, within the user's billing permissions.
-- B: The calculator estimates future prices, not past changes.
-- C: Idle-resource recommendations suggest savings; they do not explain a past increase.
-- D: Payment history shows invoices and payments, not what drove the cost.
-
-Reference: https://docs.cloud.google.com/billing/docs/how-to/gemini/set-up-gemini
 
 ## ace-s1-048 · new
 
@@ -15089,26 +15049,6 @@ An SRE team does its incident work in a third-party AI assistant that supports t
 | AC7 Original and current | pass |
 
 The key was much the longest option; shortened.
-
-**3. Final question**
-
-*Gemini Cloud Assist from a third-party AI tool* · 2.4 AI-assisted Planning · `df5ef42d-c1bb-4cec-9aef-573774cdf672`
-
-An SRE team does its incident work in a third-party AI assistant that supports the Model Context Protocol. It wants that assistant to use Gemini Cloud Assist's knowledge of their Google Cloud projects. What should it configure?
-
-- **A.** A Pub/Sub topic that forwards console events to the assistant.
-- **B.** Gemini Cloud Assist's remote MCP server, added to the assistant.  ← key
-- **C.** A service account key for the assistant with roles/owner.
-- **D.** A BigQuery export of Cloud Asset Inventory shared with the assistant's vendor.
-
-Explanation: Gemini Cloud Assist provides a remote MCP server. MCP-capable clients connect to it and call Gemini Cloud Assist with the signed-in user's permissions.
-
-- A: Console events are not how Gemini Cloud Assist is integrated.
-- B: Correct. Gemini Cloud Assist provides a remote MCP server. MCP-capable clients connect to it and call Gemini Cloud Assist with the signed-in user's permissions.
-- C: Owner keys are a serious security risk and still do not provide Gemini Cloud Assist.
-- D: Sharing inventory exports with a vendor exposes data and gives no assistant capability.
-
-Reference: https://docs.cloud.google.com/cloud-assist/use-gemini-cloud-assist-mcp
 
 ## ace-s2-086 · revised
 
@@ -22758,26 +22698,6 @@ Besides Cloud SQL and AlloyDB, a company still runs self-managed MySQL on Comput
 
 The key was much the longest option; shortened.
 
-**3. Final question**
-
-*Self-managed databases in the fleet view* · 3.2 Database Center · `7e19bfe3-a6ba-440a-a717-44c8b50b4083`
-
-Besides Cloud SQL and AlloyDB, a company still runs self-managed MySQL on Compute Engine VMs. The DBA lead wants those in the same fleet health view. What is true?
-
-- **A.** Only managed database services can appear in Database Center.
-- **B.** They must first be migrated to Cloud SQL with Database Migration Service.
-- **C.** Database Center can include databases on Compute Engine VMs.  ← key
-- **D.** They appear only if the VMs are in the same project as the Cloud SQL instances.
-
-Explanation: Database Center covers databases on Compute Engine VMs (MySQL, PostgreSQL and SQL Server) in addition to the managed products, across projects.
-
-- A: Its coverage is not limited to managed services.
-- B: Migration is not a prerequisite for visibility.
-- C: Correct. Database Center covers databases on Compute Engine VMs (MySQL, PostgreSQL and SQL Server) in addition to the managed products, across projects.
-- D: Database Center works across projects.
-
-Reference: https://docs.cloud.google.com/database-center/docs/overview
-
 ## ace-s3-128 · revised
 
 **1. Original**
@@ -23878,7 +23798,7 @@ New clean-room question (rewrite for excluded ace-dom3-073), written from the gu
 
 *Giving a running VM more vCPUs* · 3.1 Instance Inventory and Lifecycle · `7b20930c-fa90-44cf-8446-665acbe50153`
 
-A standalone n2-standard-4 VM needs to become n2-standard-8, keeping its boot disk, IP addresses and metadata. What is the procedure?
+A standalone n2-standard-4 VM needs to become n2-standard-8, keeping its boot disk, internal IP address and metadata. What is the procedure?
 
 - **A.** Stop the VM, change its machine type, then start it.  ← key
 - **B.** Change the machine type while it runs; vCPUs are hot-added.
@@ -26528,26 +26448,6 @@ A project has 60 user-managed service account keys, and security wants to delete
 | AC7 Original and current | pass |
 
 The key was much the longest option; shortened.
-
-**3. Final question**
-
-*Which keys have not been used for months* · 4.2 Service Accounts and Least Privilege · `3a4cfc42-7343-40ee-95f8-7faa341d7b30`
-
-A project has 60 user-managed service account keys, and security wants to delete the ones not used to authenticate in the last 90 days. Where can you find the last authentication time of each key?
-
-- **A.** Billing reports filtered by service account.
-- **B.** Cloud Asset Inventory's resource search for keys.
-- **C.** Activity Analyzer's key authentication activity.  ← key
-- **D.** VPC Flow Logs from the VMs.
-
-Explanation: Activity Analyzer reports the last time each service account and key authenticated, which is what identifies unused keys.
-
-- A: Billing is not attributed to keys.
-- B: Asset search lists keys and creation times, not their use.
-- C: Correct. Activity Analyzer reports the last time each service account and key authenticated, which is what identifies unused keys.
-- D: Flow logs do not record credential use.
-
-Reference: https://docs.cloud.google.com/policy-intelligence/docs/activity-analyzer-service-account-authentication
 
 ## ace-s4-054 · revised
 
@@ -30586,4 +30486,2615 @@ Explanation: The default access scopes don't include BigQuery, so the VM's token
 - D: Correct. With the cloud-platform scope, the service account's IAM roles decide access.
 
 Reference: https://cloud.google.com/compute/docs/access/service-accounts
+
+## ace-s3-127 · removed
+
+**1. Original**
+
+Besides Cloud SQL and AlloyDB, a company still runs self-managed MySQL on Compute Engine VMs. The DBA lead wants those in the same fleet health view. What is true?
+
+- **A.** Only managed database services can appear in Database Center.
+- **B.** They must first be migrated to Cloud SQL with Database Migration Service.
+- **C.** Database Center can include databases on Compute Engine VMs.  ← key
+- **D.** They appear only if the VMs are in the same project as the Cloud SQL instances.
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | **fail** |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+Removed on 2026-11-09: the key relied on Database Center's coverage of databases on Compute Engine VMs, which is in Preview. The bank keys only features that were generally available in June 2026 (see the launch-stage rule in theory Part 1).
+
+## ace-s4-053 · removed
+
+**1. Original**
+
+A project has 60 user-managed service account keys, and security wants to delete the ones not used to authenticate in the last 90 days. Where can you find the last authentication time of each key?
+
+- **A.** Billing reports filtered by service account.
+- **B.** Cloud Asset Inventory's resource search for keys.
+- **C.** Activity Analyzer's key authentication activity.  ← key
+- **D.** VPC Flow Logs from the VMs.
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | **fail** |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+Removed on 2026-11-09: the key relied on Activity Analyzer's last-authentication view, which is in Preview. The bank keys only features that were generally available in June 2026 (see the launch-stage rule in theory Part 1).
+
+## ace-s1-043 · removed
+
+**1. Original**
+
+The shared-networking host project must never be deleted accidentally, even by someone with Owner on it. What can you place on the project?
+
+- **A.** Deletion protection on each VM in the project.
+- **B.** A label protected=true on the project.
+- **C.** A lien that restricts project deletion.  ← key
+- **D.** A budget alert on the project.
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | **fail** |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+Removed on 2026-11-09: the key relied on project liens, which is in Preview. The bank keys only features that were generally available in June 2026 (see the launch-stage rule in theory Part 1).
+
+## ace-s1-047 · removed
+
+**1. Original**
+
+A manager with Billing Account Viewer asks why the bill rose 30% last month and which services and projects drove it. They do not write SQL. What can they use in the console?
+
+- **A.** Gemini Cloud Assist in the Billing console.  ← key
+- **B.** The Pricing Calculator.
+- **C.** Active Assist idle-resource recommendations.
+- **D.** The billing account's payment history page.
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | **fail** |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+Removed on 2026-11-09: the key relied on Gemini Cloud Assist in Cloud Billing, which is in Preview. The bank keys only features that were generally available in June 2026 (see the launch-stage rule in theory Part 1).
+
+## ace-s2-085 · removed
+
+**1. Original**
+
+An SRE team does its incident work in a third-party AI assistant that supports the Model Context Protocol. It wants that assistant to use Gemini Cloud Assist's knowledge of their Google Cloud projects. What should it configure?
+
+- **A.** A Pub/Sub topic that forwards console events to the assistant.
+- **B.** Gemini Cloud Assist's remote MCP server, added to the assistant.  ← key
+- **C.** A service account key for the assistant with roles/owner.
+- **D.** A BigQuery export of Cloud Asset Inventory shared with the assistant's vendor.
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | **fail** |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+Removed on 2026-11-09: the key relied on Gemini Cloud Assist's remote MCP server, which is in Preview. The bank keys only features that were generally available in June 2026 (see the launch-stage rule in theory Part 1).
+
+## ace-s1-062 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*A development change that broke production* · 1.1 Foundation Networking · `74b71d4f-c719-427e-af47-f6ef7cc6d7a9`
+
+Arden Mutual has one Shared VPC host project with one VPC network, holding production and development subnets. A developer with network admin rights on the host project widened a firewall rule for a test, and it exposed production VMs. Security wants development network changes to be unable to affect production at all. What should you do?
+
+- **A.** Create separate production and non-production host projects, each with its own VPC.  ← key
+- **B.** Add IAM conditions that limit the developer to rules whose names start with dev-.
+- **C.** Move the development subnets into a second VPC in the same host project.
+- **D.** Use network tags so development rules target only development VMs.
+
+Explanation: Firewall rules and routes are resources of a VPC network, and IAM is granted per host project. Separate host projects with separate VPCs mean non-production administrators have no rights and no rules that touch production.
+
+- A: Correct. Separate host projects separate both the networks and who administers them, which is Google's recommended foundation.
+- B: Name conditions are fragile, and the developer could still create a rule with any target in the shared VPC.
+- C: A second VPC separates rules, but the same host-project admins still control both networks.
+- D: Tags are chosen by whoever writes the rule, so nothing stops a rule targeting production VMs.
+
+Reference: https://docs.cloud.google.com/vpc/docs/shared-vpc
+
+## ace-s1-063 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*Developers with full rights in development only* · 1.1 Resource Hierarchy · `f88cc2ea-2c81-4ac6-b24f-2f8f97eb050b`
+
+Quarry Lane Software runs development and production in one project, where developers are Editors. Developers must keep broad rights in development but have none in production, production must not share quota with load tests, and finance wants each environment's cost separately. What should you do?
+
+- **A.** Label every resource with env=dev or env=prod and add IAM conditions on that label.
+- **B.** Create a deny policy that denies developers every permission on resources labelled env=prod.
+- **C.** Move production into its own project in a production folder, and grant developers Editor only on the development project.  ← key
+- **D.** Put production resources in a separate region and restrict developers with an organisation policy on locations.
+
+Explanation: IAM, quota and billing reports all follow the project. Separate projects under environment folders give developers rights in development only, keep quota apart and show each environment's cost without perfect labelling.
+
+- A: Labels can be edited by the people they would restrict, and they don't separate quota.
+- B: Deny policies can't target resources by label like this, and the shared quota and billing remain.
+- C: Correct. A project per environment is the boundary for access, quota and cost, as Google's foundation design recommends.
+- D: Location policies restrict where resources are created, not who may change them, and quota is still shared.
+
+Reference: https://docs.cloud.google.com/resource-manager/docs/cloud-platform-resource-hierarchy
+
+## ace-s1-064 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*An Admin console edit that the next sync undoes* · 1.1 Cloud Identity and Users · `f8055f2a-e03c-4bd0-a649-8eea29fc7a5e`
+
+Linfield College syncs users and groups from on-premises Active Directory to Cloud Identity with Google Cloud Directory Sync every hour. An administrator corrected a user's department in the Google Admin console, but an hour later the old value was back. What should the administrator do?
+
+- **A.** Make the change in Active Directory, which Directory Sync treats as the source.  ← key
+- **B.** Enable two-way synchronisation in Directory Sync's configuration.
+- **C.** Lock the user's profile in the Admin console so syncs skip it.
+- **D.** Stop Directory Sync, make the change, and start it again.
+
+Explanation: Directory Sync copies from Active Directory to Cloud Identity and never the other way, so every run makes Cloud Identity match Active Directory again.
+
+- A: Correct. Active Directory is the authoritative source; the change belongs there and the next sync carries it over.
+- B: Directory Sync is one-way by design; it never writes back to Active Directory.
+- C: There is no such lock; synced attributes follow the source directory.
+- D: The next run after restarting would overwrite the change again.
+
+Reference: https://support.google.com/a/answer/106368
+
+## ace-s1-065 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*Active Directory passwords that must never reach Google* · 1.1 Cloud Identity and Users · `8dd93ee4-9a75-46e5-a819-c99abeb1fc73`
+
+Users at Moreton Water are synced from Active Directory to Cloud Identity with Google Cloud Directory Sync. They must sign in to the Google Cloud console with their Active Directory passwords, and security forbids storing those passwords or their hashes at Google. What should you add?
+
+- **A.** Password synchronisation from the domain controllers to Cloud Identity.
+- **B.** SAML single sign-on with AD FS as the identity provider.  ← key
+- **C.** A workforce identity pool that replaces the synced accounts.
+- **D.** Two-step verification on every Cloud Identity account.
+
+Explanation: With SAML single sign-on, Cloud Identity redirects sign-in to AD FS, which checks the Active Directory password. Directory Sync keeps providing the accounts, and no password leaves the company.
+
+- A: Password synchronisation copies password hashes to Google, which security forbids.
+- B: Correct. AD FS authenticates users against Active Directory, so Google never holds their passwords.
+- C: Workforce Identity Federation avoids Cloud Identity accounts altogether; the company already chose synced accounts.
+- D: Two-step verification adds a factor but users would still need a password stored at Google.
+
+Reference: https://docs.cloud.google.com/architecture/identity/federating-gcp-with-active-directory-synchronizing-user-accounts
+
+## ace-s1-066 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*Single sign-on works, but new hires have no account* · 1.1 Cloud Identity and Users · `65013567-6dc6-461b-a386-7dad4257dea1`
+
+Hallam Studios configured SAML single sign-on from Microsoft Entra ID to Cloud Identity. Existing employees sign in to Google Cloud without problems, but this month's new hires get an error that their account doesn't exist. Accounts were created by hand until now. What should you set up?
+
+- **A.** Google Cloud Directory Sync on a domain controller.
+- **B.** A longer SAML session lifetime in Entra ID.
+- **C.** A workforce identity pool for the new hires only.
+- **D.** Automatic user provisioning from Entra ID's Google Cloud enterprise app.  ← key
+
+Explanation: Single sign-on checks who a user is but doesn't create Cloud Identity accounts. Entra ID's provisioning creates, updates and suspends them automatically as employees join and leave.
+
+- A: The company has no on-premises Active Directory for Directory Sync to read.
+- B: Session length doesn't create accounts that don't exist.
+- C: A separate federation model for some employees splits identity management for no reason.
+- D: Correct. Automatic provisioning creates new hires' Cloud Identity accounts, and single sign-on then works for them.
+
+Reference: https://docs.cloud.google.com/architecture/identity/federating-gcp-with-azure-ad-configuring-provisioning-and-single-sign-on
+
+## ace-s1-067 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*Federated employees signing in every hour* · 1.1 Workforce Identity Federation · `0a837e99-891c-4a6a-91e2-a5630a522dfa`
+
+Employees at Carrick Energy reach Google Cloud through a workforce identity pool federated with Okta. They complain that they must sign in again every hour. Security accepts sessions of up to eight hours. What should you change?
+
+- **A.** The pool's session duration, to 28800s.  ← key
+- **B.** The OAuth access-token lifetime organisation policy, to eight hours.
+- **C.** The Google Workspace session length for all users.
+- **D.** The expiry of the IAM role bindings granted to the pool.
+
+Explanation: The workforce pool's session duration controls how long its console and gcloud sessions stay valid, and it can be set between 15 minutes and 12 hours.
+
+- A: Correct. Eight hours, 28800 seconds, is within the pool setting's range and applies only to that pool.
+- B: That policy extends service-account access tokens, not federated users' sessions.
+- C: Workspace session settings apply to Cloud Identity users, not to federated identities in a workforce pool.
+- D: Binding expiry removes access at a date; it doesn't change how long a sign-in lasts.
+
+Reference: https://docs.cloud.google.com/iam/docs/manage-workforce-identity-pools-providers
+
+## ace-s1-068 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*A role for every federated user in one department* · 1.1 Workforce Identity Federation · `81678d18-0421-4fdd-aecc-fb6a096c36bd`
+
+A workforce pool named staff-pool maps the identity provider's department claim to attribute.department. Everyone whose department is finance must get BigQuery Data Viewer on project fin-reports, including people who join later. Which member should the binding use?
+
+- **A.** A group: member named finance@ in the company's domain.
+- **B.** A principal member for each finance user's subject.
+- **C.** A principalSet member for the pool's attribute.department/finance.  ← key
+- **D.** A domain: member for the identity provider's domain.
+
+Explanation: A principalSet identifier can select every identity in a workforce pool with a given mapped attribute value, so one binding covers current and future finance staff.
+
+- A: Federated identities have no Cloud Identity group unless one is mapped; a domain group doesn't contain them.
+- B: Per-user bindings miss people who join later and must be maintained by hand.
+- C: Correct. principalSet://iam.googleapis.com/locations/global/workforcePools/staff-pool/attribute.department/finance covers every matching identity.
+- D: A domain member names a Google Workspace or Cloud Identity domain, not identities in a workforce pool.
+
+Reference: https://docs.cloud.google.com/iam/docs/principal-identifiers
+
+## ace-s1-069 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*A role for one federated user* · 1.1 Workforce Identity Federation · `0412cdff-9bb2-4a8c-a89d-83acad28638e`
+
+One contractor signs in through the workforce pool vendor-pool, and the provider maps the contractor's ID to google.subject as c-4471. The contractor alone needs Logs Viewer on project ops-prod. Which member should the binding use?
+
+- **A.** A user: member with the contractor's email address.
+- **B.** A principal member for vendor-pool's subject c-4471.  ← key
+- **C.** A principalSet member for all identities in vendor-pool.
+- **D.** A serviceAccount: member that the contractor impersonates.
+
+Explanation: IAM names one federated workforce identity with a principal identifier built from the pool and the mapped google.subject.
+
+- A: user: members are Google accounts; a federated contractor has no Google account.
+- B: Correct. principal://iam.googleapis.com/locations/global/workforcePools/vendor-pool/subject/c-4471 is exactly that contractor.
+- C: Granting the whole pool gives every vendor identity the role, not one contractor.
+- D: A shared service account hides who acted and isn't needed for a federated user.
+
+Reference: https://docs.cloud.google.com/iam/docs/principal-identifiers
+
+## ace-s1-070 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*A firewall rule's settings from two months ago* · 1.1 Asset Inventory and Gemini Cloud Assist · `f716fe63-b3c3-4ad8-84f6-e5200f1b9056`
+
+An auditor at Harrow Bank asks what the firewall rule allow-partner allowed eight weeks ago, before two changes were made to it. No asset exports or feeds were ever set up, and no log sinks exist. Where can you find the changes?
+
+- **A.** The rule's asset history in Cloud Asset Inventory.
+- **B.** Firewall Rules Logging for the rule.
+- **C.** VPC Flow Logs from that period.
+- **D.** The Admin Activity audit log entries for the rule.  ← key
+
+Explanation: Admin Activity audit logs record every change to a firewall rule, with the request, and are kept for 400 days. Asset history covers only the last five weeks.
+
+- A: Asset history reaches back about five weeks, so eight weeks ago is out of range.
+- B: Firewall Rules Logging records connections the rule matched, not changes to its configuration.
+- C: Flow logs record traffic samples and must have been enabled at the time.
+- D: Correct. The rule's patch and update entries in Admin Activity logs show what changed and when, for 400 days.
+
+Reference: https://docs.cloud.google.com/logging/quotas
+
+## ace-s1-071 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*No one may delete the network host project* · 1.1 Resource Hierarchy · `b0304e4a-2ee4-4fdc-88b1-6949e9c238d1`
+
+Deleting the Shared VPC host project at Ingram Logistics would take down every service project's network. Several administrators hold Owner on it. Using generally available features only, how do you stop anyone from deleting the project, Owners included?
+
+- **A.** Remove the Owner role from everyone and grant Editor instead.
+- **B.** A deny policy on the project that denies the projects.delete permission.  ← key
+- **C.** An organisation policy that restricts resource locations for the project.
+- **D.** A budget with a 100% threshold that alerts the network team.
+
+Explanation: Deny policies are evaluated before allow policies, so a deny rule for cloudresourcemanager.googleapis.com/projects.delete blocks deletion whatever roles a principal holds.
+
+- A: Editor can't delete a project, but removing Owner from everyone also removes the administrators' ability to run the project.
+- B: Correct. A deny rule on projects.delete stops every principal it names, including Owners, and it is GA.
+- C: A location policy limits where resources are created, not whether the project can be deleted.
+- D: A budget watches spending; it can't block an action.
+
+Reference: https://docs.cloud.google.com/iam/docs/deny-overview
+
+## ace-s1-072 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*US workloads that need FedRAMP High controls* · 1.1 Regions and Zones · `6b7a07ce-4ff9-4157-81ec-aba207c37525`
+
+A contractor at Halsey Federal will host a US government system that must meet FedRAMP High: data stored only in the United States, support access only by US persons with enhanced background checks, and only services authorised at that level. What should you set up?
+
+- **A.** An Assured Workloads folder with the FedRAMP High control package.  ← key
+- **B.** The gcp.resourceLocations organisation policy set to in:us-locations.
+- **C.** A VPC Service Controls perimeter around the system's projects.
+- **D.** Access Transparency logs reviewed weekly by the security team.
+
+Explanation: Assured Workloads' FedRAMP High package enforces US data location, restricts support personnel and limits the folder to authorised services, and it monitors for violations.
+
+- A: Correct. The control package covers data location, personnel access and service restrictions together.
+- B: A location policy covers where data lives, not who at Google may access it or which services are authorised.
+- C: A perimeter limits data movement through Google APIs; it doesn't control location or personnel.
+- D: Access Transparency shows access after it happens; it doesn't restrict who can access.
+
+Reference: https://docs.cloud.google.com/assured-workloads/docs/overview
+
+## ace-s1-073 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*A project outside the Assured Workloads folder* · 1.1 Regions and Zones · `e4e15f11-1c56-4cf5-9e1f-cc1245a9af94`
+
+Corwen Health created an Assured Workloads folder with the EU Data Boundary and Support package. A team then created a project directly under the organisation and deployed patient data to us-central1 without any error. Why was nothing blocked?
+
+- **A.** The package only alerts on violations and never blocks anything.
+- **B.** The package's controls take 30 days to start applying.
+- **C.** The controls apply only to projects in the Assured Workloads folder.  ← key
+- **D.** us-central1 is allowed by the EU Data Boundary package for backups.
+
+Explanation: Assured Workloads enforces its package with organisation policies on its folder, so only projects created inside that folder inherit the controls.
+
+- A: The package enforces controls such as resource locations through organisation policies, and also monitors for violations.
+- B: Controls apply as soon as the folder exists; there is no waiting period.
+- C: Correct. A project at the organisation root inherits nothing from the folder, so EU-only locations didn't apply to it.
+- D: The EU packages restrict resources to EU locations; us-central1 is outside them.
+
+Reference: https://docs.cloud.google.com/assured-workloads/docs/create-folder
+
+## ace-s1-074 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*Finding out when an Assured Workloads control is overridden* · 1.1 Regions and Zones · `2a78d3d7-07e0-499a-8851-da25def596a4`
+
+An administrator at Lyle Defence with Organization Policy Administrator could change a policy inside the company's Assured Workloads folder. The compliance team wants to know whenever such a change breaks the control package, without building anything. What should you use?
+
+- **A.** A budget alert on the folder's projects.
+- **B.** Assured Workloads violation monitoring, with email notifications.  ← key
+- **C.** A Cloud Asset Inventory export to BigQuery every month.
+- **D.** Personalized Service Health alerts for the folder.
+
+Explanation: Assured Workloads watches its folder for changes that break the package's organisation policies or resource rules, lists them as violations and can notify by email.
+
+- A: Budgets watch spending, not policy changes.
+- B: Correct. Violation monitoring reports policy and resource violations in the folder and sends notifications.
+- C: A monthly export is a snapshot to analyse later, not a notification when a control is broken.
+- D: Personalized Service Health reports Google Cloud incidents, not your own policy changes.
+
+Reference: https://docs.cloud.google.com/assured-workloads/docs/monitor-folder
+
+## ace-s1-075 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*Where a Spanner configuration keeps its replicas* · 1.1 Regions and Zones · `44279df3-4757-4ccb-84b1-721cd6b835a4`
+
+An architect at Selby Payments is choosing a Spanner multi-region configuration. Before deciding, they need to know which regions hold read-write replicas and which region is the default leader in the configuration eur5. What is the most direct way to find out?
+
+- **A.** List the Compute Engine zones in each European region.
+- **B.** Create a test instance in eur5 and read its monitoring charts.
+- **C.** Describe the eur5 instance configuration.  ← key
+- **D.** Read the Spanner API's quota page for the project.
+
+Explanation: An instance configuration lists its replicas with their types and locations and its default leader. Describing it answers the question without creating anything.
+
+- A: Zones say where Compute Engine runs, not where a Spanner configuration places replicas.
+- B: A test instance costs money and still doesn't show the configuration's replica layout directly.
+- C: Correct. gcloud spanner instance-configs describe eur5 shows each replica's type and region and the default leader.
+- D: Quotas limit capacity; they say nothing about replica placement.
+
+Reference: https://docs.cloud.google.com/spanner/docs/instance-configurations
+
+## ace-s1-076 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*Where namespace costs appear after cost allocation* · 1.2 Billing Export and Cost Attribution · `75736f95-0173-4f47-8abb-5d556e1e9a39`
+
+Finance at Hawley Insurance enabled GKE cost allocation on a shared cluster. It now wants to query cost by Kubernetes namespace with SQL. Where should it look?
+
+- **A.** The standard usage cost export to BigQuery.
+- **B.** The detailed usage cost export to BigQuery.  ← key
+- **C.** The cluster's Workloads page in the console.
+- **D.** A budget scoped to the cluster's project.
+
+Explanation: Cost allocation adds namespace and Kubernetes label information to resource-level rows, which only the detailed usage cost export contains.
+
+- A: The standard export aggregates by service and SKU, without the resource-level rows cost allocation adds to.
+- B: Correct. The detailed export carries the namespace and label breakdown that SQL can group by.
+- C: The Workloads page shows resource requests and status, not billed cost.
+- D: A budget alerts on a total; it doesn't break cost down by namespace.
+
+Reference: https://docs.cloud.google.com/kubernetes-engine/docs/how-to/cost-allocations
+
+## ace-s1-077 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*Why the bill went up, without SQL* · 1.2 Billing Export and Cost Attribution · `2b48d713-e30d-4726-a50e-81a181837ccc`
+
+A manager at Thursby Media has Billing Account Viewer and asks why last month's bill was 30% higher than the month before, and which projects and services drove it. They don't write SQL, and only generally available features may be used. What should they use?
+
+- **A.** The detailed billing export, queried in BigQuery.
+- **B.** A budget with alerts at 50%, 90% and 100%.
+- **C.** Cloud Billing reports, grouped by project and then by service, comparing the two months.  ← key
+- **D.** The Cost Table filtered by invoice month, exported to CSV.
+
+Explanation: Billing reports chart cost over time grouped by project, service or SKU, and can compare periods, so the manager sees what grew without writing queries.
+
+- A: The export answers the question but needs SQL, which the manager doesn't write.
+- B: A budget alerts about future spending; it doesn't explain last month's increase.
+- C: Correct. Grouping the reports by project and by service shows which ones grew between the two months.
+- D: The cost table lists invoice lines, but comparing two months in a spreadsheet is the slow way.
+
+Reference: https://docs.cloud.google.com/billing/docs/reports
+
+## ace-s2-145 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*What a cross-region internal load balancer needs in each region* · 2.3 Load Balancer Selection · `e95ca895-51c0-422c-ae3f-222ca42862db`
+
+You are building a cross-region internal Application Load Balancer at Dunmore Health, with backends in us-east1 and us-west1 and clients in both regions. The VPC network already has a subnet for the backends in each region. Creating the forwarding rule fails. What is missing?
+
+- **A.** A Cloud NAT gateway in each region with backends.
+- **B.** A proxy-only subnet with purpose GLOBAL_MANAGED_PROXY in each region.  ← key
+- **C.** A global static external IP address for the forwarding rule.
+- **D.** A firewall rule allowing 35.235.240.0/20 to the backends.
+
+Explanation: Cross-region internal Application Load Balancers run Envoy proxies from a proxy-only subnet reserved for them. Each region with a forwarding rule or backends needs one with the GLOBAL_MANAGED_PROXY purpose.
+
+- A: Cloud NAT provides internet egress; the load balancer's proxies use the proxy-only subnet.
+- B: Correct. Each region needs a proxy-only subnet with purpose GLOBAL_MANAGED_PROXY for the load balancer's proxies.
+- C: An internal load balancer uses internal addresses; an external address can't serve it.
+- D: 35.235.240.0/20 is the IAP TCP forwarding range, used for administrative access, not load balancing.
+
+Reference: https://docs.cloud.google.com/load-balancing/docs/proxy-only-subnets
+
+## ace-s2-146 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*An internal web API that never leaves one region* · 2.3 Load Balancer Selection · `b60f4b66-4f02-463d-a085-d01e6a7b5170`
+
+An HTTP inventory API at Thornbury Retail runs only in europe-west1 and must stay in that region for data residency. Internal clients in the VPC and on-premises clients over Cloud VPN should reach it on one internal address, with /v1 and /v2 routed to different backend services. Which load balancer fits with the least complexity?
+
+- **A.** A cross-region internal Application Load Balancer.
+- **B.** A regional external Application Load Balancer.
+- **C.** An internal passthrough Network Load Balancer.
+- **D.** A regional internal Application Load Balancer.  ← key
+
+Explanation: A regional internal Application Load Balancer gives an internal address in one region with HTTP path routing, and clients arriving over Cloud VPN can reach it. Nothing in the stem asks for another region.
+
+- A: Cross-region failover is the one thing the stem rules out; it adds proxy-only subnets and backends elsewhere for nothing.
+- B: An external load balancer is reachable from the internet, not on an internal address.
+- C: A passthrough load balancer works at layer 4 and can't route /v1 and /v2 to different backends.
+- D: Correct. It serves internal and hybrid clients on one internal IP in europe-west1 and routes by URL path.
+
+Reference: https://docs.cloud.google.com/load-balancing/docs/l7-internal
+
+## ace-s2-147 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*One TCP game service exposed from GKE* · 2.1 Deploying to GKE · `b9b419b5-50bf-4699-af61-e3bc473fcccb`
+
+A Deployment on a GKE cluster at Orrell Games runs a matchmaking server that speaks a custom protocol over TCP port 7777. Players on the internet must reach it on one external IP address. What should you create?
+
+- **A.** An Ingress with a rule that sends / to the Deployment.
+- **B.** A Service of type LoadBalancer for the Deployment on port 7777.  ← key
+- **C.** A Service of type ClusterIP and a Cloud NAT gateway for the nodes.
+- **D.** A Gateway with an HTTPRoute that matches port 7777.
+
+Explanation: A Service of type LoadBalancer makes GKE create a passthrough Network Load Balancer with an external address for the Deployment's Pods, which carries any TCP protocol.
+
+- A: An Ingress creates an Application Load Balancer, which speaks HTTP and HTTPS, not a custom TCP protocol.
+- B: Correct. A LoadBalancer Service gives the Pods one external address for TCP 7777.
+- C: A ClusterIP Service is reachable only inside the cluster, and Cloud NAT handles outbound traffic only.
+- D: An HTTPRoute routes HTTP requests, so it can't carry a custom TCP protocol.
+
+Reference: https://docs.cloud.google.com/kubernetes-engine/docs/concepts/service-load-balancer
+
+## ace-s2-148 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*An Ingress address that must survive being recreated* · 2.1 Deploying to GKE · `8383052a-5ee7-4d84-8859-f0344f259dd7`
+
+The storefront at Ashdown Books is served by a GKE Ingress that routes /, /search and /cart to three Services. Partners allow-list its IP address, and the Ingress will be deleted and recreated during a migration. How do you keep the same address?
+
+- **A.** Reserve a global static IP and name it in the Ingress's global-static-ip-name annotation.  ← key
+- **B.** Reserve a regional static IP and set it as each Service's loadBalancerIP.
+- **C.** Change each Service to type LoadBalancer so it keeps its own address.
+- **D.** Reserve a static internal IP in the nodes' subnet and add it to the Ingress.
+
+Explanation: An Ingress on GKE creates a global external Application Load Balancer. Reserving a global static address and naming it in the annotation makes every recreation of the Ingress use that address.
+
+- A: Correct. The kubernetes.io/ingress.global-static-ip-name annotation attaches the reserved global address to the load balancer the Ingress creates.
+- B: The Ingress's load balancer is global and ignores the Services' addresses; a regional address can't be attached to it.
+- C: Three Services would get three addresses, losing the single address and the path routing.
+- D: An internal address can't be reached by partners on the internet.
+
+Reference: https://docs.cloud.google.com/kubernetes-engine/docs/tutorials/configuring-domain-name-static-ip
+
+## ace-s2-149 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*VMs that answer SSH but not each other's pings* · 2.3 Firewall Rules and Policies · `dc3b4f7e-2f7d-4368-be8f-37c515d30023`
+
+In a new custom-mode VPC at Lowther Labs, the only firewall rule you created allows TCP port 22 from 0.0.0.0/0. You can SSH to both VMs in the subnet 10.30.0.0/24, but ping between them fails. What should you add?
+
+- **A.** An egress rule allowing ICMP to 10.30.0.0/24.
+- **B.** Nothing; traffic within one subnet is always allowed.
+- **C.** A route for 10.30.0.0/24 with the subnet's gateway as next hop.
+- **D.** An ingress rule allowing ICMP from 10.30.0.0/24.  ← key
+
+Explanation: Every VPC has implied rules that allow all egress and deny all ingress. A ping arriving at the other VM is ingress, so ICMP must be allowed explicitly, even from the same subnet.
+
+- A: Egress is already allowed by the implied rule; the ping is blocked as ingress at the receiving VM.
+- B: VPC firewalls apply between VMs in the same subnet; only the default network has a rule allowing internal traffic.
+- C: The subnet route already exists and is created automatically; routing isn't the problem.
+- D: Correct. An ingress allow rule for ICMP from the subnet's range overrides the implied deny for that traffic.
+
+Reference: https://docs.cloud.google.com/firewall/docs/firewalls
+
+## ace-s2-150 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*Blocking internet egress but keeping Google APIs* · 2.3 Firewall Rules and Policies · `924a2550-be37-4e0d-98a6-abbaa3d8e0ff`
+
+Security at Marlow Pharma wants VMs in a custom-mode VPC to send no traffic to the internet, while still reaching Cloud Storage and BigQuery through private.googleapis.com with Private Google Access. The VPC has no egress rules today. Which rules should you create?
+
+- **A.** Nothing; the implied rules already deny egress in a custom VPC.
+- **B.** Deny egress to 0.0.0.0/0 at priority 65000, and allow egress to 199.36.153.8/30 at priority 1000.  ← key
+- **C.** Deny ingress from 0.0.0.0/0 at priority 1000, and allow ingress from 199.36.153.8/30.
+- **D.** Allow egress to 199.36.153.8/30 at priority 65535, and nothing else.
+
+Explanation: The implied rules allow all egress at the lowest possible priority. A deny-egress rule at a higher priority blocks the internet, and an allow rule at an even higher priority (a lower number) lets traffic reach the private.googleapis.com range.
+
+- A: The implied egress rule allows everything; only ingress is denied by default.
+- B: Correct. The deny at 65000 overrides the implied allow, and the allow at 1000 wins over the deny for the Google APIs range.
+- C: Outbound connections are egress; ingress rules don't stop VMs from connecting out.
+- D: An extra allow rule changes nothing while the implied rule still allows all other egress.
+
+Reference: https://docs.cloud.google.com/firewall/docs/firewalls
+
+## ace-s2-151 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*A new region that on-premises cannot see* · 2.3 Hybrid Connectivity · `f4d80d98-efbb-443d-92fb-c95d574413d0`
+
+Wexford Media connects its data centre to a VPC network through Dedicated Interconnect VLAN attachments and a Cloud Router in us-east4. A new subnet was added in us-west1. On-premises routers never receive a route for it, and VMs in us-west1 can't reach on-premises. What should you change?
+
+- **A.** Add a custom route advertisement for the us-west1 subnet only.
+- **B.** Set the VPC network's dynamic routing mode to global.  ← key
+- **C.** Create static routes in us-west1 for the on-premises ranges.
+- **D.** Order new VLAN attachments in a us-west1 metro.
+
+Explanation: In regional mode the us-east4 Cloud Router advertises only us-east4 subnets and its learned routes apply only in us-east4. Global mode fixes both directions with one change.
+
+- A: A custom advertisement would announce the subnet, but us-west1 VMs still wouldn't get the learned on-premises routes.
+- B: Correct. Global dynamic routing advertises every subnet over the existing BGP sessions and programs learned routes in every region.
+- C: Static routes can't use VLAN attachments as next hops, and they would bypass BGP failover.
+- D: New attachments would work but cost money and time for a problem one setting solves.
+
+Reference: https://docs.cloud.google.com/network-connectivity/docs/router/concepts/advertised-routes
+
+## ace-s2-152 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*The ASN for a new Cloud Router* · 2.3 Hybrid Connectivity · `0afe831a-2e3c-4ac0-b632-26a49f67c463`
+
+You are creating the Cloud Router for an HA VPN from Callander Foods' data centre. The on-premises router uses BGP with ASN 65001, a private ASN. Which ASN should you give the Cloud Router?
+
+- **A.** 65001, so that both routers are in one autonomous system.
+- **B.** 15169, Google's public ASN.
+- **C.** Any private ASN not used on-premises, such as 65010.  ← key
+- **D.** No ASN; HA VPN uses static routes.
+
+Explanation: Cloud Router speaks external BGP to the on-premises router, so the two need different ASNs, and Cloud Router's must come from a private range.
+
+- A: Both sides with the same ASN would be internal BGP, which Cloud Router doesn't run with on-premises peers.
+- B: Cloud Router requires a private ASN; Google's own public ASN isn't yours to assign.
+- C: Correct. A private ASN that on-premises doesn't use, such as 65010, lets the two routers peer.
+- D: HA VPN requires dynamic routing with BGP, so the Cloud Router needs an ASN.
+
+Reference: https://docs.cloud.google.com/network-connectivity/docs/router/how-to/create-router-vpc-network
+
+## ace-s2-153 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*Making one HA VPN tunnel the preferred path* · 2.3 Hybrid Connectivity · `f0bc4b12-e2c2-4969-9c44-7fc9f14ef551`
+
+An HA VPN at Aylsham Engineering has two tunnels with a BGP session each. The on-premises team wants traffic from the data centre to the VPC to use tunnel 0, and tunnel 1 only if tunnel 0 fails. Both sessions advertise the VPC's subnets with the default priority. What should you configure on the Cloud Router?
+
+- **A.** A lower advertised route priority on tunnel 0's BGP session than on tunnel 1's.  ← key
+- **B.** A static route to on-premises through tunnel 0 with priority 100.
+- **C.** A higher advertised route priority on tunnel 0's BGP session than on tunnel 1's.
+- **D.** Delete tunnel 1's BGP session until tunnel 0 fails.
+
+Explanation: Cloud Router sends the advertised route priority to the peer as the BGP MED, and a lower value is preferred. Advertising a lower value on tunnel 0 makes the on-premises router send traffic there, with tunnel 1 taking over if tunnel 0's routes are withdrawn.
+
+- A: Correct. The lower advertised priority (MED) on tunnel 0 makes on-premises prefer it, and failover to tunnel 1 stays automatic.
+- B: A static route in the VPC affects traffic leaving Google Cloud, not the path on-premises chooses toward it.
+- C: A higher value is less preferred, which would make tunnel 1 the active path.
+- D: Removing a session removes the automatic failover that HA VPN's SLA relies on.
+
+Reference: https://docs.cloud.google.com/network-connectivity/docs/router/concepts/advertised-routes
+
+## ace-s2-154 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*How many nodes a Pod range supports* · 2.1 GKE Cluster Configurations · `09450d70-fe7e-4488-9433-617d47d7cf26`
+
+A Standard GKE cluster at Rowan Courier will use a Pod secondary range of /21 and the default maximum of 110 Pods per node. The team expects to grow to 12 nodes. What should you tell them?
+
+- **A.** The range supports about 18 nodes, because a /21 holds 2,048 addresses for 110 Pods each.
+- **B.** The range supports 8 nodes, because each node takes a /24 from it.  ← key
+- **C.** The range limits Pods, not nodes, so node count depends on the primary range only.
+- **D.** The range supports 16 nodes, because each node takes a /25 from it.
+
+Explanation: GKE gives every node a Pod CIDR about twice its maximum Pods, so 110 Pods per node means a /24 per node. A /21 contains eight /24 blocks, so the cluster stops at eight nodes.
+
+- A: Nodes take whole blocks, not 110 addresses each; a /24 per node gives eight nodes, not 18.
+- B: Correct. Eight /24 blocks fit in a /21, so the twelve-node plan needs a larger range or fewer Pods per node.
+- C: Each node reserves a block of the Pod range, so the Pod range caps the number of nodes too.
+- D: A /25 per node is the allocation for a maximum of 64 Pods, not the default 110.
+
+Reference: https://docs.cloud.google.com/kubernetes-engine/docs/how-to/flexible-pod-cidr
+
+## ace-s2-155 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*Autohealing that recreates VMs during boot* · 2.1 Managed Instance Groups · `1798480c-3214-43e0-8b97-c84962278776`
+
+A managed instance group at Tarland Media uses autohealing with an HTTP health check. Its application takes about four minutes to start. Since autohealing was enabled, VMs are recreated again and again and never serve traffic. The health check works on a VM that has finished starting. What should you change?
+
+- **A.** Lower the health check's unhealthy threshold to one failed probe.
+- **B.** Set the autohealing initial delay to longer than the start-up time.  ← key
+- **C.** Remove the firewall rule for the health-check ranges during start-up.
+- **D.** Change the group from regional to zonal.
+
+Explanation: During the initial delay the group ignores health-check results for a new VM. If the delay is shorter than start-up, the VM is judged unhealthy before it is ready and recreated, forever.
+
+- A: A lower threshold marks VMs unhealthy even faster, making the loop worse.
+- B: Correct. An initial delay longer than the four-minute start-up lets VMs become healthy before autohealing judges them.
+- C: Blocked probes fail, so VMs would look unhealthy for even longer.
+- D: Zonal or regional changes where VMs run, not when autohealing starts checking them.
+
+Reference: https://docs.cloud.google.com/compute/docs/instance-groups/autohealing-instances-in-migs
+
+## ace-s2-156 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*Building a new organisation the Google-recommended way* · 2.4 Infrastructure as Code · `e83ec33b-672f-4309-bd3b-5a1c242a3d93`
+
+Ravensworth Insurance is setting up its first Google Cloud organisation. It wants folders, Shared VPC networks, logging and security controls built according to Google-recommended practices, as code it can review and reuse for future environments. What should it start from?
+
+- **A.** A configuration built by hand in the console, exported afterwards with Config Connector.
+- **B.** Terraform written from scratch by the team, based on the product documentation.
+- **C.** The enterprise foundations blueprint and its published Terraform.  ← key
+- **D.** Deployment Manager templates for each folder and project.
+
+Explanation: The enterprise foundations blueprint is Google's recommended organisation design, published with Terraform that builds it, so the company starts from reviewed code that encodes the practices.
+
+- A: Building by hand first loses the review and repeatability, and exporting afterwards copies whatever mistakes were made.
+- B: Writing it from scratch works, but rebuilds what Google already publishes as its recommended design.
+- C: Correct. The blueprint's Terraform deploys Google's recommended hierarchy, networking and controls as code to adapt and reuse.
+- D: Deployment Manager is deprecated, and templates per folder still leave the design to the team.
+
+Reference: https://docs.cloud.google.com/architecture/blueprints/security-foundations
+
+## ace-s2-157 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*Stop managing a bucket with Config Connector, but keep it* · 2.4 Infrastructure as Code · `0b0af5cb-9a03-434b-bc7c-7481dedefe2e`
+
+The bucket media-archive at Kellaway Press is defined as a StorageBucket object managed by Config Connector. The team will manage it by hand from now on, and the bucket and its data must stay. What should you do before removing the object from the GKE cluster?
+
+- **A.** Nothing; deleting the object leaves the bucket in place.
+- **B.** Enable soft delete on the bucket so it can be restored afterwards.
+- **C.** Add the cnrm.cloud.google.com/deletion-policy: abandon annotation to the object.  ← key
+- **D.** Remove Config Connector's service account from the bucket's IAM policy.
+
+Explanation: By default, deleting a Config Connector object deletes the resource it manages. The abandon deletion policy tells Config Connector to leave the resource when the object goes.
+
+- A: Config Connector deletes the managed resource along with the object unless told to abandon it.
+- B: Soft delete keeps deleted objects for a while; it isn't a plan for keeping a bucket that is about to be deleted.
+- C: Correct. With the abandon annotation, removing the object stops management and leaves the bucket and its data.
+- D: Config Connector would just report errors and keep retrying; the object still claims the bucket.
+
+Reference: https://docs.cloud.google.com/config-connector/docs/how-to/managing-deleting-resources
+
+## ace-s2-158 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*A console edit to a Terraform-managed VM* · 2.4 Infrastructure as Code · `2ffaaa95-e929-485c-910b-fa68b8dd3470`
+
+At Nettleham Grain, VMs are created by a Terraform pipeline that runs plan and apply on every merge. An engineer added a label to one VM in the console to fix a billing report. What happens at the next pipeline run if the code isn't changed?
+
+- **A.** The plan shows the label as drift, and apply removes it.  ← key
+- **B.** Terraform adopts the label into its state and keeps it.
+- **C.** Terraform ignores labels, so nothing changes.
+- **D.** The apply fails until the engineer removes the label by hand.
+
+Explanation: Terraform refreshes state from the real VM, sees a label the configuration doesn't have, and plans to remove it. The change must be made in code to last.
+
+- A: Correct. The difference appears in the plan and apply returns the VM to the configuration.
+- B: Refreshing records the real value, but the configuration still decides what apply converges to.
+- C: Labels are ordinary resource arguments that Terraform manages like any other.
+- D: Drift isn't an error; Terraform simply plans to correct it.
+
+Reference: https://developer.hashicorp.com/terraform/cli/commands/plan
+
+## ace-s2-159 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*The REST request behind a console form* · 2.4 AI-assisted Planning · `72e74a1e-b40c-4ed5-985c-7a379bfc0054`
+
+A developer at Ormsby Analytics configured a VM with two GPUs, a custom boot disk and a startup script in the console's create form. A Python tool needs the exact REST request body for the same configuration, and nothing should be created yet. What should the developer do?
+
+- **A.** Click Create, then copy the instance's details from its page.
+- **B.** Open the form's Equivalent code view and choose REST.  ← key
+- **C.** Read the Admin Activity audit log after creating the VM.
+- **D.** Ask Active Assist to recommend a configuration.
+
+Explanation: The create form shows the equivalent gcloud command, REST request and, for many resources, Terraform for the current settings, so the request body can be copied before anything is created.
+
+- A: Creating the VM is what the developer wants to avoid, and the details page isn't a request body.
+- B: Correct. Equivalent code shows the REST request for exactly what the form holds.
+- C: An audit log entry needs the VM to have been created first.
+- D: Active Assist recommends changes to existing resources; it doesn't export a form's settings.
+
+Reference: https://docs.cloud.google.com/compute/docs/instances/create-start-instance
+
+## ace-s2-160 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*A kubectl one minor version behind* · 2.1 kubectl Setup · `83bf9eab-92ae-4272-83fe-30fcc5dfda8a`
+
+A GKE cluster at Brindle Robotics was upgraded to Kubernetes 1.33. A developer's kubectl is version 1.32. The team asks whether the developer must upgrade kubectl before using the cluster. What should you tell them?
+
+- **A.** Yes; kubectl must match the control plane's minor version exactly.
+- **B.** No, as long as get-credentials is run again after every upgrade.
+- **C.** Yes; the cluster rejects kubectl clients older than its own version.
+- **D.** No; kubectl within one minor version of the control plane is supported.  ← key
+
+Explanation: Kubernetes supports kubectl one minor version older or newer than the control plane, so 1.32 against 1.33 is fine. Further behind is unsupported.
+
+- A: An exact match isn't required; one minor version of skew either way is supported.
+- B: get-credentials writes kubeconfig entries; it doesn't affect version support.
+- C: The API server doesn't refuse older clients; skew beyond one version is unsupported, not blocked.
+- D: Correct. One minor version of skew is within the supported policy.
+
+Reference: https://kubernetes.io/releases/version-skew-policy/
+
+## ace-s2-161 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*Spot VMs that should leave nothing behind* · 2.1 Spot and Custom Machine Types · `be874b5d-909f-4e75-b701-6bf87526f019`
+
+A rendering farm at Marsden Films starts hundreds of Spot VMs per night. Each frame's output goes to Cloud Storage, so nothing on a VM matters after pre-emption, and stopped VMs with disks have been adding cost. How should the VMs be created?
+
+- **A.** Spot VMs with termination action STOP.
+- **B.** Standard VMs with automatic restart turned off.
+- **C.** Spot VMs with termination action DELETE.  ← key
+- **D.** Spot VMs with a shutdown script that stops them.
+
+Explanation: The termination action decides what pre-emption does. DELETE removes the VM, and its auto-delete disks with it, so a pre-empted renderer costs nothing more.
+
+- A: STOP keeps the VM and its disks, which is exactly the leftover cost.
+- B: Standard VMs lose the Spot discount the farm relies on.
+- C: Correct. DELETE cleans up pre-empted VMs, since all output is already in Cloud Storage.
+- D: A script that stops the VM leaves the same stopped VMs and disks behind.
+
+Reference: https://docs.cloud.google.com/compute/docs/instances/spot
+
+## ace-s2-162 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*A VM that must not run longer than four hours* · 2.1 Spot and Custom Machine Types · `b7c15838-ebd7-430c-a141-5db2dfe79b5c`
+
+Data scientists at Ellison Labs start large VMs for experiments and sometimes forget them for days. Each VM should be deleted automatically four hours after it starts, whatever is running on it. What should they set when creating the VMs?
+
+- **A.** A maximum run duration of 4h with termination action DELETE.  ← key
+- **B.** A budget alert at 100% of the expected cost.
+- **C.** A startup script that runs sleep 4h followed by shutdown.
+- **D.** Spot provisioning, which limits VMs to four hours.
+
+Explanation: Compute Engine can limit a VM's run time: when the maximum run duration ends, it applies the termination action, here deleting the VM.
+
+- A: Correct. --max-run-duration=4h with DELETE removes each VM four hours after it starts.
+- B: A budget alert notifies people; it doesn't delete anything.
+- C: A guest shutdown only stops the VM, and anyone with access can kill the script.
+- D: Spot VMs can be pre-empted at any time but have no four-hour limit.
+
+Reference: https://docs.cloud.google.com/compute/docs/instances/limit-vm-runtime
+
+## ace-s2-163 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*Training code built on custom CUDA kernels* · 2.1 GPUs or TPUs · `cb53be03-5c83-407f-9120-a6fa68dc1bd2`
+
+A research team at Lindale AI trains a PyTorch model whose training loop relies on several custom CUDA kernels that the team wrote. They want to scale training to a few hundred accelerators. What should they plan to use?
+
+- **A.** A multi-host Cloud TPU slice.
+- **B.** Compute Engine VMs with NVIDIA GPUs.  ← key
+- **C.** Many C3 VMs with high vCPU counts.
+- **D.** Cloud Run jobs with many parallel tasks.
+
+Explanation: Custom CUDA kernels run only on NVIDIA GPUs. TPUs are programmed through XLA, so CUDA code would have to be rewritten.
+
+- A: TPUs don't run CUDA; the kernels would need rewriting for XLA first.
+- B: Correct. GPU machine types run the team's CUDA kernels unchanged and scale across many VMs.
+- C: CPUs train large models far more slowly and can't run CUDA kernels.
+- D: Cloud Run jobs aren't built for tightly coupled training across hundreds of accelerators.
+
+Reference: https://docs.cloud.google.com/tpu/docs/intro-to-tpu
+
+## ace-s2-164 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*Compliance copies read once a quarter* · 2.2 Cloud Storage Classes · `1625f0a0-3fcd-4114-91ec-d44e15a590bd`
+
+Each month, Selwood Bank writes statements to Cloud Storage and keeps them for five years. Auditors read a sample of them about once every three months, and nothing is deleted early. Which storage class fits this access pattern most cost-effectively?
+
+- **A.** Standard
+- **B.** Nearline
+- **C.** Coldline  ← key
+- **D.** Archive
+
+Explanation: Google places data read about once a quarter in Coldline, which has a 90-day minimum storage duration and lower storage cost than Nearline.
+
+- A: Standard is for frequently read data and costs the most to store.
+- B: Nearline is for about monthly access; reading quarterly, its higher storage price buys nothing.
+- C: Correct. Quarterly access is Coldline's pattern, and five-year retention easily covers its 90-day minimum.
+- D: Archive is for data read less than once a year, and quarterly reads would pay its higher retrieval cost often.
+
+Reference: https://docs.cloud.google.com/storage/docs/storage-classes
+
+## ace-s2-165 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*Nearline files deleted after ten days* · 2.2 Cloud Storage Classes · `b48db9d3-48bb-41f5-80cd-7c9c24250de7`
+
+A job at Barnby Media writes temporary exports to a Nearline bucket and deletes them after 10 days. The bucket has soft delete turned off. Finance sees storage charges that are higher than 10 days of Nearline storage would explain. Why?
+
+- **A.** Nearline charges a retrieval fee every time an object is written.
+- **B.** Deleted objects are kept for 30 days by versioning in every bucket.
+- **C.** Nearline objects are billed in whole months, rounded up from the write.
+- **D.** Nearline's 30-day minimum storage duration charges the remaining 20 days on early deletion.  ← key
+
+Explanation: Nearline has a 30-day minimum storage duration. An object deleted after 10 days is charged an early-deletion fee equal to storing it for the remaining 20.
+
+- A: Retrieval fees apply to reads, not writes.
+- B: Versioning is off unless enabled, and soft delete is turned off here, so deleted objects aren't kept.
+- C: Storage is billed by time stored, not in whole months; the extra is the early-deletion charge.
+- D: Correct. Short-lived data belongs in Standard, which has no minimum storage duration.
+
+Reference: https://docs.cloud.google.com/storage/docs/storage-classes
+
+## ace-s2-166 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*Reloading one day of a partitioned table* · 2.2 Loading Data · `a9763a08-4355-4e96-8a3c-a181756d88fe`
+
+The table sales.daily at Upton Foods is partitioned by day. Yesterday's CSV file, which has a header row, was corrected and must replace only yesterday's partition, leaving every other day untouched. What should you run?
+
+- **A.** bq load --replace with the file into sales.daily, skipping one leading row.
+- **B.** bq load into sales.daily, which appends, and then delete the duplicates.
+- **C.** bq load --replace into the partition sales.daily$20261108, skipping one leading row.  ← key
+- **D.** bq cp from the CSV file into sales.daily$20261108.
+
+Explanation: Naming the partition with a decorator limits the load job to that partition, and --replace overwrites just it. --skip_leading_rows=1 ignores the header.
+
+- A: --replace on the whole table empties every partition, not only yesterday's.
+- B: Appending then cleaning up is slower and risks leaving duplicates.
+- C: Correct. The decorator scopes the overwrite to one day, and the header row is skipped.
+- D: bq cp copies tables, not files from Cloud Storage.
+
+Reference: https://docs.cloud.google.com/bigquery/docs/loading-data-cloud-storage-csv
+
+## ace-s2-167 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*Querying files where they land, without loading* · 2.2 Loading Data · `76ed3b43-8785-4c11-9723-4bd868a100a1`
+
+Partners at Wexcombe Travel drop CSV files into a Cloud Storage bucket throughout the day. Analysts run a few ad hoc queries a week and always want to see the files currently in the bucket, without anyone scheduling loads. What should you create?
+
+- **A.** An external table over the bucket's CSV files.  ← key
+- **B.** A nightly load job that replaces a native table.
+- **C.** A Cloud Storage transfer into a second bucket.
+- **D.** A Pub/Sub notification on the bucket.
+
+Explanation: An external table reads the files in Cloud Storage at query time, so every query sees the current files and nothing needs loading or scheduling.
+
+- A: Correct. Querying in place suits occasional queries over files that change during the day.
+- B: A nightly load is stale until the next night and needs a scheduled job.
+- C: Copying files to another bucket doesn't make them queryable.
+- D: A notification tells something a file arrived; it doesn't let anyone query it.
+
+Reference: https://docs.cloud.google.com/bigquery/docs/external-data-cloud-storage
+
+## ace-x-076 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept, cross-domain, also 3.3; certifying mode only. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*Private web servers that cannot install updates* · 2.3 VPC Design · cross-domain, also 3.3 · certifying only · `d96500b1-dfc8-41ac-96cf-c9f3b2f73014`
+
+Web servers at Brannock Travel run in a managed instance group without external IP addresses, behind a global external Application Load Balancer. Their subnet has Private Google Access enabled. Customers reach the site, but the servers can't download operating system updates from the distribution's mirrors on the internet. What should you add, following Google-recommended practices?
+
+- **A.** An ephemeral external IP address on each server in the instance template.
+- **B.** A Cloud Router and a Cloud NAT gateway in the servers' region.  ← key
+- **C.** A Private Service Connect endpoint for Google APIs.
+- **D.** A firewall rule allowing egress to 0.0.0.0/0 on ports 80 and 443.
+
+Explanation: The load balancer brings requests in but gives the servers no outbound path, and Private Google Access only reaches Google APIs. Cloud NAT gives private VMs outbound internet access without exposing them.
+
+- A: External addresses would work but expose every server, which is what the private design avoids.
+- B: Correct. Cloud NAT gives the private servers outbound access to the mirrors while nothing can connect in.
+- C: A Private Service Connect endpoint reaches Google APIs, not a distribution's mirrors.
+- D: Egress is already allowed by the implied rule; without NAT or an external IP there is no route out.
+
+Reference: https://docs.cloud.google.com/nat/docs/overview
+
+## ace-x-077 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept, cross-domain, also 1.1; certifying mode only. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*A GKE cluster in a service project that cannot use the host's ranges* · 2.1 GKE Cluster Configurations · cross-domain, also 1.1 · certifying only · `488de097-9709-4387-b028-e62260bf9d8f`
+
+In Corbridge Health's landing zone, the service project shop-prod is attached to the Shared VPC host project net-host-prod. Creating a GKE cluster in shop-prod on the host's subnet gke-euw2, with its Pod and Service secondary ranges, fails with a permission error about the host project. Your team already has Network User on the subnet. What is missing?
+
+- **A.** Network User on the subnet for the service project's Compute Engine default service account only.
+- **B.** Organization Administrator for the engineer who creates the cluster.
+- **C.** The shop-prod GKE service agent with Host Service Agent User on the host project and Network User on the subnet.  ← key
+- **D.** A VPC peering connection between shop-prod and net-host-prod.
+
+Explanation: GKE manages firewall rules and uses the host's subnet and ranges on behalf of the service project. Its service agent therefore needs Host Service Agent User on the host project and Network User on the subnet.
+
+- A: The default compute account matters for nodes, but the cluster's network setup is done by the GKE service agent.
+- B: Organization Administrator is far broader than needed and doesn't give the GKE service agent anything.
+- C: Correct. The GKE service agent of shop-prod needs both grants before it can build the cluster on the host's network.
+- D: Shared VPC already shares the host's network; peering between a host and its service project isn't a thing.
+
+Reference: https://docs.cloud.google.com/kubernetes-engine/docs/how-to/cluster-shared-vpc
+
+## ace-x-078 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept, cross-domain, also 3.3; certifying mode only. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*On-premises servers reaching Cloud Storage over HA VPN* · 2.3 Hybrid Connectivity · multiple select · cross-domain, also 3.3 · certifying only · `7c04cb49-a58d-4f59-b25c-edafb3cc0c71`
+
+Backup servers in Kilbride Council's data centre must upload to Cloud Storage only over the existing HA VPN, never over the internet. The VPN's Cloud Router advertises the VPC's subnets with default advertisements. Which two changes make this work? (Choose two.)
+
+- **A.** Add a custom advertisement of 199.36.153.8/30 to the Cloud Router, alongside all subnets.  ← key
+- **B.** Enable Private Google Access on every subnet of the VPC network.
+- **C.** Make on-premises DNS resolve storage.googleapis.com to the private.googleapis.com addresses.  ← key
+- **D.** Create a Cloud NAT gateway in the VPN's region.
+- **E.** Give the backup servers static external IP addresses in Google Cloud.
+
+Explanation: Private Google Access for on-premises hosts needs a route and a name: Cloud Router must advertise the private.googleapis.com range over BGP, and on-premises DNS must send the API names to that range.
+
+- A: Correct. The custom advertisement gives on-premises a route to 199.36.153.8/30 through the VPN.
+- B: Private Google Access on subnets helps VMs in the VPC, not hosts on-premises.
+- C: Correct. On-premises DNS must resolve the Google API names to the private.googleapis.com addresses, or traffic goes to public addresses over the internet.
+- D: Cloud NAT handles outbound internet traffic from VMs, not on-premises traffic to Google APIs.
+- E: Google Cloud addresses can't be assigned to servers in a data centre.
+
+Reference: https://docs.cloud.google.com/vpc/docs/configure-private-google-access-hybrid
+
+## ace-s3-174 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*A vendor's allow-list and a NAT address that changed* · 3.3 Cloud DNS and Cloud NAT · `10940256-c70c-4698-8dfc-3fd66987dbdc`
+
+Report servers at Harwell Logistics have no external IP addresses and upload files to a vendor's SFTP server through Cloud NAT, which uses automatic IP allocation. After the NAT gateway added an address during a busy week, the vendor started rejecting some uploads, because it accepts only the addresses on its allow-list. What should you change?
+
+- **A.** Give each report server an ephemeral external IP address.
+- **B.** Enable Private Google Access on the report servers' subnet.
+- **C.** Switch the NAT gateway to manual assignment of reserved static IPs.  ← key
+- **D.** Add a route to the vendor's range through the default internet gateway.
+
+Explanation: With automatic allocation, Cloud NAT chooses and can add addresses as demand grows. Manual assignment uses only the static addresses you reserved, so the vendor can allow-list exactly those.
+
+- A: Ephemeral external addresses change when VMs are recreated, and the vendor would need every one of them.
+- B: Private Google Access reaches Google APIs only, not a vendor's SFTP server on the internet.
+- C: Correct. Manual NAT IP assignment sends all translated traffic from the reserved static addresses, which never change.
+- D: A route decides where packets go, not which source address they carry; without NAT the VMs can't reach the internet at all.
+
+Reference: https://docs.cloud.google.com/nat/docs/ports-and-addresses
+
+## ace-s3-175 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*Cloud NAT that works in one region only* · 3.3 Cloud DNS and Cloud NAT · `51c6a105-7aa8-44d3-be39-08fb237c7041`
+
+A VPC network at Sefton Analytics has subnets in us-central1 and europe-west1. Its VMs have no external IP addresses. A Cloud Router with a Cloud NAT gateway covering all subnet ranges exists in us-central1. VMs in us-central1 download packages from the internet, but VMs in europe-west1 time out. What should you do?
+
+- **A.** Create a Cloud Router and a Cloud NAT gateway in europe-west1.  ← key
+- **B.** Set the VPC network's dynamic routing mode to global.
+- **C.** Add a static route in europe-west1 with the us-central1 NAT gateway as next hop.
+- **D.** Raise the minimum ports per VM on the existing NAT gateway.
+
+Explanation: A Cloud NAT gateway serves subnets in its own region only, even when it is set to cover all subnet ranges. The europe-west1 VMs need a gateway in europe-west1.
+
+- A: Correct. Cloud NAT is regional, so a second Cloud Router and NAT gateway in europe-west1 gives those VMs egress.
+- B: The dynamic routing mode affects routes learned over BGP, not which region a NAT gateway serves.
+- C: A NAT gateway is not a VM or load balancer that a static route can use as its next hop.
+- D: More ports help a region that already has NAT and drops connections; europe-west1 has no NAT at all.
+
+Reference: https://docs.cloud.google.com/nat/docs/overview
+
+## ace-s3-176 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*Keeping a load balancer's current address before a rebuild* · 3.3 Subnets, Addresses and Routes · `fb1da413-e1bf-4b63-a8bf-51599d097ba4`
+
+A global external Application Load Balancer at Brockley Tickets was created with an ephemeral IP address, and hundreds of customers have that address in their firewall allow-lists. Next week you will delete and recreate the load balancer's forwarding rule. Customers must not have to change anything. What should you do first?
+
+- **A.** Reserve a new global static external IP address for the new forwarding rule.
+- **B.** Promote the forwarding rule's current ephemeral address to a global static address.  ← key
+- **C.** Promote the current address to a regional static address in the backends' region.
+- **D.** Publish the load balancer's address in Cloud DNS and ask customers to use the name.
+
+Explanation: Promoting an in-use ephemeral address reserves that same address as static. It then survives the forwarding rule's deletion and can be attached to the new one.
+
+- A: A newly reserved address is a different IP, so every customer would have to update its allow-list.
+- B: Correct. Promoting the current ephemeral address keeps the exact IP, now reserved, ready for the new forwarding rule.
+- C: A global load balancer uses global addresses; a regional static address can't be attached to it.
+- D: Customers allow-list an IP address in their firewalls, so a DNS name doesn't remove the change for them.
+
+Reference: https://docs.cloud.google.com/vpc/docs/reserve-static-external-ip-address
+
+## ace-s3-177 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*A VM whose public address changed after a restart* · 3.3 Subnets, Addresses and Routes · `ca9788ba-2a27-4290-a487-4529b66fb667`
+
+A licence server on a Compute Engine VM in europe-west2 is reached by desktop clients at its public IP address. After a maintenance stop and start, the address changed and every client failed to connect. The VM will also be replaced by a new one next quarter. What should you do so the address stays the same?
+
+- **A.** Reserve a global static external IP address and assign it to the VM.
+- **B.** Reserve a static internal IP address in the VM's subnet.
+- **C.** Bring your own IP range to Google Cloud and assign an address from it.
+- **D.** Reserve a regional static external IP address and assign it to the VM.  ← key
+
+Explanation: A VM's ephemeral external address is released when it stops. A reserved regional static external address stays in the project and can be moved to the replacement VM.
+
+- A: Global addresses are for global load balancers; a VM's external address is regional.
+- B: An internal address isn't reachable by clients on the internet.
+- C: Bringing your own range works but is a heavy process for owned address blocks, far beyond keeping one address.
+- D: Correct. A reserved regional static external address survives stops and is reassigned to the new VM when it replaces this one.
+
+Reference: https://docs.cloud.google.com/vpc/docs/reserve-static-external-ip-address
+
+## ace-s3-178 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*Where on-premises DNS sends queries for a private zone* · 3.3 Cloud DNS and Cloud NAT · `56b145fe-fe84-439c-8b95-594879369e22`
+
+You created an inbound DNS server policy on the VPC network that Kestrel Bank's data centre reaches over HA VPN in europe-west4. The on-premises DNS team now asks which addresses to forward queries for the private zone svc.kestrel.internal to. What should you give them?
+
+- **A.** The metadata server address, 169.254.169.254.
+- **B.** The inbound forwarder addresses the policy allocated in the europe-west4 subnets.  ← key
+- **C.** The range 35.199.192.0/19, which Cloud DNS uses for forwarding.
+- **D.** Google Public DNS at 8.8.8.8 and 8.8.4.4.
+
+Explanation: An inbound server policy reserves an address in each subnet of the VPC as an entry point. On-premises resolvers forward to the entry points in the region their connection lands in, and get answers from the VPC's private zones.
+
+- A: The metadata server answers only VMs inside Google Cloud, not traffic arriving over a VPN.
+- B: Correct. The policy's inbound forwarder addresses in europe-west4, where the VPN lands, are what on-premises DNS forwards to.
+- C: 35.199.192.0/19 is the source of Cloud DNS's outbound forwarding queries, the opposite direction.
+- D: Public DNS can't see a private zone, which is visible only to authorised VPC networks.
+
+Reference: https://docs.cloud.google.com/dns/docs/server-policies-overview
+
+## ace-s3-179 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*A forwarding zone whose answers never arrive* · 3.3 Cloud DNS and Cloud NAT · `eac851e1-74aa-46e8-b15b-5636c34d3a57`
+
+VMs at Pendle Insurance must resolve names in corp.pendle.example, which only on-premises DNS servers hold. You created a Cloud DNS forwarding zone for that domain targeting the on-premises servers' private addresses over Cloud Interconnect, but every query times out. The on-premises firewall logs show dropped packets. What should the network team allow?
+
+- **A.** DNS traffic from the VMs' subnet ranges to the on-premises servers.
+- **B.** DNS traffic from Google's health-check ranges 35.191.0.0/16 and 130.211.0.0/22.
+- **C.** DNS traffic from the range 35.199.192.0/19 to the on-premises servers.  ← key
+- **D.** DNS traffic from the metadata server address 169.254.169.254.
+
+Explanation: Queries sent through a forwarding zone to private targets come from Cloud DNS's own range, 35.199.192.0/19, not from the VMs. On-premises must accept that range and route replies back over the hybrid link.
+
+- A: The VMs ask Cloud DNS; the forwarded query leaves from Cloud DNS's range, not the VMs' addresses.
+- B: Those ranges send load-balancer health checks, not DNS queries.
+- C: Correct. Cloud DNS forwards from 35.199.192.0/19, which the on-premises firewall must allow and route back through Interconnect.
+- D: The metadata server address is link-local inside Google Cloud and never appears on-premises.
+
+Reference: https://docs.cloud.google.com/dns/docs/zones/forwarding-zones
+
+## ace-s3-180 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*An Autopilot cluster that ran out of Pod addresses* · 3.3 Subnets, Addresses and Routes · `9d01d785-190b-496e-94fa-5c8b513b1b6b`
+
+An Autopilot cluster on GKE 1.31 at Fenwick Mobile can't schedule new Pods because its Pod IPv4 range is exhausted. The address space next to the range is used by another subnet. The cluster must keep running and keep its name. What should you do?
+
+- **A.** Expand the subnet's primary range with expand-ip-range.
+- **B.** Recreate the cluster as a Standard cluster with a larger Pod range.
+- **C.** Add a subnet secondary range and assign it to the cluster as an additional Pod range.  ← key
+- **D.** Lower the cluster's maximum Pods per node in place.
+
+Explanation: Additional Pod IPv4 ranges come from new, discontiguous subnet secondary ranges. Autopilot (1.26 and later) uses them for Pod addresses on the nodes it creates next, with no cluster rebuild.
+
+- A: The primary range holds node addresses; Pod addresses come from secondary ranges, so expanding it doesn't help.
+- B: Recreating the cluster is the disruption the stem rules out, and Autopilot supports additional ranges anyway.
+- C: Correct. A new secondary range added as an additional Pod range gives new nodes Pod addresses without recreating anything.
+- D: Autopilot manages Pods per node, and changing it in place isn't possible on existing nodes.
+
+Reference: https://docs.cloud.google.com/kubernetes-engine/docs/how-to/multi-pod-cidr
+
+## ace-s3-181 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*How many secondary ranges one subnet can hold* · 3.3 Subnets, Addresses and Routes · `8b584e92-edb4-4ed7-aadc-4b989782ca34`
+
+The platform team at Glenrothes Data gives each new GKE node pool its own Pod range, all taken from secondary ranges on one shared subnet. They ask what eventually limits this design. What should you tell them?
+
+- **A.** A subnet can have at most two secondary ranges, one for Pods and one for Services.
+- **B.** There is no limit, as long as the ranges don't overlap.
+- **C.** A quota on secondary ranges that support can raise as far as needed.
+- **D.** A subnet can hold up to 170 secondary ranges, and that limit can't be increased.  ← key
+
+Explanation: Each subnet supports up to 170 secondary IPv4 ranges, and the limit can't be increased. The ranges must also stay clear of every other range in the VPC and its peers.
+
+- A: A VPC-native cluster starts with one Pod and one Service range, but a subnet can hold many more secondary ranges.
+- B: The number per subnet is capped, and the VPC's total subnet ranges are limited too.
+- C: The per-subnet maximum is a fixed limit, not an adjustable quota.
+- D: Correct. Up to 170 secondary ranges per subnet, a hard limit, so very many node pools eventually need another subnet.
+
+Reference: https://docs.cloud.google.com/vpc/docs/quota
+
+## ace-s3-182 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*Using a workstation someone else created* · 3.1 Developer Environments · `0d3d917a-85da-476c-a572-5f61cc0ae66f`
+
+A platform administrator at Hexley Games created a workstation named ana-dev from the configuration unity-dev for a contractor. The contractor must be able to start and use that one workstation, but not create others or change the configuration. What should you grant?
+
+- **A.** roles/workstations.workstationCreator on the unity-dev configuration.
+- **B.** roles/workstations.admin on the project.
+- **C.** roles/workstations.operationViewer on the project.
+- **D.** roles/workstations.user on the ana-dev workstation.  ← key
+
+Explanation: Cloud Workstations User on a workstation lets someone start, stop and connect to it, and nothing else.
+
+- A: Creator lets the contractor create new workstations from the configuration, which isn't wanted.
+- B: Admin controls clusters and configurations, far more than using one workstation.
+- C: Operation Viewer shows long-running operations, not access to a workstation.
+- D: Correct. The User role on that workstation is exactly enough to start and use it.
+
+Reference: https://docs.cloud.google.com/workstations/docs/access-control
+
+## ace-s3-183 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*Counting errors from a log field* · 3.4 Custom Metrics · `fe649c7a-933d-48a5-83d9-f920119d9324`
+
+A legacy service at Wrexham Bus writes one structured log entry per request with jsonPayload.status. The team wants to chart and alert on the number of requests with status 500 per minute, without changing code. What should it create?
+
+- **A.** A distribution log-based metric on jsonPayload.status.
+- **B.** An uptime check against the service's health endpoint.
+- **C.** A counter log-based metric for entries with jsonPayload.status=500.  ← key
+- **D.** A log sink to BigQuery with a query scheduled every minute.
+
+Explanation: A counter log-based metric counts the entries that match its filter, giving a time series of 500s per minute for charts and alerting policies.
+
+- A: A distribution summarises a numeric value's spread; the team wants a count of matching requests.
+- B: An uptime check probes one endpoint and doesn't count the errors real users get.
+- C: Correct. A counter metric with the filter jsonPayload.status=500 is the error count to chart and alert on.
+- D: A scheduled query adds delay and cost, and alerting on it needs more plumbing.
+
+Reference: https://docs.cloud.google.com/logging/docs/logs-based-metrics/counter-metrics
+
+## ace-s3-184 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*Latency hidden in a plain-text log line* · 3.4 Custom Metrics · `2fffd1c7-6ebd-4039-929c-eb9e3bfd659a`
+
+An old service at Kirkby Freight writes plain-text log lines such as "GET /quote done in 238ms". There is no latency metric, and the code can't change. The team wants p95 latency on a dashboard. What should it create?
+
+- **A.** A distribution log-based metric that extracts the number before ms with a regular expression.  ← key
+- **B.** A counter log-based metric for entries containing done in.
+- **C.** A metric-absence alert on the service's request logs.
+- **D.** A log bucket with Log Analytics, queried by hand each morning.
+
+Explanation: Distribution metrics take a value extractor, which may be a regular expression over textPayload. The extracted numbers form a histogram that Cloud Monitoring turns into percentiles.
+
+- A: Correct. A regex extractor on textPayload captures the milliseconds, and the distribution gives p95 on a chart.
+- B: A counter counts requests but discards the latency value.
+- C: Metric absence detects silence, not slowness.
+- D: Manual queries produce numbers each morning, not a live percentile chart.
+
+Reference: https://docs.cloud.google.com/logging/docs/logs-based-metrics/distribution-metrics
+
+## ace-s3-185 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*A sink into another project's bucket that writes nothing* · 3.4 Log Buckets and Routing · `e97385c7-c422-4710-99ef-a58cc76e2fca`
+
+A log sink in project web-prod at Ashby Telecom routes firewall logs to the Cloud Storage bucket fw-archive in project sec-archive. The sink was created without errors, but the bucket stays empty after a day. What should you do?
+
+- **A.** Grant your own account Storage Admin on the bucket.
+- **B.** Grant the sink's writer identity Storage Object Creator on the bucket.  ← key
+- **C.** Recreate the sink in project sec-archive.
+- **D.** Enable Data Access audit logs for Cloud Storage in sec-archive.
+
+Explanation: Sinks write with their own writer identity. When the destination is in another project, that identity must be granted permission there, here Storage Object Creator on the bucket.
+
+- A: Your account doesn't write the logs; the sink's writer identity does.
+- B: Correct. The writer identity needs Storage Object Creator on fw-archive before routed entries are written.
+- C: A sink routes logs of the project it lives in, so moving it would route sec-archive's logs instead.
+- D: Data Access logs record reads of the bucket; they don't let the sink write.
+
+Reference: https://docs.cloud.google.com/logging/docs/export/configure_export_v2
+
+## ace-s3-186 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*A PodMonitoring resource in the wrong namespace* · 3.4 Managed Prometheus · `e807bc92-e14e-43a6-87d2-597e812fb84b`
+
+On a GKE cluster at Morley Cars with Managed Service for Prometheus managed collection, the checkout Pods run in namespace shop and expose /metrics on port 8080. An engineer created a PodMonitoring resource selecting app=checkout in namespace default. No checkout metrics arrive. What should you do?
+
+- **A.** Install the Ops Agent on the cluster's nodes.
+- **B.** Rename the metrics port in the Pods to metrics.
+- **C.** Create the PodMonitoring resource in namespace shop.  ← key
+- **D.** Disable managed collection and run a Prometheus server.
+
+Explanation: A PodMonitoring resource scrapes only Pods in its own namespace. The checkout Pods are in shop, so the resource must be there, or a ClusterPodMonitoring must be used.
+
+- A: The Ops Agent is for VMs; GKE metrics from Prometheus endpoints come through managed collection.
+- B: A port can be named anything, as long as the PodMonitoring refers to it correctly.
+- C: Correct. In namespace shop the selector finds the checkout Pods and scraping starts.
+- D: Managed collection works; it is only looking in the wrong namespace.
+
+Reference: https://cloud.google.com/stackdriver/docs/managed-prometheus/setup-managed
+
+## ace-s3-187 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*Health metrics for self-managed MySQL on VMs* · 3.4 Ops Agent · `c859e7fe-fe5b-43ca-a255-b6b1350f98fc`
+
+Besides Cloud SQL, Tolland Retail runs self-managed MySQL on six Compute Engine VMs. The DBA lead wants their connections, query rates and slow-query logs in Cloud Monitoring and Cloud Logging, using only generally available features. What should you set up?
+
+- **A.** Migrate the six databases to Cloud SQL first.
+- **B.** Uptime checks against port 3306 on each VM.
+- **C.** VPC Flow Logs for the VMs' subnet.
+- **D.** The Ops Agent with its MySQL integration on each VM.  ← key
+
+Explanation: The Ops Agent has a MySQL integration that collects the server's metrics and its error and slow-query logs, sending them to Cloud Monitoring and Cloud Logging.
+
+- A: Migration may come later, but the lead wants the existing databases monitored now.
+- B: An uptime check only says whether the port answers.
+- C: Flow logs show network flows, not database metrics or logs.
+- D: Correct. The agent's MySQL receiver collects metrics and logs from each VM.
+
+Reference: https://docs.cloud.google.com/monitoring/agent/ops-agent/third-party/mysql
+
+## ace-s3-188 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*Serial console refused by policy* · 3.1 Connecting to Instances · `dc0f5dda-1d91-40a2-a6b3-c5f8c831649d`
+
+A VM at Halton Water lost all network connectivity after a bad configuration change. You set serial-port-enable=TRUE in its metadata, but connecting to the serial console is still refused. The project sits in a folder where security policies are enforced. What should you check?
+
+- **A.** Whether the VM has an external IP address.
+- **B.** Whether a firewall rule allows 35.235.240.0/20 on port 22.
+- **C.** Whether the compute.disableSerialPortAccess policy is enforced on the project.  ← key
+- **D.** Whether OS Login is enabled in the project's metadata.
+
+Explanation: The serial console goes through Compute Engine, not the VM's network, but the compute.disableSerialPortAccess organisation policy can forbid it regardless of the metadata.
+
+- A: Serial console access doesn't use the VM's network or its addresses.
+- B: That rule is for IAP TCP forwarding; the serial console doesn't pass through the VPC firewall.
+- C: Correct. If the policy is enforced, serial port access is blocked whatever the metadata says.
+- D: OS Login affects SSH and serial console sign-in, but it doesn't refuse the connection outright.
+
+Reference: https://docs.cloud.google.com/compute/docs/troubleshooting/troubleshooting-using-serial-console
+
+## ace-s3-189 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*Reading why a VM doesn't finish booting* · 3.1 Connecting to Instances · `48ee36bb-ddce-4666-be50-cea66a52d8a0`
+
+After a kernel update, a VM at Bexley Clinics shows as RUNNING but never becomes reachable. You want to read the boot messages to see where it stops, without changing anything on the VM. What should you do?
+
+- **A.** SSH to the VM through Identity-Aware Proxy.
+- **B.** Read the VM's serial port output.  ← key
+- **C.** Create a snapshot and attach it to another VM.
+- **D.** Install the Ops Agent and read its logs.
+
+Explanation: Serial port 1 receives boot and kernel messages. Reading its output needs no sign-in, network or change to the VM.
+
+- A: SSH needs a booted system with working networking, which this VM may not have.
+- B: Correct. get-serial-port-output shows the boot log and where it stops.
+- C: Mounting a snapshot elsewhere works for repairs, but it is slower than reading the output that already exists.
+- D: An agent can't be installed or report on a VM that hasn't finished booting.
+
+Reference: https://docs.cloud.google.com/compute/docs/troubleshooting/viewing-serial-port-output
+
+## ace-s3-190 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*A bigger machine type for every VM in a group* · 3.1 Instance Inventory and Lifecycle · `43149b9b-930c-43b6-9c71-d6d6923870f1`
+
+The 12 VMs of a regional managed instance group at Grayson Online use e2-standard-4 and need e2-standard-8. The service must keep serving while the change happens. What should you do?
+
+- **A.** Stop each VM, change its machine type, and start it again.
+- **B.** Edit the existing instance template's machine type in place.
+- **C.** Create a template with e2-standard-8 and start a rolling update to it.  ← key
+- **D.** Resize the group to 24 VMs so the load halves.
+
+Explanation: VMs in a managed group are built from the group's template. A new template with the larger machine type and a rolling update replace VMs a few at a time while the rest serve.
+
+- A: The group would recreate or repair VMs back to the template; individual edits don't last.
+- B: Instance templates can't be edited; a change needs a new template.
+- C: Correct. A new template and a rolling update change every VM without stopping the service.
+- D: More small VMs isn't the larger machine type the workload needs, and it costs more.
+
+Reference: https://docs.cloud.google.com/compute/docs/instance-groups/updating-migs
+
+## ace-s3-191 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*A public address lost while resizing a VM* · 3.1 Instance Inventory and Lifecycle · `c8dde705-8335-4e2a-a27f-f1b69a73079e`
+
+A standalone VM at Ripley Maps has an ephemeral external IP address that partners use, and it needs a larger machine type. What should you do so the public address stays the same?
+
+- **A.** Promote the ephemeral external address to static, then stop, resize and start the VM.  ← key
+- **B.** Change the machine type while it runs, so the address is never released.
+- **C.** Snapshot the VM and create a larger VM from the snapshot.
+- **D.** Stop the VM; ephemeral external addresses are kept while a VM is stopped.
+
+Explanation: The machine type can only be changed on a stopped VM, and stopping releases an ephemeral external address. Promoting it to static first keeps the same address through the stop.
+
+- A: Correct. The promoted address stays with the VM while it is stopped and resized.
+- B: Compute Engine changes machine types only on stopped VMs.
+- C: A new VM gets a new ephemeral address, so partners would see a change.
+- D: An ephemeral external address is released when the VM stops.
+
+Reference: https://docs.cloud.google.com/vpc/docs/ip-addresses
+
+## ace-s3-192 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*Testing a new setting on Cloud Run without users* · 3.1 Cloud Run Releases · `62790942-be36-4b03-83b7-b2fc2dfe55a0`
+
+The Cloud Run service checkout at Dunmow Shoes serves all traffic from its latest revision. The team wants to try a new MAX_CART_ITEMS environment variable value on a URL only testers know, with no customer traffic, before switching over. What should it do?
+
+- **A.** Update the variable; Cloud Run applies it to running instances only for testers.
+- **B.** Deploy a second Cloud Run service with the new value.
+- **C.** Update the variable and split traffic 50/50 between the revisions.
+- **D.** Deploy the change with --no-traffic and a tag, and test the tag's URL.  ← key
+
+Explanation: A configuration change creates a new revision. With --no-traffic it receives no user requests, and a tag gives it a dedicated URL for testers.
+
+- A: Changing a variable creates a new revision for everyone who follows the latest revision; there is no per-user setting.
+- B: A second service works but duplicates configuration and access the team then has to maintain.
+- C: A 50/50 split sends real customers to the untested value.
+- D: Correct. The tagged revision is reachable on its own URL while customers stay on the current one.
+
+Reference: https://docs.cloud.google.com/run/docs/rollouts-rollbacks-traffic-migration
+
+## ace-s3-193 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*Rolling back a bad configuration on Cloud Run* · 3.1 Cloud Run Releases · `a6b28c92-d8ad-4350-96dd-f821e626006d`
+
+Ten minutes after an engineer at Patterdale Tours changed a Cloud Run service's DB_POOL_SIZE variable, errors spiked. The previous revision, booking-00041, worked fine. What is the fastest way to restore service?
+
+- **A.** Send 100% of traffic to booking-00041.  ← key
+- **B.** Edit the variable inside the new revision back to its old value.
+- **C.** Rebuild and push the container image, then deploy it.
+- **D.** Delete the service and redeploy it from source.
+
+Explanation: Revisions are immutable and the old one still exists, so moving traffic back to it takes effect in seconds without building or deploying anything.
+
+- A: Correct. update-traffic to booking-00041 at 100% restores the working configuration immediately.
+- B: A revision can't be edited; changing the variable creates yet another revision.
+- C: The image didn't change; rebuilding it adds minutes and doesn't touch the variable.
+- D: Deleting the service causes an outage and loses its revisions and settings.
+
+Reference: https://docs.cloud.google.com/run/docs/rollouts-rollbacks-traffic-migration
+
+## ace-s4-064 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*A service account deleted six weeks ago* · 4.2 Creating Service Accounts · `28846d09-5955-458d-9b82-c64365d3a097`
+
+A reporting job at Bramley Press fails because its service account was deleted 45 days ago. Its old role bindings still appear in two projects, prefixed with deleted:. What should you do?
+
+- **A.** Undelete the service account by its unique ID.
+- **B.** Create a service account with the same name; the old bindings apply to it again.
+- **C.** Create a new service account, grant it the roles, and remove the deleted: bindings.  ← key
+- **D.** Restore the service account from the project's Cloud Asset Inventory history.
+
+Explanation: Undelete works for 30 days after deletion. After that the account is gone for good, and its old bindings refer to an identity that no longer exists.
+
+- A: The 30-day undelete window has passed.
+- B: A new account with the same name has a new unique ID, and the deleted: bindings don't apply to it.
+- C: Correct. A new account with fresh grants restores the job, and removing the stale bindings tidies the policies.
+- D: Asset history records past metadata; it can't restore a deleted identity.
+
+Reference: https://docs.cloud.google.com/iam/docs/service-accounts-delete-undelete
+
+## ace-s4-065 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*A recreated service account that still gets permission denied* · 4.2 Creating Service Accounts · `1a1bc089-70dd-4359-abc3-45205a3b859e`
+
+Two days after a service account was deleted by mistake at Ferndale Foods, an engineer created a new one with the same name and email. The job using it still gets permission denied, although the project's IAM policy shows the roles granted to that email. What is the best fix?
+
+- **A.** Wait an hour for the old bindings to propagate to the new account.
+- **B.** Delete the new account and undelete the original by its unique ID.  ← key
+- **C.** Disable and re-enable the new service account.
+- **D.** Grant the roles to the user who runs the job instead.
+
+Explanation: The existing bindings belong to the deleted account's unique ID, not to the new account that reuses its email. Within 30 days, undeleting the original brings back the identity those bindings name.
+
+- A: Propagation won't help; the bindings belong to a different identity.
+- B: Correct. Removing the look-alike frees the email, and undelete restores the original account its bindings refer to.
+- C: Disabling and enabling doesn't change which identity the bindings belong to.
+- D: Granting roles to a person replaces a workload identity with a human's access, which is the wrong design.
+
+Reference: https://docs.cloud.google.com/iam/docs/service-accounts-delete-undelete
+
+## ace-s4-066 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*Which keys authenticated this month* · 4.2 Service Accounts and Least Privilege · `5150cc15-d770-4859-bd2c-a567ab310e6d`
+
+Security at Westgate Credit wants to delete every user-managed service account key in a project that hasn't authenticated in the last 30 days. Only generally available tools may be used. Where should you look?
+
+- **A.** Cloud Asset Inventory's resource search for service account keys.
+- **B.** The key authentication metric in Metrics Explorer, grouped by key ID.  ← key
+- **C.** The billing report filtered by service account.
+- **D.** The VPC Flow Logs of the project's subnets.
+
+Explanation: The metric iam.googleapis.com/service_account/key/authn_events_count counts authentications per key and is kept for six weeks, so keys with no data in the last 30 days are unused.
+
+- A: Asset search lists which keys exist, not when they were last used.
+- B: Correct. Grouping the key authentication metric by key ID shows which keys authenticated in the last 30 days.
+- C: Billing doesn't record authentications.
+- D: Flow logs show network connections, not which credential a caller used.
+
+Reference: https://docs.cloud.google.com/iam/docs/service-account-monitoring
+
+## ace-s4-067 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*An HMAC key that belongs to a person* · 4.2 Service Accounts and Least Privilege · `959247e9-6a17-4b01-a31b-e82ba8c10039`
+
+For a data migration, a developer at Calder Media created an HMAC key tied to their own user account and configured an S3-compatible tool with it. Security wants the tool's access to be scoped to the target bucket and independent of any person. What should you do?
+
+- **A.** Keep the developer's key and remove the developer's other project roles.
+- **B.** Give the tool a service account JSON key instead of the HMAC key.
+- **C.** Generate signed URLs for the tool, valid for seven days.
+- **D.** Create an HMAC key for a service account with a role on the bucket only, and deactivate the user's key.  ← key
+
+Explanation: An HMAC key acts with the permissions of its owner. A service account that holds only a role on the target bucket keeps the tool's access scoped, and it survives the developer leaving.
+
+- A: The key would still depend on a person's account and that person's remaining access.
+- B: An S3-compatible tool can't use a JSON key, and JSON keys are the riskier credential.
+- C: Signed URLs cover single objects and expire; they don't give a tool standing access to write a bucket.
+- D: Correct. A service account HMAC key with a bucket-level role is scoped, revocable and independent of any person.
+
+Reference: https://docs.cloud.google.com/storage/docs/authentication/hmackeys
+
+## ace-s4-068 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*Which endpoint an S3 tool must call* · 4.2 Service Accounts and Least Privilege · `98afc35f-8172-4178-80f4-44c062569b19`
+
+A backup appliance at Ludlow Clinics has an access ID and secret from a Cloud Storage HMAC key. Its settings ask for an S3 endpoint URL. Which endpoint should you enter?
+
+- **A.** https://storage.googleapis.com  ← key
+- **B.** https://s3.amazonaws.com with the bucket's region
+- **C.** https://www.googleapis.com/storage/v1
+- **D.** https://console.cloud.google.com/storage
+
+Explanation: Cloud Storage's XML API, at storage.googleapis.com, accepts HMAC-signed requests from S3-compatible tools.
+
+- A: Correct. The XML API endpoint is the interoperability endpoint that HMAC keys work with.
+- B: That endpoint is Amazon S3 itself, which knows nothing of Cloud Storage buckets.
+- C: The JSON API uses OAuth tokens, not HMAC signatures.
+- D: The console is a web interface for people, not an API endpoint.
+
+Reference: https://docs.cloud.google.com/storage/docs/interoperability
+
+## ace-s4-069 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*A scheduled call to Cloud Run that returns 403* · 4.2 Short-lived Credentials · `5f9c3d2e-c1cb-4497-93a5-e816d77a4375`
+
+A Cloud Scheduler job at Penrith Sport calls a Cloud Run service that requires authentication. The job sends an OAuth token for the service account sched-sa, which has the Cloud Run Invoker role on the service, and every run returns 403. What should you change?
+
+- **A.** Grant sched-sa the Editor role on the project.
+- **B.** Allow unauthenticated invocations on the service.
+- **C.** Configure the job to send an OIDC token for sched-sa instead.  ← key
+- **D.** Store a key for sched-sa in Secret Manager and send it in a header.
+
+Explanation: Cloud Run authenticates callers with Google-signed ID tokens. An OAuth access token is for Google APIs, so Cloud Run rejects it even though the account has Invoker.
+
+- A: The account already has the right role; Editor adds privilege without fixing the token type.
+- B: Opening the service to everyone removes the authentication it requires.
+- C: Correct. An OIDC token with the service's URL as audience is what Cloud Run verifies.
+- D: Sending a key in a header isn't an authentication method Cloud Run accepts, and it creates a long-lived secret.
+
+Reference: https://docs.cloud.google.com/scheduler/docs/http-target-auth
+
+## ace-s4-070 · new
+
+**2. Acceptance criteria audit**
+
+| Criterion | Result |
+|---|---|
+| AC1 Associate scope | pass |
+| AC2 Complete scenario | pass |
+| AC3 Plausible distractors | pass |
+| AC4 One correct answer | pass |
+| AC5 Explanation | pass |
+| AC6 Fair form | pass |
+| AC7 Original and current | pass |
+
+New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.
+
+**3. Final question**
+
+*A scheduled job that calls a Google API* · 4.2 Short-lived Credentials · `dc90c9dd-4ec0-48cc-932c-d42a55e16970`
+
+Every evening a Cloud Scheduler HTTP job at Tilbury Labs must call the Compute Engine API's instances.stop method directly to stop a test VM. The job runs as a service account with the Compute Instance Admin role. How should the job authenticate?
+
+- **A.** An OAuth access token for the service account.  ← key
+- **B.** An OIDC token for the service account with the API's URL as audience.
+- **C.** An API key added to the request's URL.
+- **D.** No token; Cloud Scheduler's own identity is trusted by Google APIs.
+
+Explanation: Google APIs on googleapis.com expect OAuth access tokens. Scheduler mints one for the service account, whose role authorises stopping the VM.
+
+- A: Correct. Google APIs are called with OAuth access tokens, which Scheduler creates for the chosen service account.
+- B: OIDC tokens are for your own endpoints, such as Cloud Run or Cloud Run functions, not Google APIs.
+- C: API keys identify a project, not a principal with IAM roles, and can't authorise stopping a VM.
+- D: Scheduler acts as the service account you configure; without a token the call is anonymous and fails.
+
+Reference: https://docs.cloud.google.com/scheduler/docs/http-target-auth
 

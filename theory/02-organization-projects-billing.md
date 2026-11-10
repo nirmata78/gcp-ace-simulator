@@ -105,7 +105,8 @@ manages IAM on the resource hierarchy. Google's set-up guidance is to grant org-
 | Create a project in a folder | `gcloud projects create kestrel-fin-prod --folder=FOLDER_ID` |
 | Move a project | `gcloud beta projects move P --folder=FOLDER_ID` |
 | Delete / restore a project | `gcloud projects delete P` · `gcloud projects undelete P` |
-| Protect a project from deletion | a **lien**: `gcloud alpha resource-manager liens create --project=P --restrictions=resourcemanager.projects.delete --reason=...` |
+| Stop anyone, Owners included, deleting a project (GA) | an IAM **deny policy** on the project that denies `cloudresourcemanager.googleapis.com/projects.delete` |
+| Protect a project from deletion (*Preview*) | a **lien**: `gcloud alpha resource-manager liens create --project=P --restrictions=resourcemanager.projects.delete --reason=...` |
 
 **Deleting a project** starts a **30-day pending-deletion** period: billing stops, resources are shut down, and
 `gcloud projects undelete` brings it all back. After 30 days it is gone.
@@ -131,6 +132,83 @@ Administrator on a least-privilege question.
 > granted **Project Creator** and **Billing Account Creator** at the organization. Removing those two grants is a
 > standard first governance step — it is the answer to *"users keep creating projects and billing accounts
 > outside the folder structure"*.
+
+### Blueprint: separate projects for production and non-production
+
+The single most repeated piece of Google's landing-zone advice is that **production and non-production never share
+a project**, and usually not a network either. The project is the boundary for IAM, quota, API enablement, billing
+reports, audit logs and, by default, the network, so the project is where environments get separated.
+
+```
+Organization  example.com
+  +-- Folder  common              shared services, owned by the platform team
+  |     +-- Project  net-host-prod      Shared VPC host: vpc-prod   (HA VPN / Interconnect to on-premises)
+  |     +-- Project  net-host-nonprod   Shared VPC host: vpc-nonprod
+  |     +-- Project  logging            aggregated log sinks, log buckets
+  |     +-- Project  billing-export     BigQuery dataset for the billing export
+  +-- Folder  production          org policies: no external IPs, resource locations, CMEK required
+  |     +-- Project  shop-prod          service project of net-host-prod
+  |     +-- Project  data-prod
+  +-- Folder  non-production
+        +-- Folder  development
+        |     +-- Project  shop-dev     service project of net-host-nonprod
+        +-- Folder  staging
+              +-- Project  shop-stg     service project of net-host-nonprod
+```
+
+| Why separate projects | What goes wrong in a shared one |
+|:----------------------------------------------|:------------------------------------------------------------|
+| **IAM is inherited, and additive.** A developer who is Editor on a dev project has nothing in prod | One project means one Editor grant covers both, and no role can subtract prod |
+| **Quota is per project** | A runaway dev load test exhausts the CPUs or API quota production needs |
+| **Organization policies differ** per folder: stricter on `production` | Policies cannot target "half" a project |
+| **Billing and labels.** Each environment's cost is a project in the billing reports | Cost needs perfect labels on every resource |
+| **Audit and access reviews** are scoped to a project or folder | Prod access hides among dev activity |
+| **Blast radius** of a mistake, a leaked key or a deleted project | One `gcloud projects delete` removes both |
+
+The same reasoning applies one level down, to the network: a **production Shared VPC host project** and a
+**separate non-production host project** mean routes and firewall rules changed for development cannot touch
+production traffic, because routes and firewall rules belong to a VPC ([§4.5](04-networking.md#s4-5)). Google's
+[enterprise foundations blueprint](https://docs.cloud.google.com/architecture/blueprints/security-foundations) and the Terraform
+modules that implement it build exactly this tree, which is why *"Google-recommended"* in a stem about environments
+points at published blueprints rather than a home-grown layout ([§8.3](08-tooling.md#s8-3)).
+
+{: .tip }
+> **Spot the environment question.** *"Developers need broad rights in dev but none in production"*, *"a test must
+> never use production's quota"*, *"show production cost separately"* are all answered by **separate projects
+> under separate folders**, not by IAM conditions, labels or per-environment subnets in one project.
+
+### Assured Workloads: a compliance boundary on a folder
+
+**Assured Workloads** creates a **folder** with a **control package** applied to it. Every project and resource
+created in that folder inherits the package's guardrails, which Google enforces with organization policy
+constraints and other controls, and then **monitors for violations**.
+
+| A control package can enforce | Example |
+|:----------------------------------------------|:------------------------------------------------------------|
+| **Data residency**: where resources may be created | *EU Data Boundary* allows EU regions only |
+| **Personnel access**: who at Google may access data for support | *EU Data Boundary and Support*: EU-based support personnel only; *FedRAMP High*: US persons with enhanced background checks |
+| **Key management** | *Data Boundary for ITAR* requires customer-managed keys in a separate key project |
+| **Restricted services** | Only products the package supports can be enabled in the folder |
+| **Access Approval, Access Transparency, Key Access Justifications** | Approve or deny Google access, see logs of it, justify key use |
+
+Control-package families: **regional data boundaries** (a country or region, optionally with local support
+personnel), **regulatory data boundaries** (FedRAMP Moderate and High, IL2/IL4/IL5, CJIS, ITAR, IRS 1075, HIPAA
+with Healthcare and Life Sciences controls) and **Sovereign Controls by Partners**, where a local partner holds keys
+and approves access. Some packages are free; those with personnel controls are Premium. The packages were renamed
+in June 2025 (*EU Regions and Support* became *EU Data Boundary and Support*), so expect either name.
+
+{: .watch }
+> **Assured Workloads versus a location policy.** The `gcp.resourceLocations` organization policy restricts **where**
+> resources are created, and nothing else. CMEK controls **keys**. VPC Service Controls restricts **data
+> exfiltration** through Google APIs. Only Assured Workloads also controls **which Google personnel can access the
+> data**. *"Data in the EU and only EU-based support staff"* is Assured Workloads with an EU data boundary and
+> support package.
+
+{: .cmds }
+| Task | Command |
+|:------------------------------------|:----------------------------------------------------------------------|
+| Create an Assured Workloads folder | `gcloud assured workloads create --organization=ORG_ID --location=europe-west3 --display-name=eu-workload --compliance-regime=eu-data-boundary-and-support --billing-account=billingAccounts/BA_ID` |
+| List violations | `gcloud assured workloads violations list --organization=ORG_ID --location=europe-west3 --workload=WORKLOAD_ID` |
 
 <a id="s2-4"></a>
 
@@ -280,6 +358,16 @@ It is configured on the **billing account**, into a dataset in a project you cho
 | **Network tags** | Strings on VMs | **No** | VPC firewall rules and routes ([§4.3](04-networking.md#s4-3), [§4.4](04-networking.md#s4-4)) |
 | **Tags** (resource-manager tags) | IAM-governed key–values attached to org, folders, projects, resources; inherited | — | Conditional IAM, org policy, Cloud NGFW ([§3.7](03-identity-access.md#s3-7)) |
 
+**Shared GKE clusters need one more switch.** The billing export sees a GKE cluster as its **nodes**: VMs, disks,
+nothing per team. **GKE cost allocation**, enabled on the cluster, adds each workload's share to the detailed
+billing export, broken down by **namespace** and **Kubernetes label**, from the CPU and memory the workloads
+request. Labels on node pools cannot do it, because many teams' Pods share each node.
+
+{: .cmds }
+| Task | Command |
+|:------------------------------------|:----------------------------------------------------------------------|
+| Cost per namespace on a shared cluster | `gcloud container clusters update shop --location=R --enable-cost-allocation` |
+
 <a id="s2-9"></a>
 
 ## 2.9 Seeing everything: Cloud Asset Inventory and Gemini Cloud Assist
@@ -314,9 +402,10 @@ Manager, [§5.6](05-compute-engine.md#s5-6)). Reading it needs `roles/cloudasset
 - **Cloud Asset Inventory analyses, not just searches.** It returns the **effective** organization policy for every
   resource in scope, reports the IAM and policy effects of moving a project **before** you move it (project moves
   have no dry run), and runs **SQL** over asset data without a user-built BigQuery export.
-- **Protect and verify.** A **lien** (`resourcemanager.projects.delete`) stops even an Owner deleting a project
-  until the lien is removed. **Assured Workloads** applies a control package to a folder — data
-  location **and** support-personnel controls; the `gcp.resourceLocations` constraint covers location only.
+- **Protect and verify.** An IAM **deny policy** on `projects.delete` stops even an Owner deleting a project, and
+  it is GA. A **lien** does the same but is still in **Preview**, so it is not an exam answer. **Assured
+  Workloads** applies a control package to a folder — data location **and** support-personnel controls; the
+  `gcp.resourceLocations` constraint covers location only ([§2.3](#s2-3)).
 - **Organization policy beyond the catalogue.** `sql.restrictPublicIp` blocks public IPs on Cloud SQL
   (`sql.restrictAuthorizedNetworks` only blocks authorized networks). **Custom constraints** use CEL on resource
   fields when no predefined constraint fits — for example *every new GKE cluster must have Workload Identity
@@ -325,8 +414,9 @@ Manager, [§5.6](05-compute-engine.md#s5-6)). Reading it needs `roles/cloudasset
   raises). A **usage alert** from the Quotas page is a Cloud Monitoring alerting policy — a budget watches money,
   not quota.
 - **Cost.** **Cost anomaly detection** in Cloud Billing flags spikes against historical patterns with no thresholds
-  to set. **Gemini Cloud Assist in Cloud Billing** answers *"why did the bill go up?"* in natural language, within
-  the user's billing permissions.
+  to set. *"Why did the bill go up, and which projects and services drove it?"* is answered in the console by
+  **Cloud Billing reports**, grouped by project or service and compared with the previous period, with no SQL.
+  (Gemini Cloud Assist in Cloud Billing answers the same question in natural language, but is in *Preview*.)
 - **Everyday gcloud.** Named **configurations** (`gcloud config configurations create/activate`) switch account,
   project and region together. A **log scope** lets Logs Explorer query several projects' logs together without
   moving them.
@@ -339,7 +429,9 @@ Manager, [§5.6](05-compute-engine.md#s5-6)). Reading it needs `roles/cloudasset
 |:------------------------------------------------|:--------------------------------------------------------|
 | All of a department's projects, now and future | Bind on the **folder** |
 | Recover a project deleted last week | `gcloud projects undelete` (30-day window) |
-| Stop a critical project being deleted | A **lien** |
+| Stop a critical project being deleted, even by an Owner | An IAM **deny policy** on `projects.delete` (liens are Preview) |
+| Dev and prod in one project? | **Never**: separate projects, folders and Shared VPC hosts |
+| EU residency **and** EU-only support staff | **Assured Workloads** folder, EU data boundary and support package |
 | Move a project, least privilege | **Project Mover** at a common ancestor |
 | Users create projects anywhere they like | Remove the default **Project Creator** grant at the org |
 | New Free Trial, no domain, still want folders and org policy | **Standalone organization** |

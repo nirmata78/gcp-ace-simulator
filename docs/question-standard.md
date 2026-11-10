@@ -81,6 +81,10 @@ its items: the no-exam-content rule in [CONTRIBUTING.md](../CONTRIBUTING.md) com
   (`CONTRIBUTING.md`). New questions have `source: curated`, and each new stem must score below the overlap thresholds
   of `scripts/audit_overlap.py` against every audited source.
 - Product names are current (check the docs, not memory). A fact likely to change is marked *verify* in the theory.
+- **No Preview feature as the answer.** The key never depends on a feature that was in Preview (pre-GA) in June 2026,
+  the state of Google Cloud the exam guide was written against. A Preview feature may appear as a distractor. Check
+  the doc page for a Preview banner, or *(Preview)* beside the feature, before keying it. The one exception is a
+  product the guide itself names (Gemini Cloud Assist); its Preview extensions still don't count.
 
 ## Multiple-select and cross-domain questions
 

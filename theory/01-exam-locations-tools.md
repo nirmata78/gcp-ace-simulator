@@ -161,6 +161,18 @@ tracks must be typed with the prefix: in the current SDK that includes `beta pro
 `beta quotas` group and `beta services identity create`, and `alpha resource-manager liens`. Everything else in this booklet is GA and takes no prefix. Exam options sometimes
 drop the prefix — judge the *verb and flags*, not the track.
 
+**Launch stages: what can be a right answer.** A Google Cloud product or feature is **Preview** (sometimes
+*Private Preview*), then **GA** (generally available). Preview carries the *"Pre-GA Offerings Terms"*: no SLA,
+limited support, and it can change. The documentation marks it with a **Preview** banner at the top of the page,
+or *(Preview)* beside one feature of a GA product. This course and its question bank follow one rule: <mark
+markdown="span">**a right answer never depends on a feature that was only in Preview in June 2026**</mark>, the
+state of Google Cloud the exam guide was written against. Preview features can appear as distractors, and the
+theory names them with a *Preview* tag so you recognise them. The one exception is a product the guide itself
+names: **Gemini Cloud Assist** is still labelled Preview in the documentation, but the June 2026 guide lists it in
+three objectives, so its core uses are taught and tested. Its newer extensions (in Cloud Billing, its remote MCP
+server) are not. A **`gcloud beta`** command is not the same thing: it is a command track, and the feature behind
+it is often GA.
+
 A **configuration** is a named bundle of properties — account, project, default region and zone. It is the
 answer to *"switch between work contexts in one command"*:
 

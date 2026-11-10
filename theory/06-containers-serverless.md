@@ -67,6 +67,10 @@ VMs running your Pods. The two modes differ in who owns those nodes.
 **kubectl authenticates with the `gke-gcloud-auth-plugin`**, which uses your gcloud credentials — a missing plugin
 is the modern *"kubectl cannot authenticate"* error. Cloud Shell has both pre-installed.
 
+**Version skew.** Kubernetes supports a `kubectl` **within one minor version** of the control plane, older or newer.
+A workstation three versions behind gives odd errors; the fix is a current `kubectl` (`gcloud components update`
+or the OS package), never downgrading the cluster. `get-credentials` writes configuration and installs nothing.
+
 **Authorisation is two layers.** **IAM** grants cluster-wide Kubernetes rights at the project
 (`roles/container.viewer`, `container.developer`, `container.admin`). **Kubernetes RBAC** (Roles and RoleBindings)
 grants rights **per namespace**, and can bind Google Groups. *"Team A may deploy only in namespace `team-a`"* is

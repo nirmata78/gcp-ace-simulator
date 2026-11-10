@@ -1,8 +1,8 @@
 {
   "domain": "Section 2: Planning and implementing a cloud solution",
   "version": 2,
-  "updated_at": "2026-11-07T19:46:36+00:00",
-  "count": 256,
+  "updated_at": "2026-11-09T09:42:59+00:00",
+  "count": 281,
   "questions": [
     {
       "id": "ace-dom2-001",
@@ -5720,39 +5720,6 @@
       }
     },
     {
-      "id": "ace-s2-085",
-      "uid": "df5ef42d-c1bb-4cec-9aef-573774cdf672",
-      "title": "Gemini Cloud Assist from a third-party AI tool",
-      "objective": "2.4",
-      "subtopic": "AI-assisted Planning",
-      "summary": "Gemini Cloud Assist exposes a remote MCP server so external MCP clients can use its capabilities.",
-      "tags": [
-        "gemini-cloud-assist",
-        "integration",
-        "mcp"
-      ],
-      "source": "curated",
-      "question": "An SRE team does its incident work in a third-party AI assistant that supports the Model Context Protocol. It wants that assistant to use Gemini Cloud Assist's knowledge of their Google Cloud projects. What should it configure?",
-      "options": {
-        "A": "A Pub/Sub topic that forwards console events to the assistant.",
-        "B": "Gemini Cloud Assist's remote MCP server, added to the assistant.",
-        "C": "A service account key for the assistant with roles/owner.",
-        "D": "A BigQuery export of Cloud Asset Inventory shared with the assistant's vendor."
-      },
-      "correct_answer": "B",
-      "explanation": {
-        "summary": "Gemini Cloud Assist provides a remote MCP server. MCP-capable clients connect to it and call Gemini Cloud Assist with the signed-in user's permissions.",
-        "option_breakdown": {
-          "A": "Console events are not how Gemini Cloud Assist is integrated.",
-          "B": "Correct. Gemini Cloud Assist provides a remote MCP server. MCP-capable clients connect to it and call Gemini Cloud Assist with the signed-in user's permissions.",
-          "C": "Owner keys are a serious security risk and still do not provide Gemini Cloud Assist.",
-          "D": "Sharing inventory exports with a vendor exposes data and gives no assistant capability."
-        },
-        "gcloud_command": "# In the MCP client: add the Gemini Cloud Assist remote MCP server endpoint and sign in with Google",
-        "doc_ref": "https://docs.cloud.google.com/cloud-assist/use-gemini-cloud-assist-mcp"
-      }
-    },
-    {
       "id": "ace-s2-086",
       "uid": "8e68292a-791a-44c1-b42b-d94dfeaaf70a",
       "title": "Remote 3D design workstations",
@@ -7716,6 +7683,765 @@
       }
     },
     {
+      "id": "ace-s2-145",
+      "uid": "e95ca895-51c0-422c-ae3f-222ca42862db",
+      "title": "What a cross-region internal load balancer needs in each region",
+      "objective": "2.3",
+      "subtopic": "Load Balancer Selection",
+      "summary": "Envoy-based internal Application Load Balancers run their proxies in a proxy-only subnet; the cross-region variant needs one with purpose GLOBAL_MANAGED_PROXY in every region it uses.",
+      "tags": [
+        "internal",
+        "load-balancing",
+        "proxy-only-subnet"
+      ],
+      "source": "curated",
+      "question": "You are building a cross-region internal Application Load Balancer at Dunmore Health, with backends in us-east1 and us-west1 and clients in both regions. The VPC network already has a subnet for the backends in each region. Creating the forwarding rule fails. What is missing?",
+      "options": {
+        "A": "A Cloud NAT gateway in each region with backends.",
+        "B": "A proxy-only subnet with purpose GLOBAL_MANAGED_PROXY in each region.",
+        "C": "A global static external IP address for the forwarding rule.",
+        "D": "A firewall rule allowing 35.235.240.0/20 to the backends."
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "Cross-region internal Application Load Balancers run Envoy proxies from a proxy-only subnet reserved for them. Each region with a forwarding rule or backends needs one with the GLOBAL_MANAGED_PROXY purpose.",
+        "option_breakdown": {
+          "A": "Cloud NAT provides internet egress; the load balancer's proxies use the proxy-only subnet.",
+          "B": "Correct. Each region needs a proxy-only subnet with purpose GLOBAL_MANAGED_PROXY for the load balancer's proxies.",
+          "C": "An internal load balancer uses internal addresses; an external address can't serve it.",
+          "D": "35.235.240.0/20 is the IAP TCP forwarding range, used for administrative access, not load balancing."
+        },
+        "gcloud_command": "gcloud compute networks subnets create proxy-use1 --purpose=GLOBAL_MANAGED_PROXY --role=ACTIVE \\\n  --network=NETWORK --region=us-east1 --range=10.129.0.0/23",
+        "doc_ref": "https://docs.cloud.google.com/load-balancing/docs/proxy-only-subnets"
+      }
+    },
+    {
+      "id": "ace-s2-146",
+      "uid": "b60f4b66-4f02-463d-a085-d01e6a7b5170",
+      "title": "An internal web API that never leaves one region",
+      "objective": "2.3",
+      "subtopic": "Load Balancer Selection",
+      "summary": "An internal HTTP service in one region, routed by path and reachable over hybrid links, is a regional internal Application Load Balancer; cross-region failover is only needed when the stem asks for it.",
+      "tags": [
+        "http",
+        "internal",
+        "load-balancing"
+      ],
+      "source": "curated",
+      "question": "An HTTP inventory API at Thornbury Retail runs only in europe-west1 and must stay in that region for data residency. Internal clients in the VPC and on-premises clients over Cloud VPN should reach it on one internal address, with /v1 and /v2 routed to different backend services. Which load balancer fits with the least complexity?",
+      "options": {
+        "A": "A cross-region internal Application Load Balancer.",
+        "B": "A regional external Application Load Balancer.",
+        "C": "An internal passthrough Network Load Balancer.",
+        "D": "A regional internal Application Load Balancer."
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "A regional internal Application Load Balancer gives an internal address in one region with HTTP path routing, and clients arriving over Cloud VPN can reach it. Nothing in the stem asks for another region.",
+        "option_breakdown": {
+          "A": "Cross-region failover is the one thing the stem rules out; it adds proxy-only subnets and backends elsewhere for nothing.",
+          "B": "An external load balancer is reachable from the internet, not on an internal address.",
+          "C": "A passthrough load balancer works at layer 4 and can't route /v1 and /v2 to different backends.",
+          "D": "Correct. It serves internal and hybrid clients on one internal IP in europe-west1 and routes by URL path."
+        },
+        "gcloud_command": "gcloud compute url-maps create api-map --default-service=v1-backend --region=europe-west1",
+        "doc_ref": "https://docs.cloud.google.com/load-balancing/docs/l7-internal"
+      }
+    },
+    {
+      "id": "ace-s2-147",
+      "uid": "b9b419b5-50bf-4699-af61-e3bc473fcccb",
+      "title": "One TCP game service exposed from GKE",
+      "objective": "2.1",
+      "subtopic": "Deploying to GKE",
+      "summary": "A Service of type LoadBalancer exposes one Deployment on an external TCP/UDP address; an Ingress is for HTTP(S) routing by host or path.",
+      "tags": [
+        "gke",
+        "load-balancing",
+        "service"
+      ],
+      "source": "curated",
+      "question": "A Deployment on a GKE cluster at Orrell Games runs a matchmaking server that speaks a custom protocol over TCP port 7777. Players on the internet must reach it on one external IP address. What should you create?",
+      "options": {
+        "A": "An Ingress with a rule that sends / to the Deployment.",
+        "B": "A Service of type LoadBalancer for the Deployment on port 7777.",
+        "C": "A Service of type ClusterIP and a Cloud NAT gateway for the nodes.",
+        "D": "A Gateway with an HTTPRoute that matches port 7777."
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "A Service of type LoadBalancer makes GKE create a passthrough Network Load Balancer with an external address for the Deployment's Pods, which carries any TCP protocol.",
+        "option_breakdown": {
+          "A": "An Ingress creates an Application Load Balancer, which speaks HTTP and HTTPS, not a custom TCP protocol.",
+          "B": "Correct. A LoadBalancer Service gives the Pods one external address for TCP 7777.",
+          "C": "A ClusterIP Service is reachable only inside the cluster, and Cloud NAT handles outbound traffic only.",
+          "D": "An HTTPRoute routes HTTP requests, so it can't carry a custom TCP protocol."
+        },
+        "gcloud_command": "kubectl expose deployment matchmaker --type=LoadBalancer --port=7777 --target-port=7777",
+        "doc_ref": "https://docs.cloud.google.com/kubernetes-engine/docs/concepts/service-load-balancer"
+      }
+    },
+    {
+      "id": "ace-s2-148",
+      "uid": "8383052a-5ee7-4d84-8859-f0344f259dd7",
+      "title": "An Ingress address that must survive being recreated",
+      "objective": "2.1",
+      "subtopic": "Deploying to GKE",
+      "summary": "A GKE Ingress keeps a fixed address when it names a reserved global static IP with the kubernetes.io/ingress.global-static-ip-name annotation.",
+      "tags": [
+        "gke",
+        "ingress",
+        "static-ip"
+      ],
+      "source": "curated",
+      "question": "The storefront at Ashdown Books is served by a GKE Ingress that routes /, /search and /cart to three Services. Partners allow-list its IP address, and the Ingress will be deleted and recreated during a migration. How do you keep the same address?",
+      "options": {
+        "A": "Reserve a global static IP and name it in the Ingress's global-static-ip-name annotation.",
+        "B": "Reserve a regional static IP and set it as each Service's loadBalancerIP.",
+        "C": "Change each Service to type LoadBalancer so it keeps its own address.",
+        "D": "Reserve a static internal IP in the nodes' subnet and add it to the Ingress."
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "An Ingress on GKE creates a global external Application Load Balancer. Reserving a global static address and naming it in the annotation makes every recreation of the Ingress use that address.",
+        "option_breakdown": {
+          "A": "Correct. The kubernetes.io/ingress.global-static-ip-name annotation attaches the reserved global address to the load balancer the Ingress creates.",
+          "B": "The Ingress's load balancer is global and ignores the Services' addresses; a regional address can't be attached to it.",
+          "C": "Three Services would get three addresses, losing the single address and the path routing.",
+          "D": "An internal address can't be reached by partners on the internet."
+        },
+        "gcloud_command": "gcloud compute addresses create shop-ip --global\n# Ingress metadata.annotations: kubernetes.io/ingress.global-static-ip-name: shop-ip",
+        "doc_ref": "https://docs.cloud.google.com/kubernetes-engine/docs/tutorials/configuring-domain-name-static-ip"
+      }
+    },
+    {
+      "id": "ace-s2-149",
+      "uid": "dc3b4f7e-2f7d-4368-be8f-37c515d30023",
+      "title": "VMs that answer SSH but not each other's pings",
+      "objective": "2.3",
+      "subtopic": "Firewall Rules and Policies",
+      "summary": "In a VPC without the default network's rules, the implied deny-ingress rule blocks internal traffic too, so each wanted protocol needs its own allow rule.",
+      "tags": [
+        "firewall",
+        "implied-rules",
+        "vpc"
+      ],
+      "source": "curated",
+      "question": "In a new custom-mode VPC at Lowther Labs, the only firewall rule you created allows TCP port 22 from 0.0.0.0/0. You can SSH to both VMs in the subnet 10.30.0.0/24, but ping between them fails. What should you add?",
+      "options": {
+        "A": "An egress rule allowing ICMP to 10.30.0.0/24.",
+        "B": "Nothing; traffic within one subnet is always allowed.",
+        "C": "A route for 10.30.0.0/24 with the subnet's gateway as next hop.",
+        "D": "An ingress rule allowing ICMP from 10.30.0.0/24."
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "Every VPC has implied rules that allow all egress and deny all ingress. A ping arriving at the other VM is ingress, so ICMP must be allowed explicitly, even from the same subnet.",
+        "option_breakdown": {
+          "A": "Egress is already allowed by the implied rule; the ping is blocked as ingress at the receiving VM.",
+          "B": "VPC firewalls apply between VMs in the same subnet; only the default network has a rule allowing internal traffic.",
+          "C": "The subnet route already exists and is created automatically; routing isn't the problem.",
+          "D": "Correct. An ingress allow rule for ICMP from the subnet's range overrides the implied deny for that traffic."
+        },
+        "gcloud_command": "gcloud compute firewall-rules create allow-icmp-internal --network=NETWORK \\\n  --direction=INGRESS --allow=icmp --source-ranges=10.30.0.0/24",
+        "doc_ref": "https://docs.cloud.google.com/firewall/docs/firewalls"
+      }
+    },
+    {
+      "id": "ace-s2-150",
+      "uid": "924a2550-be37-4e0d-98a6-abbaa3d8e0ff",
+      "title": "Blocking internet egress but keeping Google APIs",
+      "objective": "2.3",
+      "subtopic": "Firewall Rules and Policies",
+      "summary": "The implied allow-egress rule has the lowest priority, so a deny-egress rule overrides it, and a higher-priority allow rule can still let traffic reach the private Google APIs range.",
+      "tags": [
+        "firewall",
+        "implied-rules",
+        "private-google-access"
+      ],
+      "source": "curated",
+      "question": "Security at Marlow Pharma wants VMs in a custom-mode VPC to send no traffic to the internet, while still reaching Cloud Storage and BigQuery through private.googleapis.com with Private Google Access. The VPC has no egress rules today. Which rules should you create?",
+      "options": {
+        "A": "Nothing; the implied rules already deny egress in a custom VPC.",
+        "B": "Deny egress to 0.0.0.0/0 at priority 65000, and allow egress to 199.36.153.8/30 at priority 1000.",
+        "C": "Deny ingress from 0.0.0.0/0 at priority 1000, and allow ingress from 199.36.153.8/30.",
+        "D": "Allow egress to 199.36.153.8/30 at priority 65535, and nothing else."
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "The implied rules allow all egress at the lowest possible priority. A deny-egress rule at a higher priority blocks the internet, and an allow rule at an even higher priority (a lower number) lets traffic reach the private.googleapis.com range.",
+        "option_breakdown": {
+          "A": "The implied egress rule allows everything; only ingress is denied by default.",
+          "B": "Correct. The deny at 65000 overrides the implied allow, and the allow at 1000 wins over the deny for the Google APIs range.",
+          "C": "Outbound connections are egress; ingress rules don't stop VMs from connecting out.",
+          "D": "An extra allow rule changes nothing while the implied rule still allows all other egress."
+        },
+        "gcloud_command": "gcloud compute firewall-rules create deny-all-egress --network=NETWORK --direction=EGRESS \\\n  --action=DENY --rules=all --destination-ranges=0.0.0.0/0 --priority=65000\ngcloud compute firewall-rules create allow-google-apis --network=NETWORK --direction=EGRESS \\\n  --action=ALLOW --rules=tcp:443 --destination-ranges=199.36.153.8/30 --priority=1000",
+        "doc_ref": "https://docs.cloud.google.com/firewall/docs/firewalls"
+      }
+    },
+    {
+      "id": "ace-s2-151",
+      "uid": "f4d80d98-efbb-443d-92fb-c95d574413d0",
+      "title": "A new region that on-premises cannot see",
+      "objective": "2.3",
+      "subtopic": "Hybrid Connectivity",
+      "summary": "In regional dynamic routing mode a Cloud Router advertises only its own region's subnets; global mode makes it advertise every subnet and share learned routes with every region.",
+      "tags": [
+        "bgp",
+        "cloud-router",
+        "dynamic-routing"
+      ],
+      "source": "curated",
+      "question": "Wexford Media connects its data centre to a VPC network through Dedicated Interconnect VLAN attachments and a Cloud Router in us-east4. A new subnet was added in us-west1. On-premises routers never receive a route for it, and VMs in us-west1 can't reach on-premises. What should you change?",
+      "options": {
+        "A": "Add a custom route advertisement for the us-west1 subnet only.",
+        "B": "Set the VPC network's dynamic routing mode to global.",
+        "C": "Create static routes in us-west1 for the on-premises ranges.",
+        "D": "Order new VLAN attachments in a us-west1 metro."
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "In regional mode the us-east4 Cloud Router advertises only us-east4 subnets and its learned routes apply only in us-east4. Global mode fixes both directions with one change.",
+        "option_breakdown": {
+          "A": "A custom advertisement would announce the subnet, but us-west1 VMs still wouldn't get the learned on-premises routes.",
+          "B": "Correct. Global dynamic routing advertises every subnet over the existing BGP sessions and programs learned routes in every region.",
+          "C": "Static routes can't use VLAN attachments as next hops, and they would bypass BGP failover.",
+          "D": "New attachments would work but cost money and time for a problem one setting solves."
+        },
+        "gcloud_command": "gcloud compute networks update NETWORK --bgp-routing-mode=global",
+        "doc_ref": "https://docs.cloud.google.com/network-connectivity/docs/router/concepts/advertised-routes"
+      }
+    },
+    {
+      "id": "ace-s2-152",
+      "uid": "0afe831a-2e3c-4ac0-b632-26a49f67c463",
+      "title": "The ASN for a new Cloud Router",
+      "objective": "2.3",
+      "subtopic": "Hybrid Connectivity",
+      "summary": "Cloud Router needs a private ASN (64512–65534 or 4200000000–4294967294) that differs from the on-premises router's ASN.",
+      "tags": [
+        "bgp",
+        "cloud-router",
+        "ha-vpn"
+      ],
+      "source": "curated",
+      "question": "You are creating the Cloud Router for an HA VPN from Callander Foods' data centre. The on-premises router uses BGP with ASN 65001, a private ASN. Which ASN should you give the Cloud Router?",
+      "options": {
+        "A": "65001, so that both routers are in one autonomous system.",
+        "B": "15169, Google's public ASN.",
+        "C": "Any private ASN not used on-premises, such as 65010.",
+        "D": "No ASN; HA VPN uses static routes."
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "Cloud Router speaks external BGP to the on-premises router, so the two need different ASNs, and Cloud Router's must come from a private range.",
+        "option_breakdown": {
+          "A": "Both sides with the same ASN would be internal BGP, which Cloud Router doesn't run with on-premises peers.",
+          "B": "Cloud Router requires a private ASN; Google's own public ASN isn't yours to assign.",
+          "C": "Correct. A private ASN that on-premises doesn't use, such as 65010, lets the two routers peer.",
+          "D": "HA VPN requires dynamic routing with BGP, so the Cloud Router needs an ASN."
+        },
+        "gcloud_command": "gcloud compute routers create vpn-router --network=NETWORK --region=R --asn=65010",
+        "doc_ref": "https://docs.cloud.google.com/network-connectivity/docs/router/how-to/create-router-vpc-network"
+      }
+    },
+    {
+      "id": "ace-s2-153",
+      "uid": "f0bc4b12-e2c2-4969-9c44-7fc9f14ef551",
+      "title": "Making one HA VPN tunnel the preferred path",
+      "objective": "2.3",
+      "subtopic": "Hybrid Connectivity",
+      "summary": "The advertised route priority (sent as the BGP MED) tells the peer which path to prefer; a lower value on one session makes it active and the other standby.",
+      "tags": [
+        "bgp",
+        "cloud-router",
+        "ha-vpn"
+      ],
+      "source": "curated",
+      "question": "An HA VPN at Aylsham Engineering has two tunnels with a BGP session each. The on-premises team wants traffic from the data centre to the VPC to use tunnel 0, and tunnel 1 only if tunnel 0 fails. Both sessions advertise the VPC's subnets with the default priority. What should you configure on the Cloud Router?",
+      "options": {
+        "A": "A lower advertised route priority on tunnel 0's BGP session than on tunnel 1's.",
+        "B": "A static route to on-premises through tunnel 0 with priority 100.",
+        "C": "A higher advertised route priority on tunnel 0's BGP session than on tunnel 1's.",
+        "D": "Delete tunnel 1's BGP session until tunnel 0 fails."
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "Cloud Router sends the advertised route priority to the peer as the BGP MED, and a lower value is preferred. Advertising a lower value on tunnel 0 makes the on-premises router send traffic there, with tunnel 1 taking over if tunnel 0's routes are withdrawn.",
+        "option_breakdown": {
+          "A": "Correct. The lower advertised priority (MED) on tunnel 0 makes on-premises prefer it, and failover to tunnel 1 stays automatic.",
+          "B": "A static route in the VPC affects traffic leaving Google Cloud, not the path on-premises chooses toward it.",
+          "C": "A higher value is less preferred, which would make tunnel 1 the active path.",
+          "D": "Removing a session removes the automatic failover that HA VPN's SLA relies on."
+        },
+        "gcloud_command": "gcloud compute routers update-bgp-peer vpn-router --peer-name=peer-tunnel0 \\\n  --region=R --advertised-route-priority=100",
+        "doc_ref": "https://docs.cloud.google.com/network-connectivity/docs/router/concepts/advertised-routes"
+      }
+    },
+    {
+      "id": "ace-s2-154",
+      "uid": "09450d70-fe7e-4488-9433-617d47d7cf26",
+      "title": "How many nodes a Pod range supports",
+      "objective": "2.1",
+      "subtopic": "GKE Cluster Configurations",
+      "summary": "With the default 110 Pods per node, GKE gives each node a /24 of the Pod range, so a /21 Pod range supports eight nodes.",
+      "tags": [
+        "gke",
+        "ip-planning",
+        "secondary-ranges"
+      ],
+      "source": "curated",
+      "question": "A Standard GKE cluster at Rowan Courier will use a Pod secondary range of /21 and the default maximum of 110 Pods per node. The team expects to grow to 12 nodes. What should you tell them?",
+      "options": {
+        "A": "The range supports about 18 nodes, because a /21 holds 2,048 addresses for 110 Pods each.",
+        "B": "The range supports 8 nodes, because each node takes a /24 from it.",
+        "C": "The range limits Pods, not nodes, so node count depends on the primary range only.",
+        "D": "The range supports 16 nodes, because each node takes a /25 from it."
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "GKE gives every node a Pod CIDR about twice its maximum Pods, so 110 Pods per node means a /24 per node. A /21 contains eight /24 blocks, so the cluster stops at eight nodes.",
+        "option_breakdown": {
+          "A": "Nodes take whole blocks, not 110 addresses each; a /24 per node gives eight nodes, not 18.",
+          "B": "Correct. Eight /24 blocks fit in a /21, so the twelve-node plan needs a larger range or fewer Pods per node.",
+          "C": "Each node reserves a block of the Pod range, so the Pod range caps the number of nodes too.",
+          "D": "A /25 per node is the allocation for a maximum of 64 Pods, not the default 110."
+        },
+        "gcloud_command": "gcloud container clusters create rowan --location=R --enable-ip-alias \\\n  --cluster-secondary-range-name=pods --services-secondary-range-name=services --default-max-pods-per-node=110",
+        "doc_ref": "https://docs.cloud.google.com/kubernetes-engine/docs/how-to/flexible-pod-cidr"
+      }
+    },
+    {
+      "id": "ace-s2-155",
+      "uid": "1798480c-3214-43e0-8b97-c84962278776",
+      "title": "Autohealing that recreates VMs during boot",
+      "objective": "2.1",
+      "subtopic": "Managed Instance Groups",
+      "summary": "The autohealing initial delay must cover the application's start-up, or the health check fails during boot and the group recreates the VM in a loop.",
+      "tags": [
+        "autohealing",
+        "health-checks",
+        "mig"
+      ],
+      "source": "curated",
+      "question": "A managed instance group at Tarland Media uses autohealing with an HTTP health check. Its application takes about four minutes to start. Since autohealing was enabled, VMs are recreated again and again and never serve traffic. The health check works on a VM that has finished starting. What should you change?",
+      "options": {
+        "A": "Lower the health check's unhealthy threshold to one failed probe.",
+        "B": "Set the autohealing initial delay to longer than the start-up time.",
+        "C": "Remove the firewall rule for the health-check ranges during start-up.",
+        "D": "Change the group from regional to zonal."
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "During the initial delay the group ignores health-check results for a new VM. If the delay is shorter than start-up, the VM is judged unhealthy before it is ready and recreated, forever.",
+        "option_breakdown": {
+          "A": "A lower threshold marks VMs unhealthy even faster, making the loop worse.",
+          "B": "Correct. An initial delay longer than the four-minute start-up lets VMs become healthy before autohealing judges them.",
+          "C": "Blocked probes fail, so VMs would look unhealthy for even longer.",
+          "D": "Zonal or regional changes where VMs run, not when autohealing starts checking them."
+        },
+        "gcloud_command": "gcloud compute instance-groups managed update web-mig --region=R \\\n  --health-check=web-hc --initial-delay=300",
+        "doc_ref": "https://docs.cloud.google.com/compute/docs/instance-groups/autohealing-instances-in-migs"
+      }
+    },
+    {
+      "id": "ace-s2-156",
+      "uid": "e83ec33b-672f-4309-bd3b-5a1c242a3d93",
+      "title": "Building a new organisation the Google-recommended way",
+      "objective": "2.4",
+      "subtopic": "Infrastructure as Code",
+      "summary": "Google's enterprise foundations blueprint, with its published Terraform, deploys the recommended organisation, folders, networking and controls as reusable code.",
+      "tags": [
+        "blueprints",
+        "foundation",
+        "terraform"
+      ],
+      "source": "curated",
+      "question": "Ravensworth Insurance is setting up its first Google Cloud organisation. It wants folders, Shared VPC networks, logging and security controls built according to Google-recommended practices, as code it can review and reuse for future environments. What should it start from?",
+      "options": {
+        "A": "A configuration built by hand in the console, exported afterwards with Config Connector.",
+        "B": "Terraform written from scratch by the team, based on the product documentation.",
+        "C": "The enterprise foundations blueprint and its published Terraform.",
+        "D": "Deployment Manager templates for each folder and project."
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "The enterprise foundations blueprint is Google's recommended organisation design, published with Terraform that builds it, so the company starts from reviewed code that encodes the practices.",
+        "option_breakdown": {
+          "A": "Building by hand first loses the review and repeatability, and exporting afterwards copies whatever mistakes were made.",
+          "B": "Writing it from scratch works, but rebuilds what Google already publishes as its recommended design.",
+          "C": "Correct. The blueprint's Terraform deploys Google's recommended hierarchy, networking and controls as code to adapt and reuse.",
+          "D": "Deployment Manager is deprecated, and templates per folder still leave the design to the team."
+        },
+        "gcloud_command": "git clone https://github.com/terraform-google-modules/terraform-example-foundation",
+        "doc_ref": "https://docs.cloud.google.com/architecture/blueprints/security-foundations"
+      }
+    },
+    {
+      "id": "ace-s2-157",
+      "uid": "0b0af5cb-9a03-434b-bc7c-7481dedefe2e",
+      "title": "Stop managing a bucket with Config Connector, but keep it",
+      "objective": "2.4",
+      "subtopic": "Infrastructure as Code",
+      "summary": "Config Connector deletes the Google Cloud resource when its Kubernetes object is deleted, unless the object carries the deletion-policy: abandon annotation.",
+      "tags": [
+        "cloud-storage",
+        "config-connector",
+        "gitops"
+      ],
+      "source": "curated",
+      "question": "The bucket media-archive at Kellaway Press is defined as a StorageBucket object managed by Config Connector. The team will manage it by hand from now on, and the bucket and its data must stay. What should you do before removing the object from the GKE cluster?",
+      "options": {
+        "A": "Nothing; deleting the object leaves the bucket in place.",
+        "B": "Enable soft delete on the bucket so it can be restored afterwards.",
+        "C": "Add the cnrm.cloud.google.com/deletion-policy: abandon annotation to the object.",
+        "D": "Remove Config Connector's service account from the bucket's IAM policy."
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "By default, deleting a Config Connector object deletes the resource it manages. The abandon deletion policy tells Config Connector to leave the resource when the object goes.",
+        "option_breakdown": {
+          "A": "Config Connector deletes the managed resource along with the object unless told to abandon it.",
+          "B": "Soft delete keeps deleted objects for a while; it isn't a plan for keeping a bucket that is about to be deleted.",
+          "C": "Correct. With the abandon annotation, removing the object stops management and leaves the bucket and its data.",
+          "D": "Config Connector would just report errors and keep retrying; the object still claims the bucket."
+        },
+        "gcloud_command": "kubectl annotate storagebucket media-archive cnrm.cloud.google.com/deletion-policy=abandon\nkubectl delete storagebucket media-archive",
+        "doc_ref": "https://docs.cloud.google.com/config-connector/docs/how-to/managing-deleting-resources"
+      }
+    },
+    {
+      "id": "ace-s2-158",
+      "uid": "2ffaaa95-e929-485c-910b-fa68b8dd3470",
+      "title": "A console edit to a Terraform-managed VM",
+      "objective": "2.4",
+      "subtopic": "Infrastructure as Code",
+      "summary": "Terraform compares real infrastructure with its configuration, so a manual change shows as drift in the next plan and is reverted by apply unless the code changes too.",
+      "tags": [
+        "change-management",
+        "drift",
+        "terraform"
+      ],
+      "source": "curated",
+      "question": "At Nettleham Grain, VMs are created by a Terraform pipeline that runs plan and apply on every merge. An engineer added a label to one VM in the console to fix a billing report. What happens at the next pipeline run if the code isn't changed?",
+      "options": {
+        "A": "The plan shows the label as drift, and apply removes it.",
+        "B": "Terraform adopts the label into its state and keeps it.",
+        "C": "Terraform ignores labels, so nothing changes.",
+        "D": "The apply fails until the engineer removes the label by hand."
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "Terraform refreshes state from the real VM, sees a label the configuration doesn't have, and plans to remove it. The change must be made in code to last.",
+        "option_breakdown": {
+          "A": "Correct. The difference appears in the plan and apply returns the VM to the configuration.",
+          "B": "Refreshing records the real value, but the configuration still decides what apply converges to.",
+          "C": "Labels are ordinary resource arguments that Terraform manages like any other.",
+          "D": "Drift isn't an error; Terraform simply plans to correct it."
+        },
+        "gcloud_command": "terraform plan   # shows: ~ labels = { - \"cost-centre\" = \"grain\" }",
+        "doc_ref": "https://developer.hashicorp.com/terraform/cli/commands/plan"
+      }
+    },
+    {
+      "id": "ace-s2-159",
+      "uid": "72e74a1e-b40c-4ed5-985c-7a379bfc0054",
+      "title": "The REST request behind a console form",
+      "objective": "2.4",
+      "subtopic": "AI-assisted Planning",
+      "summary": "A console create form's Equivalent code view shows the gcloud command, REST request or Terraform for the current settings, without creating anything.",
+      "tags": [
+        "automation",
+        "console",
+        "rest-api"
+      ],
+      "source": "curated",
+      "question": "A developer at Ormsby Analytics configured a VM with two GPUs, a custom boot disk and a startup script in the console's create form. A Python tool needs the exact REST request body for the same configuration, and nothing should be created yet. What should the developer do?",
+      "options": {
+        "A": "Click Create, then copy the instance's details from its page.",
+        "B": "Open the form's Equivalent code view and choose REST.",
+        "C": "Read the Admin Activity audit log after creating the VM.",
+        "D": "Ask Active Assist to recommend a configuration."
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "The create form shows the equivalent gcloud command, REST request and, for many resources, Terraform for the current settings, so the request body can be copied before anything is created.",
+        "option_breakdown": {
+          "A": "Creating the VM is what the developer wants to avoid, and the details page isn't a request body.",
+          "B": "Correct. Equivalent code shows the REST request for exactly what the form holds.",
+          "C": "An audit log entry needs the VM to have been created first.",
+          "D": "Active Assist recommends changes to existing resources; it doesn't export a form's settings."
+        },
+        "gcloud_command": "# Console > Compute Engine > Create instance > Equivalent code > REST",
+        "doc_ref": "https://docs.cloud.google.com/compute/docs/instances/create-start-instance"
+      }
+    },
+    {
+      "id": "ace-s2-160",
+      "uid": "83bf9eab-92ae-4272-83fe-30fcc5dfda8a",
+      "title": "A kubectl one minor version behind",
+      "objective": "2.1",
+      "subtopic": "kubectl Setup",
+      "summary": "kubectl is supported within one minor version of the control plane, older or newer.",
+      "tags": [
+        "gke",
+        "kubectl",
+        "version-skew"
+      ],
+      "source": "curated",
+      "question": "A GKE cluster at Brindle Robotics was upgraded to Kubernetes 1.33. A developer's kubectl is version 1.32. The team asks whether the developer must upgrade kubectl before using the cluster. What should you tell them?",
+      "options": {
+        "A": "Yes; kubectl must match the control plane's minor version exactly.",
+        "B": "No, as long as get-credentials is run again after every upgrade.",
+        "C": "Yes; the cluster rejects kubectl clients older than its own version.",
+        "D": "No; kubectl within one minor version of the control plane is supported."
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "Kubernetes supports kubectl one minor version older or newer than the control plane, so 1.32 against 1.33 is fine. Further behind is unsupported.",
+        "option_breakdown": {
+          "A": "An exact match isn't required; one minor version of skew either way is supported.",
+          "B": "get-credentials writes kubeconfig entries; it doesn't affect version support.",
+          "C": "The API server doesn't refuse older clients; skew beyond one version is unsupported, not blocked.",
+          "D": "Correct. One minor version of skew is within the supported policy."
+        },
+        "gcloud_command": "kubectl version",
+        "doc_ref": "https://kubernetes.io/releases/version-skew-policy/"
+      }
+    },
+    {
+      "id": "ace-s2-161",
+      "uid": "be874b5d-909f-4e75-b701-6bf87526f019",
+      "title": "Spot VMs that should leave nothing behind",
+      "objective": "2.1",
+      "subtopic": "Spot and Custom Machine Types",
+      "summary": "With termination action DELETE, a pre-empted Spot VM is deleted with its disks set to auto-delete, so nothing keeps costing money.",
+      "tags": [
+        "batch",
+        "cost",
+        "spot-vms"
+      ],
+      "source": "curated",
+      "question": "A rendering farm at Marsden Films starts hundreds of Spot VMs per night. Each frame's output goes to Cloud Storage, so nothing on a VM matters after pre-emption, and stopped VMs with disks have been adding cost. How should the VMs be created?",
+      "options": {
+        "A": "Spot VMs with termination action STOP.",
+        "B": "Standard VMs with automatic restart turned off.",
+        "C": "Spot VMs with termination action DELETE.",
+        "D": "Spot VMs with a shutdown script that stops them."
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "The termination action decides what pre-emption does. DELETE removes the VM, and its auto-delete disks with it, so a pre-empted renderer costs nothing more.",
+        "option_breakdown": {
+          "A": "STOP keeps the VM and its disks, which is exactly the leftover cost.",
+          "B": "Standard VMs lose the Spot discount the farm relies on.",
+          "C": "Correct. DELETE cleans up pre-empted VMs, since all output is already in Cloud Storage.",
+          "D": "A script that stops the VM leaves the same stopped VMs and disks behind."
+        },
+        "gcloud_command": "gcloud compute instances create render-001 --zone=Z --provisioning-model=SPOT \\\n  --instance-termination-action=DELETE",
+        "doc_ref": "https://docs.cloud.google.com/compute/docs/instances/spot"
+      }
+    },
+    {
+      "id": "ace-s2-162",
+      "uid": "b7c15838-ebd7-430c-a141-5db2dfe79b5c",
+      "title": "A VM that must not run longer than four hours",
+      "objective": "2.1",
+      "subtopic": "Spot and Custom Machine Types",
+      "summary": "A maximum run duration with termination action DELETE makes Compute Engine delete a VM automatically after a set time.",
+      "tags": [
+        "compute-engine",
+        "cost",
+        "run-duration"
+      ],
+      "source": "curated",
+      "question": "Data scientists at Ellison Labs start large VMs for experiments and sometimes forget them for days. Each VM should be deleted automatically four hours after it starts, whatever is running on it. What should they set when creating the VMs?",
+      "options": {
+        "A": "A maximum run duration of 4h with termination action DELETE.",
+        "B": "A budget alert at 100% of the expected cost.",
+        "C": "A startup script that runs sleep 4h followed by shutdown.",
+        "D": "Spot provisioning, which limits VMs to four hours."
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "Compute Engine can limit a VM's run time: when the maximum run duration ends, it applies the termination action, here deleting the VM.",
+        "option_breakdown": {
+          "A": "Correct. --max-run-duration=4h with DELETE removes each VM four hours after it starts.",
+          "B": "A budget alert notifies people; it doesn't delete anything.",
+          "C": "A guest shutdown only stops the VM, and anyone with access can kill the script.",
+          "D": "Spot VMs can be pre-empted at any time but have no four-hour limit."
+        },
+        "gcloud_command": "gcloud compute instances create exp-01 --zone=Z --max-run-duration=4h --instance-termination-action=DELETE",
+        "doc_ref": "https://docs.cloud.google.com/compute/docs/instances/limit-vm-runtime"
+      }
+    },
+    {
+      "id": "ace-s2-163",
+      "uid": "cb53be03-5c83-407f-9120-a6fa68dc1bd2",
+      "title": "Training code built on custom CUDA kernels",
+      "objective": "2.1",
+      "subtopic": "GPUs or TPUs",
+      "summary": "Code that depends on custom CUDA kernels runs on NVIDIA GPUs; TPUs suit JAX, TensorFlow and PyTorch/XLA without CUDA-specific code.",
+      "tags": [
+        "gpu",
+        "machine-learning",
+        "tpu"
+      ],
+      "source": "curated",
+      "question": "A research team at Lindale AI trains a PyTorch model whose training loop relies on several custom CUDA kernels that the team wrote. They want to scale training to a few hundred accelerators. What should they plan to use?",
+      "options": {
+        "A": "A multi-host Cloud TPU slice.",
+        "B": "Compute Engine VMs with NVIDIA GPUs.",
+        "C": "Many C3 VMs with high vCPU counts.",
+        "D": "Cloud Run jobs with many parallel tasks."
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "Custom CUDA kernels run only on NVIDIA GPUs. TPUs are programmed through XLA, so CUDA code would have to be rewritten.",
+        "option_breakdown": {
+          "A": "TPUs don't run CUDA; the kernels would need rewriting for XLA first.",
+          "B": "Correct. GPU machine types run the team's CUDA kernels unchanged and scale across many VMs.",
+          "C": "CPUs train large models far more slowly and can't run CUDA kernels.",
+          "D": "Cloud Run jobs aren't built for tightly coupled training across hundreds of accelerators."
+        },
+        "gcloud_command": "gcloud compute instances create train-01 --zone=Z --machine-type=a3-highgpu-8g --image-family=IMAGE_FAMILY --image-project=IMAGE_PROJECT",
+        "doc_ref": "https://docs.cloud.google.com/tpu/docs/intro-to-tpu"
+      }
+    },
+    {
+      "id": "ace-s2-164",
+      "uid": "1625f0a0-3fcd-4114-91ec-d44e15a590bd",
+      "title": "Compliance copies read once a quarter",
+      "objective": "2.2",
+      "subtopic": "Cloud Storage Classes",
+      "summary": "Coldline suits data read about once a quarter, with a 90-day minimum storage duration; Archive is for less than once a year.",
+      "tags": [
+        "cloud-storage",
+        "cost",
+        "storage-classes"
+      ],
+      "source": "curated",
+      "question": "Each month, Selwood Bank writes statements to Cloud Storage and keeps them for five years. Auditors read a sample of them about once every three months, and nothing is deleted early. Which storage class fits this access pattern most cost-effectively?",
+      "options": {
+        "A": "Standard",
+        "B": "Nearline",
+        "C": "Coldline",
+        "D": "Archive"
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "Google places data read about once a quarter in Coldline, which has a 90-day minimum storage duration and lower storage cost than Nearline.",
+        "option_breakdown": {
+          "A": "Standard is for frequently read data and costs the most to store.",
+          "B": "Nearline is for about monthly access; reading quarterly, its higher storage price buys nothing.",
+          "C": "Correct. Quarterly access is Coldline's pattern, and five-year retention easily covers its 90-day minimum.",
+          "D": "Archive is for data read less than once a year, and quarterly reads would pay its higher retrieval cost often."
+        },
+        "gcloud_command": "gcloud storage buckets create gs://selwood-statements --location=EU --default-storage-class=COLDLINE",
+        "doc_ref": "https://docs.cloud.google.com/storage/docs/storage-classes"
+      }
+    },
+    {
+      "id": "ace-s2-165",
+      "uid": "b48db9d3-48bb-41f5-80cd-7c9c24250de7",
+      "title": "Nearline files deleted after ten days",
+      "objective": "2.2",
+      "subtopic": "Cloud Storage Classes",
+      "summary": "Deleting an object before its class's minimum storage duration is charged as if it had been stored for the full minimum: 30 days for Nearline.",
+      "tags": [
+        "cloud-storage",
+        "early-deletion",
+        "storage-classes"
+      ],
+      "source": "curated",
+      "question": "A job at Barnby Media writes temporary exports to a Nearline bucket and deletes them after 10 days. The bucket has soft delete turned off. Finance sees storage charges that are higher than 10 days of Nearline storage would explain. Why?",
+      "options": {
+        "A": "Nearline charges a retrieval fee every time an object is written.",
+        "B": "Deleted objects are kept for 30 days by versioning in every bucket.",
+        "C": "Nearline objects are billed in whole months, rounded up from the write.",
+        "D": "Nearline's 30-day minimum storage duration charges the remaining 20 days on early deletion."
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "Nearline has a 30-day minimum storage duration. An object deleted after 10 days is charged an early-deletion fee equal to storing it for the remaining 20.",
+        "option_breakdown": {
+          "A": "Retrieval fees apply to reads, not writes.",
+          "B": "Versioning is off unless enabled, and soft delete is turned off here, so deleted objects aren't kept.",
+          "C": "Storage is billed by time stored, not in whole months; the extra is the early-deletion charge.",
+          "D": "Correct. Short-lived data belongs in Standard, which has no minimum storage duration."
+        },
+        "gcloud_command": "gcloud storage buckets update gs://barnby-tmp --default-storage-class=STANDARD",
+        "doc_ref": "https://docs.cloud.google.com/storage/docs/storage-classes"
+      }
+    },
+    {
+      "id": "ace-s2-166",
+      "uid": "a9763a08-4355-4e96-8a3c-a181756d88fe",
+      "title": "Reloading one day of a partitioned table",
+      "objective": "2.2",
+      "subtopic": "Loading Data",
+      "summary": "A load job with --replace into a partition decorator (table$YYYYMMDD) overwrites only that partition.",
+      "tags": [
+        "bigquery",
+        "bq-load",
+        "partitions"
+      ],
+      "source": "curated",
+      "question": "The table sales.daily at Upton Foods is partitioned by day. Yesterday's CSV file, which has a header row, was corrected and must replace only yesterday's partition, leaving every other day untouched. What should you run?",
+      "options": {
+        "A": "bq load --replace with the file into sales.daily, skipping one leading row.",
+        "B": "bq load into sales.daily, which appends, and then delete the duplicates.",
+        "C": "bq load --replace into the partition sales.daily$20261108, skipping one leading row.",
+        "D": "bq cp from the CSV file into sales.daily$20261108."
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "Naming the partition with a decorator limits the load job to that partition, and --replace overwrites just it. --skip_leading_rows=1 ignores the header.",
+        "option_breakdown": {
+          "A": "--replace on the whole table empties every partition, not only yesterday's.",
+          "B": "Appending then cleaning up is slower and risks leaving duplicates.",
+          "C": "Correct. The decorator scopes the overwrite to one day, and the header row is skipped.",
+          "D": "bq cp copies tables, not files from Cloud Storage."
+        },
+        "gcloud_command": "bq load --replace --source_format=CSV --skip_leading_rows=1 'sales.daily$20261108' gs://upton-drop/2026-11-08.csv",
+        "doc_ref": "https://docs.cloud.google.com/bigquery/docs/loading-data-cloud-storage-csv"
+      }
+    },
+    {
+      "id": "ace-s2-167",
+      "uid": "76ed3b43-8785-4c11-9723-4bd868a100a1",
+      "title": "Querying files where they land, without loading",
+      "objective": "2.2",
+      "subtopic": "Loading Data",
+      "summary": "An external table over Cloud Storage files lets BigQuery query them in place, always reading the current files.",
+      "tags": [
+        "bigquery",
+        "cloud-storage",
+        "external-tables"
+      ],
+      "source": "curated",
+      "question": "Partners at Wexcombe Travel drop CSV files into a Cloud Storage bucket throughout the day. Analysts run a few ad hoc queries a week and always want to see the files currently in the bucket, without anyone scheduling loads. What should you create?",
+      "options": {
+        "A": "An external table over the bucket's CSV files.",
+        "B": "A nightly load job that replaces a native table.",
+        "C": "A Cloud Storage transfer into a second bucket.",
+        "D": "A Pub/Sub notification on the bucket."
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "An external table reads the files in Cloud Storage at query time, so every query sees the current files and nothing needs loading or scheduling.",
+        "option_breakdown": {
+          "A": "Correct. Querying in place suits occasional queries over files that change during the day.",
+          "B": "A nightly load is stale until the next night and needs a scheduled job.",
+          "C": "Copying files to another bucket doesn't make them queryable.",
+          "D": "A notification tells something a file arrived; it doesn't let anyone query it."
+        },
+        "gcloud_command": "bq mk --external_table_definition=CSV=gs://wexcombe-drop/*.csv partners.incoming",
+        "doc_ref": "https://docs.cloud.google.com/bigquery/docs/external-data-cloud-storage"
+      }
+    },
+    {
       "id": "ace-x-003",
       "uid": "348e61c7-7da6-4b5a-8c2e-60d1ea03fac7",
       "title": "Cloud Run reachable only through the load balancer",
@@ -8592,6 +9318,122 @@
         },
         "gcloud_command": "gcloud compute addresses create video-ip --region=europe-west3 --network-tier=STANDARD",
         "doc_ref": "https://cloud.google.com/network-tiers/docs/overview"
+      },
+      "also_tests": [
+        "3.3"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-076",
+      "uid": "d96500b1-dfc8-41ac-96cf-c9f3b2f73014",
+      "title": "Private web servers that cannot install updates",
+      "objective": "2.3",
+      "subtopic": "VPC Design",
+      "summary": "Private VMs behind a load balancer still need Cloud NAT for outbound internet access; the load balancer carries inbound requests only and Private Google Access reaches Google APIs only.",
+      "tags": [
+        "cloud-nat",
+        "load-balancing",
+        "private-google-access",
+        "topology"
+      ],
+      "source": "curated",
+      "question": "Web servers at Brannock Travel run in a managed instance group without external IP addresses, behind a global external Application Load Balancer. Their subnet has Private Google Access enabled. Customers reach the site, but the servers can't download operating system updates from the distribution's mirrors on the internet. What should you add, following Google-recommended practices?",
+      "options": {
+        "A": "An ephemeral external IP address on each server in the instance template.",
+        "B": "A Cloud Router and a Cloud NAT gateway in the servers' region.",
+        "C": "A Private Service Connect endpoint for Google APIs.",
+        "D": "A firewall rule allowing egress to 0.0.0.0/0 on ports 80 and 443."
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "The load balancer brings requests in but gives the servers no outbound path, and Private Google Access only reaches Google APIs. Cloud NAT gives private VMs outbound internet access without exposing them.",
+        "option_breakdown": {
+          "A": "External addresses would work but expose every server, which is what the private design avoids.",
+          "B": "Correct. Cloud NAT gives the private servers outbound access to the mirrors while nothing can connect in.",
+          "C": "A Private Service Connect endpoint reaches Google APIs, not a distribution's mirrors.",
+          "D": "Egress is already allowed by the implied rule; without NAT or an external IP there is no route out."
+        },
+        "gcloud_command": "gcloud compute routers create web-nat-router --network=NETWORK --region=R\ngcloud compute routers nats create web-nat --router=web-nat-router --region=R \\\n  --nat-all-subnet-ip-ranges --auto-allocate-nat-external-ips",
+        "doc_ref": "https://docs.cloud.google.com/nat/docs/overview"
+      },
+      "also_tests": [
+        "3.3"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-077",
+      "uid": "488de097-9709-4387-b028-e62260bf9d8f",
+      "title": "A GKE cluster in a service project that cannot use the host's ranges",
+      "objective": "2.1",
+      "subtopic": "GKE Cluster Configurations",
+      "summary": "A GKE cluster in a Shared VPC service project needs the service project's GKE service agent to hold Host Service Agent User on the host project and Network User on the subnet.",
+      "tags": [
+        "gke",
+        "service-agents",
+        "shared-vpc",
+        "topology"
+      ],
+      "source": "curated",
+      "question": "In Corbridge Health's landing zone, the service project shop-prod is attached to the Shared VPC host project net-host-prod. Creating a GKE cluster in shop-prod on the host's subnet gke-euw2, with its Pod and Service secondary ranges, fails with a permission error about the host project. Your team already has Network User on the subnet. What is missing?",
+      "options": {
+        "A": "Network User on the subnet for the service project's Compute Engine default service account only.",
+        "B": "Organization Administrator for the engineer who creates the cluster.",
+        "C": "The shop-prod GKE service agent with Host Service Agent User on the host project and Network User on the subnet.",
+        "D": "A VPC peering connection between shop-prod and net-host-prod."
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "GKE manages firewall rules and uses the host's subnet and ranges on behalf of the service project. Its service agent therefore needs Host Service Agent User on the host project and Network User on the subnet.",
+        "option_breakdown": {
+          "A": "The default compute account matters for nodes, but the cluster's network setup is done by the GKE service agent.",
+          "B": "Organization Administrator is far broader than needed and doesn't give the GKE service agent anything.",
+          "C": "Correct. The GKE service agent of shop-prod needs both grants before it can build the cluster on the host's network.",
+          "D": "Shared VPC already shares the host's network; peering between a host and its service project isn't a thing."
+        },
+        "gcloud_command": "gcloud projects add-iam-policy-binding net-host-prod \\\n  --member=serviceAccount:service-SHOP_PROD_NUMBER@container-engine-robot.iam.gserviceaccount.com \\\n  --role=roles/container.hostServiceAgentUser",
+        "doc_ref": "https://docs.cloud.google.com/kubernetes-engine/docs/how-to/cluster-shared-vpc"
+      },
+      "also_tests": [
+        "1.1"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-078",
+      "uid": "7c04cb49-a58d-4f59-b25c-edafb3cc0c71",
+      "title": "On-premises servers reaching Cloud Storage over HA VPN",
+      "objective": "2.3",
+      "subtopic": "Hybrid Connectivity",
+      "summary": "On-premises hosts reach Google APIs privately when Cloud Router advertises the private.googleapis.com range over BGP and on-premises DNS resolves the API names to it.",
+      "tags": [
+        "bgp",
+        "hybrid",
+        "private-google-access",
+        "topology"
+      ],
+      "source": "curated",
+      "question": "Backup servers in Kilbride Council's data centre must upload to Cloud Storage only over the existing HA VPN, never over the internet. The VPN's Cloud Router advertises the VPC's subnets with default advertisements. Which two changes make this work? (Choose two.)",
+      "options": {
+        "A": "Add a custom advertisement of 199.36.153.8/30 to the Cloud Router, alongside all subnets.",
+        "B": "Enable Private Google Access on every subnet of the VPC network.",
+        "C": "Make on-premises DNS resolve storage.googleapis.com to the private.googleapis.com addresses.",
+        "D": "Create a Cloud NAT gateway in the VPN's region.",
+        "E": "Give the backup servers static external IP addresses in Google Cloud."
+      },
+      "correct_answer": "A,C",
+      "explanation": {
+        "summary": "Private Google Access for on-premises hosts needs a route and a name: Cloud Router must advertise the private.googleapis.com range over BGP, and on-premises DNS must send the API names to that range.",
+        "option_breakdown": {
+          "A": "Correct. The custom advertisement gives on-premises a route to 199.36.153.8/30 through the VPN.",
+          "B": "Private Google Access on subnets helps VMs in the VPC, not hosts on-premises.",
+          "C": "Correct. On-premises DNS must resolve the Google API names to the private.googleapis.com addresses, or traffic goes to public addresses over the internet.",
+          "D": "Cloud NAT handles outbound internet traffic from VMs, not on-premises traffic to Google APIs.",
+          "E": "Google Cloud addresses can't be assigned to servers in a data centre."
+        },
+        "gcloud_command": "gcloud compute routers update vpn-router --region=R --advertisement-mode=custom \\\n  --set-advertisement-groups=all_subnets --set-advertisement-ranges=199.36.153.8/30",
+        "doc_ref": "https://docs.cloud.google.com/vpc/docs/configure-private-google-access-hybrid"
       },
       "also_tests": [
         "3.3"

@@ -247,6 +247,9 @@ IP, PSC). *AlloyDB Omni* runs the same engine anywhere.
 - An **instance** has a **configuration** — **regional** (99.99%), **dual-region** or **multi-region** (99.999%) —
   and **compute capacity** in **nodes** or **processing units** (1 node = 1,000 PU; small instances from 100 PU).
   Managed **autoscaling** adjusts capacity.
+- **Which configurations exist for you** is a list, not a guess: `gcloud spanner instance-configs list` shows every
+  regional, dual-region and multi-region configuration available to the project. Dual-region configurations exist
+  only for some country pairs within a geography, so check before designing around one.
 - **GoogleSQL** or **PostgreSQL** dialect; ACID transactions across rows, tables and regions; **interleaved tables**
   to co-locate parent and child rows.
 - **Hotspots:** a monotonically increasing primary key (a timestamp, a sequence) sends all inserts to one split —
@@ -328,7 +331,8 @@ rule stands: **a cache in front of a database, not the database**.
 > security and cost issues**: no automated backups, no HA, outdated versions, public IPs, missing deletion protection,
 > over-provisioning. It needs no agents, and Gemini can answer fleet questions in natural language (*"which Cloud SQL
 > instances in production have no backups?"*). *"One place to see and fix risk across all our databases"* is Database
-> Center; a spreadsheet or per-product consoles are the distractors.
+> Center; a spreadsheet or per-product consoles are the distractors. Self-managed MySQL, PostgreSQL and SQL Server
+> on **Compute Engine VMs** can be added, but that is *Preview*: the GA fleet is Google's managed database products.
 
 <a id="s7-11"></a>
 
@@ -363,6 +367,12 @@ Volume / usable bandwidth = days.  Acceptable?
 | Task | Command |
 |:------------------------------------|:----------------------------------------------------------------------|
 | Load files into a table | `bq load --source_format=PARQUET --autodetect sales.orders gs://kestrel-lake/orders/*.parquet` |
+| Replace a table's contents from a CSV with a header row | `bq load --replace --source_format=CSV --skip_leading_rows=1 sales.daily gs://kestrel-drop/daily.csv` |
+
+A load job **appends** by default. **`--replace`** (write disposition `WRITE_TRUNCATE`) empties the table first,
+in the same job, so readers never see it half-loaded; **`--skip_leading_rows=1`** drops a CSV header. A load into
+an existing table with a fixed schema needs no `--autodetect`. An **external table** reads the file where it is
+instead of loading it, and `gcloud storage cp` copies files, never into a table.
 
 <a id="s7-12"></a>
 
@@ -533,7 +543,7 @@ Key ring   location is permanent: a region, a multi-region (eu, us) or global
 - **Operating data.** A Backup and DR **backup vault** with enforced minimum retention holds backups nobody can
   delete early. Spanner **`version_retention_period`** (up to 7 days) allows reads at a past timestamp. BigQuery
   **`EXTERNAL_QUERY`** joins live Cloud SQL rows. The **physical** storage billing model bills compressed bytes.
-  Database Center also covers **databases on Compute Engine VMs**. Rotating a key never re-encrypts: **rewrite**
+  Database Center's coverage of **databases on Compute Engine VMs** is *Preview*. Rotating a key never re-encrypts: **rewrite**
   old data onto the new version; a version scheduled for destruction can be **restored** during the delay.
 
 <a id="s7-15"></a>

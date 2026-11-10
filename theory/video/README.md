@@ -1,7 +1,7 @@
 # ACE theory course: video sources
 
-Sources of a narrated course built from the [theory pages](../README.md): ten parts, 100 original sample questions,
-608 slides. **The MP4s are not in this repository, and neither are the audio or the frames**: this folder holds what
+Sources of a narrated course built from the [theory pages](../README.md): ten parts, 149 original sample questions,
+761 slides. **The MP4s are not in this repository, and neither are the audio or the frames**: this folder holds what
 they are rebuilt from.
 
 The build depends on a private slide-and-voice kit that is not published (`~/.claude/skills/slide-video-kit`, and
@@ -12,7 +12,8 @@ than as a working build.
 | File | Role |
 |---|---|
 | `src/chNN.txt` | **The single source for a part**: slides and narration together |
-| `diagrams.py`, `diagrams_more.py` → `svg/` | All diagrams |
+| `diagrams.py`, `diagrams_more.py`, `diagrams_blueprints.py` → `svg/` | All diagrams |
+| `shots/` (gitignored) | Cloud Console screenshots for `= shot` slides, taken from create forms; nothing was created |
 | `course.py` | compile, frames, video, merge, stats |
 | `build_cached.py` | Runs the kit's video build, with a voice cache and `say.py` |
 | `say.py` | Spoken-only respellings; captions keep the written form |
@@ -35,7 +36,7 @@ python3 publish.py                   # YouTube kit
 #! title: Networking
 #! short: Networking
 ## 4.1 The VPC model                 chapter marker
-= table sm new | Kicker | Title      slide; types: th table cmd cards tiles list dia code panel q; flags: sm new r, c2 c3, panel kinds trap watch tip key note new
+= table sm new | Kicker | Title      slide; types: th table cmd cards tiles list dia shot code panel q; flags: sm new r, c2 c3, panel kinds trap watch tip key note new
 Col A | Col B                        body; a "> text" line is the takeaway bar (">!" red, ">~" amber)
 N: spoken text                       N teacher · V remember-this (slower) · C explanation · I exam item
 [pause: 0.8]
@@ -44,4 +45,7 @@ N: spoken text                       N teacher · V remember-this (slower) · C 
 ans A                                or "ans A, D" for choose two
 why A :: reason shown on the slide
 C: the spoken explanation
+= shot | Kicker | Title              a Cloud Console screenshot from shots/: first line the file name,
+name.png                             then an optional caption line
+~ caption
 ```

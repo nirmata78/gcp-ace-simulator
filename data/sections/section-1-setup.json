@@ -1,8 +1,8 @@
 {
   "domain": "Section 1: Setting up a cloud solution environment",
   "version": 2,
-  "updated_at": "2026-11-07T19:46:36+00:00",
-  "count": 113,
+  "updated_at": "2026-11-09T09:42:59+00:00",
+  "count": 127,
   "questions": [
     {
       "id": "ace-dom1-001",
@@ -2779,39 +2779,6 @@
       }
     },
     {
-      "id": "ace-s1-043",
-      "uid": "722c08d1-5db8-4d21-abd7-8b6efa4d41cb",
-      "title": "A project nobody can delete by accident",
-      "objective": "1.1",
-      "subtopic": "Resource Hierarchy",
-      "summary": "A lien on the project blocks deletion until the lien is removed.",
-      "tags": [
-        "liens",
-        "projects",
-        "protection"
-      ],
-      "source": "curated",
-      "question": "The shared-networking host project must never be deleted accidentally, even by someone with Owner on it. What can you place on the project?",
-      "options": {
-        "A": "Deletion protection on each VM in the project.",
-        "B": "A label protected=true on the project.",
-        "C": "A lien that restricts project deletion.",
-        "D": "A budget alert on the project."
-      },
-      "correct_answer": "C",
-      "explanation": {
-        "summary": "A lien prevents the project from being deleted until someone with permission to remove liens deletes it first, which adds a deliberate step.",
-        "option_breakdown": {
-          "A": "VM deletion protection guards individual instances, not the project.",
-          "B": "Labels are metadata and enforce nothing.",
-          "C": "Correct. A lien prevents the project from being deleted until someone with permission to remove liens deletes it first, which adds a deliberate step.",
-          "D": "Budgets watch spend."
-        },
-        "gcloud_command": "gcloud resource-manager liens create --project=net-host \\\n  --restrictions=resourcemanager.projects.delete --reason=\"Shared VPC host\"",
-        "doc_ref": "https://docs.cloud.google.com/resource-manager/docs/project-liens"
-      }
-    },
-    {
       "id": "ace-s1-044",
       "uid": "6940116c-ae75-4f9a-bfcd-464e64f6dc65",
       "title": "Users created automatically from Microsoft Entra ID",
@@ -2908,39 +2875,6 @@
         },
         "gcloud_command": "# Console > Billing > Anomalies > Manage alerts",
         "doc_ref": "https://docs.cloud.google.com/billing/docs/how-to/manage-anomalies"
-      }
-    },
-    {
-      "id": "ace-s1-047",
-      "uid": "0658b9f8-748c-4956-9cdf-40e0f460d147",
-      "title": "Explaining last month's bill increase",
-      "objective": "1.2",
-      "subtopic": "Billing Export and Cost Attribution",
-      "summary": "Gemini Cloud Assist in Cloud Billing answers cost questions in natural language over your billing data.",
-      "tags": [
-        "billing",
-        "cost-analysis",
-        "gemini-cloud-assist"
-      ],
-      "source": "curated",
-      "question": "A manager with Billing Account Viewer asks why the bill rose 30% last month and which services and projects drove it. They do not write SQL. What can they use in the console?",
-      "options": {
-        "A": "Gemini Cloud Assist in the Billing console.",
-        "B": "The Pricing Calculator.",
-        "C": "Active Assist idle-resource recommendations.",
-        "D": "The billing account's payment history page."
-      },
-      "correct_answer": "A",
-      "explanation": {
-        "summary": "Gemini Cloud Assist can analyse billing data in the Billing console and explain cost changes by service and project, within the user's billing permissions.",
-        "option_breakdown": {
-          "A": "Correct. Gemini Cloud Assist can analyse billing data in the Billing console and explain cost changes by service and project, within the user's billing permissions.",
-          "B": "The calculator estimates future prices, not past changes.",
-          "C": "Idle-resource recommendations suggest savings; they do not explain a past increase.",
-          "D": "Payment history shows invoices and payments, not what drove the cost."
-        },
-        "gcloud_command": "# Console > Billing > Reports > Gemini Cloud Assist: \"Why did costs increase last month?\"",
-        "doc_ref": "https://docs.cloud.google.com/billing/docs/how-to/gemini/set-up-gemini"
       }
     },
     {
@@ -3407,6 +3341,535 @@
         },
         "gcloud_command": "# Console > Monitoring > Alerting > Create policy > metric serviceruntime.googleapis.com/quota/allocation/usage\n#   ratio to quota/limit, threshold 0.8",
         "doc_ref": "https://cloud.google.com/monitoring/alerts/using-quota-metrics"
+      }
+    },
+    {
+      "id": "ace-s1-062",
+      "uid": "74b71d4f-c719-427e-af47-f6ef7cc6d7a9",
+      "title": "A development change that broke production",
+      "objective": "1.1",
+      "subtopic": "Foundation Networking",
+      "summary": "Routes and firewall rules belong to a VPC, so separate Shared VPC host projects for production and non-production isolate their changes.",
+      "tags": [
+        "environments",
+        "foundation",
+        "shared-vpc"
+      ],
+      "source": "curated",
+      "question": "Arden Mutual has one Shared VPC host project with one VPC network, holding production and development subnets. A developer with network admin rights on the host project widened a firewall rule for a test, and it exposed production VMs. Security wants development network changes to be unable to affect production at all. What should you do?",
+      "options": {
+        "A": "Create separate production and non-production host projects, each with its own VPC.",
+        "B": "Add IAM conditions that limit the developer to rules whose names start with dev-.",
+        "C": "Move the development subnets into a second VPC in the same host project.",
+        "D": "Use network tags so development rules target only development VMs."
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "Firewall rules and routes are resources of a VPC network, and IAM is granted per host project. Separate host projects with separate VPCs mean non-production administrators have no rights and no rules that touch production.",
+        "option_breakdown": {
+          "A": "Correct. Separate host projects separate both the networks and who administers them, which is Google's recommended foundation.",
+          "B": "Name conditions are fragile, and the developer could still create a rule with any target in the shared VPC.",
+          "C": "A second VPC separates rules, but the same host-project admins still control both networks.",
+          "D": "Tags are chosen by whoever writes the rule, so nothing stops a rule targeting production VMs."
+        },
+        "gcloud_command": "gcloud compute shared-vpc enable net-host-prod\ngcloud compute shared-vpc enable net-host-nonprod",
+        "doc_ref": "https://docs.cloud.google.com/vpc/docs/shared-vpc"
+      }
+    },
+    {
+      "id": "ace-s1-063",
+      "uid": "f88cc2ea-2c81-4ac6-b24f-2f8f97eb050b",
+      "title": "Developers with full rights in development only",
+      "objective": "1.1",
+      "subtopic": "Resource Hierarchy",
+      "summary": "Projects are the boundary for IAM, quota and billing, so production and non-production belong in separate projects, usually under separate folders.",
+      "tags": [
+        "environments",
+        "iam",
+        "resource-hierarchy"
+      ],
+      "source": "curated",
+      "question": "Quarry Lane Software runs development and production in one project, where developers are Editors. Developers must keep broad rights in development but have none in production, production must not share quota with load tests, and finance wants each environment's cost separately. What should you do?",
+      "options": {
+        "A": "Label every resource with env=dev or env=prod and add IAM conditions on that label.",
+        "B": "Create a deny policy that denies developers every permission on resources labelled env=prod.",
+        "C": "Move production into its own project in a production folder, and grant developers Editor only on the development project.",
+        "D": "Put production resources in a separate region and restrict developers with an organisation policy on locations."
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "IAM, quota and billing reports all follow the project. Separate projects under environment folders give developers rights in development only, keep quota apart and show each environment's cost without perfect labelling.",
+        "option_breakdown": {
+          "A": "Labels can be edited by the people they would restrict, and they don't separate quota.",
+          "B": "Deny policies can't target resources by label like this, and the shared quota and billing remain.",
+          "C": "Correct. A project per environment is the boundary for access, quota and cost, as Google's foundation design recommends.",
+          "D": "Location policies restrict where resources are created, not who may change them, and quota is still shared."
+        },
+        "gcloud_command": "gcloud resource-manager folders create --display-name=production --organization=ORG_ID\ngcloud projects create quarry-prod --folder=FOLDER_ID",
+        "doc_ref": "https://docs.cloud.google.com/resource-manager/docs/cloud-platform-resource-hierarchy"
+      }
+    },
+    {
+      "id": "ace-s1-064",
+      "uid": "f8055f2a-e03c-4bd0-a649-8eea29fc7a5e",
+      "title": "An Admin console edit that the next sync undoes",
+      "objective": "1.1",
+      "subtopic": "Cloud Identity and Users",
+      "summary": "Google Cloud Directory Sync is one-way from the LDAP directory, so changes must be made in Active Directory; edits in Cloud Identity are overwritten at the next sync.",
+      "tags": [
+        "active-directory",
+        "cloud-identity",
+        "gcds"
+      ],
+      "source": "curated",
+      "question": "Linfield College syncs users and groups from on-premises Active Directory to Cloud Identity with Google Cloud Directory Sync every hour. An administrator corrected a user's department in the Google Admin console, but an hour later the old value was back. What should the administrator do?",
+      "options": {
+        "A": "Make the change in Active Directory, which Directory Sync treats as the source.",
+        "B": "Enable two-way synchronisation in Directory Sync's configuration.",
+        "C": "Lock the user's profile in the Admin console so syncs skip it.",
+        "D": "Stop Directory Sync, make the change, and start it again."
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "Directory Sync copies from Active Directory to Cloud Identity and never the other way, so every run makes Cloud Identity match Active Directory again.",
+        "option_breakdown": {
+          "A": "Correct. Active Directory is the authoritative source; the change belongs there and the next sync carries it over.",
+          "B": "Directory Sync is one-way by design; it never writes back to Active Directory.",
+          "C": "There is no such lock; synced attributes follow the source directory.",
+          "D": "The next run after restarting would overwrite the change again."
+        },
+        "gcloud_command": "# Edit the user in Active Directory; the next Directory Sync run updates Cloud Identity",
+        "doc_ref": "https://support.google.com/a/answer/106368"
+      }
+    },
+    {
+      "id": "ace-s1-065",
+      "uid": "8dd93ee4-9a75-46e5-a819-c99abeb1fc73",
+      "title": "Active Directory passwords that must never reach Google",
+      "objective": "1.1",
+      "subtopic": "Cloud Identity and Users",
+      "summary": "Directory Sync creates the accounts; SAML single sign-on against AD FS lets users sign in with their Active Directory credentials without Google storing passwords.",
+      "tags": [
+        "active-directory",
+        "cloud-identity",
+        "saml",
+        "sso"
+      ],
+      "source": "curated",
+      "question": "Users at Moreton Water are synced from Active Directory to Cloud Identity with Google Cloud Directory Sync. They must sign in to the Google Cloud console with their Active Directory passwords, and security forbids storing those passwords or their hashes at Google. What should you add?",
+      "options": {
+        "A": "Password synchronisation from the domain controllers to Cloud Identity.",
+        "B": "SAML single sign-on with AD FS as the identity provider.",
+        "C": "A workforce identity pool that replaces the synced accounts.",
+        "D": "Two-step verification on every Cloud Identity account."
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "With SAML single sign-on, Cloud Identity redirects sign-in to AD FS, which checks the Active Directory password. Directory Sync keeps providing the accounts, and no password leaves the company.",
+        "option_breakdown": {
+          "A": "Password synchronisation copies password hashes to Google, which security forbids.",
+          "B": "Correct. AD FS authenticates users against Active Directory, so Google never holds their passwords.",
+          "C": "Workforce Identity Federation avoids Cloud Identity accounts altogether; the company already chose synced accounts.",
+          "D": "Two-step verification adds a factor but users would still need a password stored at Google."
+        },
+        "gcloud_command": "# Admin console > Security > SSO with third-party IdP: AD FS sign-in URL and certificate",
+        "doc_ref": "https://docs.cloud.google.com/architecture/identity/federating-gcp-with-active-directory-synchronizing-user-accounts"
+      }
+    },
+    {
+      "id": "ace-s1-066",
+      "uid": "65013567-6dc6-461b-a386-7dad4257dea1",
+      "title": "Single sign-on works, but new hires have no account",
+      "objective": "1.1",
+      "subtopic": "Cloud Identity and Users",
+      "summary": "SAML single sign-on only authenticates; Cloud Identity accounts must still exist, which automatic provisioning from Microsoft Entra ID creates and suspends.",
+      "tags": [
+        "cloud-identity",
+        "entra-id",
+        "provisioning",
+        "sso"
+      ],
+      "source": "curated",
+      "question": "Hallam Studios configured SAML single sign-on from Microsoft Entra ID to Cloud Identity. Existing employees sign in to Google Cloud without problems, but this month's new hires get an error that their account doesn't exist. Accounts were created by hand until now. What should you set up?",
+      "options": {
+        "A": "Google Cloud Directory Sync on a domain controller.",
+        "B": "A longer SAML session lifetime in Entra ID.",
+        "C": "A workforce identity pool for the new hires only.",
+        "D": "Automatic user provisioning from Entra ID's Google Cloud enterprise app."
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "Single sign-on checks who a user is but doesn't create Cloud Identity accounts. Entra ID's provisioning creates, updates and suspends them automatically as employees join and leave.",
+        "option_breakdown": {
+          "A": "The company has no on-premises Active Directory for Directory Sync to read.",
+          "B": "Session length doesn't create accounts that don't exist.",
+          "C": "A separate federation model for some employees splits identity management for no reason.",
+          "D": "Correct. Automatic provisioning creates new hires' Cloud Identity accounts, and single sign-on then works for them."
+        },
+        "gcloud_command": "# Entra ID > Enterprise applications > Google Cloud > Provisioning: set mode Automatic",
+        "doc_ref": "https://docs.cloud.google.com/architecture/identity/federating-gcp-with-azure-ad-configuring-provisioning-and-single-sign-on"
+      }
+    },
+    {
+      "id": "ace-s1-067",
+      "uid": "0a837e99-891c-4a6a-91e2-a5630a522dfa",
+      "title": "Federated employees signing in every hour",
+      "objective": "1.1",
+      "subtopic": "Workforce Identity Federation",
+      "summary": "A workforce pool's session duration sets how long console and gcloud sessions last, from 15 minutes to 12 hours.",
+      "tags": [
+        "sessions",
+        "workforce-identity"
+      ],
+      "source": "curated",
+      "question": "Employees at Carrick Energy reach Google Cloud through a workforce identity pool federated with Okta. They complain that they must sign in again every hour. Security accepts sessions of up to eight hours. What should you change?",
+      "options": {
+        "A": "The pool's session duration, to 28800s.",
+        "B": "The OAuth access-token lifetime organisation policy, to eight hours.",
+        "C": "The Google Workspace session length for all users.",
+        "D": "The expiry of the IAM role bindings granted to the pool."
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "The workforce pool's session duration controls how long its console and gcloud sessions stay valid, and it can be set between 15 minutes and 12 hours.",
+        "option_breakdown": {
+          "A": "Correct. Eight hours, 28800 seconds, is within the pool setting's range and applies only to that pool.",
+          "B": "That policy extends service-account access tokens, not federated users' sessions.",
+          "C": "Workspace session settings apply to Cloud Identity users, not to federated identities in a workforce pool.",
+          "D": "Binding expiry removes access at a date; it doesn't change how long a sign-in lasts."
+        },
+        "gcloud_command": "gcloud iam workforce-pools update corp-pool --location=global --session-duration=28800s",
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/manage-workforce-identity-pools-providers"
+      }
+    },
+    {
+      "id": "ace-s1-068",
+      "uid": "81678d18-0421-4fdd-aecc-fb6a096c36bd",
+      "title": "A role for every federated user in one department",
+      "objective": "1.1",
+      "subtopic": "Workforce Identity Federation",
+      "summary": "Workforce identities can be granted roles by a mapped attribute with a principalSet identifier of the form …/workforcePools/POOL/attribute.ATTRIBUTE/VALUE.",
+      "tags": [
+        "iam",
+        "principalset",
+        "workforce-identity"
+      ],
+      "source": "curated",
+      "question": "A workforce pool named staff-pool maps the identity provider's department claim to attribute.department. Everyone whose department is finance must get BigQuery Data Viewer on project fin-reports, including people who join later. Which member should the binding use?",
+      "options": {
+        "A": "A group: member named finance@ in the company's domain.",
+        "B": "A principal member for each finance user's subject.",
+        "C": "A principalSet member for the pool's attribute.department/finance.",
+        "D": "A domain: member for the identity provider's domain."
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "A principalSet identifier can select every identity in a workforce pool with a given mapped attribute value, so one binding covers current and future finance staff.",
+        "option_breakdown": {
+          "A": "Federated identities have no Cloud Identity group unless one is mapped; a domain group doesn't contain them.",
+          "B": "Per-user bindings miss people who join later and must be maintained by hand.",
+          "C": "Correct. principalSet://iam.googleapis.com/locations/global/workforcePools/staff-pool/attribute.department/finance covers every matching identity.",
+          "D": "A domain member names a Google Workspace or Cloud Identity domain, not identities in a workforce pool."
+        },
+        "gcloud_command": "gcloud projects add-iam-policy-binding fin-reports --role=roles/bigquery.dataViewer \\\n  --member='principalSet://iam.googleapis.com/locations/global/workforcePools/staff-pool/attribute.department/finance'",
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/principal-identifiers"
+      }
+    },
+    {
+      "id": "ace-s1-069",
+      "uid": "0412cdff-9bb2-4a8c-a89d-83acad28638e",
+      "title": "A role for one federated user",
+      "objective": "1.1",
+      "subtopic": "Workforce Identity Federation",
+      "summary": "A single workforce identity is named by its subject: principal://iam.googleapis.com/locations/global/workforcePools/POOL/subject/SUBJECT.",
+      "tags": [
+        "iam",
+        "principal",
+        "workforce-identity"
+      ],
+      "source": "curated",
+      "question": "One contractor signs in through the workforce pool vendor-pool, and the provider maps the contractor's ID to google.subject as c-4471. The contractor alone needs Logs Viewer on project ops-prod. Which member should the binding use?",
+      "options": {
+        "A": "A user: member with the contractor's email address.",
+        "B": "A principal member for vendor-pool's subject c-4471.",
+        "C": "A principalSet member for all identities in vendor-pool.",
+        "D": "A serviceAccount: member that the contractor impersonates."
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "IAM names one federated workforce identity with a principal identifier built from the pool and the mapped google.subject.",
+        "option_breakdown": {
+          "A": "user: members are Google accounts; a federated contractor has no Google account.",
+          "B": "Correct. principal://iam.googleapis.com/locations/global/workforcePools/vendor-pool/subject/c-4471 is exactly that contractor.",
+          "C": "Granting the whole pool gives every vendor identity the role, not one contractor.",
+          "D": "A shared service account hides who acted and isn't needed for a federated user."
+        },
+        "gcloud_command": "gcloud projects add-iam-policy-binding ops-prod --role=roles/logging.viewer \\\n  --member='principal://iam.googleapis.com/locations/global/workforcePools/vendor-pool/subject/c-4471'",
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/principal-identifiers"
+      }
+    },
+    {
+      "id": "ace-s1-070",
+      "uid": "f716fe63-b3c3-4ad8-84f6-e5200f1b9056",
+      "title": "A firewall rule's settings from two months ago",
+      "objective": "1.1",
+      "subtopic": "Asset Inventory and Gemini Cloud Assist",
+      "summary": "Cloud Asset Inventory history covers about five weeks; older configuration changes are found in Admin Activity audit logs, which are kept for 400 days.",
+      "tags": [
+        "asset-inventory",
+        "audit-logs",
+        "firewall"
+      ],
+      "source": "curated",
+      "question": "An auditor at Harrow Bank asks what the firewall rule allow-partner allowed eight weeks ago, before two changes were made to it. No asset exports or feeds were ever set up, and no log sinks exist. Where can you find the changes?",
+      "options": {
+        "A": "The rule's asset history in Cloud Asset Inventory.",
+        "B": "Firewall Rules Logging for the rule.",
+        "C": "VPC Flow Logs from that period.",
+        "D": "The Admin Activity audit log entries for the rule."
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "Admin Activity audit logs record every change to a firewall rule, with the request, and are kept for 400 days. Asset history covers only the last five weeks.",
+        "option_breakdown": {
+          "A": "Asset history reaches back about five weeks, so eight weeks ago is out of range.",
+          "B": "Firewall Rules Logging records connections the rule matched, not changes to its configuration.",
+          "C": "Flow logs record traffic samples and must have been enabled at the time.",
+          "D": "Correct. The rule's patch and update entries in Admin Activity logs show what changed and when, for 400 days."
+        },
+        "gcloud_command": "gcloud logging read 'logName:\"cloudaudit.googleapis.com%2Factivity\" AND protoPayload.resourceName:\"firewalls/allow-partner\"' --freshness=70d",
+        "doc_ref": "https://docs.cloud.google.com/logging/quotas"
+      }
+    },
+    {
+      "id": "ace-s1-071",
+      "uid": "b0304e4a-2ee4-4fdc-88b1-6949e9c238d1",
+      "title": "No one may delete the network host project",
+      "objective": "1.1",
+      "subtopic": "Resource Hierarchy",
+      "summary": "An IAM deny policy denying cloudresourcemanager.googleapis.com/projects.delete stops anyone, Owners included, from deleting a project.",
+      "tags": [
+        "deny-policy",
+        "projects",
+        "protection"
+      ],
+      "source": "curated",
+      "question": "Deleting the Shared VPC host project at Ingram Logistics would take down every service project's network. Several administrators hold Owner on it. Using generally available features only, how do you stop anyone from deleting the project, Owners included?",
+      "options": {
+        "A": "Remove the Owner role from everyone and grant Editor instead.",
+        "B": "A deny policy on the project that denies the projects.delete permission.",
+        "C": "An organisation policy that restricts resource locations for the project.",
+        "D": "A budget with a 100% threshold that alerts the network team."
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "Deny policies are evaluated before allow policies, so a deny rule for cloudresourcemanager.googleapis.com/projects.delete blocks deletion whatever roles a principal holds.",
+        "option_breakdown": {
+          "A": "Editor can't delete a project, but removing Owner from everyone also removes the administrators' ability to run the project.",
+          "B": "Correct. A deny rule on projects.delete stops every principal it names, including Owners, and it is GA.",
+          "C": "A location policy limits where resources are created, not whether the project can be deleted.",
+          "D": "A budget watches spending; it can't block an action."
+        },
+        "gcloud_command": "gcloud iam policies create protect-host \\\n  --attachment-point=cloudresourcemanager.googleapis.com%2Fprojects%2Fnet-host-prod \\\n  --kind=denypolicies --policy-file=deny-delete.json",
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/deny-overview"
+      }
+    },
+    {
+      "id": "ace-s1-072",
+      "uid": "6b7a07ce-4ff9-4157-81ec-aba207c37525",
+      "title": "US workloads that need FedRAMP High controls",
+      "objective": "1.1",
+      "subtopic": "Regions and Zones",
+      "summary": "Assured Workloads applies a regulatory control package, such as FedRAMP High, to a folder: US data location, US-person support personnel and allowed services.",
+      "tags": [
+        "assured-workloads",
+        "compliance",
+        "data-residency"
+      ],
+      "source": "curated",
+      "question": "A contractor at Halsey Federal will host a US government system that must meet FedRAMP High: data stored only in the United States, support access only by US persons with enhanced background checks, and only services authorised at that level. What should you set up?",
+      "options": {
+        "A": "An Assured Workloads folder with the FedRAMP High control package.",
+        "B": "The gcp.resourceLocations organisation policy set to in:us-locations.",
+        "C": "A VPC Service Controls perimeter around the system's projects.",
+        "D": "Access Transparency logs reviewed weekly by the security team."
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "Assured Workloads' FedRAMP High package enforces US data location, restricts support personnel and limits the folder to authorised services, and it monitors for violations.",
+        "option_breakdown": {
+          "A": "Correct. The control package covers data location, personnel access and service restrictions together.",
+          "B": "A location policy covers where data lives, not who at Google may access it or which services are authorised.",
+          "C": "A perimeter limits data movement through Google APIs; it doesn't control location or personnel.",
+          "D": "Access Transparency shows access after it happens; it doesn't restrict who can access."
+        },
+        "gcloud_command": "gcloud assured workloads create --organization=ORG_ID --location=us-central1 \\\n  --display-name=fed-system --compliance-regime=fedramp-high --billing-account=billingAccounts/BA_ID",
+        "doc_ref": "https://docs.cloud.google.com/assured-workloads/docs/overview"
+      }
+    },
+    {
+      "id": "ace-s1-073",
+      "uid": "e4e15f11-1c56-4cf5-9e1f-cc1245a9af94",
+      "title": "A project outside the Assured Workloads folder",
+      "objective": "1.1",
+      "subtopic": "Regions and Zones",
+      "summary": "Assured Workloads controls apply to the projects in its folder; a project created elsewhere in the organisation gets none of them.",
+      "tags": [
+        "assured-workloads",
+        "data-residency",
+        "folders"
+      ],
+      "source": "curated",
+      "question": "Corwen Health created an Assured Workloads folder with the EU Data Boundary and Support package. A team then created a project directly under the organisation and deployed patient data to us-central1 without any error. Why was nothing blocked?",
+      "options": {
+        "A": "The package only alerts on violations and never blocks anything.",
+        "B": "The package's controls take 30 days to start applying.",
+        "C": "The controls apply only to projects in the Assured Workloads folder.",
+        "D": "us-central1 is allowed by the EU Data Boundary package for backups."
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "Assured Workloads enforces its package with organisation policies on its folder, so only projects created inside that folder inherit the controls.",
+        "option_breakdown": {
+          "A": "The package enforces controls such as resource locations through organisation policies, and also monitors for violations.",
+          "B": "Controls apply as soon as the folder exists; there is no waiting period.",
+          "C": "Correct. A project at the organisation root inherits nothing from the folder, so EU-only locations didn't apply to it.",
+          "D": "The EU packages restrict resources to EU locations; us-central1 is outside them."
+        },
+        "gcloud_command": "gcloud projects create corwen-patients --folder=ASSURED_FOLDER_ID",
+        "doc_ref": "https://docs.cloud.google.com/assured-workloads/docs/create-folder"
+      }
+    },
+    {
+      "id": "ace-s1-074",
+      "uid": "2a78d3d7-07e0-499a-8851-da25def596a4",
+      "title": "Finding out when an Assured Workloads control is overridden",
+      "objective": "1.1",
+      "subtopic": "Regions and Zones",
+      "summary": "Assured Workloads monitors its folder for organisation policy and resource violations and can email notifications when they happen.",
+      "tags": [
+        "assured-workloads",
+        "compliance",
+        "monitoring"
+      ],
+      "source": "curated",
+      "question": "An administrator at Lyle Defence with Organization Policy Administrator could change a policy inside the company's Assured Workloads folder. The compliance team wants to know whenever such a change breaks the control package, without building anything. What should you use?",
+      "options": {
+        "A": "A budget alert on the folder's projects.",
+        "B": "Assured Workloads violation monitoring, with email notifications.",
+        "C": "A Cloud Asset Inventory export to BigQuery every month.",
+        "D": "Personalized Service Health alerts for the folder."
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "Assured Workloads watches its folder for changes that break the package's organisation policies or resource rules, lists them as violations and can notify by email.",
+        "option_breakdown": {
+          "A": "Budgets watch spending, not policy changes.",
+          "B": "Correct. Violation monitoring reports policy and resource violations in the folder and sends notifications.",
+          "C": "A monthly export is a snapshot to analyse later, not a notification when a control is broken.",
+          "D": "Personalized Service Health reports Google Cloud incidents, not your own policy changes."
+        },
+        "gcloud_command": "gcloud assured workloads violations list --organization=ORG_ID --location=LOCATION --workload=WORKLOAD_ID",
+        "doc_ref": "https://docs.cloud.google.com/assured-workloads/docs/monitor-folder"
+      }
+    },
+    {
+      "id": "ace-s1-075",
+      "uid": "44279df3-4757-4ccb-84b1-721cd6b835a4",
+      "title": "Where a Spanner configuration keeps its replicas",
+      "objective": "1.1",
+      "subtopic": "Regions and Zones",
+      "summary": "Describing a Spanner instance configuration lists its replicas, their types and regions, and its default leader region.",
+      "tags": [
+        "instance-configurations",
+        "locations",
+        "spanner"
+      ],
+      "source": "curated",
+      "question": "An architect at Selby Payments is choosing a Spanner multi-region configuration. Before deciding, they need to know which regions hold read-write replicas and which region is the default leader in the configuration eur5. What is the most direct way to find out?",
+      "options": {
+        "A": "List the Compute Engine zones in each European region.",
+        "B": "Create a test instance in eur5 and read its monitoring charts.",
+        "C": "Describe the eur5 instance configuration.",
+        "D": "Read the Spanner API's quota page for the project."
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "An instance configuration lists its replicas with their types and locations and its default leader. Describing it answers the question without creating anything.",
+        "option_breakdown": {
+          "A": "Zones say where Compute Engine runs, not where a Spanner configuration places replicas.",
+          "B": "A test instance costs money and still doesn't show the configuration's replica layout directly.",
+          "C": "Correct. gcloud spanner instance-configs describe eur5 shows each replica's type and region and the default leader.",
+          "D": "Quotas limit capacity; they say nothing about replica placement."
+        },
+        "gcloud_command": "gcloud spanner instance-configs describe eur5",
+        "doc_ref": "https://docs.cloud.google.com/spanner/docs/instance-configurations"
+      }
+    },
+    {
+      "id": "ace-s1-076",
+      "uid": "75736f95-0173-4f47-8abb-5d556e1e9a39",
+      "title": "Where namespace costs appear after cost allocation",
+      "objective": "1.2",
+      "subtopic": "Billing Export and Cost Attribution",
+      "summary": "With GKE cost allocation enabled, namespace and Kubernetes label costs appear in the detailed usage cost export to BigQuery.",
+      "tags": [
+        "billing-export",
+        "cost-allocation",
+        "gke"
+      ],
+      "source": "curated",
+      "question": "Finance at Hawley Insurance enabled GKE cost allocation on a shared cluster. It now wants to query cost by Kubernetes namespace with SQL. Where should it look?",
+      "options": {
+        "A": "The standard usage cost export to BigQuery.",
+        "B": "The detailed usage cost export to BigQuery.",
+        "C": "The cluster's Workloads page in the console.",
+        "D": "A budget scoped to the cluster's project."
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "Cost allocation adds namespace and Kubernetes label information to resource-level rows, which only the detailed usage cost export contains.",
+        "option_breakdown": {
+          "A": "The standard export aggregates by service and SKU, without the resource-level rows cost allocation adds to.",
+          "B": "Correct. The detailed export carries the namespace and label breakdown that SQL can group by.",
+          "C": "The Workloads page shows resource requests and status, not billed cost.",
+          "D": "A budget alerts on a total; it doesn't break cost down by namespace."
+        },
+        "gcloud_command": "gcloud container clusters update shared --location=R --enable-cost-allocation",
+        "doc_ref": "https://docs.cloud.google.com/kubernetes-engine/docs/how-to/cost-allocations"
+      }
+    },
+    {
+      "id": "ace-s1-077",
+      "uid": "2b48d713-e30d-4726-a50e-81a181837ccc",
+      "title": "Why the bill went up, without SQL",
+      "objective": "1.2",
+      "subtopic": "Billing Export and Cost Attribution",
+      "summary": "Cloud Billing reports chart cost by project, service or SKU over time and compare periods, with no SQL; Billing Account Viewer is enough to see them.",
+      "tags": [
+        "billing-reports",
+        "console",
+        "cost"
+      ],
+      "source": "curated",
+      "question": "A manager at Thursby Media has Billing Account Viewer and asks why last month's bill was 30% higher than the month before, and which projects and services drove it. They don't write SQL, and only generally available features may be used. What should they use?",
+      "options": {
+        "A": "The detailed billing export, queried in BigQuery.",
+        "B": "A budget with alerts at 50%, 90% and 100%.",
+        "C": "Cloud Billing reports, grouped by project and then by service, comparing the two months.",
+        "D": "The Cost Table filtered by invoice month, exported to CSV."
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "Billing reports chart cost over time grouped by project, service or SKU, and can compare periods, so the manager sees what grew without writing queries.",
+        "option_breakdown": {
+          "A": "The export answers the question but needs SQL, which the manager doesn't write.",
+          "B": "A budget alerts about future spending; it doesn't explain last month's increase.",
+          "C": "Correct. Grouping the reports by project and by service shows which ones grew between the two months.",
+          "D": "The cost table lists invoice lines, but comparing two months in a spreadsheet is the slow way."
+        },
+        "gcloud_command": "# Console > Billing > Reports: Group by Project, then Service; time range: last two months",
+        "doc_ref": "https://docs.cloud.google.com/billing/docs/reports"
       }
     },
     {

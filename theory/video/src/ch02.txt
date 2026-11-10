@@ -63,9 +63,9 @@ Create a folder | gcloud resource-manager folders create --display-name=finance 
 Create a project in a folder | gcloud projects create kestrel-fin-prod --folder=FOLDER_ID
 Move a project | gcloud beta projects move P --folder=FOLDER_ID
 Delete, then restore | gcloud projects delete P · gcloud projects undelete P
-Protect from deletion (a lien) | gcloud alpha resource-manager liens create --project=P --restrictions=resourcemanager.projects.delete --reason=...
+Stop anyone, Owners included, deleting a project | gcloud iam policies create NAME --attachment-point=cloudresourcemanager.googleapis.com%2Fprojects%2FP --kind=denypolicies --policy-file=deny.json
 > Deleting starts a **30-day pending-deletion** period. Billing stops, and `undelete` brings it all back.
-N: The commands. Create a folder with gcloud resource-manager folders create. Create a project in that folder with gcloud projects create, dash dash folder. Moving a project is on the beta track: gcloud beta projects move. Deleting a project does not destroy it right away. It starts a thirty-day pending deletion period. Billing stops, resources shut down, and gcloud projects undelete brings it all back. After thirty days it is gone. And to protect a critical project, you place a lien, which stops even an Owner deleting the project until the lien is removed.
+N: The commands. Create a folder with gcloud resource-manager folders create. Create a project in that folder with gcloud projects create, dash dash folder. Moving a project is on the beta track: gcloud beta projects move. Deleting a project does not destroy it right away. It starts a thirty-day pending deletion period. Billing stops, resources shut down, and gcloud projects undelete brings it all back. After thirty days it is gone. And to stop anyone deleting a critical project, Owners included, use an I-A-M deny policy that denies the project delete permission. A lien does the same, but liens are still in Preview, so they are not the exam answer.
 
 = table sm | Resource Manager roles | Roles you should be able to name
 Role | For
@@ -87,6 +87,53 @@ N: That is why it beats Folder Admin or Organization Administrator on a least-pr
 When a Cloud Identity or Workspace organization is created, every user in the domain gets **Project Creator** and **Billing Account Creator** at the organization.
 Removing those two grants is a standard first governance step.
 N: Here is a trap that is also a real governance step. When a Cloud Identity or Workspace organization is created, every user in the domain is granted Project Creator and Billing Account Creator at the organization. Removing those two grants is a standard first step. It is the answer to, users keep creating projects and billing accounts outside the folder structure.
+
+= dia | Best practice | Separate projects for production and non-production
+p2-envs
+N: Here is the blueprint Google's own foundation design builds, and the one to picture whenever a stem mentions environments. A folder called common holds the platform team's projects: one Shared V-P-C host for production, a separate host for non-production, a logging project and a billing export project. A production folder holds the production service projects, with strict organization policies. A non-production folder holds development and staging. Every environment is its own project, and production and non-production do not even share a network.
+
+= table sm | Why separate projects | Every boundary follows the project
+Why | What goes wrong in a shared project
+**IAM is inherited and additive** | One Editor grant covers dev **and** prod; nothing subtracts prod
+**Quota is per project** | A dev load test exhausts production's CPUs or API quota
+**Org policies differ per folder** | A policy cannot target half a project
+**Billing** | Each environment's cost is a project in the reports, not a labelling exercise
+**Blast radius** | One mistake, one leaked key, one deleted project takes both
+> Routes and firewall rules belong to a VPC, so prod and non-prod also get **separate Shared VPC host projects**.
+N: Why does every guide insist on this? Because every boundary follows the project. I-A-M is inherited and additive, so a single Editor grant in a shared project covers development and production alike, and nothing can subtract production. Quota is per project, so a load test in development can starve production. Organization policies are set per folder, and cannot target half a project. Each environment's cost shows up as its own project in the billing reports. And the blast radius of a mistake, a leaked key or a deleted project stays inside one environment. The same reasoning applies to the network: routes and firewall rules belong to a V-P-C, so production and non-production get separate Shared V-P-C host projects.
+
+= panel tip | Spot the environment question | Separate projects, not clever IAM
+*"Developers need broad rights in dev but none in production"*, *"a test must never use production's quota"*, *"show production cost separately"*.
+All three: **separate projects under separate folders**. Not IAM conditions, not labels, not per-environment subnets in one project.
+V: Developers need rights in dev but none in production. Separate projects, under separate folders. Not conditions, not labels.
+
+= dia | Assured Workloads | A compliance boundary applied to a folder
+p2-assured
+N: Assured Workloads, explicitly. It creates a folder with a control package applied to it. Every project created inside that folder inherits the package's guardrails: data residency, which Google personnel may access the data for support, key management, and which services can be enabled at all. Google enforces them through organization policies and other controls, and then monitors the folder and reports violations. Notice the grey box on the left: a project created at the organization root, outside the folder, inherits none of it.
+
+= table sm | Control packages | Three families
+Family | Examples | Controls
+**Regional data boundaries** | EU Data Boundary · EU Data Boundary and Support · US, Canada, Japan and others | Location; with *and Support*, also local support personnel
+**Regulatory data boundaries** | FedRAMP Moderate and High · IL2, IL4, IL5 · CJIS · ITAR · IRS 1075 · HIPAA controls | Certified sets: location, personnel, keys, allowed services
+**Sovereign Controls by Partners** | A local partner holds keys and approves access | Residency, EKM or HSM keys, Key Access Justifications
+> `gcloud assured workloads create --compliance-regime=eu-data-boundary-and-support ...` · packages were renamed in June 2025, so expect either name.
+N: Control packages come in three families. Regional data boundaries keep data in a country or region, and the and Support variants also restrict support to personnel located there. Regulatory data boundaries are certified sets, such as FedRAMP Moderate and High, the Impact Levels, C-J-I-S and ITAR, which add personnel checks, keys and an allowed list of services. And Sovereign Controls by Partners let a local partner hold keys and approve access. The packages were renamed in June twenty twenty-five, so a stem may use the older name, E-U Regions and Support.
+
+= panel watch | Easy to confuse | Location policy, CMEK, perimeter, or Assured Workloads?
+`gcp.resourceLocations` restricts **where** resources are created. Nothing else.
+CMEK controls **keys**. VPC Service Controls restricts **data exfiltration** through Google APIs.
+Only **Assured Workloads** also controls **which Google personnel can access the data**, enforced and monitored on a folder.
+V: Data in the E-U, and only E-U based support staff. That second clause is Assured Workloads.
+
+= shot | In the console | Creating an Assured Workloads folder
+w-aw-1-folder.png
+~ Data residency, Access Transparency, monitoring, localized support: then a name, an organization and a parent
+N: This is the create form in the console. The four ticks at the top are the package's promises: data residency, Access Transparency logs of Google personnel actions, monitoring and alerting on changes, and support restricted by location or personnel. Then you name the folder and choose where it lives. The next steps choose the control package and its settings.
+
+= shot | In the console | Who may create one
+w-aw-2-permission.png
+~ An account without resourcemanager.folders.create cannot choose a parent: Folder Creator is missing
+N: And here is a lesson the console taught us while recording. This account cannot choose the organization as the parent, because it lacks the folders create permission. Creating an Assured Workloads folder is creating a folder, so the person needs Folder Creator, or Folder Admin, on the parent, plus the Assured Workloads Administrator role. A permission error here is a missing role, not a missing feature.
 
 ## 2.4 APIs and services
 
@@ -216,6 +263,12 @@ Metadata | What it is | In billing export? | Used by
 **Tags** (resource-manager) | IAM-governed key-values, inherited | Not their job | Conditional IAM, org policy, Cloud NGFW
 N: Three kinds of metadata, with confusing names. Labels are free key-value pairs on resources. They appear in the billing export, so labels are the cost dimension. Network tags are plain strings on V-Ms, used by V-P-C firewall rules and routes. They do not appear in billing. And Tags, also called resource-manager tags, are key-value pairs governed by I-A-M, attached to organizations, folders, projects and resources, and inherited. They drive conditional I-A-M, organization policy and Cloud Next Generation Firewall. We return to them in parts three and four.
 
+= cmd | Shared GKE clusters | Cost per namespace needs one switch
+Task | Command
+Cost per namespace on a shared cluster | gcloud container clusters update shop --location=R --enable-cost-allocation
+> The billing export sees a cluster as its **nodes**. **GKE cost allocation** adds namespace and Kubernetes-label costs to the **detailed** export.
+N: One more billing switch, for shared G-K-E clusters. The billing export sees a cluster as its nodes: V-Ms and disks, nothing per team. Labels on node pools cannot help, because many teams' Pods share each node. G-K-E cost allocation, enabled on the cluster, adds each workload's share, by namespace and by Kubernetes label, from the resources it requests, to the detailed usage cost export in BigQuery.
+
 ## 2.9 Seeing everything: Cloud Asset Inventory and Gemini Cloud Assist
 
 = cmd sm | Cloud Asset Inventory | The answer whenever you need a view across projects
@@ -246,9 +299,9 @@ N: A few more facts to recognise. Asset Inventory does more than search. It retu
 - `sql.restrictPublicIp` blocks public IPs on Cloud SQL
 - **Custom constraints** use CEL on resource fields when no predefined constraint fits
 - **Cost anomaly detection** flags spikes against history, with no thresholds to set
-- **Gemini Cloud Assist in Billing** answers *"why did the bill go up?"* within your billing permissions
+- *"Why did the bill go up?"*, no SQL: **Cloud Billing reports**, grouped by project and service (Gemini in Billing is *Preview*)
 - A **log scope** lets Logs Explorer query several projects' logs without moving them
-N: The sequel dot restrict public I-P constraint blocks public addresses on Cloud SQL. Custom constraints use the Common Expression Language on resource fields when no predefined constraint fits, for example, every new G-K-E cluster must have Workload Identity Federation enabled. Cost anomaly detection flags spikes against historical patterns, with no thresholds to set. Gemini Cloud Assist in Cloud Billing answers why did the bill go up, within your billing permissions. And a log scope lets Logs Explorer query several projects' logs together, without moving them.
+N: The sequel dot restrict public I-P constraint blocks public addresses on Cloud SQL. Custom constraints use the Common Expression Language on resource fields when no predefined constraint fits, for example, every new G-K-E cluster must have Workload Identity Federation enabled. Cost anomaly detection flags spikes against historical patterns, with no thresholds to set. Why did the bill go up, and which projects drove it, without writing a query: Cloud Billing reports, grouped by project and then by service, comparing two months. Gemini Cloud Assist in Billing answers it in plain language too, but it is in Preview. And a log scope lets Logs Explorer query several projects' logs together, without moving them.
 
 ## 2.10 Part 2 recall card
 
@@ -256,10 +309,10 @@ N: The sequel dot restrict public I-P constraint blocks public addresses on Clou
 Prompt | Answer
 All of a department's projects, now and future | Bind on the **folder**
 Recover a project deleted last week | `gcloud projects undelete`, within 30 days
-Stop a critical project being deleted | A **lien**
+Stop a critical project being deleted | An IAM **deny policy** on `projects.delete`
 Move a project, least privilege | **Project Mover** at a common ancestor
 Users create projects anywhere they like | Remove the default **Project Creator** grant
-N: The recall card. A department's projects, now and in future: bind on the folder. Recover a project deleted last week: gcloud projects undelete, within thirty days. Stop a critical project being deleted: a lien. Move a project with least privilege: Project Mover at a common ancestor. Users create projects anywhere they like: remove the default Project Creator grant at the organization.
+N: The recall card. A department's projects, now and in future: bind on the folder. Recover a project deleted last week: gcloud projects undelete, within thirty days. Stop a critical project being deleted, even by an Owner: an I-A-M deny policy on project delete. Move a project with least privilege: Project Mover at a common ancestor. Users create projects anywhere they like: remove the default Project Creator grant at the organization.
 
 = table | Recall card, 2 of 3 | Answer aloud before the voice does
 Prompt | Answer
@@ -381,6 +434,71 @@ why B :: Those defaults are why anyone in the domain can do this.
 why C :: Budgets do not stop project or account creation.
 why D :: Skips a network; it does not limit who creates projects.
 C: The answer is B. When a Cloud Identity or Workspace organization is created, every user in the domain receives those two roles at the organization. Remove them, and then grant Project Creator on specific folders to the people who need it. A treats the symptom. C is a budget again. And D is a real baseline, but it controls the default network, not who creates projects.
+
+## Part 2: frequently missed patterns
+
+= th | Part 2 · more practice | Environments, cost and inventory | Every one of these hinges on where a boundary sits.
+N: 5 more questions, built on the patterns that candidates most often get wrong in this part. Answer each one before the reveal, and say which phrase in the stem decides it.
+
+= q | A new organisation's foundation will use Shared VPC. Security requires that no misconfigured route or firewall rule in development or test can ever affect production traffic. How should the host projects be laid out?
+(A) One host project with one VPC, and one subnet per environment
+(B) One host project per application team, shared by all its environments
+(C) No Shared VPC: a separate VPC in every project, peered together
+(D) A production host project and a separate non-production host project
+ans D
+why A :: Subnets in one VPC share its routes and firewall rules, so a mistake in one environment can affect another.
+why B :: Per-team hosts mix environments inside each team's network.
+why C :: Peering every project rebuilds the many-networks problem Shared VPC removes.
+why D :: Correct. Each environment's network is a separate VPC with its own routes and rules, administered centrally.
+C: The answer is D. Routes and firewall rules belong to a VPC. Separate host projects, each with its own VPC, mean a change in non-production can't reach production.
+
+= q | Five teams share one GKE Standard cluster, each in its own namespace. Finance already has the detailed billing export in BigQuery but sees only node costs. It needs cost per namespace. What should you enable?
+(A) A label on each node pool with the team's name
+(B) A separate billing account for each team
+(C) GKE cost allocation on the cluster
+(D) A budget for each namespace in Cloud Billing
+ans C
+why A :: The teams share node pools, so node pool labels can't separate their costs.
+why B :: Billing accounts attach to projects, not namespaces.
+why C :: Correct. Cost allocation adds namespace and label detail to the export rows.
+why D :: Budgets can't be scoped to a namespace, and they don't produce the cost breakdown.
+C: The answer is C. With GKE cost allocation, the billing export breaks cluster costs down by namespace and Kubernetes labels, based on the resources each workload requests.
+
+= q | You need to see what the configuration of the firewall rule allow-admin looked like ten days ago, before someone widened its source range. No feeds or exports were ever configured. What can you use?
+(A) The rule's asset history in Cloud Asset Inventory
+(B) Firewall Insights for the rule
+(C) VPC Flow Logs for the subnets the rule applies to
+(D) A new Cloud Asset Inventory feed for firewall rules
+ans A
+why A :: Correct. Cloud Asset Inventory keeps five weeks of history for resource metadata and IAM policies, so the rule's history (gcloud asset get-history) returns earlier versions without any setup.
+why B :: Firewall Insights reports shadowed and unused rules and hit counts, not earlier configurations.
+why C :: Flow logs record traffic, not a rule's configuration, and nobody enabled them.
+why D :: Feeds send notifications for future changes only.
+C: The answer is A. Cloud Asset Inventory keeps five weeks of history for resource metadata and IAM policies, so get-history returns earlier versions without any setup.
+
+= q | Deleting the Shared VPC host project at Ingram Logistics would take down every service project's network. Several administrators hold Owner on it. Using generally available features only, how do you stop anyone from deleting the project, Owners included?
+(A) Remove the Owner role from everyone and grant Editor instead
+(B) A deny policy on the project that denies the projects.delete permission
+(C) An organisation policy that restricts resource locations for the project
+(D) A budget with a 100% threshold that alerts the network team
+ans B
+why A :: Editor can't delete a project, but removing Owner from everyone also removes the administrators' ability to run the project.
+why B :: Correct. A deny rule on projects.delete stops every principal it names, including Owners, and it is GA.
+why C :: A location policy limits where resources are created, not whether the project can be deleted.
+why D :: A budget watches spending; it can't block an action.
+C: The answer is B. Deny policies are evaluated before allow policies, so a deny rule for cloudresourcemanager.googleapis.com/projects.delete blocks deletion whatever roles a principal holds.
+
+= q | A manager at Thursby Media has Billing Account Viewer and asks why last month's bill was 30% higher than the month before, and which projects and services drove it. They don't write SQL, and only generally available features may be used. What should they use?
+(A) The detailed billing export, queried in BigQuery
+(B) A budget with alerts at 50%, 90% and 100%
+(C) Cloud Billing reports, grouped by project and then by service, comparing the two months
+(D) The Cost Table filtered by invoice month, exported to CSV
+ans C
+why A :: The export answers the question but needs SQL, which the manager doesn't write.
+why B :: A budget alerts about future spending; it doesn't explain last month's increase.
+why C :: Correct. Grouping the reports by project and by service shows which ones grew between the two months.
+why D :: The cost table lists invoice lines, but comparing two months in a spreadsheet is the slow way.
+C: The answer is C. Billing reports chart cost over time grouped by project, service or SKU, and can compare periods, so the manager sees what grew without writing queries.
 
 = th | End of Part 2 | Next: identity and access | The largest section of theory: who exists, what they may do, and how software signs in without keys.
 N: That is part two: the tree, the bill and the ceilings. Next is the part that decides more marks than any other: identity and access.

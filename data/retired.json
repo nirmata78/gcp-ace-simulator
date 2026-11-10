@@ -525,6 +525,31 @@
    "id": "ace-s4-056",
    "date": "2026-11-04",
    "reason": "Held out of the public bank before v1.0.0 for provenance review (issue #1)."
+  },
+  {
+   "id": "ace-s3-127",
+   "date": "2026-11-09",
+   "reason": "Its key relied on Database Center's coverage of databases on Compute Engine VMs, which is in Preview; the bank keys only GA features as of June 2026. Replaced by a question on the Ops Agent's MySQL integration."
+  },
+  {
+   "id": "ace-s4-053",
+   "date": "2026-11-09",
+   "reason": "Its key relied on Activity Analyzer's last-authentication view, which is in Preview. Replaced by a question on the GA key authentication metrics in Cloud Monitoring."
+  },
+  {
+   "id": "ace-s1-043",
+   "date": "2026-11-09",
+   "reason": "Its key relied on project liens, which are in Preview. Replaced by a question on an IAM deny policy for projects.delete."
+  },
+  {
+   "id": "ace-s1-047",
+   "date": "2026-11-09",
+   "reason": "Its key relied on Gemini Cloud Assist in Cloud Billing, which is in Preview. Replaced by a question on Cloud Billing reports."
+  },
+  {
+   "id": "ace-s2-085",
+   "date": "2026-11-09",
+   "reason": "Its key relied on Gemini Cloud Assist's remote MCP server, which is in Preview."
   }
  ]
 }
