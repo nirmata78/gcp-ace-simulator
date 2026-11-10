@@ -206,10 +206,13 @@ the sheet.) Wait for its reply. Then record its answers exactly as it gave them:
 .venv/bin/python scripts/kb.py blind RUN/batch-01.json --answers 3:C 5:A,D 6:B
 ```
 
-A question needs work when the command prints `DISAGREE`, **and also** when the solver's letter matches but its
-"Also defensible" or "Problems" line says anything other than "none". Do not argue a report away. If the solver says
-the reader must know a fact the stem does not give (a time window, a default, a limit), put that fact in the stem.
-For every such question:
+A question needs work in three cases: the command prints `DISAGREE`; the solver's "Also defensible" line names an
+option; or its "Problems" line says the reader needs a fact the stem does not give (a time window, a default, a
+limit, an assumption), or that an option is not real. Do not argue such a report away: put the missing fact in the
+stem. A remark that is only editorial (awkward wording, a formatting difference, "the key is unaffected") does not
+block the question: fix it if the fix is one phrase, and list the remark in your final report either way. Remember
+that any edit to a stem or an option needs a new blind solve; send reworked questions to the next batch's solver
+together with that batch's sheet. For every question that needs work:
 
 1. Read the documentation again with `kb.py doc`. Decide who is right from the page, not from confidence.
 2. If your key was wrong, or two options are both right, rewrite the question or skip the slot.
@@ -232,7 +235,9 @@ ids, and marks the slots filled or skipped.
 
 Then, for each question added: `Grep` the fact behind its key in `theory/*.md`. If no page teaches it, add one or two
 sentences to the section of the page where it belongs, in the page's own style. Do not add or rename headings. Mark a
-number or a limit that may change with *verify*.
+number or a limit that may change with *verify*. After editing any theory page, run
+`.venv/bin/python scripts/build_study_links.py`: it regenerates `data/study_links.json`, and a test fails if that
+file is stale.
 
 ## Step 2. Finish the run
 
@@ -250,8 +255,8 @@ number or a limit that may change with *verify*.
    line under `## [Unreleased]`, `### Added` in `CHANGELOG.md`: how many questions, in which sections, how many
    cross-domain and multiple-select.
 3. Commit, and do not push. If the current branch is `main`, first `git checkout -b expand/<date>`. Add only these
-   paths: `data/sections`, `data/register.json`, `theory`, `docs/reviews/expand-<date>.json`, `README.md`,
-   `CHANGELOG.md`. Commit message: `Bank N: M new questions (/expand <request>)`.
+   paths: `data/sections`, `data/register.json`, `data/study_links.json`, `theory`,
+   `docs/reviews/expand-<date>.json`, `README.md`, `CHANGELOG.md`. Commit message: `Bank N: M new questions (/expand <request>)`.
 4. Report to the user:
    - the plan table, and the bank size before and after;
    - the new ids, by section, marking cross-domain and multiple-select ones;

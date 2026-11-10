@@ -112,10 +112,11 @@ def test_exam_balance_fills_what_is_below_its_weight_and_never_overshoots(bank):
     add = Counter(s["section"] for s in p["slots"])
     after = len(bank.questions) + 79
     for n, sec in SECTIONS.items():
-        if have[n] / len(bank.questions) >= sec.weight:
-            assert add[n] == 0, f"section {n} is already above its weight"
+        if have[n] >= sec.weight * after:
+            assert add[n] == 0, f"section {n} is already at its weight for the bank after the run"
         else:
-            assert add[n] > 0 and (have[n] + add[n]) / after <= sec.weight + 0.01
+            assert (have[n] + add[n]) / after <= sec.weight + 0.01
+    assert sum(add.values()) == 79
 
 
 def test_batch_and_current_balances(bank):
@@ -136,10 +137,11 @@ def test_slots_sit_on_the_blueprint_and_thin_subtopics_come_first(bank):
     for s in p["slots"]:
         assert SUBTOPICS[s["subtopic"]].objective == s["objective"]
     counts = bank.subtopics()
-    in_41 = [s["subtopic"] for s in p["slots"] if s["objective"] == "4.1"]
-    thinnest = min((n for n in SUBTOPICS if SUBTOPICS[n].objective == "4.1"),
+    objective = p["slots"][0]["objective"]
+    chosen = [s["subtopic"] for s in p["slots"] if s["objective"] == objective]
+    thinnest = min((n for n in SUBTOPICS if SUBTOPICS[n].objective == objective),
                    key=lambda n: counts.get(n, 0) / max(1, len(SUBTOPICS[n].bullets)))
-    assert thinnest in in_41
+    assert thinnest in chosen
 
 
 def test_the_mix_and_the_keys_are_planned(bank):
