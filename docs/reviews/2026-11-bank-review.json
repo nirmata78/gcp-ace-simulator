@@ -15795,6 +15795,1166 @@
       },
       "notes": "New clean-room question in the style of Google's sample questions (scenario, constraint, imperative options), cross-domain, also 3.1; certifying mode only. Written from the guide bullets and current documentation.",
       "replacement_id": null
+    },
+    {
+      "id": "ace-s3-127",
+      "verdict": "removed",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "fail",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Removed on 2026-11-09: the key relied on Database Center's coverage of databases on Compute Engine VMs, which is in Preview. The bank keys only features that were generally available in June 2026 (see the launch-stage rule in theory Part 1).",
+      "replacement_id": "ace-s3-187",
+      "original": {
+        "question": "Besides Cloud SQL and AlloyDB, a company still runs self-managed MySQL on Compute Engine VMs. The DBA lead wants those in the same fleet health view. What is true?",
+        "options": {
+          "A": "Only managed database services can appear in Database Center.",
+          "B": "They must first be migrated to Cloud SQL with Database Migration Service.",
+          "C": "Database Center can include databases on Compute Engine VMs.",
+          "D": "They appear only if the VMs are in the same project as the Cloud SQL instances."
+        },
+        "correct_answer": "C"
+      }
+    },
+    {
+      "id": "ace-s4-053",
+      "verdict": "removed",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "fail",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Removed on 2026-11-09: the key relied on Activity Analyzer's last-authentication view, which is in Preview. The bank keys only features that were generally available in June 2026 (see the launch-stage rule in theory Part 1).",
+      "replacement_id": "ace-s4-066",
+      "original": {
+        "question": "A project has 60 user-managed service account keys, and security wants to delete the ones not used to authenticate in the last 90 days. Where can you find the last authentication time of each key?",
+        "options": {
+          "A": "Billing reports filtered by service account.",
+          "B": "Cloud Asset Inventory's resource search for keys.",
+          "C": "Activity Analyzer's key authentication activity.",
+          "D": "VPC Flow Logs from the VMs."
+        },
+        "correct_answer": "C"
+      }
+    },
+    {
+      "id": "ace-s1-043",
+      "verdict": "removed",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "fail",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Removed on 2026-11-09: the key relied on project liens, which is in Preview. The bank keys only features that were generally available in June 2026 (see the launch-stage rule in theory Part 1).",
+      "replacement_id": "ace-s1-071",
+      "original": {
+        "question": "The shared-networking host project must never be deleted accidentally, even by someone with Owner on it. What can you place on the project?",
+        "options": {
+          "A": "Deletion protection on each VM in the project.",
+          "B": "A label protected=true on the project.",
+          "C": "A lien that restricts project deletion.",
+          "D": "A budget alert on the project."
+        },
+        "correct_answer": "C"
+      }
+    },
+    {
+      "id": "ace-s1-047",
+      "verdict": "removed",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "fail",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Removed on 2026-11-09: the key relied on Gemini Cloud Assist in Cloud Billing, which is in Preview. The bank keys only features that were generally available in June 2026 (see the launch-stage rule in theory Part 1).",
+      "replacement_id": "ace-s1-077",
+      "original": {
+        "question": "A manager with Billing Account Viewer asks why the bill rose 30% last month and which services and projects drove it. They do not write SQL. What can they use in the console?",
+        "options": {
+          "A": "Gemini Cloud Assist in the Billing console.",
+          "B": "The Pricing Calculator.",
+          "C": "Active Assist idle-resource recommendations.",
+          "D": "The billing account's payment history page."
+        },
+        "correct_answer": "A"
+      }
+    },
+    {
+      "id": "ace-s2-085",
+      "verdict": "removed",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "fail",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Removed on 2026-11-09: the key relied on Gemini Cloud Assist's remote MCP server, which is in Preview. The bank keys only features that were generally available in June 2026 (see the launch-stage rule in theory Part 1).",
+      "replacement_id": null,
+      "original": {
+        "question": "An SRE team does its incident work in a third-party AI assistant that supports the Model Context Protocol. It wants that assistant to use Gemini Cloud Assist's knowledge of their Google Cloud projects. What should it configure?",
+        "options": {
+          "A": "A Pub/Sub topic that forwards console events to the assistant.",
+          "B": "Gemini Cloud Assist's remote MCP server, added to the assistant.",
+          "C": "A service account key for the assistant with roles/owner.",
+          "D": "A BigQuery export of Cloud Asset Inventory shared with the assistant's vendor."
+        },
+        "correct_answer": "B"
+      }
+    },
+    {
+      "id": "ace-s1-062",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s1-063",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s1-064",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s1-065",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s1-066",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s1-067",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s1-068",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s1-069",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s1-070",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s1-071",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s1-072",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s1-073",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s1-074",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s1-075",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s1-076",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s1-077",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s2-145",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s2-146",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s2-147",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s2-148",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s2-149",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s2-150",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s2-151",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s2-152",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s2-153",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s2-154",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s2-155",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s2-156",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s2-157",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s2-158",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s2-159",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s2-160",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s2-161",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s2-162",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s2-163",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s2-164",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s2-165",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s2-166",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s2-167",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-076",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept, cross-domain, also 3.3; certifying mode only. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-077",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept, cross-domain, also 1.1; certifying mode only. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-x-078",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept, cross-domain, also 3.3; certifying mode only. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s3-174",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s3-175",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s3-176",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s3-177",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s3-178",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s3-179",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s3-180",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s3-181",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s3-182",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s3-183",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s3-184",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s3-185",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s3-186",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s3-187",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s3-188",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s3-189",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s3-190",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s3-191",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s3-192",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s3-193",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s4-064",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s4-065",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s4-066",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s4-067",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s4-068",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s4-069",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
+    },
+    {
+      "id": "ace-s4-070",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "New clean-room question, added 2026-11-09: a variant on a frequently confused concept. Written from the guide bullets and current documentation.",
+      "replacement_id": null
     }
   ]
 }

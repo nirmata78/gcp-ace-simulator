@@ -138,8 +138,8 @@ the runner or the state bucket.
 **Configuring the tools — three mechanics worth recognising.** A **`GEMINI.md`** file in the repository gives
 Gemini CLI **standing instructions** (conventions, modules to use, what never to do) in every session. Extra tools
 reach Gemini CLI through **MCP servers** registered under `mcpServers` in `.gemini/settings.json`. In the other
-direction, **Gemini Cloud Assist exposes a remote MCP server**, so a third-party MCP-capable assistant can use it
-with the signed-in user's permissions. Gemini Cloud Assist itself needs **`geminicloudassist.googleapis.com`**
+direction, Gemini Cloud Assist's **remote MCP server** lets a third-party assistant use it with the signed-in
+user's permissions, but that server is *Preview*, so recognise it rather than pick it. Gemini Cloud Assist itself needs **`geminicloudassist.googleapis.com`**
 enabled and **`roles/geminicloudassist.user`** for its users; *describe an app in a sentence and get a design to
 refine and deploy* is Gemini Cloud Assist in **Application Design Center**.
 

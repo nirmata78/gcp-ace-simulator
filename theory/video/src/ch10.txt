@@ -477,6 +477,109 @@ why C :: Identity remains heavily tested.
 why D :: Security remains a full section.
 C: The answer is B. And it is a fitting last question. Planning and deploying merged into one section at thirty percent, operating grew to thirty percent, and day two operations is now as heavy as building.
 
+## Part 10: frequently missed patterns
+
+= th | Part 10 · more practice | Extended mock: blueprints and boundaries | Eight new questions across the parts. Name the blueprint first.
+N: 8 more questions, built on the patterns that candidates most often get wrong in this part. Answer each one before the reveal, and say which phrase in the stem decides it.
+
+= q | Web servers at Brannock Travel run in a managed instance group without external IP addresses, behind a global external Application Load Balancer. Their subnet has Private Google Access enabled. Customers reach the site, but the servers can't download operating system updates from the distribution's mirrors on the internet. What should you add, following Google-recommended practices?
+(A) An ephemeral external IP address on each server in the instance template
+(B) A Cloud Router and a Cloud NAT gateway in the servers' region
+(C) A Private Service Connect endpoint for Google APIs
+(D) A firewall rule allowing egress to 0.0.0.0/0 on ports 80 and 443
+ans B
+why A :: External addresses would work but expose every server, which is what the private design avoids.
+why B :: Correct. Cloud NAT gives the private servers outbound access to the mirrors while nothing can connect in.
+why C :: A Private Service Connect endpoint reaches Google APIs, not a distribution's mirrors.
+why D :: Egress is already allowed by the implied rule; without NAT or an external IP there is no route out.
+C: The answer is B. The load balancer brings requests in but gives the servers no outbound path, and Private Google Access only reaches Google APIs. Cloud NAT gives private VMs outbound internet access without exposing them.
+
+= q | A global external Application Load Balancer at Brockley Tickets was created with an ephemeral IP address, and hundreds of customers have that address in their firewall allow-lists. Next week you will delete and recreate the load balancer's forwarding rule. Customers must not have to change anything. What should you do first?
+(A) Reserve a new global static external IP address for the new forwarding rule
+(B) Promote the forwarding rule's current ephemeral address to a global static address
+(C) Promote the current address to a regional static address in the backends' region
+(D) Publish the load balancer's address in Cloud DNS and ask customers to use the name
+ans B
+why A :: A newly reserved address is a different IP, so every customer would have to update its allow-list.
+why B :: Correct. Promoting the current ephemeral address keeps the exact IP, now reserved, ready for the new forwarding rule.
+why C :: A global load balancer uses global addresses; a regional static address can't be attached to it.
+why D :: Customers allow-list an IP address in their firewalls, so a DNS name doesn't remove the change for them.
+C: The answer is B. Promoting an in-use ephemeral address reserves that same address as static. It then survives the forwarding rule's deletion and can be attached to the new one.
+
+= q | You created an inbound DNS server policy on the VPC network that Kestrel Bank's data centre reaches over HA VPN in europe-west4. The on-premises DNS team now asks which addresses to forward queries for the private zone svc.kestrel.internal to. What should you give them?
+(A) The metadata server address, 169.254.169.254
+(B) The inbound forwarder addresses the policy allocated in the europe-west4 subnets
+(C) The range 35.199.192.0/19, which Cloud DNS uses for forwarding
+(D) Google Public DNS at 8.8.8.8 and 8.8.4.4
+ans B
+why A :: The metadata server answers only VMs inside Google Cloud, not traffic arriving over a VPN.
+why B :: Correct. The policy's inbound forwarder addresses in europe-west4, where the VPN lands, are what on-premises DNS forwards to.
+why C :: 35.199.192.0/19 is the source of Cloud DNS's outbound forwarding queries, the opposite direction.
+why D :: Public DNS can't see a private zone, which is visible only to authorised VPC networks.
+C: The answer is B. An inbound server policy reserves an address in each subnet of the VPC as an entry point. On-premises resolvers forward to the entry points in the region their connection lands in, and get answers from the VPC's private zones.
+
+= q | You are creating the Cloud Router for an HA VPN from Callander Foods' data centre. The on-premises router uses BGP with ASN 65001, a private ASN. Which ASN should you give the Cloud Router?
+(A) 65001, so that both routers are in one autonomous system
+(B) 15169, Google's public ASN
+(C) Any private ASN not used on-premises, such as 65010
+(D) No ASN; HA VPN uses static routes
+ans C
+why A :: Both sides with the same ASN would be internal BGP, which Cloud Router doesn't run with on-premises peers.
+why B :: Cloud Router requires a private ASN; Google's own public ASN isn't yours to assign.
+why C :: Correct. A private ASN that on-premises doesn't use, such as 65010, lets the two routers peer.
+why D :: HA VPN requires dynamic routing with BGP, so the Cloud Router needs an ASN.
+C: The answer is C. Cloud Router speaks external BGP to the on-premises router, so the two need different ASNs, and Cloud Router's must come from a private range.
+
+= q | Arden Mutual has one Shared VPC host project with one VPC network, holding production and development subnets. A developer with network admin rights on the host project widened a firewall rule for a test, and it exposed production VMs. Security wants development network changes to be unable to affect production at all. What should you do?
+(A) Create separate production and non-production host projects, each with its own VPC
+(B) Add IAM conditions that limit the developer to rules whose names start with dev-
+(C) Move the development subnets into a second VPC in the same host project
+(D) Use network tags so development rules target only development VMs
+ans A
+why A :: Correct. Separate host projects separate both the networks and who administers them, which is Google's recommended foundation.
+why B :: Name conditions are fragile, and the developer could still create a rule with any target in the shared VPC.
+why C :: A second VPC separates rules, but the same host-project admins still control both networks.
+why D :: Tags are chosen by whoever writes the rule, so nothing stops a rule targeting production VMs.
+C: The answer is A. Firewall rules and routes are resources of a VPC network, and IAM is granted per host project. Separate host projects with separate VPCs mean non-production administrators have no rights and no rules that touch production.
+
+= q | A contractor at Halsey Federal will host a US government system that must meet FedRAMP High: data stored only in the United States, support access only by US persons with enhanced background checks, and only services authorised at that level. What should you set up?
+(A) An Assured Workloads folder with the FedRAMP High control package
+(B) The gcp.resourceLocations organisation policy set to in:us-locations
+(C) A VPC Service Controls perimeter around the system's projects
+(D) Access Transparency logs reviewed weekly by the security team
+ans A
+why A :: Correct. The control package covers data location, personnel access and service restrictions together.
+why B :: A location policy covers where data lives, not who at Google may access it or which services are authorised.
+why C :: A perimeter limits data movement through Google APIs; it doesn't control location or personnel.
+why D :: Access Transparency shows access after it happens; it doesn't restrict who can access.
+C: The answer is A. Assured Workloads' FedRAMP High package enforces US data location, restricts support personnel and limits the folder to authorised services, and it monitors for violations.
+
+= q | In Corbridge Health's landing zone, service project shop-prod is attached to Shared VPC host net-host-prod. Creating a GKE cluster in shop-prod on the host's subnet gke-euw2, with its Pod and Service secondary ranges, fails with a permission error about the host project. Your team already has Network User on the subnet. What is missing?
+(A) Network User on the subnet for the default Compute Engine service account
+(B) Organization Administrator for the engineer who creates the cluster
+(C) The shop-prod GKE service agent with Host Service Agent User on the host project and Network User on the subnet
+(D) A VPC peering connection between shop-prod and net-host-prod
+ans C
+why A :: The default compute account matters for nodes, but the cluster's network setup is done by the GKE service agent.
+why B :: Organization Administrator is far broader than needed and doesn't give the GKE service agent anything.
+why C :: Correct. The GKE service agent of shop-prod needs both grants before it can build the cluster on the host's network.
+why D :: Shared VPC already shares the host's network; peering between a host and its service project isn't a thing.
+C: The answer is C. GKE manages firewall rules and uses the host's subnet and ranges on behalf of the service project. Its service agent therefore needs Host Service Agent User on the host project and Network User on the subnet.
+
+= q | Backup servers in Kilbride Council's data centre must upload to Cloud Storage only over the existing HA VPN, never over the internet. The VPN's Cloud Router advertises the VPC's subnets with default advertisements. Which two changes make this work? (Choose two.)
+(A) Add a custom advertisement of 199.36.153.8/30, alongside all subnets
+(B) Enable Private Google Access on every subnet of the VPC network
+(C) Make on-premises DNS resolve storage.googleapis.com to private.googleapis.com
+(D) Create a Cloud NAT gateway in the VPN's region
+(E) Give the backup servers static external IP addresses in Google Cloud
+ans A, C
+why A :: Correct. The custom advertisement gives on-premises a route to 199.36.153.8/30 through the VPN.
+why B :: Private Google Access on subnets helps VMs in the VPC, not hosts on-premises.
+why C :: Correct. On-premises DNS must resolve the Google API names to the private.googleapis.com addresses, or traffic goes to public addresses over the internet.
+why D :: Cloud NAT handles outbound internet traffic from VMs, not on-premises traffic to Google APIs.
+why E :: Google Cloud addresses can't be assigned to servers in a data centre.
+C: The answer is A and C. Private Google Access for on-premises hosts needs a route and a name: Cloud Router must advertise the private.googleapis.com range over BGP, and on-premises DNS must send the API names to that range.
+
 = th | End of the course | You have the whole surface now. Good luck. | Re-watch the parts where your mock answers went wrong, then sit a full timed practice paper.
 N: That is the end of the course. Here is how to use the time you have left. Re-watch the parts where your mock answers went wrong. Sit a full, timed practice paper. Read the instruction line on every multiple-select item. And in the exam room, find the deciding clause first.
 V: Find the deciding clause first. Then check each option against it.

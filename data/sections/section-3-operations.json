@@ -1,8 +1,8 @@
 {
   "domain": "Section 3: Ensuring the successful operation of a cloud solution",
   "version": 2,
-  "updated_at": "2026-11-07T19:46:36+00:00",
-  "count": 266,
+  "updated_at": "2026-11-10T17:44:44+00:00",
+  "count": 285,
   "questions": [
     {
       "id": "ace-dom1-042",
@@ -6280,39 +6280,6 @@
       }
     },
     {
-      "id": "ace-s3-127",
-      "uid": "7e19bfe3-a6ba-440a-a717-44c8b50b4083",
-      "title": "Self-managed databases in the fleet view",
-      "objective": "3.2",
-      "subtopic": "Database Center",
-      "summary": "Database Center also covers databases on Compute Engine VMs, alongside managed services.",
-      "tags": [
-        "compute-engine",
-        "database-center",
-        "fleet"
-      ],
-      "source": "curated",
-      "question": "Besides Cloud SQL and AlloyDB, a company still runs self-managed MySQL on Compute Engine VMs. The DBA lead wants those in the same fleet health view. What is true?",
-      "options": {
-        "A": "Only managed database services can appear in Database Center.",
-        "B": "They must first be migrated to Cloud SQL with Database Migration Service.",
-        "C": "Database Center can include databases on Compute Engine VMs.",
-        "D": "They appear only if the VMs are in the same project as the Cloud SQL instances."
-      },
-      "correct_answer": "C",
-      "explanation": {
-        "summary": "Database Center covers databases on Compute Engine VMs (MySQL, PostgreSQL and SQL Server) in addition to the managed products, across projects.",
-        "option_breakdown": {
-          "A": "Its coverage is not limited to managed services.",
-          "B": "Migration is not a prerequisite for visibility.",
-          "C": "Correct. Database Center covers databases on Compute Engine VMs (MySQL, PostgreSQL and SQL Server) in addition to the managed products, across projects.",
-          "D": "Database Center works across projects."
-        },
-        "gcloud_command": "# Console > Database Center > filter Product: Databases on Compute Engine",
-        "doc_ref": "https://docs.cloud.google.com/database-center/docs/overview"
-      }
-    },
-    {
       "id": "ace-s3-128",
       "uid": "082fd780-67f0-4f87-a270-2ac3cda9a19b",
       "title": "Sending only one subnet's traffic through an inspection appliance",
@@ -7177,7 +7144,7 @@
         "machine-types"
       ],
       "source": "curated",
-      "question": "A standalone n2-standard-4 VM needs to become n2-standard-8, keeping its boot disk, IP addresses and metadata. What is the procedure?",
+      "question": "A standalone n2-standard-4 VM needs to become n2-standard-8, keeping its boot disk, internal IP address and metadata. What is the procedure?",
       "options": {
         "A": "Stop the VM, change its machine type, then start it.",
         "B": "Change the machine type while it runs; vCPUs are hot-added.",
@@ -7838,6 +7805,666 @@
         },
         "gcloud_command": "bq query --use_legacy_sql=false --dry_run 'SELECT user_id FROM media.events WHERE day = \"2026-11-01\"'",
         "doc_ref": "https://cloud.google.com/bigquery/docs/best-practices-costs"
+      }
+    },
+    {
+      "id": "ace-s3-174",
+      "uid": "10940256-c70c-4698-8dfc-3fd66987dbdc",
+      "title": "A vendor's allow-list and a NAT address that changed",
+      "objective": "3.3",
+      "subtopic": "Cloud DNS and Cloud NAT",
+      "summary": "Automatic NAT IP allocation can add or change addresses; manual assignment of reserved static IPs keeps egress on fixed addresses.",
+      "tags": [
+        "cloud-nat",
+        "egress",
+        "static-ip"
+      ],
+      "source": "curated",
+      "question": "Report servers at Harwell Logistics have no external IP addresses and upload files to a vendor's SFTP server through Cloud NAT, which uses automatic IP allocation. After the NAT gateway added an address during a busy week, the vendor started rejecting some uploads, because it accepts only the addresses on its allow-list. What should you change?",
+      "options": {
+        "A": "Give each report server an ephemeral external IP address.",
+        "B": "Enable Private Google Access on the report servers' subnet.",
+        "C": "Switch the NAT gateway to manual assignment of reserved static IPs.",
+        "D": "Add a route to the vendor's range through the default internet gateway."
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "With automatic allocation, Cloud NAT chooses and can add addresses as demand grows. Manual assignment uses only the static addresses you reserved, so the vendor can allow-list exactly those.",
+        "option_breakdown": {
+          "A": "Ephemeral external addresses change when VMs are recreated, and the vendor would need every one of them.",
+          "B": "Private Google Access reaches Google APIs only, not a vendor's SFTP server on the internet.",
+          "C": "Correct. Manual NAT IP assignment sends all translated traffic from the reserved static addresses, which never change.",
+          "D": "A route decides where packets go, not which source address they carry; without NAT the VMs can't reach the internet at all."
+        },
+        "gcloud_command": "gcloud compute addresses create nat-ip-1 nat-ip-2 --region=R\ngcloud compute routers nats update nat-1 --router=nat-router --region=R \\\n  --nat-external-ip-pool=nat-ip-1,nat-ip-2",
+        "doc_ref": "https://docs.cloud.google.com/nat/docs/ports-and-addresses"
+      }
+    },
+    {
+      "id": "ace-s3-175",
+      "uid": "51c6a105-7aa8-44d3-be39-08fb237c7041",
+      "title": "Cloud NAT that works in one region only",
+      "objective": "3.3",
+      "subtopic": "Cloud DNS and Cloud NAT",
+      "summary": "Cloud NAT is regional: each region with private VMs that need internet egress needs its own Cloud Router and NAT gateway.",
+      "tags": [
+        "cloud-nat",
+        "cloud-router",
+        "regions"
+      ],
+      "source": "curated",
+      "question": "A VPC network at Sefton Analytics has subnets in us-central1 and europe-west1. Its VMs have no external IP addresses. A Cloud Router with a Cloud NAT gateway covering all subnet ranges exists in us-central1. VMs in us-central1 download packages from the internet, but VMs in europe-west1 time out. What should you do?",
+      "options": {
+        "A": "Create a Cloud Router and a Cloud NAT gateway in europe-west1.",
+        "B": "Set the VPC network's dynamic routing mode to global.",
+        "C": "Add a static route in europe-west1 with the us-central1 NAT gateway as next hop.",
+        "D": "Raise the minimum ports per VM on the existing NAT gateway."
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "A Cloud NAT gateway serves subnets in its own region only, even when it is set to cover all subnet ranges. The europe-west1 VMs need a gateway in europe-west1.",
+        "option_breakdown": {
+          "A": "Correct. Cloud NAT is regional, so a second Cloud Router and NAT gateway in europe-west1 gives those VMs egress.",
+          "B": "The dynamic routing mode affects routes learned over BGP, not which region a NAT gateway serves.",
+          "C": "A NAT gateway is not a VM or load balancer that a static route can use as its next hop.",
+          "D": "More ports help a region that already has NAT and drops connections; europe-west1 has no NAT at all."
+        },
+        "gcloud_command": "gcloud compute routers create nat-router-euw1 --network=NETWORK --region=europe-west1\ngcloud compute routers nats create nat-euw1 --router=nat-router-euw1 --region=europe-west1 \\\n  --nat-all-subnet-ip-ranges --auto-allocate-nat-external-ips",
+        "doc_ref": "https://docs.cloud.google.com/nat/docs/overview"
+      }
+    },
+    {
+      "id": "ace-s3-176",
+      "uid": "fb1da413-e1bf-4b63-a8bf-51599d097ba4",
+      "title": "Keeping a load balancer's current address before a rebuild",
+      "objective": "3.3",
+      "subtopic": "Subnets, Addresses and Routes",
+      "summary": "An in-use ephemeral external address can be promoted to a static address, so a rebuilt load balancer can keep the exact IP customers already allow-list.",
+      "tags": [
+        "addresses",
+        "load-balancing",
+        "static-ip"
+      ],
+      "source": "curated",
+      "question": "A global external Application Load Balancer at Brockley Tickets was created with an ephemeral IP address, and hundreds of customers have that address in their firewall allow-lists. Next week you will delete and recreate the load balancer's forwarding rule. Customers must not have to change anything. What should you do first?",
+      "options": {
+        "A": "Reserve a new global static external IP address for the new forwarding rule.",
+        "B": "Promote the forwarding rule's current ephemeral address to a global static address.",
+        "C": "Promote the current address to a regional static address in the backends' region.",
+        "D": "Publish the load balancer's address in Cloud DNS and ask customers to use the name."
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "Promoting an in-use ephemeral address reserves that same address as static. It then survives the forwarding rule's deletion and can be attached to the new one.",
+        "option_breakdown": {
+          "A": "A newly reserved address is a different IP, so every customer would have to update its allow-list.",
+          "B": "Correct. Promoting the current ephemeral address keeps the exact IP, now reserved, ready for the new forwarding rule.",
+          "C": "A global load balancer uses global addresses; a regional static address can't be attached to it.",
+          "D": "Customers allow-list an IP address in their firewalls, so a DNS name doesn't remove the change for them."
+        },
+        "gcloud_command": "gcloud compute addresses create lb-ip --addresses=CURRENT_IP --global",
+        "doc_ref": "https://docs.cloud.google.com/vpc/docs/reserve-static-external-ip-address"
+      }
+    },
+    {
+      "id": "ace-s3-177",
+      "uid": "ca9788ba-2a27-4290-a487-4529b66fb667",
+      "title": "A VM whose public address changed after a restart",
+      "objective": "3.3",
+      "subtopic": "Subnets, Addresses and Routes",
+      "summary": "A VM needs a reserved regional static external address to keep its public IP through stops and replacement; global addresses are for global load balancers.",
+      "tags": [
+        "addresses",
+        "compute-engine",
+        "static-ip"
+      ],
+      "source": "curated",
+      "question": "A licence server on a Compute Engine VM in europe-west2 is reached by desktop clients at its public IP address. After a maintenance stop and start, the address changed and every client failed to connect. The VM will also be replaced by a new one next quarter. What should you do so the address stays the same?",
+      "options": {
+        "A": "Reserve a global static external IP address and assign it to the VM.",
+        "B": "Reserve a static internal IP address in the VM's subnet.",
+        "C": "Bring your own IP range to Google Cloud and assign an address from it.",
+        "D": "Reserve a regional static external IP address and assign it to the VM."
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "A VM's ephemeral external address is released when it stops. A reserved regional static external address stays in the project and can be moved to the replacement VM.",
+        "option_breakdown": {
+          "A": "Global addresses are for global load balancers; a VM's external address is regional.",
+          "B": "An internal address isn't reachable by clients on the internet.",
+          "C": "Bringing your own range works but is a heavy process for owned address blocks, far beyond keeping one address.",
+          "D": "Correct. A reserved regional static external address survives stops and is reassigned to the new VM when it replaces this one."
+        },
+        "gcloud_command": "gcloud compute addresses create licence-ip --region=europe-west2\ngcloud compute instances add-access-config licence-vm --zone=ZONE --address=ADDRESS",
+        "doc_ref": "https://docs.cloud.google.com/vpc/docs/reserve-static-external-ip-address"
+      }
+    },
+    {
+      "id": "ace-s3-178",
+      "uid": "56b145fe-fe84-439c-8b95-594879369e22",
+      "title": "Where on-premises DNS sends queries for a private zone",
+      "objective": "3.3",
+      "subtopic": "Cloud DNS and Cloud NAT",
+      "summary": "An inbound server policy allocates entry-point addresses in the VPC's subnets; on-premises resolvers forward the private zone's domain to them.",
+      "tags": [
+        "cloud-dns",
+        "dns-policy",
+        "hybrid"
+      ],
+      "source": "curated",
+      "question": "You created an inbound DNS server policy on the VPC network that Kestrel Bank's data centre reaches over HA VPN in europe-west4. The on-premises DNS team now asks which addresses to forward queries for the private zone svc.kestrel.internal to. What should you give them?",
+      "options": {
+        "A": "The metadata server address, 169.254.169.254.",
+        "B": "The inbound forwarder addresses the policy allocated in the europe-west4 subnets.",
+        "C": "The range 35.199.192.0/19, which Cloud DNS uses for forwarding.",
+        "D": "Google Public DNS at 8.8.8.8 and 8.8.4.4."
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "An inbound server policy reserves an address in each subnet of the VPC as an entry point. On-premises resolvers forward to the entry points in the region their connection lands in, and get answers from the VPC's private zones.",
+        "option_breakdown": {
+          "A": "The metadata server answers only VMs inside Google Cloud, not traffic arriving over a VPN.",
+          "B": "Correct. The policy's inbound forwarder addresses in europe-west4, where the VPN lands, are what on-premises DNS forwards to.",
+          "C": "35.199.192.0/19 is the source of Cloud DNS's outbound forwarding queries, the opposite direction.",
+          "D": "Public DNS can't see a private zone, which is visible only to authorised VPC networks."
+        },
+        "gcloud_command": "gcloud compute addresses list --filter='purpose=DNS_RESOLVER'",
+        "doc_ref": "https://docs.cloud.google.com/dns/docs/server-policies-overview"
+      }
+    },
+    {
+      "id": "ace-s3-179",
+      "uid": "eac851e1-74aa-46e8-b15b-5636c34d3a57",
+      "title": "A forwarding zone whose answers never arrive",
+      "objective": "3.3",
+      "subtopic": "Cloud DNS and Cloud NAT",
+      "summary": "Cloud DNS sends forwarded queries from 35.199.192.0/19 over the hybrid connection, so on-premises firewalls and routes must allow that range.",
+      "tags": [
+        "cloud-dns",
+        "forwarding-zone",
+        "hybrid"
+      ],
+      "source": "curated",
+      "question": "VMs at Pendle Insurance must resolve names in corp.pendle.example, which only on-premises DNS servers hold. You created a Cloud DNS forwarding zone for that domain targeting the on-premises servers' private addresses over Cloud Interconnect, but every query times out. The on-premises firewall logs show dropped packets. What should the network team allow?",
+      "options": {
+        "A": "DNS traffic from the VMs' subnet ranges to the on-premises servers.",
+        "B": "DNS traffic from Google's health-check ranges 35.191.0.0/16 and 130.211.0.0/22.",
+        "C": "DNS traffic from the range 35.199.192.0/19 to the on-premises servers.",
+        "D": "DNS traffic from the metadata server address 169.254.169.254."
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "Queries sent through a forwarding zone to private targets come from Cloud DNS's own range, 35.199.192.0/19, not from the VMs. On-premises must accept that range and route replies back over the hybrid link.",
+        "option_breakdown": {
+          "A": "The VMs ask Cloud DNS; the forwarded query leaves from Cloud DNS's range, not the VMs' addresses.",
+          "B": "Those ranges send load-balancer health checks, not DNS queries.",
+          "C": "Correct. Cloud DNS forwards from 35.199.192.0/19, which the on-premises firewall must allow and route back through Interconnect.",
+          "D": "The metadata server address is link-local inside Google Cloud and never appears on-premises."
+        },
+        "gcloud_command": "gcloud dns managed-zones create corp-fwd --dns-name=corp.pendle.example. --visibility=private \\\n  --networks=NETWORK --forwarding-targets=10.20.0.53,10.20.0.54 --description='to on-premises'",
+        "doc_ref": "https://docs.cloud.google.com/dns/docs/zones/forwarding-zones"
+      }
+    },
+    {
+      "id": "ace-s3-180",
+      "uid": "9d01d785-190b-496e-94fa-5c8b513b1b6b",
+      "title": "An Autopilot cluster that ran out of Pod addresses",
+      "objective": "3.3",
+      "subtopic": "Subnets, Addresses and Routes",
+      "summary": "Autopilot clusters on GKE 1.26 and later can take additional Pod IPv4 ranges from new subnet secondary ranges, used for nodes in new node pools.",
+      "tags": [
+        "autopilot",
+        "gke",
+        "secondary-ranges"
+      ],
+      "source": "curated",
+      "question": "An Autopilot cluster on GKE 1.31 at Fenwick Mobile can't schedule new Pods because its Pod IPv4 range is exhausted. The address space next to the range is used by another subnet. The cluster must keep running and keep its name. What should you do?",
+      "options": {
+        "A": "Expand the subnet's primary range with expand-ip-range.",
+        "B": "Recreate the cluster as a Standard cluster with a larger Pod range.",
+        "C": "Add a subnet secondary range and assign it to the cluster as an additional Pod range.",
+        "D": "Lower the cluster's maximum Pods per node in place."
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "Additional Pod IPv4 ranges come from new, discontiguous subnet secondary ranges. Autopilot (1.26 and later) uses them for Pod addresses on the nodes it creates next, with no cluster rebuild.",
+        "option_breakdown": {
+          "A": "The primary range holds node addresses; Pod addresses come from secondary ranges, so expanding it doesn't help.",
+          "B": "Recreating the cluster is the disruption the stem rules out, and Autopilot supports additional ranges anyway.",
+          "C": "Correct. A new secondary range added as an additional Pod range gives new nodes Pod addresses without recreating anything.",
+          "D": "Autopilot manages Pods per node, and changing it in place isn't possible on existing nodes."
+        },
+        "gcloud_command": "gcloud compute networks subnets update SUBNET --region=R --add-secondary-ranges=pods-2=10.96.0.0/16\ngcloud container clusters update fenwick --location=R --additional-pod-ipv4-ranges=pods-2",
+        "doc_ref": "https://docs.cloud.google.com/kubernetes-engine/docs/how-to/multi-pod-cidr"
+      }
+    },
+    {
+      "id": "ace-s3-181",
+      "uid": "8b584e92-edb4-4ed7-aadc-4b989782ca34",
+      "title": "How many secondary ranges one subnet can hold",
+      "objective": "3.3",
+      "subtopic": "Subnets, Addresses and Routes",
+      "summary": "A subnet can have up to 170 secondary IPv4 ranges, a limit that can't be raised; ranges must not overlap anything else in the VPC.",
+      "tags": [
+        "gke",
+        "limits",
+        "secondary-ranges",
+        "vpc"
+      ],
+      "source": "curated",
+      "question": "The platform team at Glenrothes Data gives each new GKE node pool its own Pod range, all taken from secondary ranges on one shared subnet. They ask what eventually limits this design. What should you tell them?",
+      "options": {
+        "A": "A subnet can have at most two secondary ranges, one for Pods and one for Services.",
+        "B": "There is no limit, as long as the ranges don't overlap.",
+        "C": "A quota on secondary ranges that support can raise as far as needed.",
+        "D": "A subnet can hold up to 170 secondary ranges, and that limit can't be increased."
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "Each subnet supports up to 170 secondary IPv4 ranges, and the limit can't be increased. The ranges must also stay clear of every other range in the VPC and its peers.",
+        "option_breakdown": {
+          "A": "A VPC-native cluster starts with one Pod and one Service range, but a subnet can hold many more secondary ranges.",
+          "B": "The number per subnet is capped, and the VPC's total subnet ranges are limited too.",
+          "C": "The per-subnet maximum is a fixed limit, not an adjustable quota.",
+          "D": "Correct. Up to 170 secondary ranges per subnet, a hard limit, so very many node pools eventually need another subnet."
+        },
+        "gcloud_command": "gcloud compute networks subnets describe SUBNET --region=R --format='value(secondaryIpRanges)'",
+        "doc_ref": "https://docs.cloud.google.com/vpc/docs/quota"
+      }
+    },
+    {
+      "id": "ace-s3-182",
+      "uid": "0d3d917a-85da-476c-a572-5f61cc0ae66f",
+      "title": "Using a workstation someone else created",
+      "objective": "3.1",
+      "subtopic": "Developer Environments",
+      "summary": "The Cloud Workstations User role on a workstation lets a person start and use it; creating workstations needs the Creator role on a configuration.",
+      "tags": [
+        "cloud-workstations",
+        "iam"
+      ],
+      "source": "curated",
+      "question": "A platform administrator at Hexley Games created a workstation named ana-dev from the configuration unity-dev for a contractor. The contractor must be able to start and use that one workstation, but not create others or change the configuration. What should you grant?",
+      "options": {
+        "A": "roles/workstations.workstationCreator on the unity-dev configuration.",
+        "B": "roles/workstations.admin on the project.",
+        "C": "roles/workstations.operationViewer on the project.",
+        "D": "roles/workstations.user on the ana-dev workstation."
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "Cloud Workstations User on a workstation lets someone start, stop and connect to it, and nothing else.",
+        "option_breakdown": {
+          "A": "Creator lets the contractor create new workstations from the configuration, which isn't wanted.",
+          "B": "Admin controls clusters and configurations, far more than using one workstation.",
+          "C": "Operation Viewer shows long-running operations, not access to a workstation.",
+          "D": "Correct. The User role on that workstation is exactly enough to start and use it."
+        },
+        "gcloud_command": "gcloud workstations add-iam-policy-binding ana-dev --config=unity-dev --cluster=CLUSTER --region=R \\\n  --member=user:contractor@example.com --role=roles/workstations.user",
+        "doc_ref": "https://docs.cloud.google.com/workstations/docs/access-control"
+      }
+    },
+    {
+      "id": "ace-s3-183",
+      "uid": "fe649c7a-933d-48a5-83d9-f920119d9324",
+      "title": "Counting errors from a log field",
+      "objective": "3.4",
+      "subtopic": "Custom Metrics",
+      "summary": "A counter log-based metric counts matching log entries, which is how an error rate is charted and alerted on; distribution metrics are for numeric values such as latency.",
+      "tags": [
+        "alerting",
+        "log-based-metrics",
+        "monitoring"
+      ],
+      "source": "curated",
+      "question": "A legacy service at Wrexham Bus writes one structured log entry per request with jsonPayload.status. The team wants to chart and alert on the number of requests with status 500 per minute, without changing code. What should it create?",
+      "options": {
+        "A": "A distribution log-based metric on jsonPayload.status.",
+        "B": "An uptime check against the service's health endpoint.",
+        "C": "A counter log-based metric for entries with jsonPayload.status=500.",
+        "D": "A log sink to BigQuery with a query scheduled every minute."
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "A counter log-based metric counts the entries that match its filter, giving a time series of 500s per minute for charts and alerting policies.",
+        "option_breakdown": {
+          "A": "A distribution summarises a numeric value's spread; the team wants a count of matching requests.",
+          "B": "An uptime check probes one endpoint and doesn't count the errors real users get.",
+          "C": "Correct. A counter metric with the filter jsonPayload.status=500 is the error count to chart and alert on.",
+          "D": "A scheduled query adds delay and cost, and alerting on it needs more plumbing."
+        },
+        "gcloud_command": "gcloud logging metrics create http-500 --description='500 responses' \\\n  --log-filter='resource.type=\"gce_instance\" AND jsonPayload.status=500'",
+        "doc_ref": "https://docs.cloud.google.com/logging/docs/logs-based-metrics/counter-metrics"
+      }
+    },
+    {
+      "id": "ace-s3-184",
+      "uid": "2fffd1c7-6ebd-4039-929c-eb9e3bfd659a",
+      "title": "Latency hidden in a plain-text log line",
+      "objective": "3.4",
+      "subtopic": "Custom Metrics",
+      "summary": "A distribution log-based metric can extract a number from textPayload with a regular expression, and percentiles are charted from the resulting histogram.",
+      "tags": [
+        "latency",
+        "log-based-metrics",
+        "monitoring"
+      ],
+      "source": "curated",
+      "question": "An old service at Kirkby Freight writes plain-text log lines such as \"GET /quote done in 238ms\". There is no latency metric, and the code can't change. The team wants p95 latency on a dashboard. What should it create?",
+      "options": {
+        "A": "A distribution log-based metric that extracts the number before ms with a regular expression.",
+        "B": "A counter log-based metric for entries containing done in.",
+        "C": "A metric-absence alert on the service's request logs.",
+        "D": "A log bucket with Log Analytics, queried by hand each morning."
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "Distribution metrics take a value extractor, which may be a regular expression over textPayload. The extracted numbers form a histogram that Cloud Monitoring turns into percentiles.",
+        "option_breakdown": {
+          "A": "Correct. A regex extractor on textPayload captures the milliseconds, and the distribution gives p95 on a chart.",
+          "B": "A counter counts requests but discards the latency value.",
+          "C": "Metric absence detects silence, not slowness.",
+          "D": "Manual queries produce numbers each morning, not a live percentile chart."
+        },
+        "gcloud_command": "# Logs-based metric > Distribution > Field: textPayload, Regular expression: done in (\\d+)ms",
+        "doc_ref": "https://docs.cloud.google.com/logging/docs/logs-based-metrics/distribution-metrics"
+      }
+    },
+    {
+      "id": "ace-s3-185",
+      "uid": "e97385c7-c422-4710-99ef-a58cc76e2fca",
+      "title": "A sink into another project's bucket that writes nothing",
+      "objective": "3.4",
+      "subtopic": "Log Buckets and Routing",
+      "summary": "A sink writes as its writer identity, which needs a role on the destination: for a Cloud Storage bucket, Storage Object Creator.",
+      "tags": [
+        "cloud-storage",
+        "log-sinks",
+        "writer-identity"
+      ],
+      "source": "curated",
+      "question": "A log sink in project web-prod at Ashby Telecom routes firewall logs to the Cloud Storage bucket fw-archive in project sec-archive. The sink was created without errors, but the bucket stays empty after a day. What should you do?",
+      "options": {
+        "A": "Grant your own account Storage Admin on the bucket.",
+        "B": "Grant the sink's writer identity Storage Object Creator on the bucket.",
+        "C": "Recreate the sink in project sec-archive.",
+        "D": "Enable Data Access audit logs for Cloud Storage in sec-archive."
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "Sinks write with their own writer identity. When the destination is in another project, that identity must be granted permission there, here Storage Object Creator on the bucket.",
+        "option_breakdown": {
+          "A": "Your account doesn't write the logs; the sink's writer identity does.",
+          "B": "Correct. The writer identity needs Storage Object Creator on fw-archive before routed entries are written.",
+          "C": "A sink routes logs of the project it lives in, so moving it would route sec-archive's logs instead.",
+          "D": "Data Access logs record reads of the bucket; they don't let the sink write."
+        },
+        "gcloud_command": "gcloud logging sinks describe fw-to-archive --project=web-prod --format='value(writerIdentity)'\ngcloud storage buckets add-iam-policy-binding gs://fw-archive --member=WRITER_IDENTITY --role=roles/storage.objectCreator",
+        "doc_ref": "https://docs.cloud.google.com/logging/docs/export/configure_export_v2"
+      }
+    },
+    {
+      "id": "ace-s3-186",
+      "uid": "e807bc92-e14e-43a6-87d2-597e812fb84b",
+      "title": "A PodMonitoring resource in the wrong namespace",
+      "objective": "3.4",
+      "subtopic": "Managed Prometheus",
+      "summary": "PodMonitoring is namespaced and selects Pods only in its own namespace; ClusterPodMonitoring selects across namespaces.",
+      "tags": [
+        "gke",
+        "managed-prometheus",
+        "podmonitoring"
+      ],
+      "source": "curated",
+      "question": "On a GKE cluster at Morley Cars with Managed Service for Prometheus managed collection, the checkout Pods run in namespace shop and expose /metrics on port 8080. An engineer created a PodMonitoring resource selecting app=checkout in namespace default. No checkout metrics arrive. What should you do?",
+      "options": {
+        "A": "Install the Ops Agent on the cluster's nodes.",
+        "B": "Rename the metrics port in the Pods to metrics.",
+        "C": "Create the PodMonitoring resource in namespace shop.",
+        "D": "Disable managed collection and run a Prometheus server."
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "A PodMonitoring resource scrapes only Pods in its own namespace. The checkout Pods are in shop, so the resource must be there, or a ClusterPodMonitoring must be used.",
+        "option_breakdown": {
+          "A": "The Ops Agent is for VMs; GKE metrics from Prometheus endpoints come through managed collection.",
+          "B": "A port can be named anything, as long as the PodMonitoring refers to it correctly.",
+          "C": "Correct. In namespace shop the selector finds the checkout Pods and scraping starts.",
+          "D": "Managed collection works; it is only looking in the wrong namespace."
+        },
+        "gcloud_command": "kubectl apply -n shop -f podmonitoring-checkout.yaml",
+        "doc_ref": "https://cloud.google.com/stackdriver/docs/managed-prometheus/setup-managed"
+      }
+    },
+    {
+      "id": "ace-s3-187",
+      "uid": "c859e7fe-fe5b-43ca-a255-b6b1350f98fc",
+      "title": "Health metrics for self-managed MySQL on VMs",
+      "objective": "3.4",
+      "subtopic": "Ops Agent",
+      "summary": "The Ops Agent's MySQL integration collects MySQL metrics and logs from Compute Engine VMs into Cloud Monitoring and Cloud Logging, using generally available features.",
+      "tags": [
+        "compute-engine",
+        "mysql",
+        "ops-agent"
+      ],
+      "source": "curated",
+      "question": "Besides Cloud SQL, Tolland Retail runs self-managed MySQL on six Compute Engine VMs. The DBA lead wants their connections, query rates and slow-query logs in Cloud Monitoring and Cloud Logging, using only generally available features. What should you set up?",
+      "options": {
+        "A": "Migrate the six databases to Cloud SQL first.",
+        "B": "Uptime checks against port 3306 on each VM.",
+        "C": "VPC Flow Logs for the VMs' subnet.",
+        "D": "The Ops Agent with its MySQL integration on each VM."
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "The Ops Agent has a MySQL integration that collects the server's metrics and its error and slow-query logs, sending them to Cloud Monitoring and Cloud Logging.",
+        "option_breakdown": {
+          "A": "Migration may come later, but the lead wants the existing databases monitored now.",
+          "B": "An uptime check only says whether the port answers.",
+          "C": "Flow logs show network flows, not database metrics or logs.",
+          "D": "Correct. The agent's MySQL receiver collects metrics and logs from each VM."
+        },
+        "gcloud_command": "# /etc/google-cloud-ops-agent/config.yaml: metrics receiver type mysql, logs receivers mysql_error and mysql_slow",
+        "doc_ref": "https://docs.cloud.google.com/monitoring/agent/ops-agent/third-party/mysql"
+      }
+    },
+    {
+      "id": "ace-s3-188",
+      "uid": "dc0f5dda-1d91-40a2-a6b3-c5f8c831649d",
+      "title": "Serial console refused by policy",
+      "objective": "3.1",
+      "subtopic": "Connecting to Instances",
+      "summary": "The interactive serial console needs serial-port-enable on the VM or project, and the compute.disableSerialPortAccess organisation policy must not be enforced on it.",
+      "tags": [
+        "organization-policy",
+        "serial-console",
+        "troubleshooting"
+      ],
+      "source": "curated",
+      "question": "A VM at Halton Water lost all network connectivity after a bad configuration change. You set serial-port-enable=TRUE in its metadata, but connecting to the serial console is still refused. The project sits in a folder where security policies are enforced. What should you check?",
+      "options": {
+        "A": "Whether the VM has an external IP address.",
+        "B": "Whether a firewall rule allows 35.235.240.0/20 on port 22.",
+        "C": "Whether the compute.disableSerialPortAccess policy is enforced on the project.",
+        "D": "Whether OS Login is enabled in the project's metadata."
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "The serial console goes through Compute Engine, not the VM's network, but the compute.disableSerialPortAccess organisation policy can forbid it regardless of the metadata.",
+        "option_breakdown": {
+          "A": "Serial console access doesn't use the VM's network or its addresses.",
+          "B": "That rule is for IAP TCP forwarding; the serial console doesn't pass through the VPC firewall.",
+          "C": "Correct. If the policy is enforced, serial port access is blocked whatever the metadata says.",
+          "D": "OS Login affects SSH and serial console sign-in, but it doesn't refuse the connection outright."
+        },
+        "gcloud_command": "gcloud resource-manager org-policies describe compute.disableSerialPortAccess --project=P --effective",
+        "doc_ref": "https://docs.cloud.google.com/compute/docs/troubleshooting/troubleshooting-using-serial-console"
+      }
+    },
+    {
+      "id": "ace-s3-189",
+      "uid": "48ee36bb-ddce-4666-be50-cea66a52d8a0",
+      "title": "Reading why a VM doesn't finish booting",
+      "objective": "3.1",
+      "subtopic": "Connecting to Instances",
+      "summary": "Serial port output shows a VM's boot and kernel messages without signing in, which is the first look at a VM that won't boot.",
+      "tags": [
+        "compute-engine",
+        "serial-port",
+        "troubleshooting"
+      ],
+      "source": "curated",
+      "question": "After a kernel update, a VM at Bexley Clinics shows as RUNNING but never becomes reachable. You want to read the boot messages to see where it stops, without changing anything on the VM. What should you do?",
+      "options": {
+        "A": "SSH to the VM through Identity-Aware Proxy.",
+        "B": "Read the VM's serial port output.",
+        "C": "Create a snapshot and attach it to another VM.",
+        "D": "Install the Ops Agent and read its logs."
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "Serial port 1 receives boot and kernel messages. Reading its output needs no sign-in, network or change to the VM.",
+        "option_breakdown": {
+          "A": "SSH needs a booted system with working networking, which this VM may not have.",
+          "B": "Correct. get-serial-port-output shows the boot log and where it stops.",
+          "C": "Mounting a snapshot elsewhere works for repairs, but it is slower than reading the output that already exists.",
+          "D": "An agent can't be installed or report on a VM that hasn't finished booting."
+        },
+        "gcloud_command": "gcloud compute instances get-serial-port-output VM --zone=Z",
+        "doc_ref": "https://docs.cloud.google.com/compute/docs/troubleshooting/viewing-serial-port-output"
+      }
+    },
+    {
+      "id": "ace-s3-190",
+      "uid": "43149b9b-930c-43b6-9c71-d6d6923870f1",
+      "title": "A bigger machine type for every VM in a group",
+      "objective": "3.1",
+      "subtopic": "Instance Inventory and Lifecycle",
+      "summary": "A managed instance group's machine type comes from its instance template; changing it means a new template and a rolling update, not editing each VM.",
+      "tags": [
+        "machine-types",
+        "mig",
+        "rolling-update"
+      ],
+      "source": "curated",
+      "question": "The 12 VMs of a regional managed instance group at Grayson Online use e2-standard-4 and need e2-standard-8. The service must keep serving while the change happens. What should you do?",
+      "options": {
+        "A": "Stop each VM, change its machine type, and start it again.",
+        "B": "Edit the existing instance template's machine type in place.",
+        "C": "Create a template with e2-standard-8 and start a rolling update to it.",
+        "D": "Resize the group to 24 VMs so the load halves."
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "VMs in a managed group are built from the group's template. A new template with the larger machine type and a rolling update replace VMs a few at a time while the rest serve.",
+        "option_breakdown": {
+          "A": "The group would recreate or repair VMs back to the template; individual edits don't last.",
+          "B": "Instance templates can't be edited; a change needs a new template.",
+          "C": "Correct. A new template and a rolling update change every VM without stopping the service.",
+          "D": "More small VMs isn't the larger machine type the workload needs, and it costs more."
+        },
+        "gcloud_command": "gcloud compute instance-templates create web-e2-8 --machine-type=e2-standard-8 ...\ngcloud compute instance-groups managed rolling-action start-update web-mig --version=template=web-e2-8 --region=R",
+        "doc_ref": "https://docs.cloud.google.com/compute/docs/instance-groups/updating-migs"
+      }
+    },
+    {
+      "id": "ace-s3-191",
+      "uid": "c8dde705-8335-4e2a-a27f-f1b69a73079e",
+      "title": "A public address lost while resizing a VM",
+      "objective": "3.1",
+      "subtopic": "Instance Inventory and Lifecycle",
+      "summary": "Changing a VM's machine type requires stopping it, and stopping releases an ephemeral external IP; promote it to static first to keep it.",
+      "tags": [
+        "compute-engine",
+        "machine-types",
+        "static-ip"
+      ],
+      "source": "curated",
+      "question": "A standalone VM at Ripley Maps has an ephemeral external IP address that partners use, and it needs a larger machine type. What should you do so the public address stays the same?",
+      "options": {
+        "A": "Promote the ephemeral external address to static, then stop, resize and start the VM.",
+        "B": "Change the machine type while it runs, so the address is never released.",
+        "C": "Snapshot the VM and create a larger VM from the snapshot.",
+        "D": "Stop the VM; ephemeral external addresses are kept while a VM is stopped."
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "The machine type can only be changed on a stopped VM, and stopping releases an ephemeral external address. Promoting it to static first keeps the same address through the stop.",
+        "option_breakdown": {
+          "A": "Correct. The promoted address stays with the VM while it is stopped and resized.",
+          "B": "Compute Engine changes machine types only on stopped VMs.",
+          "C": "A new VM gets a new ephemeral address, so partners would see a change.",
+          "D": "An ephemeral external address is released when the VM stops."
+        },
+        "gcloud_command": "gcloud compute addresses create ripley-ip --addresses=CURRENT_IP --region=R\ngcloud compute instances stop maps-vm --zone=Z\ngcloud compute instances set-machine-type maps-vm --zone=Z --machine-type=n2-standard-8",
+        "doc_ref": "https://docs.cloud.google.com/vpc/docs/ip-addresses"
+      }
+    },
+    {
+      "id": "ace-s3-192",
+      "uid": "62790942-be36-4b03-83b7-b2fc2dfe55a0",
+      "title": "Testing a new setting on Cloud Run without users",
+      "objective": "3.1",
+      "subtopic": "Cloud Run Releases",
+      "summary": "Deploying with --no-traffic and a tag creates a revision that gets its own URL but no user traffic, for testing before a switch.",
+      "tags": [
+        "cloud-run",
+        "revisions",
+        "traffic"
+      ],
+      "source": "curated",
+      "question": "The Cloud Run service checkout at Dunmow Shoes serves all traffic from its latest revision. The team wants to try a new MAX_CART_ITEMS environment variable value on a URL only testers know, with no customer traffic, before switching over. What should it do?",
+      "options": {
+        "A": "Update the variable; Cloud Run applies it to running instances only for testers.",
+        "B": "Deploy a second Cloud Run service with the new value.",
+        "C": "Update the variable and split traffic 50/50 between the revisions.",
+        "D": "Deploy the change with --no-traffic and a tag, and test the tag's URL."
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "A configuration change creates a new revision. With --no-traffic it receives no user requests, and a tag gives it a dedicated URL for testers.",
+        "option_breakdown": {
+          "A": "Changing a variable creates a new revision for everyone who follows the latest revision; there is no per-user setting.",
+          "B": "A second service works but duplicates configuration and access the team then has to maintain.",
+          "C": "A 50/50 split sends real customers to the untested value.",
+          "D": "Correct. The tagged revision is reachable on its own URL while customers stay on the current one."
+        },
+        "gcloud_command": "gcloud run services update checkout --region=R --update-env-vars=MAX_CART_ITEMS=50 --no-traffic --tag=test",
+        "doc_ref": "https://docs.cloud.google.com/run/docs/rollouts-rollbacks-traffic-migration"
+      }
+    },
+    {
+      "id": "ace-s3-193",
+      "uid": "a6b28c92-d8ad-4350-96dd-f821e626006d",
+      "title": "Rolling back a bad configuration on Cloud Run",
+      "objective": "3.1",
+      "subtopic": "Cloud Run Releases",
+      "summary": "Each configuration change is a new immutable revision, so a rollback sends traffic back to the previous revision rather than editing the bad one.",
+      "tags": [
+        "cloud-run",
+        "revisions",
+        "rollback"
+      ],
+      "source": "curated",
+      "question": "Ten minutes after an engineer at Patterdale Tours changed a Cloud Run service's DB_POOL_SIZE variable, errors spiked. The previous revision, booking-00041, worked fine. What is the fastest way to restore service?",
+      "options": {
+        "A": "Send 100% of traffic to booking-00041.",
+        "B": "Edit the variable inside the new revision back to its old value.",
+        "C": "Rebuild and push the container image, then deploy it.",
+        "D": "Delete the service and redeploy it from source."
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "Revisions are immutable and the old one still exists, so moving traffic back to it takes effect in seconds without building or deploying anything.",
+        "option_breakdown": {
+          "A": "Correct. update-traffic to booking-00041 at 100% restores the working configuration immediately.",
+          "B": "A revision can't be edited; changing the variable creates yet another revision.",
+          "C": "The image didn't change; rebuilding it adds minutes and doesn't touch the variable.",
+          "D": "Deleting the service causes an outage and loses its revisions and settings."
+        },
+        "gcloud_command": "gcloud run services update-traffic booking --region=R --to-revisions=booking-00041=100",
+        "doc_ref": "https://docs.cloud.google.com/run/docs/rollouts-rollbacks-traffic-migration"
       }
     },
     {

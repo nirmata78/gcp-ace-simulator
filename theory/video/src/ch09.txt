@@ -84,6 +84,11 @@ Uptime checks :: Probe HTTP(S), TCP or ICMP from several locations, or privately
 grn SLOs :: On a **service**, with an **SLI**, a target and a window. The **error budget** is the allowed failure. A **burn-rate** alert fires when it is consumed too fast.
 N: Uptime checks probe H-T-T-P, T-C-P or I-C-M-P endpoints from several Google locations, or privately inside a V-P-C, and they chart availability and latency. They alert only through an attached policy. S-L-Os are defined on a service, with an S-L-I, a target and a window. The error budget is the allowed failure, and a burn-rate alert fires when the budget is being consumed too fast. That pages on fast budget consumption, and not on every blip.
 
+= shot | In the console | Alerting on silence
+alert-metric-absence.png
+~ Condition type: Metric absence, with a duration: fires when a metric stops arriving
+N: In the alerting policy form, the condition type metric absence fires when a time series stops arriving for the duration you set. That is how a worker that hangs, and stops reporting, is caught. A threshold on the value never fires, because there is no value to compare.
+
 ## 9.4 Custom metrics and Managed Service for Prometheus
 
 = table | Custom metrics | Four ways in
@@ -101,6 +106,11 @@ Self-deployed | A drop-in replacement Prometheus binary you run
 On VMs | The **Ops Agent's Prometheus receiver**
 > Stored in Monarch, retained long-term. Query with **PromQL** in Metrics Explorer, alerts and Grafana.
 N: Managed Service for Prometheus stores Prometheus metrics in Google's global time-series store, retains them long-term, and lets you query with PromQL in Metrics Explorer, alerting policies and Grafana, so Grafana keeps its dashboards. On G-K-E, managed collection is the default on new clusters. You declare Pod Monitoring resources, and Google runs the collectors. Self-deployed collection uses a drop-in replacement binary. And on V-Ms, it is the Ops Agent's Prometheus receiver.
+
+= shot | In the console | A distribution metric from a log field
+logmetric-distribution.png
+~ Metric type: Distribution · field name jsonPayload.latency_ms · optional regular expression
+N: A log-based metric of type distribution extracts a number from each matching entry, here jsonPayload dot latency underscore milliseconds, or from text with a regular expression. The values form a histogram, so charts and alerts can use the fiftieth or ninety-ninth percentile. A counter metric only counts entries.
 
 ## 9.5 Cloud Logging: routing, buckets, Log Analytics
 
@@ -144,6 +154,11 @@ Destination | Right when
 **Cloud Storage** | **Retain cheaply for years**, read rarely, with lifecycle to Archive
 A log bucket, long retention | Keep logs in Logging's own tools and Log Analytics
 N: Export by requirement. Pub/Sub for streaming to a S-I-E-M, Splunk, or an on-premises collector. BigQuery for constant querying and joining. Cloud Storage to retain cheaply for years, with a lifecycle rule to Archive. And a log bucket with long retention to keep logs in Logging's own tools.
+
+= shot | In the console | A sink writes as its own identity
+sink-create.png
+~ After creating a sink to another project, grant its writer identity a role on the destination
+N: When you create a sink whose destination is in another project, the sink writes as its own writer identity, a service account Google creates for it. That identity needs a role on the destination: BigQuery Data Editor on a dataset, Storage Object Creator on a bucket, Pub/Sub Publisher on a topic. Without it, entries are dropped, and the sink definition itself shows no error.
 
 ## 9.6 Reading logs
 
@@ -382,6 +397,71 @@ why B :: Latency, not idle resources.
 why C :: Assembled, and it has no savings estimate.
 why D :: Incidents, not cost.
 C: The answer is A. Active Assist recommenders find idle resources, with estimated savings, in the Recommendation Hub and FinOps hub. C is the assembled alternative. B and D answer different questions.
+
+## Part 9: frequently missed patterns
+
+= th | Part 9 · more practice | Alerts, log metrics, sinks and Prometheus | Each one turns on what the signal actually is.
+N: 5 more questions, built on the patterns that candidates most often get wrong in this part. Answer each one before the reveal, and say which phrase in the stem decides it.
+
+= q | A batch worker writes a custom metric every minute while it is healthy. When it hangs, it writes nothing at all, so a threshold on the metric's value never fires. What condition should the alerting policy use?
+(A) A metric-absence condition over, say, ten minutes
+(B) A threshold condition on the metric above zero
+(C) A forecast condition on the metric
+(D) An uptime check against the worker's VM
+ans A
+why A :: Correct. Metric absence detects the silence itself, which is how a hung process that stops reporting is caught.
+why B :: With no data, a threshold condition has nothing to compare and does not fire.
+why C :: Forecasting predicts future values of data that exists.
+why D :: The VM may be reachable while the worker process is hung.
+C: The answer is A. Metric absence detects the silence itself, which is how a hung process that stops reporting is caught.
+
+= q | A legacy service writes a structured log entry per request with jsonPayload.latency_ms, but exports no latency metric. The team wants to chart p50 and p99 latency and alert on p99, without changing code. What should it create?
+(A) A distribution log-based metric on jsonPayload.latency_ms
+(B) A counter log-based metric on the request entries
+(C) An uptime check against the service's health endpoint
+(D) A log sink to BigQuery with a scheduled percentile query
+ans A
+why A :: Correct. A distribution metric turns the extracted values into a histogram time series, from which percentile charts and alert conditions are computed.
+why B :: A counter counts entries; it cannot give latency percentiles.
+why C :: An uptime check measures one probe's response, not the latency of real requests.
+why D :: A scheduled query is batch analysis, not a metric an alerting policy can evaluate.
+C: The answer is A. A distribution metric turns the extracted values into a histogram time series, from which percentile charts and alert conditions are computed.
+
+= q | A log sink in project app-prod routes audit logs to a BigQuery dataset in project sec-logs. The sink shows no errors in its definition, but no tables ever appear. What is the most likely fix?
+(A) Enable Data Access audit logs in sec-logs
+(B) Recreate the sink in sec-logs instead of app-prod
+(C) Grant the sink's writer identity Data Editor on the dataset
+(D) Grant yourself roles/logging.admin in app-prod
+ans C
+why A :: The logs come from app-prod; the destination project's audit settings do not matter.
+why B :: A sink lives where the logs are produced, which app-prod correctly is.
+why C :: Correct. Every sink writes as its own writer identity, which needs permission at the destination; without it, routed entries are dropped.
+why D :: Your own role does not change what the sink's identity can write.
+C: The answer is C. Every sink writes as its own writer identity, which needs permission at the destination; without it, routed entries are dropped.
+
+= q | Managed collection for Google Cloud Managed Service for Prometheus is enabled on Calloway Foods' GKE cluster. A new inventory Deployment exposes Prometheus metrics on port 9090 at /metrics, but after a day none of its metrics appear in Cloud Monitoring. What should you add?
+(A) A PodMonitoring resource for the Pods' metrics port
+(B) The Ops Agent, installed on every node through a DaemonSet
+(C) A self-managed Prometheus server with remote write to BigQuery
+(D) A log-based metric parsing the /metrics output from container logs
+ans A
+why A :: Correct. It declares what the managed collectors should scrape.
+why B :: The Ops Agent is for Compute Engine VMs; GKE uses managed collection for Prometheus metrics.
+why C :: Running your own server is what the managed service replaces, and BigQuery is not a Prometheus backend.
+why D :: Metrics are scraped over HTTP, not parsed from logs.
+C: The answer is A. Managed collection runs the collectors for you, but scraping is opt-in per workload: a PodMonitoring (or ClusterPodMonitoring) resource names the label selector, port and path to scrape.
+
+= q | Besides Cloud SQL, Tolland Retail runs self-managed MySQL on six Compute Engine VMs. The DBA lead wants their connections, query rates and slow-query logs in Cloud Monitoring and Cloud Logging, using only generally available features. What should you set up?
+(A) Migrate the six databases to Cloud SQL first
+(B) Uptime checks against port 3306 on each VM
+(C) VPC Flow Logs for the VMs' subnet
+(D) The Ops Agent with its MySQL integration on each VM
+ans D
+why A :: Migration may come later, but the lead wants the existing databases monitored now.
+why B :: An uptime check only says whether the port answers.
+why C :: Flow logs show network flows, not database metrics or logs.
+why D :: Correct. The agent's MySQL receiver collects metrics and logs from each VM.
+C: The answer is D. The Ops Agent has a MySQL integration that collects the server's metrics and its error and slow-query logs, sending them to Cloud Monitoring and Cloud Logging.
 
 = th | End of Part 9 | Next: the last 48 hours | Every confusion pair, the numbers, the command atlas, the stem words, and a fifteen-question mock.
 N: That is part nine, and all the theory. Part ten compresses it for the final forty-eight hours, and ends with a mixed mock exam.

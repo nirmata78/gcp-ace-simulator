@@ -20,6 +20,15 @@ an objective (1.1 … 4.2) and a subtopic that names the guide bullets it teache
     kb.py add --file question.json  add a hand-written question
     kb.py stats                     bank health at a glance
 
+Growing the bank by a planned amount (the /expand skill; docs/question-standard.md, "Growing the bank"):
+
+    kb.py plan 10% --out build/expand/RUN/plan.json   where the new questions go, with every key fixed
+    kb.py slots PLAN                what the next batch must contain, and what the bank already asks there
+    kb.py doc URL --find "term"     a documentation page as plain text, to quote evidence from
+    kb.py vet FILE --plan PLAN      check candidates against the standard, the bank and their slots
+    kb.py blind FILE                the candidates without keys, for a blind solver; --answers records the result
+    kb.py accept FILE --plan PLAN --ledger LEDGER     add a vetted, blind-solved batch
+
 Every write path re-validates the whole bank and rebuilds the register, so the
 index can never drift from the questions.
 """
@@ -605,6 +614,221 @@ def cmd_add(args) -> int:
     return 0
 
 
+# --------------------------------------------------------------------------
+# Planned expansion (the /expand skill)
+# --------------------------------------------------------------------------
+
+EXPAND_DIR = ROOT / "build" / "expand"
+GUARD_FILE = ROOT / "tests" / "fixtures" / "guarded_stems.json"
+
+
+def _read_json(path: Path):
+    if not path.exists():
+        print(f"[ERROR] {path} not found", file=sys.stderr)
+        sys.exit(1)
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        print(f"[ERROR] {path} is not valid JSON: {exc}", file=sys.stderr)
+        sys.exit(1)
+
+
+def _candidates(path: Path) -> list:
+    data = _read_json(path)
+    return data if isinstance(data, list) else [data]
+
+
+def _write_json(path: Path, payload) -> None:
+    """Write through a temporary file, so an interrupted write never leaves half a file."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    tmp.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    tmp.replace(path)
+
+
+def _guarded(stem: str) -> Optional[str]:
+    """The id of a removed question this stem restates, if any (the guard the test suite applies to the bank)."""
+    import hashlib
+
+    from audit_overlap import flagged, scores, tokens
+
+    if not GUARD_FILE.exists():
+        return None
+    guard = json.loads(GUARD_FILE.read_text(encoding="utf-8"))
+    mine = frozenset(hashlib.sha256((guard["salt"] + t).encode()).hexdigest()[:12] for t in tokens(stem))
+    for g in guard["stems"]:
+        if flagged(*scores(mine, frozenset(g["tokens"]))):
+            return g["id"]
+    return None
+
+
+def _vet(bank: QuestionBank, raws: list, plan: Optional[dict], offline: bool, final: bool, live: bool = False):
+    from src.expansion import fetch_page, vet
+
+    cache = None if live else EXPAND_DIR / "cache"
+    pages = None if offline else (lambda url: fetch_page(url, cache))
+    found, parsed = vet(bank, raws, plan=plan, pages=pages, final=final)
+    for label, q in parsed.items():
+        hit = _guarded(q.question)
+        if hit:
+            found.setdefault(label, []).append(
+                ("error", "guarded", f"the stem restates removed question {hit}; write a different scenario (AC7)"))
+    return found, parsed
+
+
+def _print_findings(found: dict, parsed: dict, raws: list) -> int:
+    errors = 0
+    for label, items in found.items():
+        for sev, code, msg in items:
+            errors += sev == "error"
+            tag = red("error") if sev == "error" else yellow("warn ")
+            print(f"{tag}  {label:<9} {code:<17} {msg}")
+    clean = [k for k in parsed if not any(s == "error" for s, _, _ in found.get(k, []))]
+    skipped = sum("skip" in r for r in raws)
+    print(f"\n{len(raws)} item(s): {len(clean)} without errors, {skipped} skipped, {errors} error(s).")
+    return errors
+
+
+def cmd_plan(args) -> int:
+    from src.expansion import parse_grow, plan, plan_summary
+
+    bank = load(args.data_dir)
+    try:
+        grow = parse_grow(args.grow, len(bank.questions))
+        p = plan(bank, grow, balance=args.balance, sections=args.sections, objective=args.objective,
+                 subtopics=args.subtopics, cross_share=args.cross_share, multi_share=args.multi_share, batch_size=args.batch_size,
+                 request=args.grow)
+    except ValueError as exc:
+        print(f"[ERROR] {exc}", file=sys.stderr)
+        return 1
+    print("\n".join(plan_summary(bank, p)))
+    if args.out:
+        if args.out.exists():
+            print(f"[ERROR] {args.out} exists; continue that run with 'kb.py slots', or pick another --out",
+                  file=sys.stderr)
+            return 1
+        _write_json(args.out, p)
+        print(green(f"\n[OK] wrote {args.out}"))
+    else:
+        print(dim("\nNothing written; pass --out FILE to start a run."))
+    return 0
+
+
+def cmd_slots(args) -> int:
+    from src.expansion import describe_slots, open_batch
+
+    bank = load(args.data_dir)
+    p = _read_json(args.plan)
+    counts: dict[str, int] = {}
+    for s in p["slots"]:
+        counts[s["status"]] = counts.get(s["status"], 0) + 1
+    print("Run: " + ", ".join(f"{n} {k}" for k, n in sorted(counts.items())) + f" of {len(p['slots'])} slots\n")
+    batch = args.batch or open_batch(p)
+    if batch is None:
+        print(green("Every slot is filled or skipped. The run is complete."))
+        return 0
+    print("\n".join(describe_slots(bank, p, batch)))
+    return 0
+
+
+def cmd_doc(args) -> int:
+    from src.expansion import fetch_page, find_in_page, preview_notes
+
+    try:
+        text = fetch_page(args.url, EXPAND_DIR / "cache")
+    except Exception as exc:
+        print(f"[ERROR] cannot read {args.url}: {exc}", file=sys.stderr)
+        return 1
+    for note in preview_notes(text):
+        print(yellow(f"[PREVIEW MENTIONED] …{note}…"))
+    if args.find:
+        lines = find_in_page(text, args.find)
+        print("\n".join(lines) if lines else dim("No line mentions those terms; try others, or read the page whole."))
+        return 0
+    print(text if args.all or len(text) <= args.max_chars else
+          text[: args.max_chars] + f"\n\n[cut at {args.max_chars} of {len(text)} characters; use --find or --all]")
+    return 0
+
+
+def cmd_vet(args) -> int:
+    bank = load(args.data_dir)
+    raws = _candidates(args.file)
+    plan = _read_json(args.plan) if args.plan else None
+    found, parsed = _vet(bank, raws, plan, args.offline, args.final)
+    return 1 if _print_findings(found, parsed, raws) else 0
+
+
+def cmd_blind(args) -> int:
+    from src.expansion import blind_sheet, record_blind
+
+    raws = _candidates(args.file)
+    try:
+        if not args.answers:
+            print(blind_sheet(raws))
+            return 0
+        answers = dict(a.replace("=", ":").split(":", 1) for a in args.answers)
+        rows = record_blind(raws, answers)
+    except Exception as exc:
+        print(f"[ERROR] {' '.join(str(exc).split())}\nRun kb.py vet first; give answers as SLOT:LETTERS.",
+              file=sys.stderr)
+        return 1
+    _write_json(args.file, raws)
+    for label, key, given, agrees in rows:
+        print(f"{green('agree   ') if agrees else red('DISAGREE')}  {label:<9} key {key:<4} blind {given or '-'}")
+    missing = sum("skip" not in r and "blind" not in r for r in raws)
+    if missing:
+        print(yellow(f"{missing} candidate(s) have no blind answer yet."))
+    return 0 if all(r[3] for r in rows) and not missing else 1
+
+
+def cmd_accept(args) -> int:
+    """Add a batch that passes every gate. All or nothing: one error and the bank is untouched."""
+    from src.expansion import ledger_entry, mark
+
+    bank = load(args.data_dir)
+    raws = _candidates(args.file)
+    plan = _read_json(args.plan)
+    for raw in raws:
+        if raw.get("id") and bank.get(raw["id"]):
+            print(f"[ERROR] slot {raw.get('slot')} is already in the bank as {raw['id']}: this file was accepted before.",
+                  file=sys.stderr)
+            return 1
+    found, parsed = _vet(bank, raws, plan, args.offline, final=True, live=True)
+    if _print_findings(found, parsed, raws):
+        print(red("\nNothing written. Fix the errors, or mark a slot {\"slot\": N, \"skip\": \"reason\"}."))
+        return 1
+
+    retired = QuestionBank.retired_ids(args.data_dir)
+    ledger = _read_json(args.ledger) if args.ledger.exists() else {"standard": "docs/question-standard.md",
+                                                                  "entries": []}
+    added = []
+    for i, raw in enumerate(raws):
+        if "skip" in raw:
+            mark(plan, raw["slot"], "skipped", reason=str(raw["skip"]).strip())
+            continue
+        q = parsed[f"slot {raw['slot']}"]
+        q.id = bank.next_id(q.domain, retired, cross=q.is_cross_domain)
+        bank.questions.append(q)
+        ledger["entries"].append(ledger_entry(q, raw))
+        mark(plan, raw["slot"], "filled", id=q.id)
+        raw["id"] = q.id
+        added.append(q.id)
+    QuestionBank(questions=bank.questions)  # ids, GUIDs and titles still unique
+
+    if args.dry_run:
+        print(dim(f"[DRY RUN] would add {len(added)} question(s); nothing written."))
+        return 0
+    # The batch file first: it carries the new ids, so a repeated accept is refused even if a later write is lost.
+    _write_json(args.file, raws)
+    bank.save(args.data_dir)
+    _write_json(args.plan, plan)
+    _write_json(args.ledger, ledger)
+    left = sum(s["status"] == "open" for s in plan["slots"])
+    print(green(f"\n[OK] added {len(added)}: {' '.join(added)}"))
+    print(f"Bank now {len(bank.questions)}. {left} slot(s) still open in the plan.")
+    return 0
+
+
 def cmd_reindex(args) -> int:
     bank = load(args.data_dir)
     bank.save(args.data_dir)
@@ -681,6 +905,58 @@ def main() -> int:
     p.add_argument("--dry-run", action="store_true")
     p.add_argument("--yes", "-y", action="store_true", help="skip confirmation")
     p.set_defaults(func=cmd_add)
+
+    from src.expansion import BALANCES, BATCH_SIZE, CROSS_SHARE, MULTI_SHARE
+
+    p = sub.add_parser("plan", help="plan an expansion: where N new questions go")
+    p.add_argument("grow", help="how much to add: a share of the bank (10%%) or a count (25)")
+    p.add_argument("--balance", choices=BALANCES, default="exam",
+                   help="exam: fill what is furthest below the exam weights (default); batch: split the run by "
+                        "the exam weights; current: grow every section by the same percentage")
+    p.add_argument("--section", dest="sections", type=int, action="append", choices=[1, 2, 3, 4],
+                   help="only this section (repeatable)")
+    p.add_argument("--objective", "-o", choices=sorted(OBJECTIVES), help="only this objective")
+    p.add_argument("--subtopic", dest="subtopics", action="append",
+                   help="only this subtopic, by its exact name (repeatable); the thinnest of them is filled first")
+    p.add_argument("--cross-share", type=float, default=CROSS_SHARE,
+                   help=f"share of cross-domain questions (default {CROSS_SHARE})")
+    p.add_argument("--multi-share", type=float, default=MULTI_SHARE,
+                   help=f"share of multiple-select questions (default {MULTI_SHARE})")
+    p.add_argument("--batch-size", type=int, default=BATCH_SIZE)
+    p.add_argument("--out", type=Path, help="write the plan here and start a run")
+    p.set_defaults(func=cmd_plan)
+
+    p = sub.add_parser("slots", help="what the next batch of a plan must contain")
+    p.add_argument("plan", type=Path)
+    p.add_argument("--batch", type=int, help="a batch number (default: the first with an open slot)")
+    p.set_defaults(func=cmd_slots)
+
+    p = sub.add_parser("doc", help="a documentation page as plain text")
+    p.add_argument("url")
+    p.add_argument("--find", action="append", help="only lines mentioning this term (repeatable)")
+    p.add_argument("--max-chars", type=int, default=12000)
+    p.add_argument("--all", action="store_true", help="print the whole page")
+    p.set_defaults(func=cmd_doc)
+
+    p = sub.add_parser("vet", help="check candidate questions before they are added")
+    p.add_argument("file", type=Path)
+    p.add_argument("--plan", type=Path, help="also check each candidate against its slot")
+    p.add_argument("--offline", action="store_true", help="skip checking evidence quotes against the doc pages")
+    p.add_argument("--final", action="store_true", help="also require an agreeing blind-solve record")
+    p.set_defaults(func=cmd_vet)
+
+    p = sub.add_parser("blind", help="candidates without keys, and recording a blind solver's answers")
+    p.add_argument("file", type=Path)
+    p.add_argument("--answers", nargs="+", metavar="SLOT:LETTERS", help="for example 12:B 13:A,D")
+    p.set_defaults(func=cmd_blind)
+
+    p = sub.add_parser("accept", help="add a vetted, blind-solved batch to the bank")
+    p.add_argument("file", type=Path)
+    p.add_argument("--plan", type=Path, required=True)
+    p.add_argument("--ledger", type=Path, required=True, help="review ledger of this run (created if missing)")
+    p.add_argument("--offline", action="store_true", help=argparse.SUPPRESS)
+    p.add_argument("--dry-run", action="store_true")
+    p.set_defaults(func=cmd_accept)
 
     p = sub.add_parser("reindex", help="rewrite section files and rebuild register.json")
     p.set_defaults(func=cmd_reindex)

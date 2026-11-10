@@ -8,11 +8,11 @@
   course.py stats              words, slides, questions, estimated and real durations
 Heavy output lives in ~/.cache/ace-video/ and ~/Movies/GCP-ACE-course/, outside the repository.
 
-Source format: see README.md."""
+Source format: see README.md. Console screenshots for "= shot" slides live in shots/, which is gitignored."""
 import html, json, pathlib, re, subprocess, sys, concurrent.futures as cf
 
 HERE = pathlib.Path(__file__).resolve().parent
-SRC, SVG = HERE / "src", HERE / "svg"
+SRC, SVG, SHOTS = HERE / "src", HERE / "svg", HERE / "shots"
 BUILD = pathlib.Path.home() / ".cache/ace-video/build"
 OUT = pathlib.Path.home() / "Movies/GCP-ACE-course"
 KIT = pathlib.Path.home() / ".claude/skills/slide-video-kit/scripts"
@@ -109,6 +109,12 @@ class Chapter:
             name = body[0].strip()
             if not (SVG / f"{name}.svg").exists(): self.lint.append(f"missing diagram {name}")
             self.slide("dia " + new, self.top(k, t, red) + f'<figure class="grow"><!--SVG:{name}--></figure>{lines}')
+        elif typ == "shot":
+            # A Cloud Console screenshot from shots/ (gitignored, local only): first body line is the file name,
+            # an optional "~ caption" line sits under the picture.
+            name = body[0].strip(); cap = "".join(f'<figcaption>{inline(b[2:])}</figcaption>' for b in body[1:] if b.startswith("~ "))
+            if not (SHOTS / name).exists(): self.lint.append(f"missing screenshot {name}")
+            self.slide("dia shot " + new, self.top(k, t, red) + f'<figure class="grow shot"><img src="{(SHOTS / name).as_uri()}" alt=""></figure>{cap}{lines}')
         elif typ == "code":
             self.slide(new, self.top(k, t, red) + f'<pre class="code">{html.escape(chr(10).join(body))}</pre>{lines}')
         elif typ == "panel":

@@ -159,6 +159,11 @@ logs from dev"*). Routing is free; ingestion and retention beyond the defaults c
 
 **Log views** restrict who sees which logs **inside** a bucket (`roles/logging.viewAccessor` on a view).
 
+A log bucket's **region is fixed at creation**: to store logs elsewhere, create a bucket in the new region and
+point the sinks at it. A **log view** exposes a subset of a bucket, and IAM on the view limits a team to that
+subset. Among the Monitoring roles, Monitoring Viewer is read-only and Monitoring Editor creates dashboards and
+alerting policies.
+
 ### Log Analytics
 
 Upgrading a log bucket to **Log Analytics** lets you query logs with **SQL**, and optionally create a **linked
