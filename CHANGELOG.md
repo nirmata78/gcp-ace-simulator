@@ -6,6 +6,49 @@ All notable changes to this project are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- **141 more questions** (bank 927), written by the first `/expand` runs: 59 in Section 1 (projects and accounts 36,
+  billing 23), 80 in Section 4 (IAM 28, service accounts 52) and 2 in Section 2. Sixteen are cross-domain
+  (`ace-x-079`…`ace-x-094`) and thirteen are multiple-select. The sections now sit at 20.1 / 30.5 / 30.7 / 18.7% against
+  exam weights of 20 / 30 / 30 / 20; Section 4 was 11.8%. The theory gained the facts behind them (standalone
+  organizations, disabling APIs, quota types, billing accounts and exports, IAM policy tools, custom role states,
+  service agents, default service accounts, impersonation, and operating Workload Identity Federation).
+- `kb.py plan --subtopic NAME` aims a run at named subtopics, for when the others have nothing new left to ask.
+- **`/expand`: grow the bank by a planned amount.** `claude "/expand 10%" --model opus --effort high` plans where the
+  new questions go, steering the sections toward the exam weights, and mixes in multiple-select and cross-domain
+  questions. Each key is fixed in advance and proven by a sentence quoted from its documentation page; each question
+  is answered blind by a second agent before it is added. New commands behind it: `kb.py plan`, `slots`, `doc`, `vet`,
+  `blind` and `accept`.
+
+- **69 new questions** (bank 786) on concepts that are often confused: Cloud NAT IP modes and regions, static and
+  promoted addresses, DNS forwarding in both directions, BGP and Cloud Router ASNs, dynamic routing mode, GKE Pod
+  ranges, implied firewall rules, separate projects and Shared VPC hosts per environment, Assured Workloads, Directory
+  Sync and Entra ID provisioning, workforce pool members and sessions, service account undelete, HMAC keys, Cloud
+  Scheduler tokens, log-based metrics, sinks, Managed Prometheus, Spot termination, Cloud Run revisions, storage classes
+  and `bq load`. Three are cross-domain topology questions (`ace-x-076`…`ace-x-078`).
+- **Theory:** five worked network blueprints with their build order and public addresses
+  ([§4.13](theory/04-networking.md)), BGP in one page, the dynamic routing mode, secondary ranges and additional GKE Pod
+  ranges (up to 170 per subnet), a production/non-production project blueprint, Assured Workloads in depth, GKE cost
+  allocation, kubectl version skew, `bq load --replace`, and Spanner instance configurations.
+- **Course video sources:** the new theory as slides, ten new diagrams, Cloud Console walkthroughs (`= shot` slides,
+  screenshots kept locally in the gitignored `theory/video/shots/`), and a practice section at the end of every part.
+
+### Changed
+
+- **Question standard.** It now says what makes a question distinct (a new decision or a variant, never a
+  restatement), requires quoted evidence and a blind solve for questions added in bulk, and adds rules on one decision
+  per question, volatile numbers, distractors that each fail for their own reason, and what earns an `also_tests` entry.
+- **A key never depends on a Preview feature.** The question standard (AC7) now says so, measured against Google Cloud
+  in June 2026; Gemini Cloud Assist, which the guide names, is the one exception. Five questions whose keys relied on
+  Preview features were retired and replaced (`ace-s1-043` liens, `ace-s1-047` Gemini in Billing, `ace-s2-085` the
+  Gemini Cloud Assist MCP server, `ace-s3-127` Database Center on Compute Engine VMs, `ace-s4-053` Activity Analyzer),
+  and the theory now tags those features *Preview*.
+
+### Fixed
+
+- `ace-s3-154` said a stopped VM keeps its IP addresses; it keeps its internal address, and the stem now says so.
+
 ## [1.2.0] - 2026-11-07
 
 The question review of [issue #1](https://github.com/nirmata78/gcp-ace-simulator/issues/1), question formats the

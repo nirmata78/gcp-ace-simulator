@@ -87,3 +87,4 @@ d.note(40, 340, 1520, "The classic symptom: gcloud works on the laptop, but the 
 d.save(OUT / "p1-three-clients.svg")
 
 exec((pathlib.Path(__file__).parent / "diagrams_more.py").read_text()) if (pathlib.Path(__file__).parent / "diagrams_more.py").exists() else None
+exec((pathlib.Path(__file__).parent / "diagrams_blueprints.py").read_text()) if (pathlib.Path(__file__).parent / "diagrams_blueprints.py").exists() else None

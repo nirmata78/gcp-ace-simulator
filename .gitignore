@@ -17,6 +17,7 @@ theory/pdf/ACE-Theory-Recap.md
 theory/pdf/.build/
 theory/video/ACE-Video-Questions.md
 theory/video/publish/
+theory/video/shots/
 
 # ── Jekyll / GitHub Pages local builds ──
 _site/
@@ -39,7 +40,9 @@ __pycache__/
 .idea/
 .vscode/
 *.swp
-.claude/
+.claude/*
+!.claude/skills/
+!.claude/agents/
 .agents/
 
 # ── Python packaging ──

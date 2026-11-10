@@ -211,6 +211,13 @@ V: Only the home directory persists. That is the whole Cloud Shell topic.
 [pause: 0.6]
 N: Options that claim the V-M is permanently yours, that nothing persists, or that system paths like user local bin persist, are each a near miss of that one fact.
 
+= panel key | Launch stages | Preview is not an exam answer
+**Preview** (no SLA, limited support) comes before **GA**. The docs show a **Preview** banner, or *(Preview)* beside a feature.
+==A right answer never depends on a feature that was only Preview in June 2026.== Preview features appear as distractors.
+Exception: **Gemini Cloud Assist** is labelled Preview, but the guide names it, so its core uses are taught.
+`gcloud beta` is a **command track**, not a launch stage.
+N: One rule that runs through this course. Google Cloud features are first released in Preview, under the pre-G-A offerings terms, with no service level agreement and limited support, and only later become generally available. The documentation marks them with a Preview banner, or with the word Preview beside one feature of a G-A product. The exam guide was written against Google Cloud as it stood in June twenty twenty-six, so a right answer here never depends on a feature that was still in Preview then. Preview features can still appear as distractors, and the theory tags them so you recognise them. There is one exception. Gemini Cloud Assist is still labelled Preview, but the guide names it in three objectives, so its core uses are taught and tested. And do not confuse the gee-cloud beta track with a launch stage. It is a command track, and the feature behind it is often G-A.
+
 ## 1.6 Part 1 recall card
 
 = table | Recall card, 1 of 2 | Answer aloud before the voice does
@@ -307,6 +314,35 @@ why B :: One command swaps account, project and region together.
 why C :: Heavy, and not a gcloud feature.
 why D :: Re-runs the interactive set-up every time.
 C: The answer is B. The deciding phrase is that you switch several times a day. A named configuration bundles the account, the project and the default region, and activate swaps them all in one command. A works, but relying on remembering flags is the source of the mistake. C is heavy and unrelated. And D is the first-time set-up, not a way to switch.
+
+## Part 1: frequently missed patterns
+
+= th | Part 1 · more practice | Locations, residency and where things exist | Name the clause that decides it, then commit.
+N: 2 more questions, built on the patterns that candidates most often get wrong in this part. Answer each one before the reveal, and say which phrase in the stem decides it.
+
+= q | Before committing to an architecture, you need to confirm which Spanner dual-region configurations are available to your project. What is the most direct check?
+(A) The list of Compute Engine regions and zones
+(B) The Spanner instances that already exist in the project
+(C) The Spanner instance configurations available to the project
+(D) The Spanner API's entry in the project's available services
+ans C
+why A :: Compute Engine regions don't tell you which Spanner configurations exist.
+why B :: That lists instances you already created, not the configurations you could choose.
+why C :: Correct. Instance configurations define where Spanner can place replicas; listing them (gcloud spanner instance-configs list) shows the regional, dual-region and multi-region configurations you can use.
+why D :: That only tells you the Spanner API can be enabled.
+C: The answer is C. Instance configurations define where Spanner can place replicas. Listing them shows the regional, dual-region and multi-region configurations you can use.
+
+= q | A public-sector customer requires that its data stays in the EU and that only EU-based Google support personnel can access it, with these controls applied to every project in its workload. What should you set up?
+(A) The gcp.resourceLocations organisation policy set to in:eu-locations
+(B) Projects in europe-west regions with CMEK
+(C) A VPC Service Controls perimeter around the projects
+(D) An Assured Workloads folder with an EU data boundary control package
+ans D
+why A :: The location constraint covers where resources are created, not who at Google may support them.
+why B :: Region and key choices do not control support personnel access.
+why C :: A service perimeter limits data exfiltration over APIs; it says nothing about personnel.
+why D :: Correct. Assured Workloads creates a folder with a control package that enforces data location and restricts support personnel, and it monitors for violations.
+C: The answer is D. Assured Workloads creates a folder with a control package that enforces data location and restricts support personnel, and it monitors for violations.
 
 = th | End of Part 1 | Next: the tree that everything hangs from | Part 2 covers the organization, folders and projects, billing, budgets, quotas and Cloud Asset Inventory.
 N: That is part one. You now know how the paper is built, what changed in June twenty twenty-six, how items are written, and where resources live. Next, part two: the resource tree that everything hangs from, and who pays for it.

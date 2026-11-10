@@ -287,9 +287,9 @@ Question | Tool
 *Why* can or can't this principal do this? | **Policy Troubleshooter**
 *Who* can do X on Y? *What* can this principal reach? | **Policy Analyzer**
 Which roles are more than it actually uses? | **IAM role recommender**, from about 90 days of usage
-Is this service account or key still used? | **Activity Analyzer**, usage insights
+Is this service account or key still used? | Key **authentication metrics** in Metrics Explorer (6 weeks)
 What would a policy change break? | **Policy Simulator**
-N: Five tools, and each has its own question. Why can or can't this principal do this action on this resource? Policy Troubleshooter. Who can do this on that, or what can this principal reach? Policy Analyzer, which is part of Asset Inventory. Which roles exceed what this principal actually uses? The I-A-M role recommender in Active Assist, based on about ninety days of usage. Is this service account or key still used? Activity Analyzer. And what would a policy change break? Policy Simulator.
+N: Five tools, and each has its own question. Why can or can't this principal do this action on this resource? Policy Troubleshooter. Who can do this on that, or what can this principal reach? Policy Analyzer, which is part of Asset Inventory. Which roles exceed what this principal actually uses? The I-A-M role recommender in Active Assist, based on about ninety days of usage. Is this service account or key still used? The key authentication metrics in Metrics Explorer, which keep six weeks of data. Activity Analyzer shows the last authentication too, but it is in Preview. And what would a policy change break? Policy Simulator.
 
 ## 3.9 Service accounts: kinds and lifecycle
 
@@ -642,6 +642,107 @@ why B :: A new account is a new principal, and old bindings do not apply.
 why C :: The only real way to "rename".
 why D :: The display name is only a label.
 C: The answer is C. The account I-D is permanent, so renaming really means creating a new account and migrating. A is impossible. B is the trap we covered: a new account, even with the same name, is a different principal with a new unique I-D, and the old bindings do not apply to it. D changes a label and leaves the address the same.
+
+## Part 3: frequently missed patterns
+
+= th | Part 3 · more practice | Where identities come from, and how software signs in | Ask who the principal is, and where it was created.
+N: 8 more questions, built on the patterns that candidates most often get wrong in this part. Answer each one before the reveal, and say which phrase in the stem decides it.
+
+= q | Your organisation keeps its authoritative employee list in on-premises Active Directory and wants to keep it that way, while having full control over the Google accounts employees use for all Google services. The same users and groups must exist in Cloud Identity and stay updated as staff change. What should you do?
+(A) Run Google Cloud Directory Sync from Active Directory on a schedule
+(B) Configure SAML single sign-on between Active Directory and Cloud Identity
+(C) Create the accounts by hand in the Google Admin console
+(D) Configure Workforce Identity Federation with Active Directory
+ans A
+why A :: Correct. GCDS keeps Cloud Identity users and groups in step with Active Directory, and the accounts are fully managed Google accounts.
+why B :: SSO changes how users sign in; it creates no users or groups, so Cloud Identity would not follow the directory.
+why C :: Hand-made accounts drift from Active Directory, and joiners and leavers depend on someone remembering.
+why D :: Federation avoids Google accounts altogether, so there would be no managed accounts for other Google services.
+C: The answer is A. Google Cloud Directory Sync reads Active Directory on a schedule and creates, updates and suspends the matching Cloud Identity users and groups, so the directory stays authoritative.
+
+= q | A company runs Microsoft Entra ID (not on-premises Active Directory) and needs Cloud Identity users to be created, updated and suspended automatically when employees join, move or leave. What should it set up?
+(A) Automatic provisioning from Entra ID's Google Cloud enterprise app
+(B) Google Cloud Directory Sync on a domain controller
+(C) A workforce identity pool, which creates Cloud Identity users
+(D) A nightly CSV upload in the Admin console
+ans A
+why A :: Correct. Entra ID can provision and deprovision users and groups into Cloud Identity through its enterprise application, and SSO can be configured alongside it.
+why B :: GCDS synchronises from LDAP directories such as on-premises Active Directory.
+why C :: Workforce Identity Federation deliberately avoids creating Cloud Identity users.
+why D :: Manual uploads are not automatic and miss leavers.
+C: The answer is A. Entra ID can provision and deprovision users and groups into Cloud Identity through its enterprise application, and SSO can be configured alongside it.
+
+= q | Contractors reach the Google Cloud console through a dedicated workforce pool. Security wants their console and gcloud sessions to expire after 30 minutes, without affecting employees in another pool. What should you change?
+(A) Set the contractors' workforce pool session duration to 1800s
+(B) Set the Google Workspace session length to 30 minutes
+(C) Add an IAM condition that expires the contractors' role bindings after 30 minutes
+(D) Lower the OAuth access-token lifetime organisation policy to 30 minutes
+ans A
+why A :: Correct. A workforce pool's session duration controls how long access tokens and console and gcloud sessions from that pool are valid. It can be set per pool between 15 minutes and 12 hours.
+why B :: Workspace session controls apply to Google accounts, not federated workforce identities.
+why C :: A time-based condition removes access at a fixed date; it does not limit session length.
+why D :: That constraint governs service-account token lifetime extension, not federated user sessions.
+C: The answer is A. A workforce pool's session duration controls how long access tokens and console and gcloud sessions from that pool are valid. It can be set per pool between 15 minutes and 12 hours.
+
+= q | Engineers sign in through a workforce identity pool named corp-pool, whose provider maps Entra ID group IDs to google.groups. Members of the Entra ID group with ID a1b2c3 must get Viewer on project ops-prod. Which member should the binding use?
+(A) A group: member made from the Entra ID group ID
+(B) A serviceAccount: member named after the workforce pool
+(C) A domain: member for Entra ID's sign-in domain
+(D) A principalSet member for the pool's group a1b2c3
+ans D
+why A :: The group: prefix names Google groups in Cloud Identity; an Entra ID group isn't one.
+why B :: A workforce pool isn't a service account, and its users don't act as one.
+why C :: domain: grants to Google accounts in a Google-managed domain; it has nothing to do with Entra ID.
+why D :: Correct. IAM addresses federated workforce identities with principal and principalSet identifiers; a group mapped through google.groups is principalSet://iam.googleapis.com/locations/global/workforcePools/POOL/group/GROUP_ID.
+C: The answer is D. IAM names federated workforce identities with principal and principalSet identifiers; a group mapped through google.groups is addressed as principalSet://…/workforcePools/POOL/group/GROUP ID.
+
+= q | A service account used by a batch job was deleted by mistake eight days ago and the job now fails. Its role bindings in several projects were never removed. What restores the job with the least rework?
+(A) Create a new service account with the same name
+(B) Create a new service account with a different name and re-grant every role
+(C) Undelete the service account by its unique ID
+(D) Nothing can be done; deletion is permanent
+ans C
+why A :: A new account with the same name is a different principal, so the old bindings do not apply to it.
+why B :: It works, but it means re-creating every grant when undeleting restores them.
+why C :: Correct. Deleted service accounts can be undeleted for 30 days by unique ID, returning the same principal the existing bindings refer to.
+why D :: The 30-day undelete window has not passed.
+C: The answer is C. Deleted service accounts can be undeleted for 30 days by unique ID, returning the same principal the existing bindings refer to.
+
+= q | Security at Westgate Credit wants to delete every user-managed service account key in a project that hasn't authenticated in the last 30 days. Only generally available tools may be used. Where should you look?
+(A) Cloud Asset Inventory's resource search for service account keys
+(B) The key authentication metric in Metrics Explorer, grouped by key ID
+(C) The billing report filtered by service account
+(D) The VPC Flow Logs of the project's subnets
+ans B
+why A :: Asset search lists which keys exist, not when they were last used.
+why B :: Correct. Grouping the key authentication metric by key ID shows which keys authenticated in the last 30 days.
+why C :: Billing doesn't record authentications.
+why D :: Flow logs show network connections, not which credential a caller used.
+C: The answer is B. The metric iam.googleapis.com/service account/key/authn events count counts authentications per key and is kept for six weeks, so keys with no data in the last 30 days are unused.
+
+= q | A backup appliance can only talk to storage through the Amazon S3 API with an access key and secret. It must write to one Cloud Storage bucket. What should you create?
+(A) An HMAC key for a service account that can write to the bucket
+(B) A service account JSON key uploaded to the appliance
+(C) An OAuth client ID and secret
+(D) A signed URL valid for a year
+ans A
+why A :: Correct. Cloud Storage's interoperability mode accepts HMAC keys, which S3-compatible tools use like access keys. Tying the HMAC key to a dedicated service account keeps access scoped and revocable.
+why B :: S3 tools cannot use JSON keys.
+why C :: OAuth clients are for user sign-in flows.
+why D :: Signed URLs cover one object and cannot live that long when signed with V4.
+C: The answer is A. Cloud Storage's interoperability mode accepts HMAC keys, which S3-compatible tools use like access keys. Tying the HMAC key to a dedicated service account keeps access scoped and revocable.
+
+= q | A Cloud Run service requires authentication. A Cloud Scheduler job must call it every hour. How should the job authenticate?
+(A) An OIDC token for a service account holding Invoker on the service
+(B) Allow unauthenticated invocations on the service
+(C) Put a service account key in the job's request headers
+(D) Configure the job to send an OAuth access token with the cloud-platform scope
+ans A
+why A :: Correct. Cloud Run verifies Google-signed ID (OIDC) tokens. Scheduler mints one for the chosen service account, whose Invoker role authorises the call.
+why B :: That exposes the service to everyone.
+why C :: Keys in headers are insecure and not how Cloud Run authenticates.
+why D :: Cloud Run expects an ID token for its URL, not an OAuth access token.
+C: The answer is A. Cloud Run verifies Google-signed ID (OIDC) tokens. Scheduler mints one for the chosen service account, whose Invoker role authorises the call.
 
 = th | End of Part 3 | Next: networking | Can these two things reach each other, who is allowed to, how does traffic get in or out, and which load balancer.
 N: That is part three, the largest body of rules in the course. If you only have time to repeat one part, repeat this one. Next is part four, networking, where secure tags and service accounts come back as firewall targets.

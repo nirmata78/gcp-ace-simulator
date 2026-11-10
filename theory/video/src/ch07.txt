@@ -201,6 +201,13 @@ N: Bigtable. An instance has one or more clusters, one per zone, with nodes that
 - **PITR** (7 days), **scheduled backups**, export and import to Cloud Storage
 N: Firestore. Native mode has documents in collections, real-time listeners, and offline mobile and web S-D-Ks. Datastore mode serves server workloads using the Datastore A-P-I. Firestore with MongoDB compatibility accepts standard Mongo drivers, so it answers, move a Mongo app to a serverless database with minimal code change. The location is permanent. Single-field indexes are automatic, and composite indexes must be created for multi-field queries. Recovery has point-in-time recovery for seven days when enabled, scheduled backups which restore into a new database, and export and import.
 
+= cmd | Spanner | Which configurations exist, and where the replicas are
+Task | Command
+Every configuration available to the project | gcloud spanner instance-configs list
+Replicas, their types and the default leader of one | gcloud spanner instance-configs describe eur5
+> Dual-region configurations exist only for some country pairs. **List them** before designing around one.
+N: Spanner instance configurations decide where replicas live: regional, dual-region or multi-region. Which ones exist for your project is a list, not a guess: gee-cloud spanner instance configs list. And describe on one of them shows each replica, its type, its region, and the default leader. Dual-region configurations exist only for some country pairs within a geography, so check before you design around one.
+
 ## 7.9 BigQuery
 
 = table sm | BigQuery concepts | Hierarchy, partitions, pricing, recovery
@@ -230,6 +237,12 @@ Surfaces **health, availability, security and cost issues**: no automated backup
 No agents. Gemini answers fleet questions. A spreadsheet, or per-product consoles, are the distractors.
 N: First, Memorystore, which runs Redis, Redis Cluster, Valkey and Memcached, over private networking, for caching, session state, rate limiting and leaderboards. It is a cache in front of a database, not the database. Now, new in the guide: Database Center. It is one console view of the whole database fleet across projects. It inventories every instance, and it surfaces health, availability, security and cost issues: no automated backups, no high availability, outdated versions, public addresses, missing deletion protection, and over-provisioning. It needs no agents, and Gemini can answer questions such as which Cloud SQL instances in production have no backups. One place to see and fix risk across all our databases is Database Center.
 
+= panel note | Database Center | GA coverage is Google's managed databases
+Cloud SQL, AlloyDB, Spanner, Bigtable, Firestore, Memorystore: one fleet view across projects.
+Self-managed MySQL, PostgreSQL or SQL Server **on Compute Engine VMs** can be added, but that is **Preview**.
+GA monitoring for those: the **Ops Agent** with its database integrations.
+N: A precision on Database Center. Its generally available fleet view covers Google's managed databases: Cloud SQL, AlloyDB, Spanner, Bigtable, Firestore and Memorystore, across projects. Databases you run yourself on Compute Engine V-Ms can be added, but that is still in Preview, so it is not an exam answer. For those, the generally available route is the Ops Agent, with its MySQL, PostgreSQL or SQL Server integration.
+
 ## 7.11 Loading and moving data
 
 = dia | Do the arithmetic first | Volume divided by bandwidth gives days
@@ -249,6 +262,13 @@ Tool | Right when
 **Storage Write API**, Pub/Sub, Dataflow | **Streaming** into BigQuery
 **Datastream** · **Database Migration Service** | Change data capture · migration into Cloud SQL or AlloyDB
 N: In more detail. Storage Transfer Service handles large or recurring transfers, with scheduling, retries, integrity checks and bandwidth limits. bq load runs batch loads from Cloud Storage, in C-S-V, JSON, Avro, Parquet or O-R-C, and batch loading is free. External tables and BigLake query in place, without loading. The Storage Write A-P-I, Pub/Sub BigQuery subscriptions and Dataflow stream into BigQuery. Datastream does change data capture from MySQL, Postgres and Oracle. And Database Migration Service migrates databases into Cloud SQL or AlloyDB.
+
+= cmd | Loading a file into a table | Append by default; replace on request
+Task | Command
+Replace a table from a CSV with a header row | bq load --replace --source_format=CSV --skip_leading_rows=1 sales.daily gs://kestrel-drop/daily.csv
+Replace one day of a partitioned table | bq load --replace --source_format=CSV --skip_leading_rows=1 'sales.daily$20261108' gs://kestrel-drop/2026-11-08.csv
+> A load job **appends** unless told otherwise. An **external table** queries the file where it is; `gcloud storage cp` never loads a table.
+N: Loading a file into an existing table. A load job appends by default. Dash dash replace empties the table first, in the same job, so readers never see it half loaded. Skip leading rows equals one drops a C-S-V header. Point the load at one partition, with the dollar sign and the date, and only that day is replaced. An external table, by contrast, queries the file in place without loading it. And copying a file with gee-cloud storage never puts it in a table.
 
 ## 7.12 Messaging and pipelines: Pub/Sub, Managed Kafka, Dataflow
 
@@ -586,6 +606,35 @@ why B :: SMB, Active Directory, and NetApp features.
 why C :: A parallel file system for HPC and AI.
 why D :: Objects, not a Windows file share.
 C: The answer is B. S-M-B, Windows and NetApp each point to NetApp Volumes on their own, and here you have all three. Filestore is N-F-S. Lustre is for high-throughput parallel workloads. And Cloud Storage is objects.
+
+## Part 7: frequently missed patterns
+
+= th | Part 7 · more practice | Storage classes and loading data | Find the access pattern or the write disposition in the stem.
+N: 2 more questions, built on the patterns that candidates most often get wrong in this part. Answer each one before the reveal, and say which phrase in the stem decides it.
+
+= q | A new reporting extract is written to Cloud Storage each month. Analysts open every extract about once a month for the two years it is kept, and no extract is deleted early. Which storage class does Google recommend for this access pattern?
+(A) Archive Storage
+(B) Standard Storage
+(C) Nearline Storage
+(D) Coldline Storage
+ans C
+why A :: Archive is for data read less than once a year; monthly reads would pay its highest retrieval fee twelve times a year.
+why B :: Standard is for frequently accessed, hot data; monthly access is the Nearline case.
+why C :: Correct. Nearline is the recommended class for data accessed about once a month, and two years far exceeds its 30-day minimum.
+why D :: Coldline is for data accessed at most once a quarter; monthly reads make its higher retrieval fee add up.
+C: The answer is C. Google's guidance places data read or modified about once a month in Nearline, which has a 30-day minimum storage duration and a per-GB retrieval fee.
+
+= q | Each night a CSV file with one header row arrives in a Cloud Storage bucket. It must fully replace the contents of an existing BigQuery table that has a fixed schema. What should the nightly job run?
+(A) A query that inserts rows selected directly from the file's URI
+(B) A load job that overwrites the table and skips the header row
+(C) A copy of the file into the table with gcloud storage cp
+(D) An external table definition over the file
+ans B
+why A :: A query can't read a raw file URI unless an external table is defined first, and an INSERT appends rather than replaces.
+why B :: Correct. A load job with replace and one skipped leading row (bq load --replace --source_format=CSV --skip_leading_rows=1) overwrites the table from the file.
+why C :: gcloud storage copies objects between storage locations; a BigQuery table isn't one.
+why D :: An external table queries the file in place; the native table's contents stay as they were.
+C: The answer is B. A load job from Cloud Storage is the standard way to bring a file into a native table. replace truncates the table before writing (the default appends), and skip leading rows equals 1 ignores the header.
 
 = th | End of Part 7 | Next: tooling | Infrastructure as code, Gemini tooling, agents and developer platforms.
 N: That is part seven, and the heaviest lifting is done. Next is part eight, which is shorter: infrastructure as code, the A-I assisted tools that are new in the guide, and developer platforms.

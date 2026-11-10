@@ -53,6 +53,12 @@ Live CPU and memory | kubectl top pods
 The cluster's node pools | gcloud container node-pools list --cluster=shop --location=R
 N: Inventory. kubectl get pods shows what runs and where. kubectl describe pod shows the events, which explain why a Pod is not running. kubectl logs, with dash dash previous, shows the logs of the crashed container, which is what you need for a crash loop. kubectl top shows live C-P-U and memory. And node pools are listed with gcloud, since they belong to the cluster.
 
+= panel watch | kubectl version skew | One minor version, either way
+Kubernetes supports a `kubectl` **within one minor version** of the control plane, older or newer.
+Three versions behind gives odd errors: install a current `kubectl` (`gcloud components update` or the OS package).
+Never downgrade the cluster. `get-credentials` writes kubeconfig and installs nothing.
+N: Version skew. Kubernetes supports a kube-control within one minor version of the control plane, older or newer. One version behind is fine. Three versions behind gives strange errors, and the fix is a current kube-control, from gee-cloud components update or the operating system's package. Never downgrade the cluster to match a laptop. And get credentials only writes the kube config entry. It installs nothing.
+
 ## 6.3 Workloads
 
 = table sm | Kubernetes objects | Which object for which job
@@ -474,6 +480,49 @@ why B :: One Pod per node, for agents.
 why C :: Stable names, and per-Pod volumes.
 why D :: Runs to completion on a schedule.
 C: The answer is C. A Stateful Set gives stable names, such as db zero and db one, and per-Pod volumes through volume claim templates, with ordered start-up. A is for stateless replicas. B runs one per node. D is scheduled batch work.
+
+## Part 6: frequently missed patterns
+
+= th | Part 6 · more practice | GKE exposure, kubectl and Cloud Run revisions | Each answer is the object that owns the behaviour.
+N: 3 more questions, built on the patterns that candidates most often get wrong in this part. Answer each one before the reveal, and say which phrase in the stem decides it.
+
+= q | On a GKE cluster at Tolworth Media, the web Deployment must be reachable at /, and the api Deployment at /api, both on one public IP address with HTTPS. Which two actions should you take? (Choose two.)
+(A) Create a Service for each Deployment
+(B) Create a Service of type LoadBalancer for each Deployment
+(C) Create an Ingress that routes / to the web Service and /api to the api Service
+(D) Expose each Pod with hostPort 443
+(E) Create a Cloud NAT gateway for the cluster's nodes
+ans A, C
+why A :: Correct. The Ingress routes to Services, not to Deployments directly.
+why B :: Each LoadBalancer Service gets its own passthrough load balancer and IP, with no path routing.
+why C :: Correct. One Ingress gives one IP, HTTPS, and routing by path to the two Services.
+why D :: hostPort binds to individual nodes, with no single IP, no load balancing and no path routing.
+why E :: Cloud NAT is for outbound traffic from the nodes, not for exposing services.
+C: The answer is A and C. An Ingress on GKE provisions an external Application Load Balancer whose URL map sends paths to Services. Each Deployment needs a Service as the Ingress backend.
+
+= q | A workstation's kubectl is three minor versions older than a GKE cluster's control plane, and some commands behave unexpectedly. What should you do?
+(A) Downgrade the cluster's control plane to match the client
+(B) Install a kubectl within one minor version of the control plane
+(C) Run get-credentials again, which upgrades kubectl
+(D) Switch the cluster to the Stable release channel
+ans B
+why A :: GKE control planes can't be downgraded to an old minor version.
+why B :: Correct. A kubectl within the supported skew behaves as the cluster expects.
+why C :: get-credentials writes kubeconfig; it doesn't install or upgrade kubectl.
+why D :: A release channel controls future upgrades, not the client's version.
+C: The answer is B. Kubernetes supports kubectl within one minor version, older or newer, of the control plane. Installing a current kubectl, for example through gcloud components or the OS package, fixes the skew.
+
+= q | You change the LOG_LEVEL environment variable of a running Cloud Run service from info to debug, without changing its container image. Traffic is set to follow the latest revision. What happens?
+(A) Running instances pick up the new value within a minute, with no new revision
+(B) Nothing happens until the image is rebuilt and pushed again
+(C) The change is saved and applies the next time the service scales from zero
+(D) A new revision is created with the new value, and it receives the traffic
+ans D
+why A :: Revisions are immutable, so running instances keep the configuration they started with.
+why B :: Configuration changes don't need a new image; the existing image is reused.
+why C :: There is no deferred configuration; the change takes effect as a new revision immediately.
+why D :: Correct. The service gets a new revision with LOG_LEVEL=debug, and traffic moves to it.
+C: The answer is D. Revisions are immutable. Changing configuration such as an environment variable deploys a new revision, and with traffic following the latest revision, it serves the requests.
 
 = th | End of Part 6 | Next: storage and data | The largest product family on the exam: Cloud Storage classes, databases, analytics, messaging, and encryption keys.
 N: That is part six. Next is part seven, the longest part of the course: Cloud Storage, every database, analytics, messaging, and customer-managed encryption keys.

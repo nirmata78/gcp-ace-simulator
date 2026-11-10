@@ -50,6 +50,37 @@ SSH, RDP, ICMP from anywhere). Production work starts on a custom-mode VPC, and 
 - Subnet ranges in one VPC, and across peered VPCs, **must not overlap**.
 - Subnets can be **dual-stack** (IPv4 + IPv6) or IPv6-only (*recognise*).
 
+### Secondary ranges and VPC-native GKE
+
+A **secondary range** is an extra, named IPv4 range on a subnet, used for **alias IPs**: addresses a VM's interface
+owns besides its primary IP. A **VPC-native GKE cluster** (the default) is built on them:
+
+| Range | From | Used for |
+|:------------------------------|:----------------------------------|:------------------------------------------------|
+| Subnet **primary** range | The subnet | **Node** IPs |
+| **Pod** range | A subnet **secondary** range | Each node gets a slice (a `/24` for 110 Pods per node) |
+| **Service** range | Another secondary range | ClusterIP addresses |
+| **Additional Pod ranges** | More secondary ranges, added later | Pod IPs for **new node pools** when the first Pod range is full |
+
+<mark markdown="span">**A subnet can have up to 170 secondary IPv4 ranges**</mark> (a hard limit, *verify*), and
+GKE takes its Pod ranges from them. A cluster starts with **one** Pod range and **one** Service range; when the Pod
+range runs out you **add more Pod ranges** (*discontiguous multi-Pod CIDR*), on Autopilot (1.26+) and Standard
+clusters, without recreating the cluster. Existing node pools keep their original range; **new node pools** use the
+new one. On Standard you can also give one node pool its own range with `--pod-ipv4-range`. Routes-based clusters
+support none of this, which is one more reason VPC-native is the default.
+
+{: .cmds }
+| Task | Command |
+|:------------------------------------|:----------------------------------------------------------------------|
+| Add a secondary range to a subnet | `gcloud compute networks subnets update gke-euw4 --region=R --add-secondary-ranges=pods-2=10.64.0.0/14` |
+| Give the cluster the new Pod range | `gcloud container clusters update shop --location=R --additional-pod-ipv4-ranges=pods-2` |
+| A node pool on its own Pod range (Standard) | `gcloud container node-pools create pool-2 --cluster=shop --location=R --pod-ipv4-range=pods-2` |
+
+{: .trap }
+> **"Out of Pod addresses" is not "recreate the cluster".** The subnet's primary range limits **nodes**; the Pod
+> secondary range limits **Pods**. Expanding the primary range does not help a full Pod range. Add a Pod range and a
+> new node pool, or lower max Pods per node on a **new** node pool (it cannot be changed in place).
+
 ### Resizing a subnet — expand only
 
 {: .cmds }
@@ -85,6 +116,33 @@ default internet gateway.
 
 **Selection:** the **most specific prefix** wins; among equal prefixes, the **lowest priority number** wins; equal
 priority spreads traffic (ECMP). Subnet routes cannot be overridden by a less specific custom route.
+
+### Dynamic routing mode: regional or global
+
+Every VPC has one **dynamic routing mode**. It decides **which regions** can use the routes a Cloud Router learns
+over BGP, and which subnets the Cloud Router advertises back.
+
+| | **Regional** (the default) | **Global** |
+|:----------------------------------|:----------------------------------|:----------------------------------|
+| Routes learned by a Cloud Router in `europe-west4` | Programmed **only in `europe-west4`** | Programmed in **every region** of the VPC |
+| Subnets the Cloud Router advertises to on-premises | Only subnets **in its region** | **All** subnets of the VPC |
+| VMs in `us-central1` reach on-premises through the `europe-west4` tunnel | **No** | **Yes**, with an inter-region cost added |
+| Typical use | One region, or a VPN and Cloud Router per region | One hybrid connection serving a multi-region VPC |
+
+In global mode a route learned in another region gets an **inter-region cost** added to its priority, and subnets
+from other regions are advertised with the base priority **plus** that cost (as the BGP MED). So the local
+connection is preferred where you have one, and the remote one is the fallback. The mode is a property of the
+**network**, set at creation or changed at any time without downtime.
+
+{: .cmds }
+| Task | Command |
+|:------------------------------------|:----------------------------------------------------------------------|
+| Make learned routes usable from every region | `gcloud compute networks update vpc-prod --bgp-routing-mode=global` |
+| See the routes a Cloud Router learned | `gcloud compute routers get-status rtr-euw4 --region=europe-west4` |
+
+{: .tip }
+> **The symptom names the fix.** *"VMs in the VPN's region reach on-premises, VMs in another region of the same VPC
+> do not"* is the routing mode. Firewall rules do not depend on region, and a second VPN is unnecessary.
 
 {: .cmds }
 | Task | Command |
@@ -204,6 +262,10 @@ associated. To record what a policy rule matches, set **`--enable-logging`** on 
 | Attach a service project | `gcloud compute shared-vpc associated-projects add SVC_PROJECT --host-project=HOST_PROJECT` |
 | Least privilege: one subnet only | `gcloud compute networks subnets add-iam-policy-binding web-euc2 --region=R --member=group:team-a@example.com --role=roles/compute.networkUser` |
 
+Only a **Shared VPC Admin** (`roles/compute.xpnAdmin`, granted on the organization or a folder) can enable a host
+project; being Owner of the project is not enough. Network User granted on the **host project** covers every
+subnet, present and future, while the same role on **selected subnets** restricts a service project to those.
+
 ### VPC Network Peering
 
 - **Both sides must create** the peering before it becomes active; the networks can be in different projects or
@@ -241,7 +303,33 @@ associated. To record what a policy rule matches, set **`--enable-logging`** on 
 
 **Cloud Router** is the regional BGP speaker for your VPC: it learns on-premises prefixes over VPN or
 Interconnect and advertises your subnets back. HA VPN requires it. With the VPC's **dynamic routing mode set to
-global**, routes learned in one region are usable from all regions.
+global**, routes learned in one region are usable from all regions ([§4.3](#s4-3)).
+
+### BGP in one page
+
+**BGP (Border Gateway Protocol)** is the routing protocol networks use to tell each other which IP prefixes they can
+reach. It is how the internet's providers exchange routes, and it is how Cloud Router and your on-premises router
+exchange them over a VPN tunnel or an Interconnect attachment. You never type routes for the other side: each router
+**advertises** its prefixes, and the other **learns** them.
+
+| Term | Meaning on Google Cloud |
+|:----------------------------------|:------------------------------------------------------------------|
+| **Autonomous system (AS), ASN** | A network under one routing policy, identified by a number. Cloud Router needs a **private ASN**: `64512–65534` or `4200000000–4294967294`. Your on-premises ASN may be public or private, but must differ |
+| **BGP session (peer)** | A TCP session between two routers. On HA VPN and Interconnect each session uses a pair of **link-local addresses** from `169.254.0.0/16` |
+| **Advertised routes** | What Cloud Router announces to on-premises: by default the **subnets** (per the routing mode); with **custom advertisement** also extra ranges, such as `199.36.153.8/30` for Private Google Access from on-premises |
+| **Learned routes** | What on-premises announces. They become **dynamic routes** in the VPC |
+| **MED / advertised route priority** | A preference value sent with each route; **lower is preferred**. Different priorities on two tunnels make one active and the other standby |
+| **BFD** | Optional fast failure detection on a session |
+
+Why it matters: with BGP, a failed tunnel's routes are **withdrawn** and traffic moves to the surviving tunnel by
+itself, which is why HA VPN's 99.99% SLA requires **dynamic (BGP) routing**, and why a new on-premises subnet
+appears in Google Cloud without anyone editing a route. Classic VPN can use static routes; nothing else hybrid does.
+
+{: .cmds }
+| Task | Command |
+|:------------------------------------|:----------------------------------------------------------------------|
+| A Cloud Router with a private ASN | `gcloud compute routers create rtr-euw4 --network=vpc-prod --region=europe-west4 --asn=65010` |
+| Also advertise the Private Google Access range | `gcloud compute routers update rtr-euw4 --region=europe-west4 --advertisement-mode=custom --set-advertisement-groups=all_subnets --set-advertisement-ranges=199.36.153.8/30` |
 
 {: .note }
 > <mark markdown="span">**Interconnect traffic is not encrypted by default.**</mark> Options: **MACsec** on Dedicated Interconnect, or **HA VPN
@@ -472,5 +560,145 @@ Protection** (ML-detected layer-7 attacks).
 | All backends unhealthy | Allow **35.191.0.0/16** and **130.211.0.0/22** |
 | Cheapest egress, one region | **Standard Tier** |
 | Why can't A reach B? | **Connectivity Tests** |
+| On-prem routes work in one region only | VPC **dynamic routing mode → global** |
+| What exchanges routes with on-premises | **BGP**, spoken by **Cloud Router** (private ASN) |
+| GKE Pod range full | **Add a Pod secondary range** + new node pool (not a new cluster) |
+| Secondary ranges per subnet | Up to **170** |
 
 
+
+<a id="s4-13"></a>
+
+## 4.13 Worked blueprints: five network topologies
+
+The exam describes a company and asks for one missing piece. These five topologies are the shapes those stems come
+from. For each one: the picture, every resource you would create in order, and which public addresses it needs.
+Once you can build these five from memory, most networking items are a matter of spotting which piece is missing.
+
+### Blueprint 1 — a public web tier on private VMs
+
+```
+ Internet ──► global external Application LB  (1 global static IP, Premium Tier, Cloud Armor)
+                     │  health checks from 35.191.0.0/16, 130.211.0.0/22
+                     ▼
+ vpc-web (custom mode) ── subnet web-euw4 10.10.0.0/20  Private Google Access ON
+        regional MIG, VMs with NO external IP ── Cloud NAT (auto IPs) ──► internet: apt, pip
+        SSH only through IAP: allow 35.235.240.0/20 on tcp:22
+```
+
+| Step | Resource | Why |
+|:----|:------------------------------------|:------------------------------------------------------------|
+| 1 | Custom-mode VPC and one subnet with **Private Google Access** | VMs reach Cloud Storage and Artifact Registry with no public IP |
+| 2 | Firewall: allow **health-check ranges** to the serving port; allow **35.235.240.0/20** on 22 | Without the first, every backend is unhealthy; the second is IAP TCP forwarding |
+| 3 | Instance template **without** an external IP, regional MIG, health check, autohealing | No VM is reachable from the internet directly |
+| 4 | **Cloud Router + Cloud NAT** in the region, automatic NAT IPs | Outbound updates; nothing can connect in |
+| 5 | **Global static external IP**, then the load balancer's forwarding rule on it | DNS and customers' allow-lists keep working when the LB is rebuilt |
+
+Public addresses: **one**, the load balancer's global static IP (Cloud NAT's automatic IPs are Google's to choose).
+A single VM that must keep its public address when it is **replaced** needs a **regional static external IP**,
+reserved once and attached to the new VM.
+
+### Blueprint 2 — fixed egress for a partner's allow-list
+
+```
+ MIG workers (no external IPs, recreated often)
+        │
+ Cloud Router ── Cloud NAT  ── manual NAT IPs: nat-ip-1, nat-ip-2 (regional static) ──► partner API
+                                 the partner allow-lists exactly these two addresses
+```
+
+| Step | Resource | Why |
+|:----|:------------------------------------|:------------------------------------------------------------|
+| 1 | Reserve **two regional static external IPs** in the workers' region | They exist independently of any VM |
+| 2 | Cloud NAT with **manual** IP assignment using them | Every connection leaves from one of these two, whatever VM sends it |
+| 3 | Enough **ports per VM**, or dynamic port allocation; NAT logging on | Many connections to one partner endpoint exhaust ports first |
+
+Public addresses: **two**, both NAT IPs. Giving each VM a static IP fails as soon as the MIG recreates a VM, and
+automatic NAT IPs can change.
+
+### Blueprint 3 — hybrid: one data centre, HA VPN, a multi-region VPC
+
+```
+ On-premises  AS 65001   peer gateway (1 or 2 public IPs)
+     ║ tunnel 0  BGP 169.254.0.1 ↔ .2         ║ tunnel 1  BGP 169.254.1.1 ↔ .2
+ HA VPN gateway (2 interfaces, 2 Google-assigned public IPs)  europe-west4
+     │
+ Cloud Router rtr-euw4  AS 65010   learns 10.0.0.0/8 from on-premises, advertises the VPC's subnets
+     │
+ vpc-prod, dynamic routing mode GLOBAL ── subnets in europe-west4 AND us-central1 both reach on-premises
+ Cloud DNS: forwarding zone corp.example → on-premises resolvers;  inbound server policy for on-premises → Cloud
+```
+
+| Step | Resource | Why |
+|:----|:------------------------------------|:------------------------------------------------------------|
+| 1 | Non-overlapping ranges for every subnet and on-premises network | Overlapping prefixes cannot be routed |
+| 2 | **HA VPN gateway** and an **external peer gateway** resource for on-premises | Two interfaces, two tunnels, for the 99.99% SLA |
+| 3 | **Cloud Router** with a private ASN; two tunnels, each with a **BGP session** | Routes are exchanged and fail over without static routes |
+| 4 | VPC **dynamic routing mode: global** | Otherwise only europe-west4 learns the on-premises routes |
+| 5 | Firewall rules allowing the on-premises ranges in | BGP brings routes, not permission |
+| 6 | DNS: **forwarding zone** (Cloud → on-premises names) and **inbound server policy** (on-premises → private zones) | Name resolution in both directions |
+| 7 | Optional: custom advertisement of `199.36.153.8/30` | On-premises hosts reach Google APIs privately |
+
+Public addresses: the HA VPN gateway's two, assigned automatically, and the on-premises gateway's own. **Swap HA VPN
+for Dedicated or Partner Interconnect** when bandwidth or steadiness demands it; the Cloud Router, BGP, routing mode
+and DNS steps are identical, with **VLAN attachments** in place of tunnels.
+
+### Blueprint 4 — enterprise landing zone: Shared VPC per environment
+
+```
+ Org ── folder common ── net-host-prod    vpc-prod      ── Interconnect VLAN attachments ── on-premises
+     │                └─ net-host-nonprod vpc-nonprod   ── HA VPN ───────────────────────── on-premises
+     ├─ folder production     ── shop-prod, data-prod     (service projects of net-host-prod)
+     └─ folder non-production ── shop-dev, shop-stg       (service projects of net-host-nonprod)
+ Hierarchical firewall policy at the org: deny everything from 0.0.0.0/0 except the LB and IAP ranges
+ Org policy compute.vmExternalIpAccess: deny external IPs on VMs
+```
+
+| Step | Resource | Why |
+|:----|:------------------------------------|:------------------------------------------------------------|
+| 1 | Folders `production` and `non-production` with different org policies | Guardrails follow the folder ([§2.3](02-organization-projects-billing.md#s2-3)) |
+| 2 | **Two host projects**, each with its own VPC | A route or firewall change in non-production cannot touch production |
+| 3 | `compute.networkUser` on **individual subnets** to each team | Least privilege; teams cannot use another team's subnet |
+| 4 | GKE in a service project: subnet with **secondary ranges**; grant the service project's GKE service agent **Host Service Agent User** on the host | The cluster uses ranges owned by the host project |
+| 5 | Hybrid connection into each host VPC; **global** routing mode | One connection serves every region and every service project |
+| 6 | **Hierarchical firewall policy** at the organization or folder | Rules app teams cannot override |
+
+Public addresses: none on workloads at all; only load balancers' static IPs in the service projects that serve the
+internet.
+
+### Blueprint 5 — an internal service in two regions
+
+```
+ clients in us-east1 and us-west1 (and on-premises over Blueprint 3)
+        │  one internal IP per region, same service
+ cross-region internal Application LB
+   proxy-only subnet us-east1 ── backends us-east1      fails over to ──►
+   proxy-only subnet us-west1 ── backends us-west1
+ Cloud DNS private zone api.internal.example → the LB's addresses, with health-checked routing policy
+```
+
+| Step | Resource | Why |
+|:----|:------------------------------------|:------------------------------------------------------------|
+| 1 | A **proxy-only subnet** (purpose `GLOBAL_MANAGED_PROXY`) in **each** region | Envoy proxies of the cross-region LB run there |
+| 2 | Backends (MIGs or NEGs) in both regions, one **global** backend service | Failover between regions |
+| 3 | Forwarding rules in each region, and a private DNS name | Clients use one name; on-premises resolves it through the inbound policy |
+
+Public addresses: **none**. A *regional* internal Application LB cannot fail over to another region, and a global
+**external** LB is reachable from the internet, so neither fits *"internal, survives a region"*.
+
+### Which public addresses does a design need?
+
+| Need | Address | Scope |
+|:------------------------------------------------|:----------------------------------|:-----------------|
+| A global external LB that keeps its IP | **Static external, global** | Global |
+| A VM or regional LB that keeps its IP across replacement | **Static external, regional** | Region |
+| Fixed **egress** for many private VMs | Cloud NAT with **manual** static IPs | Region |
+| Private VMs reach Google APIs | **None**: Private Google Access | Subnet |
+| Private VMs reach the internet, nothing inbound | **None of yours**: Cloud NAT automatic IPs | Region |
+| HA VPN | **Assigned automatically**, one per interface | Region |
+| A VM reached only by administrators | **None**: IAP TCP forwarding | — |
+
+{: .tip }
+> **Read a networking stem as a blueprint with one hole.** Name the blueprint (public web tier, fixed egress, hybrid,
+> landing zone, internal multi-region), then ask which step is missing: a health-check rule, the routing mode, the
+> NAT IP mode, an inbound DNS policy, a proxy-only subnet. The options are usually the other blueprints' pieces.

@@ -150,7 +150,10 @@ needed when conditions are present). Each resource has at most one allow policy.
 | **Custom** | Your list of permissions | **Only when the need falls strictly between two predefined roles** |
 
 **What Owner has that Editor lacks:** managing IAM on the resource (and a few billing associations). *"Who can grant
-roles on this project?"* — an Owner or someone with a Security Admin-type role, never an Editor.
+roles on this project?"* — an Owner or someone with a Security Admin-type role, never an Editor. The narrow role for
+exactly that job on one project is **Project IAM Admin** (`roles/resourcemanager.projectIamAdmin`): it administers
+the project's allow policy and carries no permissions on the project's resources. Granting **Owner to a user outside
+your organization** is the one grant that must be made in the Google Cloud console; `gcloud` rejects it.
 
 ### Predefined roles worth naming on sight
 
@@ -186,6 +189,23 @@ roles on this project?"* — an Owner or someone with a Security Admin-type role
 | Start from a predefined role | `gcloud iam roles copy --source=roles/compute.viewer --destination=myViewer --dest-organization=ORG` |
 | Add a permission to a custom role | `gcloud iam roles update vmOperator --project=P --add-permissions=compute.instances.start` |
 
+Two more states of a custom role: setting its launch stage to **`DISABLED`** leaves its bindings in place but
+without effect, and a **deleted** role can be undeleted for 7 days (`gcloud iam roles undelete`), after which its
+bindings work again. Creating project-level custom roles needs Role Administrator (`roles/iam.roleAdmin`).
+
+**More on custom roles.** You maintain them: when a feature needs a new permission, Google adds it to predefined
+roles and you add it to yours. Launch stages are informational (`DEPRECATED` only signals that a role is on its way
+out); `DISABLED` is the one that switches the role off. A permission whose support level is `NOT_SUPPORTED` cannot
+go into any custom role, so it comes from a predefined role granted alongside, and a permission that works only at
+organization or folder level cannot go into a project-level custom role. `gcloud iam roles describe ROLE` lists what
+a role contains. Organization-level custom roles are managed with Organization Role Administrator.
+
+**Narrow predefined roles to recognise.** Pub/Sub Viewer (see topics and subscriptions, no messages); Artifact
+Registry Writer (pull and push, no deleting or administering); Compute Storage Admin (disks, images and snapshots,
+no instances); Secret Manager Secret Accessor (read a secret's value, which **Editor cannot**); and the Cloud KMS
+split between key managers (Cloud KMS Admin) and key users (CryptoKey Encrypter/Decrypter), which is how separation
+of duties is kept.
+
 <a id="s3-5"></a>
 
 ## 3.5 Viewing and changing policies
@@ -208,6 +228,23 @@ roles on this project?"* — an Owner or someone with a Security Admin-type role
 secret, a service account. Resource-level bindings are how you grant access to *one* bucket rather than all of
 them.
 
+**Deleted principals.** When a user or service account is deleted, its bindings stay in the policy with a
+`deleted:` prefix. A new principal created later with the same name is a different principal: the old bindings do
+not apply to it, so it needs a binding of its own.
+
+**Reading a policy correctly.** The effective allow policy is the **union** of the resource's own policy and what
+it inherits, so a narrow grant high up plus a broader grant on one project adds up, and nothing lower down can
+subtract. An inherited role is edited only where it was granted. When a **project moves**, the old parent's
+inherited policies stop applying and only policies attached to the project itself come along. The console hides
+service agents until **Include Google-provided role grants** is selected. A `domain:` principal covers every Google
+Account in the domain, including future ones; `allAuthenticatedUsers` means any Google Account on the internet and
+does **not** include federated identities, which are granted through a workforce pool `principalSet`. Deny policies
+are managed with **Deny Admin** (`roles/iam.denyAdmin`), not with Owner.
+
+**Three tools.** *Policy Analyzer*: who has what access to a resource, across inheritance and groups. *Policy
+Troubleshooter*: why one principal is allowed or denied one permission on one resource. *Policy Simulator*: what a
+proposed allow policy change would break, tested against recent access.
+
 <a id="s3-6"></a>
 
 ## 3.6 Conditions, deny policies and Privileged Access Manager
@@ -227,6 +264,8 @@ them.
 | Grant that expires by itself | `add-iam-policy-binding ... --condition='expression=request.time < timestamp("2026-10-31T00:00:00Z"),title=audit-window'` |
 
 *"The contractor's access must end on 31 October without anyone remembering to remove it"* is a condition.
+A condition cannot be attached to the legacy basic roles (Owner, Editor, Viewer), nor to a grant for `allUsers` or
+`allAuthenticatedUsers`.
 
 ### Deny policies — the IAM subtraction
 
@@ -318,7 +357,7 @@ policy:
 | *Why* can (or can't) this principal do this action on this resource? | **Policy Troubleshooter** |
 | *Who* can do X on Y? *What* can this principal reach? | **Policy Analyzer** (Asset Inventory) |
 | Which roles are more than this principal actually uses? | **IAM role recommender** (Active Assist) — based on ~90 days of usage |
-| Is this service account or key still used? | **Activity Analyzer** / service-account usage insights |
+| Is this service account or key still used? | **Usage metrics** in Cloud Monitoring: `iam.googleapis.com/service_account/key/authn_events_count` per key, kept 6 weeks (GA). Activity Analyzer's *last authenticated* view and unused-account insights are *Preview* |
 | What would a policy change break? | **Policy Simulator** |
 
 
@@ -361,6 +400,22 @@ A **service account is both a principal and a resource.** You grant roles **to**
 **The account ID is permanent.** The email `NAME@PROJECT_ID.iam.gserviceaccount.com` never changes; only the display
 name and description can. "Renaming" a service account means creating a new one, granting it the same roles,
 moving workloads to it, then disabling and deleting the old one.
+
+**Service agents in practice.** They are Google's own identities: not listed among your service accounts, not
+attachable and not impersonable, so your workloads always use accounts you create. An agent that appears on first use
+gets its role automatically; one you create **on request** gets none, so grant it. Do not strip roles from service
+agents: managed instance groups, for example, act through the Google APIs Service Agent
+(`PROJECT_NUMBER@cloudservices.gserviceaccount.com`). `service-agent-manager@system.gserviceaccount.com` in audit
+logs is Google granting an agent its role. A deny rule aimed at all principals should list the service agents as
+exceptions.
+
+**Default service accounts.** The constraint that disables automatic grants is not retroactive: existing default
+accounts keep Editor until you replace it, and in new projects the default account starts with nothing. Google's
+own services work through service agents, so narrowing a default account affects only workloads that run as it. A
+deleted default account cannot be recreated, so disable one you might need again. The number of service accounts
+per project is a quota (*Service Account Count*). Creating accounts takes the Create Service Accounts role;
+granting them access to the project also takes Project IAM Admin. A service account has no password and cannot
+sign in to the console: people need user identities.
 
 <a id="s3-10"></a>
 
@@ -412,6 +467,26 @@ account — grant the engineer Token Creator on it rather than handing out a key
 > (`actAs`). *"Run this command as `sa@` from my terminal / pipeline"* needs **Token Creator**. <mark markdown="span">Both are granted **on
 > the service account**, not on the project</mark>, for least privilege.
 
+**Details that decide questions.**
+
+- Grant Service Account User, Token Creator and Service Account Admin **on the single account**: on a project they
+  cover every account in it. Service Account Admin is the role for managing who may use an account.
+- Service Account User attaches; it does **not** allow the `--impersonate-service-account` flag or short-lived
+  credentials, which need Token Creator and the Service Account Credentials API. A service account can impersonate
+  another the same way. For client libraries and Terraform on a laptop, create the local ADC file with
+  impersonation; the gcloud property affects only gcloud.
+- Attaching an account **from another project** also needs the resource project's service agent to hold Token
+  Creator on the account. Changing a VM's service account requires stopping the VM.
+- **Access scopes are not least privilege**: they cannot single out a bucket. Use a dedicated account with a role on
+  the resource. Anyone who can run code on a VM can act as its attached account, so keep that account narrow.
+- Signing a Cloud Storage URL without a key file uses `signBlob`: grant the service account Token Creator on itself.
+  A Credential Access Boundary downscopes a token before it is handed to another component (Cloud Storage only).
+- Typical narrow grants for a workload's account: Logs Writer and Monitoring Metric Writer for the Ops Agent; Cloud
+  SQL Client to connect through the Auth Proxy, plus Cloud SQL Instance User for IAM database authentication.
+- The organization policy constraints that disable key creation and key upload stop everyone, Owners included.
+  Recommender's **lateral movement insights** list roles that let an account in one project impersonate one in
+  another.
+
 <a id="s3-11"></a>
 
 ## 3.11 Short-lived credentials, and keys as a last resort
@@ -452,7 +527,14 @@ is rotated only if you rotate it. Google's position, and the exam's: <mark markd
 
 **Controls when keys must exist:** `iam.disableServiceAccountKeyCreation` (block them), an expiry constraint
 (`iam.serviceAccountKeyExpiryHours`), rotation (`gcloud iam service-accounts keys create` / `delete`), and usage
-monitoring (Activity Analyzer, Security Command Center findings).
+monitoring (the service account and key **authentication metrics** in Cloud Monitoring's Metrics Explorer,
+which keep six weeks of data, and Security Command Center findings).
+
+{: .cmds }
+| Task | Command |
+|:------------------------------------|:----------------------------------------------------------------------|
+| List a service account's keys and their creation time | `gcloud iam service-accounts keys list --iam-account=SA_EMAIL --managed-by=user` |
+| Which keys authenticated recently | Metrics Explorer: `iam.googleapis.com/service_account/key/authn_events_count`, grouped by `key_id` |
 
 {: .trap }
 > **"Store the JSON key in Secret Manager" does not satisfy "no key material".** It is still a long-lived key that
@@ -498,6 +580,22 @@ cluster's JWKS** with `--jwk-json-path`; the control plane never needs to be exp
 > <mark markdown="span">**The attribute condition is the security boundary.**</mark> Without one, *any* identity the IdP can issue — any GitHub
 > repository in the world, for a public issuer — could federate. *"Only pipelines from our repository"* is an
 > attribute condition on the provider.
+
+**Operating federation safely.** Keep pools and providers in **one dedicated project** and deny provider creation
+elsewhere with the `iam.workloadIdentityPoolProviders` constraint. Use **one provider per pool**, or equal subjects
+from two providers become one principal. Map `google.subject` to an attribute that is never reused (a unique ID,
+not an email address). For multi-tenant issuers such as GitHub or Terraform Cloud, an attribute condition must
+check the organization. A credential that federation does not accept (Kerberos, say) can first be exchanged at an
+identity provider for one it does. Reusing an existing identity provider's tokens means no second secret to rotate.
+
+**Workload Identity Federation for GKE, operationally.** All clusters in a project share the pool
+`PROJECT_ID.svc.id.goog`, so the same namespace and ServiceAccount names in two clusters are **one identity**: use
+that deliberately for one grant across trusted clusters, and put untrusted clusters in another project. Enabling the feature grants nothing by itself. On Standard clusters it is
+enabled on the cluster and then per node pool; updating a pool cuts its running workloads off from the node
+account at once, so migrate through a new pool, pin Pods with the `iam.gke.io/gke-metadata-server-enabled`
+nodeSelector while pools are mixed, and leave a pool on the Compute Engine metadata server for a legacy agent that
+needs the node's identity. A principal set can cover a whole namespace or a whole cluster. Token exchanges count
+against a Security Token Service quota that can be raised.
 
 <a id="s3-13"></a>
 

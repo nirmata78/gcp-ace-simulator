@@ -102,9 +102,14 @@ N: Review the plan before applying. The assistant acts with your permissions, so
 Mechanic | Meaning
 **`GEMINI.md`** in the repository | **Standing instructions** for Gemini CLI in every session
 **MCP servers**, `mcpServers` in `.gemini/settings.json` | Extra tools for Gemini CLI
-**Gemini Cloud Assist remote MCP server** | Lets a third-party assistant use it, with the signed-in user's permissions
+**Gemini Cloud Assist remote MCP server** | *Preview*: recognise it, do not pick it
 Enabling Cloud Assist | `geminicloudassist.googleapis.com`, and `roles/geminicloudassist.user`
 N: Three mechanics are worth recognising. A GEMINI dot M-D file in the repository gives Gemini C-L-I standing instructions, such as conventions, modules to use, and what never to do, in every session. Extra tools reach Gemini C-L-I through M-C-P servers, registered in the settings file. In the other direction, Gemini Cloud Assist exposes a remote M-C-P server, so a third-party assistant can use it, with the signed-in user's permissions. And Gemini Cloud Assist itself needs its A-P-I enabled, and the Gemini Cloud Assist User role. Describe an app in a sentence and get a design to refine and deploy is Gemini Cloud Assist in Application Design Center.
+
+= shot | In the console | Equivalent code, before anything exists
+equiv-gcloud.png
+~ Many create forms offer Equivalent command line, REST, and for some resources Terraform
+N: The fastest way from a console form to code. Many create forms have an equivalent code view: the gee-cloud command, the REST request, and for some resources Terraform, for exactly the settings in the form, without creating anything. It is the answer to, turn what I configured in the console into code for the pipeline.
 
 ## 8.6 AI and developer platforms
 
@@ -260,6 +265,59 @@ why B :: Registry policies do not touch workstation disks.
 why C :: Space is not the symptom.
 why D :: Idle timeouts stop the workstation, and /home persists.
 C: The answer is A. Only home persists, and anything else is recreated from the image on every start. It is the same idea as Cloud Shell. To standardize tools, extend a base image, push it to Artifact Registry, and set it on the configuration. D is a near miss: an idle timeout stops the workstation, and that recreation is what removes the clone, but home is preserved.
+
+## Part 8: frequently missed patterns
+
+= th | Part 8 · more practice | Infrastructure as code and developer platforms | Ask which system owns the resource now.
+N: 4 more questions, built on the patterns that candidates most often get wrong in this part. Answer each one before the reveal, and say which phrase in the stem decides it.
+
+= q | An engineer changes a Cloud Storage bucket's lifecycle rules in the console. Within minutes the old rules are back. The bucket is defined as a StorageBucket resource in a GKE cluster's GitOps repository. Why?
+(A) Cloud Storage restores the previous lifecycle configuration automatically after any edit
+(B) An organisation policy blocks lifecycle changes made in the console
+(C) Terraform state refreshes itself every few minutes and re-applies the rules
+(D) Config Connector reconciled the bucket back to its definition in Git
+ans D
+why A :: Cloud Storage has no such behaviour.
+why B :: An organisation policy would have refused the change, not reverted it later.
+why C :: Terraform reconciles only when someone runs it.
+why D :: Correct. Config Connector manages Google Cloud resources as Kubernetes objects and keeps reconciling them, so the definition in Git wins; the change must be made there.
+C: The answer is D. Config Connector manages Google Cloud resources as Kubernetes objects and keeps reconciling them, so the definition in Git wins; the change must be made there.
+
+= q | An engineer configured a complex VM in the console's create form and now wants the same configuration as code for the team's pipeline, without clicking Create. What is the quickest way?
+(A) Create the VM, then write the Terraform by reading the instance's details page
+(B) Export Admin Activity audit logs after creating the VM
+(C) The create form's Equivalent code view
+(D) Ask Active Assist for a recommendation on the VM
+ans C
+why A :: That creates an unwanted VM and transcribes by hand.
+why B :: Audit logs record the API request, not ready-to-use Terraform, and need the VM created.
+why C :: Correct. Many console create forms show equivalent code for the current settings, which gives an exact starting point for automation without creating the resource.
+why D :: Recommendations suggest optimisations; they do not produce code.
+C: The answer is C. Many console create forms show equivalent code for the current settings, which gives an exact starting point for automation without creating the resource.
+
+= q | The platform team maintains a workstation configuration named java-dev. Developers in the group java-devs@example.com should be able to create and use their own workstations from it, but not change the configuration. What should you grant?
+(A) roles/workstations.admin on the project to the group
+(B) roles/workstations.user on the java-dev configuration to the group
+(C) roles/compute.instanceAdmin.v1 on the project to the group
+(D) roles/workstations.workstationCreator on the java-dev configuration to the group
+ans D
+why A :: Admin lets them edit clusters and configurations, which is more than asked.
+why B :: Workstations User lets them use existing workstations, but not create new ones.
+why C :: Compute roles manage VMs, not Cloud Workstations resources.
+why D :: Correct. The Cloud Workstations Creator role allows creating workstations from a configuration. Creators automatically receive the Workstations User role on the workstations they create.
+C: The answer is D. The Cloud Workstations Creator role allows creating workstations from a configuration. Creators automatically receive the Workstations User role on the workstations they create.
+
+= q | Ravensworth Insurance is setting up its first Google Cloud organisation. It wants folders, Shared VPC networks, logging and security controls built according to Google-recommended practices, as code it can review and reuse for future environments. What should it start from?
+(A) A configuration built by hand in the console, exported afterwards with Config Connector
+(B) Terraform written from scratch by the team, based on the product documentation
+(C) The enterprise foundations blueprint and its published Terraform
+(D) Deployment Manager templates for each folder and project
+ans C
+why A :: Building by hand first loses the review and repeatability, and exporting afterwards copies whatever mistakes were made.
+why B :: Writing it from scratch works, but rebuilds what Google already publishes as its recommended design.
+why C :: Correct. The blueprint's Terraform deploys Google's recommended hierarchy, networking and controls as code to adapt and reuse.
+why D :: Deployment Manager is deprecated, and templates per folder still leave the design to the team.
+C: The answer is C. The enterprise foundations blueprint is Google's recommended organisation design, published with Terraform that builds it, so the company starts from reviewed code that encodes the practices.
 
 = th | End of Part 8 | Next: operations | The heaviest growth in the new guide: monitoring, logging, audit logs, diagnostics and optimisation.
 N: That is part eight. Next is part nine, operations. Remember that operating grew to thirty percent of the paper.

@@ -42,6 +42,24 @@ A **new region**, or a separate range for a different tier: **create a new subne
 A new VPC is almost never the answer to *"out of IPs"*.
 N: Be careful here. More addresses, in the same region, for the same workloads: expand. A new region, or a separate range for a different tier: create a new subnet in the existing V-P-C. And creating a new V-P-C is almost never the answer to out of I-Ps.
 
+= dia | Secondary ranges | How a VPC-native GKE cluster takes its addresses
+p4-gke-ranges
+N: Secondary ranges, and how a V-P-C native G-K-E cluster uses them. A subnet has one primary range, which gives the nodes their addresses. Pods take their addresses from one secondary range, a slash twenty-four per node at the default of one hundred and ten Pods. Services take ClusterIPs from another. A subnet can hold up to one hundred and seventy secondary ranges, and that limit cannot be raised. When the first Pod range runs out, you add another secondary range, here pods two, and give it to the cluster as an additional Pod range. Existing node pools keep their range, and new node pools take addresses from the new one. Autopilot from version one point twenty-six, and Standard, both support it. No new cluster.
+V: Pod range full: add a secondary range, and a new node pool. Not a new cluster.
+
+= shot | In the console | A subnet with Pod and Service ranges
+w-vpc-2-ranges.png
+~ Create VPC network: secondary ranges pods 10.64.0.0/14 and services 10.68.0.0/20, Private Google Access on
+N: Here it is in the console, in the create V-P-C form. Under the subnet, two secondary ranges: pods, a slash fourteen, and services, a slash twenty. And Private Google Access switched on for the subnet, so V-Ms without external addresses can still reach Google A-P-Is.
+
+= cmd | Commands | Adding Pod ranges later
+Task | Command
+Add a secondary range to a subnet | gcloud compute networks subnets update gke-euw4 --region=R --add-secondary-ranges=pods-2=10.96.0.0/16
+Give the cluster the new Pod range | gcloud container clusters update shop --location=R --additional-pod-ipv4-ranges=pods-2
+A node pool on its own range (Standard) | gcloud container node-pools create pool-3 --cluster=shop --location=R --pod-ipv4-range=pods-2
+> Expanding the **primary** range adds **node** addresses, never Pod addresses.
+N: The commands. Add the secondary range to the subnet. Give it to the cluster as an additional Pod range. Or, on Standard, create a node pool on that range directly. And remember: expanding the primary range adds node addresses, never Pod addresses.
+
 ## 4.3 Routes
 
 = table | The routing table | Four kinds of route
@@ -66,6 +84,21 @@ Usual stems: send a range through a **network virtual appliance**; route only **
 `gcloud compute routes create to-onprem --network=vpc-prod --destination-range=172.16.0.0/12 --next-hop-instance=fw-1 --tags=needs-inspection --priority=800`
 ==A route only forwards.== The appliance VM also needs **IP forwarding** (`--can-ip-forward` at creation), and firewall rules still apply.
 N: The guide now names custom static routes. The usual stems: send traffic for a range through a network virtual appliance, route only tagged V-Ms through it, or give V-Ms with a special tag a higher priority path. The command on screen does all of that, with next hop instance, tags and priority. And remember that a route only forwards. The appliance V-M also needs I-P forwarding enabled, with dash dash can I-P forward at creation, and firewall rules still apply.
+
+= dia | Dynamic routing mode | Regional or global decides who can use learned routes
+p4-routing-mode
+N: Every V-P-C has one dynamic routing mode, and it decides which regions can use the routes a Cloud Router learns over B-G-P. On the left, regional, the default. The Cloud Router in europe-west4 learns the on-premises range, and programs it only in europe-west4. V-Ms in us-central1, on the same network, have no route, and cannot reach on-premises. On the right, global. The same router's routes are programmed in every region, so us-central1 reaches on-premises through the same tunnels, with an inter-region cost added to the route's priority, so a closer connection wins where one exists. Global mode also makes the router advertise every subnet of the V-P-C to on-premises, not just its own region's.
+V: Reachable from the V-P-N's region, but not from another region of the same V-P-C. That is the routing mode.
+
+= shot | In the console | Setting it when you create the network
+w-vpc-3-routing.png
+~ Advanced dynamic routing configuration: Regional, or Global. "All selected options can be changed later."
+N: In the console it sits at the bottom of the create V-P-C form, under advanced dynamic routing configuration. Regional: Cloud Routers learn routes only in the region they were created. Global: one V-P-N or interconnect and Cloud Router serve all regions. And note the line at the top: it can be changed later, without downtime, with gee-cloud compute networks update, dash dash B-G-P routing mode equals global.
+
+= shot | In the console | The form writes the command for you
+w-vpc-4-gcloud.png
+~ Equivalent command line: networks create with --bgp-routing-mode=global, then subnets create with --secondary-range and --enable-private-ip-google-access
+N: And this is the equivalent command line for everything we just chose, before anything is created. The network, custom subnet mode, global routing. Then the subnet, with its range, its two secondary ranges, and Private Google Access. Read it once: it is the same command an exam option would spell out.
 
 ## 4.4 Firewall rules and Cloud NGFW policies
 
@@ -176,6 +209,45 @@ It learns on-premises prefixes over VPN or Interconnect, and advertises your sub
 **HA VPN requires it.** With the VPC's **dynamic routing mode set to global**, routes learned in one region are usable from all regions.
 N: Cloud Router is the regional B-G-P speaker for your V-P-C. It learns on-premises prefixes, and it advertises your subnets back. H-A V-P-N requires it. And if on-premises routes are only reachable from one region, the fix is the V-P-C's dynamic routing mode. Set it to global, and routes learned in one region become usable from all regions.
 
+= table | BGP in one page | The protocol Cloud Router speaks
+Term | Meaning on Google Cloud
+**BGP** | Border Gateway Protocol: routers **advertise** the prefixes they reach and **learn** the other side's
+**ASN** | Each side's autonomous system number. Cloud Router needs a **private** one: `64512–65534` or `4200000000–4294967294`, different from on-premises
+**BGP session** | One per tunnel or VLAN attachment, on **link-local** addresses from `169.254.0.0/16`
+**Advertised routes** | Default: the subnets (per routing mode). **Custom**: add ranges, such as `199.36.153.8/30`
+**MED / route priority** | **Lower is preferred**: different values make one tunnel active, one standby
+N: What is B-G-P? Border Gateway Protocol is the routing protocol networks use to tell each other which address ranges they can reach. It is how internet providers exchange routes, and it is how Cloud Router and your on-premises router exchange them, over a V-P-N tunnel or an Interconnect attachment. Nobody types the other side's routes: each router advertises its prefixes, and the other learns them. Each side has an autonomous system number. Cloud Router needs a private one, from sixty-four thousand five hundred and twelve to sixty-five thousand five hundred and thirty-four, or the four billion range, and it must differ from the on-premises number. Each session runs on link-local addresses, one sixty-nine dot two five four. By default the router advertises your subnets, and a custom advertisement can add ranges, such as the private Google A-P-Is range. And each route carries a priority, sent as the multi-exit discriminator, where lower is preferred.
+
+= dia | BGP | Two tunnels, two sessions, one router
+p4-bgp
+N: Here is an H-A V-P-N with B-G-P. The on-premises router, autonomous system sixty-five thousand and one, and Cloud Router, sixty-five thousand and ten. One session over each tunnel. What the router learns becomes dynamic routes in the V-P-C. Now the important part. When a tunnel fails, its routes are withdrawn, and traffic moves to the other tunnel by itself. That is why H-A V-P-N's ninety-nine point nine nine percent service level agreement requires dynamic routing, and why a new on-premises subnet appears in Google Cloud with nobody editing a route.
+V: H-A V-P-N supports B-G-P only. Classic V-P-N is the one with static routes.
+
+= shot | In the console | Choosing the VPN type
+w-vpn-1-ha-vs-classic.png
+~ Create a VPN: HA VPN, dynamic routing (BGP) only, 99.99% · Classic VPN, static routing only, 99.9%
+N: The console says it plainly when you create a V-P-N. High availability V-P-N: dynamic routing, B-G-P, only, and ninety-nine point nine nine percent, with two tunnels to two gateway interfaces. Classic V-P-N: static routing only, one tunnel, ninety-nine point nine.
+
+= shot | In the console | The HA VPN gateway
+w-vpn-2-gateway.png
+~ Step 1 of 4: the gateway has two interfaces, each with its own external IP, allocated automatically
+N: Step one of four creates the gateway. Read the description: a regional resource with two interfaces, each with its own external I-P address, allocated automatically. Those are the two public addresses on Google's side of the tunnels. Steps two and three add the tunnels and configure the B-G-P sessions on a Cloud Router.
+
+= shot | In the console | Creating the Cloud Router
+w-rtr-1-asn.png
+~ Create a cloud router: name, network, region, and the Cloud Router ASN, here the private 65010
+N: Now the Cloud Router form. Its first line says what it is: it exchanges routes between your V-P-C and on-premises using B-G-P. Then a name, the network, the region, because a Cloud Router is regional, and the A-S-N, here a private sixty-five thousand and ten.
+
+= shot | In the console | Advertising more than your subnets
+w-rtr-2-advertise.png
+~ Advertised routes: default, all subnets · or custom routes, keeping all subnets and adding ranges
+N: Under advertised routes, the default advertises every subnet visible to the router. Choose custom routes, keep advertise all subnets ticked, and add ranges of your own.
+
+= shot | In the console | The private Google APIs range, for on-premises hosts
+w-rtr-3-custom-range.png
+~ Custom range 199.36.153.8/30: the private.googleapis.com range, so on-premises reaches Google APIs over the tunnel
+N: Here is the range you add for Private Google Access from on-premises: private dot googleapis dot com. On-premises hosts get a route to it through the tunnel, and with on-premises D-N-S pointing the A-P-I names at it, their traffic to Cloud Storage never touches the internet.
+
 ## 4.7 Private access to Google and to services
 
 = table sm | Private access | Six needs, six mechanisms
@@ -237,6 +309,16 @@ NAT logging | Translations and drops, in Cloud Logging
 Public or Private NAT | Private NAT translates between VPCs or to on-premises with overlapping ranges
 > `gcloud compute routers create nat-router ...`, then `gcloud compute routers nats create nat-1 --router=nat-router ...`
 N: Cloud NAT gives resources without external addresses outbound connectivity to the internet, and nothing inbound. It is a regional, software-defined service, with no proxy V-M and no single point of failure, configured on a Cloud Router. It serves V-Ms, private G-K-E nodes, and serverless workloads using Direct V-P-C egress. Manual NAT addresses give a fixed egress address, which a partner can allow-list. Too few ports per V-M cause dropped connections under load, and dynamic port allocation fixes that on a few busy V-Ms. Notice the two steps in the command: create a router, then create the NAT on it.
+
+= shot | In the console | Cloud NAT is regional
+w-nat-1-regional.png
+~ "If you have VM instances in multiple regions, you'll need to create a Cloud NAT gateway for each region."
+N: The Cloud NAT create form says the rule in its own words: a gateway is specific to a region and a V-P-C network, and V-Ms in several regions need a gateway in each. And it is configured on a Cloud Router in that region.
+
+= shot | In the console | Automatic or manual NAT addresses
+nat-create.png
+~ Cloud NAT IP addresses: Automatic (recommended), or Manual with reserved static addresses for an allow-list
+N: Further down, the Cloud NAT I-P addresses. Automatic is recommended, and Google may add or change addresses as demand grows. Manual uses only the static addresses you reserved, which is what a partner's allow-list needs.
 
 ## 4.9 Load balancing
 
@@ -357,6 +439,71 @@ All backends unhealthy | Allow **35.191.0.0/16** and **130.211.0.0/22**
 Cheapest egress, one region | **Standard Tier**
 Why can't A reach B? | **Connectivity Tests**
 N: U-D-P, preserving the client address: a passthrough Network load balancer. One anycast address, T-L-S at the edge, multiple regions: the global external Application load balancer. All backends unhealthy: allow the two health check ranges. Cheapest egress, one region: Standard Tier. Why can't A reach B: Connectivity Tests.
+
+## 4.13 Worked blueprints: five network topologies
+
+= th | Blueprints | Five realistic networks, built end to end | Every networking stem is one of these, with one piece missing.
+N: Now five realistic topologies, built end to end. Most networking items describe one of these five, with one piece missing. Learn to see the blueprint, and the missing piece names itself.
+
+= dia | Blueprint 1 | A public web tier on private VMs
+p4-bp1-web
+N: Blueprint one, a public web tier. Customers reach a global external Application load balancer, on one global static address, with Cloud Armor in front. Behind it, a regional managed instance group in a custom V-P-C, with no external addresses at all. Health checks come from the two Google ranges, which a firewall rule must allow. The V-Ms reach Cloud Storage and Artifact Registry through Private Google Access, and the internet, for operating system updates, through Cloud NAT. Administrators reach them only through I-A-P T-C-P forwarding, from thirty-five dot two three five dot two forty, slash twenty, on port twenty-two.
+
+= table sm | Blueprint 1 | Build order
+Step | Resource | Why
+1 | Custom VPC, subnet with **Private Google Access** | APIs without public IPs
+2 | Firewall: **health-check ranges** to the port; **35.235.240.0/20** to 22 | Healthy backends; IAP SSH
+3 | Template **without external IP**, regional MIG, health check, autohealing | Nothing reachable directly
+4 | **Cloud Router + Cloud NAT** in the region | Outbound updates only
+5 | **Global static IP**, then the forwarding rule | Allow-lists survive a rebuild
+> Public addresses: **one**. A single VM that must keep its IP through replacement: a **regional** static external IP.
+N: The build order. A custom V-P-C and subnet with Private Google Access. Firewall rules for the health check ranges and for I-A-P. An instance template without an external address, a regional managed group, a health check and autohealing. Cloud Router and Cloud NAT in the region. And a global static address, reserved first, then the load balancer's forwarding rule on it. One public address in the whole design. And if instead a single V-M must keep its public address when it is replaced, that is a regional static external address, reserved once and attached to the new V-M.
+
+= dia | Blueprint 2 | Fixed egress for a partner's allow-list
+p4-bp2-nat
+N: Blueprint two. Payment workers in a managed group, with no external addresses, recreated often. A partner accepts traffic only from two addresses it puts on an allow-list. The answer is Cloud NAT with manual address assignment, using two reserved regional static addresses. Every connection leaves from one of those two, whichever V-M sends it. A static address per V-M fails the first time the group recreates one. Automatic NAT addresses can change. And Private Google Access only reaches Google.
+V: Fixed egress for many private V-Ms: Cloud NAT, manual, with static addresses.
+
+= dia | Blueprint 3 | Hybrid: HA VPN, BGP and a multi-region VPC
+p4-bp3-hybrid
+N: Blueprint three, the hybrid connection. A data centre, autonomous system sixty-five thousand and one, connects to an H-A V-P-N gateway in europe-west4, two tunnels, two Google-assigned public addresses. A Cloud Router, sixty-five thousand and ten, runs a B-G-P session on each tunnel, learns ten dot zero dot zero dot zero slash eight, and advertises all subnets. The V-P-C's routing mode is global, so the us-central1 subnet reaches on-premises too. Cloud D-N-S has a forwarding zone for the corporate domain, and an inbound server policy so that on-premises can resolve private zones. Firewall rules must still allow the on-premises ranges in, because B-G-P brings routes, not permission. Swap the V-P-N for Interconnect VLAN attachments, and every other step stays the same.
+
+= table sm | Blueprint 3 | Build order
+Step | Resource | Why
+1 | Non-overlapping ranges everywhere | Overlap cannot be routed
+2 | **HA VPN gateway** + external peer gateway | Two interfaces, two tunnels: 99.99%
+3 | **Cloud Router**, private ASN, a **BGP session per tunnel** | Routes exchanged, automatic failover
+4 | Dynamic routing mode **global** | Every region learns on-premises
+5 | Firewall rules for on-premises ranges | Routes are not permission
+6 | **Forwarding zone** and **inbound server policy** | DNS in both directions
+7 | Custom advertisement `199.36.153.8/30` | On-premises to Google APIs privately
+N: In order: plan non-overlapping ranges. Create the H-A V-P-N gateway and a resource describing the peer gateway. A Cloud Router with a private A-S-N, and a B-G-P session per tunnel. Global routing. Firewall rules for the on-premises ranges. The two D-N-S objects, one for each direction. And optionally the custom advertisement of the private Google A-P-Is range.
+
+= dia | Blueprint 4 | Enterprise landing zone: a Shared VPC per environment
+p4-bp4-landing
+N: Blueprint four, the landing zone from Part two, now as a network. Two host projects. Production's V-P-C is reached over Interconnect, non-production's over H-A V-P-N, and each has its own firewall rules, so nothing done in development can touch production. Service projects attach to their environment's host. Teams get Network User on individual subnets only. A G-K-E cluster in a service project uses the host's subnet and secondary ranges, which needs the service project's G-K-E service agent to hold Host Service Agent User on the host project. Over everything, a hierarchical firewall policy at the organization, and an organization policy denying external addresses on V-Ms.
+V: Development changes must never affect production: separate host projects, separate V-P-Cs.
+
+= dia | Blueprint 5 | An internal service in two regions
+p4-bp5-xregion
+N: Blueprint five, an internal service that must survive a region. Clients in two regions, and on-premises through blueprint three, call one name. A cross-region internal Application load balancer has one global backend service, with backends in us-east1 and us-west1, and a forwarding rule on an internal address in each region. Its Envoy proxies run in a proxy-only subnet, with purpose global managed proxy, in each region. If us-east1 fails, traffic moves to us-west1. A regional internal load balancer cannot do that, and a global external one is reachable from the internet.
+
+= table | Which public addresses does a design need? | Count them before you build
+Need | Address | Scope
+Global LB that keeps its IP | **Static external, global** | Global
+VM or regional LB that keeps its IP | **Static external, regional** | Region
+Fixed **egress** for many private VMs | Cloud NAT, **manual** static IPs | Region
+Private VMs to Google APIs | **None**: Private Google Access | Subnet
+Private VMs to the internet, nothing inbound | Cloud NAT, automatic IPs | Region
+HA VPN | **Two, assigned automatically** | Region
+Admin access to VMs | **None**: IAP TCP forwarding | —
+N: And the question every blueprint answers: which public addresses does it need? A global load balancer that keeps its address: a global static one. A V-M or regional load balancer: a regional static one. Fixed egress for many private V-Ms: Cloud NAT with manual static addresses. Reaching Google A-P-Is: none, Private Google Access. Reaching the internet outbound: Cloud NAT with automatic addresses. H-A V-P-N: two, assigned automatically. And administrators reaching V-Ms: none, I-A-P.
+
+= panel tip | How to use the blueprints | Name the blueprint, then find the hole
+Public web tier · fixed egress · hybrid · landing zone · internal multi-region.
+The missing piece is usually one of: a **health-check rule**, the **routing mode**, the **NAT IP mode**, an **inbound DNS policy**, a **proxy-only subnet**, a **static address**.
+The wrong options are pieces of the **other** blueprints.
+V: Name the blueprint. Then find the one piece that is missing.
 
 ## Part 4 sample questions
 
@@ -482,6 +629,95 @@ why B :: The tier does not affect health checks.
 why C :: The address does not affect backend health.
 why D :: A cache does not make backends healthy.
 C: The answer is A. All backends unhealthy right after creation, with a working application, is almost always the health check ranges. They arrive at the firewall as ingress, so without a rule, the implied deny drops them. The others change things that do not affect health checks.
+
+## Part 4: frequently missed patterns
+
+= th | Part 4 · more practice | Addresses, routing, DNS and load balancers | Ask which way the traffic flows, and which region it starts in.
+N: 7 more questions, built on the patterns that candidates most often get wrong in this part. Answer each one before the reveal, and say which phrase in the stem decides it.
+
+= q | Payment workers at Olmstead Retail run on VMs without external IPs in a managed instance group that recreates them often. They call a partner's API, and the partner will accept traffic only from two fixed public addresses it adds to an allow-list. What should you configure?
+(A) Give each VM a static external IP address
+(B) Cloud NAT with two static external IPs, assigned manually
+(C) Cloud NAT with automatic IP allocation
+(D) Private Google Access on the subnet
+ans B
+why A :: Static IPs per VM break as the group recreates VMs, and expose the VMs to inbound traffic.
+why B :: Correct. Manual NAT IP assignment makes all of the subnet's egress leave from reserved addresses that never change, however often the VMs are recreated.
+why C :: Automatic allocation can change or add addresses, which breaks an allow-list.
+why D :: Private Google Access reaches Google APIs, not a partner's API.
+C: The answer is B. Manual NAT IP assignment makes all of the subnet's egress leave from reserved addresses that never change, however often the VMs are recreated.
+
+= q | Customers allow-list the IP address of your global external Application Load Balancer, which you will rebuild next month. The address must stay the same. What should you do?
+(A) Reserve a regional static external IP address in us-central1
+(B) Keep the ephemeral address by never deleting the forwarding rule
+(C) Reserve a global static external IP for the new forwarding rule
+(D) Use the load balancer's DNS name instead of an IP
+ans C
+why A :: A regional address cannot be used by a global forwarding rule.
+why B :: The rebuild will delete the forwarding rule, releasing an ephemeral address.
+why C :: Correct. Global load balancers need global addresses. A reserved static address stays in the project and can be attached to a new forwarding rule.
+why D :: The customers allow-list an IP address, not a DNS name.
+C: The answer is C. Global load balancers need global addresses. A reserved static address stays in the project and can be attached to a new forwarding rule.
+
+= q | Services in a Cloud DNS private zone api.internal.example must be resolvable by on-premises clients connected over Cloud Interconnect. On-premises DNS can forward a domain to any IP address you give it. What should you configure in Google Cloud?
+(A) A forwarding zone for api.internal.example pointing at the on-premises resolvers
+(B) Make the private zone public so on-premises clients can resolve it
+(C) A DNS peering zone in the on-premises network
+(D) An inbound DNS server policy, forwarded to from on-premises DNS
+ans D
+why A :: A forwarding zone sends queries from Cloud to on-premises — the other direction.
+why B :: Publishing internal names on the internet is the wrong fix.
+why C :: Peering zones are between VPC networks in Cloud DNS, not on-premises.
+why D :: Correct. An inbound server policy creates resolver entry points in the VPC's subnets that on-premises DNS can forward to, which answer from the private zones visible to the VPC.
+C: The answer is D. An inbound server policy creates resolver entry points in the VPC's subnets that on-premises DNS can forward to, which answer from the private zones visible to the VPC.
+
+= q | An internal HTTP service runs in us-east1 and us-west1. Internal clients should use one internal address, and if the us-east1 backends fail, traffic should go to us-west1 automatically. What load balancer fits?
+(A) A regional internal Application Load Balancer in us-east1
+(B) A global external Application Load Balancer
+(C) An internal passthrough Network Load Balancer
+(D) A cross-region internal Application Load Balancer
+ans D
+why A :: A regional load balancer's backends are all in one region.
+why B :: An external load balancer exposes the service to the internet.
+why C :: The passthrough Network Load Balancer is regional and Layer 4.
+why D :: Correct. The cross-region internal Application Load Balancer has backends in several regions and fails over between them for internal clients.
+C: The answer is D. The cross-region internal Application Load Balancer has backends in several regions and fails over between them for internal clients.
+
+= q | You create a custom-mode VPC with one subnet and no firewall rules, then two VMs in it, each with an external IP address. What does the firewall allow between the VMs and the internet?
+(A) Outbound connections only; no inbound, not even between the two VMs
+(B) All traffic between the two VMs is allowed; only internet ingress is blocked
+(C) No traffic is possible at all until an egress rule is created
+(D) SSH and ICMP from anywhere are allowed, as in the default network
+ans A
+why A :: Correct. Without explicit rules, the implied rules apply: allow all egress, deny all ingress. Internal traffic is ingress to the receiving VM, so it is denied too.
+why B :: Internal traffic is not special; it needs an ingress allow rule like any other.
+why C :: Egress is allowed by the implied rule, so no egress rule is needed.
+why D :: SSH, ICMP and internal allows are pre-populated rules of the default network, not implied rules of new VPCs.
+C: The answer is A. Without explicit rules, the implied rules apply: allow all egress, deny all ingress. Internal traffic is ingress to the receiving VM, so it is denied too.
+
+= q | An HA VPN and Cloud Router in europe-west4 learn the on-premises prefixes over BGP. VMs in europe-west4 reach on-premises, but VMs in us-central1 on the same VPC do not. What should you change?
+(A) Set the VPC network's dynamic routing mode to global
+(B) Create a second HA VPN and Cloud Router in us-central1 only
+(C) Add static routes for the on-premises prefixes in us-central1
+(D) Peer the VPC with itself across regions
+ans A
+why A :: Correct. In regional mode a Cloud Router programs learned routes only in its own region; global dynamic routing makes them available to every region of the VPC.
+why B :: A second gateway would work but adds cost and management when a setting solves it.
+why C :: Static routes duplicate what BGP already provides and must be maintained by hand.
+why D :: A VPC cannot peer with itself.
+C: The answer is A. In regional mode a Cloud Router programs learned routes only in its own region; global dynamic routing makes them available to every region of the VPC.
+
+= q | A VPC-native GKE cluster cannot add nodes because its Pod secondary range is exhausted, and the range cannot be expanded because neighbouring ranges are in use. What should you do?
+(A) Recreate the cluster with a larger Pod range
+(B) Switch the cluster to routes-based networking
+(C) Lower the maximum Pods per node on the existing node pool in place
+(D) Add a secondary range for Pods, used by new node pools
+ans D
+why A :: Recreating the cluster is disruptive and unnecessary.
+why B :: A cluster cannot be converted from VPC-native to routes-based.
+why C :: Max Pods per node cannot be changed on an existing node pool.
+why D :: Correct. GKE supports additional, discontiguous Pod ranges. New node pools can take their Pod IPs from a new secondary range, so the cluster keeps growing without being recreated.
+C: The answer is D. GKE supports additional, discontiguous Pod ranges. New node pools can take their Pod IPs from a new secondary range, so the cluster keeps growing without being recreated.
 
 = th | End of Part 4 | Next: Compute Engine | Choosing compute, machine families, disks, SSH, snapshots, instance groups, GPUs and TPUs.
 N: That is part four. If you remember one habit from it, ask which way the traffic flows. Next, part five: Compute Engine, starting with how to choose between every compute option on the platform.

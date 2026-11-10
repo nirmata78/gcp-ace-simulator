@@ -42,6 +42,11 @@ A question can also be **multiple-select** ("Choose two": four or five options, 
 **cross-domain** (`also_tests` names the other objectives it needs); the [README](README.md#adding-questions) has the
 format and the [question standard](docs/question-standard.md#multiple-select-and-cross-domain-questions) the rules.
 
+**Many at once.** `/expand 10%` in Claude Code plans a batch, writes it, proves each key with a sentence quoted from
+the documentation and has every question solved blind before it is added; see
+[Growing the bank](README.md#growing-the-bank-with-expand). The no-exam-content rule binds the model as it binds you, and
+you review what it wrote before opening the PR.
+
 A good item tests a decision, not a spelling. Every wrong option should be something a reasonable person might try,
 and should be wrong for a reason you can state. Avoid flag-name and console-label trivia.
 

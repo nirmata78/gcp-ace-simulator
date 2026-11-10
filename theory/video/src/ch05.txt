@@ -67,6 +67,12 @@ Custom shape on a Spot VM | gcloud compute instances create render-1 --machine-t
 > On preemption, a shutdown script gets the notice period to checkpoint. In a MIG, preempted VMs come back when capacity returns.
 N: Read the command. N2 custom six forty nine sixty means six V-C-P-Us with forty gigabytes, in megabytes. Provisioning model Spot. Instance termination action delete, or stop if you want to keep the disks for a later restart. On preemption, a shutdown script gets the notice period to checkpoint. In a managed instance group, preempted V-Ms are recreated when capacity returns.
 
+= shot | In the console | What pre-emption does to a Spot VM
+spot-termination.png
+~ VM provisioning model: Spot · On VM termination: Stop, or Delete
+N: In the create instance form, choosing the Spot provisioning model adds one more setting: what happens on termination. Stop keeps the V-M and its disks, so you can start it again later from where its disk left off. Delete removes the V-M, and its auto-delete disks, so nothing keeps costing money. A maximum run duration uses the same choice, to delete or stop a V-M after a set time.
+V: Resume later from the disk: stop. Leave nothing behind: delete.
+
 ## 5.3 Launching an instance
 
 = table sm | Launch flags | What each family of flags controls
@@ -176,6 +182,12 @@ N: A project-level list is gcloud compute instances list. Across projects, that 
 *"Make sure the Ops Agent is installed on every VM labelled `env=prod`"*: an **OS policy assignment**.
 A cron job on each VM is the assembled distractor.
 N: Patch four hundred Linux V-Ms every Sunday, and report which are non-compliant: a V-M Manager patch deployment. Make sure the Ops Agent is installed on every V-M labelled production: an O-S policy assignment. A cron job on each V-M is the assembled distractor.
+
+= panel trap | Resizing a VM | Stopping releases an ephemeral external IP
+The machine type changes **only on a stopped VM**: stop, `set-machine-type`, start. Disks, internal IP and metadata stay.
+An **ephemeral external IP is released when the VM stops**. Promote it to static first if anyone depends on it.
+In a **managed instance group**, never resize VMs one by one: a **new template and a rolling update**.
+N: Resizing a V-M. The machine type changes only when the V-M is stopped: stop, set machine type, start. Its disks, its internal address and its metadata stay. But stopping releases an ephemeral external address, so if partners or users depend on it, promote it to a static address first. And in a managed instance group, never resize V-Ms one by one. The group would just recreate them from its template. Create a new template and roll it out.
 
 ## 5.7 Snapshots, images and machine images
 
@@ -470,6 +482,73 @@ why B :: Scheduled, controlled, and with compliance reporting.
 why C :: Heavy, and it applies only to MIGs.
 why D :: Assembled, and with no compliance reporting.
 C: The answer is B. The three requirements, on a schedule, limit concurrency, and report compliance, map exactly onto a patch deployment. A and D are the assembled answers, and we prefer managed over assembled. C is sometimes valid for immutable groups, but the stem does not say these V-Ms are in a group.
+
+## Part 5: frequently missed patterns
+
+= th | Part 5 · more practice | VMs, groups and accelerators | Look for the word that says what must survive.
+N: 5 more questions, built on the patterns that candidates most often get wrong in this part. Answer each one before the reveal, and say which phrase in the stem decides it.
+
+= q | On Rydal Games' matchmaking servers, the process sometimes hangs while the VM stays running, so the VM keeps receiving traffic. The servers run in a regional managed instance group on a custom VPC that has only rules for its own subnets. Hung VMs must be recreated automatically. Which two actions should you take? (Choose two.)
+(A) Set the VMs' availability policy to restart them automatically after a failure
+(B) Create an uptime check on the load balancer's address that alerts the on-call team
+(C) Allow ingress from 35.191.0.0/16 and 130.211.0.0/22 on the matchmaking port
+(D) Install the Ops Agent on each VM so that process metrics reach Cloud Monitoring
+(E) Create a health check for the port, set as the group's autohealing policy
+ans C, E
+why A :: Automatic restart reacts to a VM crash or host event; the VM here is still running.
+why B :: An uptime check alerts people; it doesn't recreate anything in the group.
+why C :: Correct. Without ingress from the probe ranges, the health checks fail on every VM.
+why D :: The Ops Agent collects metrics and logs; it has no part in autohealing.
+why E :: Correct. An autohealing policy with an application health check detects the hung process, not just a stopped VM.
+C: The answer is C and E. Autohealing recreates a VM when the group's health check reports it unhealthy. The probes come from Google's health-check ranges, which a custom VPC with no matching rule would block, making every VM look unhealthy.
+
+= q | After an engineer edits the network configuration inside a Linux VM's guest OS, the VM has no network connectivity at all: SSH fails, including through IAP. You need a console prompt on the VM to repair the configuration. What should you do?
+(A) Enable OS Login and grant yourself the OS Login Admin role
+(B) Connect through Identity-Aware Proxy TCP forwarding
+(C) Add a new SSH key to the instance metadata
+(D) Enable the interactive serial console and connect to it
+ans D
+why A :: OS Login changes who may log in over SSH; SSH still needs the network that is broken.
+why B :: IAP tunnels to the VM's network interface, which is down inside the guest.
+why C :: A new key still needs a working network path for SSH.
+why D :: Correct. The serial console doesn't depend on the guest's network, so it gives a login prompt to fix the configuration.
+C: The answer is D. The interactive serial console is reached through Compute Engine, not the guest's network stack, so it works when the VM's own networking is broken.
+
+= q | A standalone n2-standard-4 VM needs to become n2-standard-8, keeping its boot disk, internal IP address and metadata. What is the procedure?
+(A) Stop the VM, change its machine type, then start it
+(B) Change the machine type while it runs; vCPUs are hot-added
+(C) Create a snapshot and build a new VM of the larger type from it
+(D) Attach a second n2-standard-4 to the VM as an accelerator
+ans A
+why A :: Correct. Stop, set the new machine type, and start; the instance keeps its disks and configuration.
+why B :: vCPUs and memory can't be hot-added; the VM must be stopped.
+why C :: A new VM works, but it is a different instance with new settings to recreate, which is more work than needed.
+why D :: Machine types aren't accelerators and can't be attached to a VM.
+C: The answer is A. Compute Engine changes a VM's machine type only when the VM is stopped. The disks, addresses and metadata stay with the instance.
+
+= q | A research team runs long simulations on Spot VMs with state on the boot disk. When a VM is pre-empted, they want to restart it later from where the disk left off, not rebuild it. How should the VMs be created?
+(A) Spot VMs whose termination action is DELETE
+(B) Spot VMs whose termination action is STOP
+(C) Preemptible VMs with automatic restart turned on
+(D) Standard VMs carrying a spot=true label
+ans B
+why A :: DELETE removes the VM, and its boot disk too by default.
+why B :: Correct. A Spot VM's termination action decides what pre-emption does: STOP keeps the VM and its disks so you can start it again later; DELETE removes the VM.
+why C :: Pre-emptible and Spot VMs cannot use automatic restart.
+why D :: Labels do not change the provisioning model or price.
+C: The answer is B. A Spot VM's termination action decides what pre-emption does: STOP keeps the VM and its disks so you can start it again later; DELETE removes the VM.
+
+= q | A research lab will pre-train a very large JAX model for weeks across thousands of accelerator chips. Its code has no custom CUDA kernels, and cost per training step is the main criterion. What should it plan to use?
+(A) Thousands of single-GPU N1 VMs in a managed instance group
+(B) Spot C3 VMs with many vCPUs each
+(C) Cloud Run jobs with GPUs attached
+(D) A multi-host Cloud TPU slice
+ans D
+why A :: Loosely connected single-GPU VMs scale poorly for synchronous training at this size.
+why B :: CPUs are far too slow for this workload.
+why C :: Cloud Run jobs are not built for weeks-long, tightly coupled training across thousands of chips.
+why D :: Correct. TPU slices are built for large-scale training. Frameworks such as JAX use the inter-chip interconnect to scale across hosts efficiently, typically with strong price-performance.
+C: The answer is D. TPU slices are built for large-scale training. Frameworks such as JAX use the inter-chip interconnect to scale across hosts efficiently, typically with strong price-performance.
 
 = th | End of Part 5 | Next: containers and serverless | GKE modes, workloads, scaling, Workload Identity, Cloud Run revisions and traffic, event-driven patterns.
 N: That is part five. Next is part six, containers and serverless, where you will see scaling again at two levels, Pods and nodes.

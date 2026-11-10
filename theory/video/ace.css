@@ -39,3 +39,7 @@ mark { background: #fff3a3; padding: 0 2pt; }
 .qz.rev .opt .why { background: none; border: 0; padding: 0; margin: 2pt 0 0; border-radius: 0; }
 .qz .stem code, .qz .opt code { font-size: 0.86em; }
 .th .s code { font-size: 0.8em; }
+
+/* Cloud Console screenshots (= shot slides) */
+.slide.shot figure.grow img { max-width: 100%; max-height: 100%; object-fit: contain; border: 1.5pt solid #d0d7de; border-radius: 8pt; box-shadow: 0 4pt 14pt rgba(31,35,40,.12); background: #fff; }
+.slide.shot figcaption { text-align: center; color: #57606a; font-size: 13pt; margin-top: 6pt; }
