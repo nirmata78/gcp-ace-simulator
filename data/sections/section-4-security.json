@@ -1,8 +1,8 @@
 {
   "domain": "Section 4: Configuring access and security",
   "version": 2,
-  "updated_at": "2026-11-09T09:42:59+00:00",
-  "count": 93,
+  "updated_at": "2026-11-10T12:28:55+00:00",
+  "count": 108,
   "questions": [
     {
       "id": "ace-dom1-005",
@@ -2657,6 +2657,439 @@
       }
     },
     {
+      "id": "ace-s4-071",
+      "uid": "72fd2323-d6a5-4314-be71-64985dd04fdf",
+      "title": "Testing a policy change, explaining a denial",
+      "objective": "4.1",
+      "subtopic": "IAM Policies and Inheritance",
+      "summary": "Policy Simulator shows the effect of an allow policy change before it is made; Policy Troubleshooter explains one principal's access to one resource.",
+      "tags": [
+        "iam",
+        "policy-intelligence",
+        "troubleshooting"
+      ],
+      "source": "curated",
+      "question": "The security team at Ashgrove Mutual has two tasks. Before it removes a broad role binding from a folder, it must test the proposed policy against recent access activity, to learn whether any principal would lose access it actually uses. Separately, it must explain why one developer is denied the permission storage.objects.get on one bucket, taking allow and deny policies into account. Which two tools should the team use? (Choose two.)",
+      "options": {
+        "A": "Policy Analyzer",
+        "B": "Role recommendations",
+        "C": "Policy Simulator",
+        "D": "Policy Troubleshooter",
+        "E": "Cloud Asset Inventory"
+      },
+      "correct_answer": "C,D",
+      "explanation": {
+        "summary": "Policy Simulator replays recent access against a proposed allow policy to show what would change. Policy Troubleshooter takes a principal, a resource and a permission and explains how each relevant policy affects that access.",
+        "option_breakdown": {
+          "A": "Policy Analyzer lists who has what access under the policies as they are; it neither tests a proposed change nor explains a denial policy by policy.",
+          "B": "Role recommendations suggest narrower roles from past usage; they do not simulate this removal or explain one denied request.",
+          "C": "Correct. Policy Simulator shows how the change might affect principals' access before it is committed.",
+          "D": "Correct. Policy Troubleshooter examines the allow and deny policies for one principal, resource and permission.",
+          "E": "Cloud Asset Inventory records resources and policies and their history; it does not evaluate access."
+        },
+        "gcloud_command": "gcloud policy-troubleshoot iam //storage.googleapis.com/projects/_/buckets/BUCKET --principal-email=dev@example.com --permission=storage.objects.get",
+        "doc_ref": "https://docs.cloud.google.com/policy-intelligence/docs/iam-simulator-overview"
+      }
+    },
+    {
+      "id": "ace-s4-072",
+      "uid": "a8d06e8b-07ed-49a7-88a2-a202f901f312",
+      "title": "Everyone who can read one sensitive dataset",
+      "objective": "4.1",
+      "subtopic": "IAM Policies and Inheritance",
+      "summary": "Policy Analyzer answers which principals have what access to a resource, across inherited policies and groups.",
+      "tags": [
+        "audit",
+        "iam",
+        "policy-intelligence"
+      ],
+      "source": "curated",
+      "question": "An auditor asks Penhallow Bank for the complete list of principals that can read the BigQuery dataset payroll, whether the access was granted on the dataset, on its project, on a folder or on the organization, and whether directly or through a group. Which tool gives the engineer this list?",
+      "options": {
+        "A": "The allow policy of the dataset, read with bq show",
+        "B": "Policy Analyzer, with a query for the dataset",
+        "C": "Policy Troubleshooter, with a query for the dataset",
+        "D": "Policy Simulator, with the dataset's current policy"
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "Policy Analyzer evaluates the allow policies that apply to a resource, including inherited ones, and reports which principals have what access to it.",
+        "option_breakdown": {
+          "A": "The dataset's own policy shows only what was granted on the dataset, not what it inherits from the project, folder or organization.",
+          "B": "Correct. Policy Analyzer finds which principals have what access to a resource, based on all the allow policies.",
+          "C": "Policy Troubleshooter checks one named principal and one permission at a time; it does not produce a list of everyone.",
+          "D": "Policy Simulator compares a proposed policy with the current one; it does not enumerate who has access today."
+        },
+        "gcloud_command": "gcloud asset analyze-iam-policy --organization=ORG_ID --full-resource-name=\"//bigquery.googleapis.com/projects/PROJECT_ID/datasets/payroll\"",
+        "doc_ref": "https://docs.cloud.google.com/policy-intelligence/docs/policy-analyzer-overview"
+      }
+    },
+    {
+      "id": "ace-s4-073",
+      "uid": "e7771dff-89e4-4a81-aa64-b532ae06d87e",
+      "title": "Developers locked out after the project moved folders",
+      "objective": "4.1",
+      "subtopic": "IAM Policies and Inheritance",
+      "summary": "When a project moves, policies inherited from its old parent stop applying, while policies attached to the project itself stay.",
+      "tags": [
+        "iam",
+        "inheritance",
+        "resource-hierarchy",
+        "troubleshooting"
+      ],
+      "source": "curated",
+      "question": "The project tk-ledger at Tavik Systems was moved from the folder Incubator to the folder Finance. Since the move, the developers, who held Editor through a grant on Incubator, cannot work in the project. A contractor with a grant made directly on tk-ledger still can. The developers need the same access to this project only. What should the administrator do?",
+      "options": {
+        "A": "Grant the developers' group Editor on the project tk-ledger",
+        "B": "Grant the developers' group Editor on the folder Finance",
+        "C": "Wait for the Incubator grant to follow the project to its new folder",
+        "D": "Remove the contractor's direct grant, which blocks inherited grants"
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "A project inherits from wherever it currently sits. After a move, the old parent's inherited policies no longer reach it, and only policies attached directly to the project carry over.",
+        "option_breakdown": {
+          "A": "Correct. A grant on the project itself restores the developers' access there and applies to nothing else.",
+          "B": "A grant on Finance would be inherited by every project in that folder, not only tk-ledger.",
+          "C": "Inherited policies do not migrate with a project; the Incubator grant will never apply in Finance.",
+          "D": "Allow policies add up. A direct grant never blocks an inherited one, and removing it only locks the contractor out as well."
+        },
+        "gcloud_command": "gcloud projects add-iam-policy-binding tk-ledger --member=\"group:developers@example.com\" --role=\"roles/editor\"",
+        "doc_ref": "https://docs.cloud.google.com/resource-manager/docs/create-migration-plan"
+      }
+    },
+    {
+      "id": "ace-s4-074",
+      "uid": "84a99585-6b0c-4fc7-870d-721a3bc44e2b",
+      "title": "Read access for every employee, present and future",
+      "objective": "4.1",
+      "subtopic": "IAM Policies and Inheritance",
+      "summary": "A domain principal stands for all Google Accounts in the Cloud Identity or Workspace domain, so new accounts are covered automatically.",
+      "tags": [
+        "domain",
+        "iam",
+        "principals"
+      ],
+      "source": "curated",
+      "question": "Everyone with a Google Account in the Cloud Identity domain of Wickham Press, including people hired later, must be able to read objects in the bucket wp-handbook. Nobody outside the company may read them, and the IT team does not want to maintain a membership list for this. To which principal should Storage Object Viewer on the bucket be granted?",
+      "options": {
+        "A": "The domain of Wickham Press",
+        "B": "allAuthenticatedUsers",
+        "C": "allUsers",
+        "D": "A Google group that IT fills with each new employee"
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "A domain is a virtual group of all the Google Accounts it contains. A new account joins it on creation, so a grant to the domain reaches every employee with no list to keep up.",
+        "option_breakdown": {
+          "A": "Correct. Every account created in the domain is added to its virtual group, so the grant covers new hires automatically.",
+          "B": "This identifier means anyone on the internet signed in with any Google Account, including personal Gmail accounts.",
+          "C": "This makes the objects readable by anyone on the internet without signing in at all.",
+          "D": "A manually filled group would work only as long as IT keeps the list current, which it wants to avoid."
+        },
+        "gcloud_command": "gcloud storage buckets add-iam-policy-binding gs://wp-handbook --member=\"domain:example.com\" --role=\"roles/storage.objectViewer\"",
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/principals-overview"
+      }
+    },
+    {
+      "id": "ace-s4-075",
+      "uid": "d3c63818-61ac-42f4-b24d-78551b63e820",
+      "title": "Access that did not expire with its condition",
+      "objective": "4.1",
+      "subtopic": "IAM Policies and Inheritance",
+      "summary": "A conditional binding does not limit a principal who also holds the same role without a condition; the unconditional binding must go.",
+      "tags": [
+        "iam",
+        "iam-conditions",
+        "troubleshooting"
+      ],
+      "source": "curated",
+      "question": "A consultant at Rookhope Mining was granted Compute Viewer on the project rm-survey with a condition that expired last Friday. On Monday the consultant can still list the VMs. The project's allow policy contains a second binding of Compute Viewer for the same consultant, added months ago with no condition. What should the administrator do to end the access?",
+      "options": {
+        "A": "Remove the expired conditional binding from the project's allow policy",
+        "B": "Add a new Compute Viewer binding for the consultant with the same expiry",
+        "C": "Wait a few more hours for the expiry of the condition to propagate",
+        "D": "Remove the consultant's Compute Viewer binding that has no condition"
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "Conditional bindings do not override unconditional ones. A principal bound to a role without a condition always has the role, whatever a conditional binding for the same role says.",
+        "option_breakdown": {
+          "A": "The expired binding already grants nothing. Removing it tidies the policy but leaves the binding that still grants the role.",
+          "B": "Another conditional binding for the same role has no effect while the principal also holds the role without a condition.",
+          "C": "The condition took effect on Friday. The access seen on Monday comes from the other binding, so waiting changes nothing.",
+          "D": "Correct. While the unconditional binding exists the consultant always has the role, so it has to be removed."
+        },
+        "gcloud_command": "gcloud projects remove-iam-policy-binding rm-survey --member=\"user:consultant@example.com\" --role=\"roles/compute.viewer\" --condition=None",
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/configuring-temporary-access"
+      }
+    },
+    {
+      "id": "ace-s4-076",
+      "uid": "e12714cb-5117-4255-88f2-e40dfbf618ad",
+      "title": "An operator for a single VM",
+      "objective": "4.1",
+      "subtopic": "IAM Policies and Inheritance",
+      "summary": "Some resources, such as a Compute Engine instance, accept their own allow policy, so a role can be limited to one resource in a project.",
+      "tags": [
+        "compute-engine",
+        "iam",
+        "least-privilege",
+        "resource-level"
+      ],
+      "source": "curated",
+      "question": "The project lab-shared at Brandreth College holds forty Compute Engine VMs used by different research groups. A visiting researcher must be able to start, stop and configure the VM gene-seq-01 and must have no rights on the other thirty-nine VMs. Where should Compute Instance Admin (v1) be granted to the researcher?",
+      "options": {
+        "A": "On the instance gene-seq-01",
+        "B": "On the project lab-shared",
+        "C": "On the folder that contains lab-shared",
+        "D": "On the persistent disks attached to gene-seq-01"
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "Allow policies can be set on certain individual resources, including Compute Engine instances. A grant there applies to that resource alone, while a project grant applies to everything in the project.",
+        "option_breakdown": {
+          "A": "Correct. A role granted on the instance gives the researcher permission on that single VM only.",
+          "B": "A project-level grant is inherited by all forty VMs in the project.",
+          "C": "A folder-level grant is inherited by every project in the folder and all their VMs.",
+          "D": "A grant on the disks covers the disks only; starting, stopping and configuring the VM are permissions on the instance."
+        },
+        "gcloud_command": "gcloud compute instances add-iam-policy-binding gene-seq-01 --zone=ZONE --member=\"user:researcher@example.com\" --role=\"roles/compute.instanceAdmin.v1\"",
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/resource-hierarchy-access-control"
+      }
+    },
+    {
+      "id": "ace-s4-077",
+      "uid": "85530be9-1f5f-4e79-895b-caa910baf4dd",
+      "title": "Read everywhere in the folder, edit in one project",
+      "objective": "4.1",
+      "subtopic": "IAM Policies and Inheritance",
+      "summary": "The effective policy is the union of a resource's own policy and what it inherits, so a narrow folder grant plus a broader project grant adds up.",
+      "tags": [
+        "iam",
+        "inheritance",
+        "least-privilege"
+      ],
+      "source": "curated",
+      "question": "A data steward at Yarrow Health needs to view resources in every project of the folder Analytics, including projects added later, and needs to edit resources only in the project ya-catalog, which is in that folder. The fewest possible grants should be used. Which grants meet the requirement?",
+      "options": {
+        "A": "Editor on the folder Analytics, and Viewer on every project except ya-catalog",
+        "B": "Viewer on each project of the folder, and Editor on the project ya-catalog",
+        "C": "Editor on the folder Analytics, and a deny policy on each other project",
+        "D": "Viewer on the folder Analytics, and Editor on the project ya-catalog"
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "Policies inherited from the folder and policies set on the project are combined. Viewer from the folder applies to every project in it, and the project's own Editor grant adds edit rights in that one project.",
+        "option_breakdown": {
+          "A": "Editor on the folder is inherited by every project, and a Viewer grant lower down cannot take it away.",
+          "B": "Per-project Viewer grants are many grants, and projects added later would have none.",
+          "C": "A deny policy per project is many more policies to maintain, and a project added later would inherit Editor with no deny policy.",
+          "D": "Correct. The effective policy in ya-catalog is the union of the folder's Viewer and the project's Editor."
+        },
+        "gcloud_command": "gcloud resource-manager folders add-iam-policy-binding FOLDER_ID --member=\"user:steward@example.com\" --role=\"roles/viewer\"\ngcloud projects add-iam-policy-binding ya-catalog --member=\"user:steward@example.com\" --role=\"roles/editor\"",
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/resource-hierarchy-access-control"
+      }
+    },
+    {
+      "id": "ace-s4-078",
+      "uid": "81ef97d3-83f8-46ff-aae6-fdaaba8ef309",
+      "title": "Federated staff refused by allAuthenticatedUsers",
+      "objective": "4.1",
+      "subtopic": "IAM Policies and Inheritance",
+      "summary": "allAuthenticatedUsers covers Google Accounts only, not federated identities; workforce pool users are granted access through the pool's principal set.",
+      "tags": [
+        "iam",
+        "principals",
+        "workforce-identity-federation"
+      ],
+      "source": "curated",
+      "question": "Staff at Dellmere Housing sign in to Google Cloud through Workforce Identity Federation and have no Google Accounts. To let all staff read a bucket of internal forms, an engineer granted Storage Object Viewer to allAuthenticatedUsers, but staff are still denied. The forms must be readable by staff only. To which principal should the role be granted instead?",
+      "options": {
+        "A": "allUsers",
+        "B": "The Cloud Identity domain of Dellmere Housing",
+        "C": "The principal set of the workforce identity pool",
+        "D": "The service agent of Cloud Storage in the project"
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "allAuthenticatedUsers means principals authenticated with a Google Account. Federated identities are not included, so workforce users are granted roles through a principal set for their pool.",
+        "option_breakdown": {
+          "A": "allUsers would let the federated staff in, but also anyone on the internet, and the forms are for staff only.",
+          "B": "A domain principal covers the Google Accounts of the domain, and the staff have none.",
+          "C": "Correct. A principal set for the workforce pool covers the federated staff and nobody else.",
+          "D": "A service agent is the identity Google's service uses; granting it a role gives the staff no access."
+        },
+        "gcloud_command": "gcloud storage buckets add-iam-policy-binding gs://BUCKET --member=\"principalSet://iam.googleapis.com/locations/global/workforcePools/POOL_ID/*\" --role=\"roles/storage.objectViewer\"",
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/principals-overview"
+      }
+    },
+    {
+      "id": "ace-s4-079",
+      "uid": "468b6f09-23e1-48f4-950e-c7ea311ba0ed",
+      "title": "The service agent is missing from the IAM page",
+      "objective": "4.1",
+      "subtopic": "IAM Policies and Inheritance",
+      "summary": "The console's IAM page hides service agents until Include Google-provided role grants is selected.",
+      "tags": [
+        "console",
+        "iam",
+        "service-agents"
+      ],
+      "source": "curated",
+      "question": "A setup guide tells an engineer at Coldharbour Print to grant an additional role to the Compute Engine service agent of the project cp-render. On the project's IAM page in the Google Cloud console the engineer sees users, groups and user-managed service accounts, but no service agent. The Compute Engine API is enabled and VMs are running. What should the engineer do?",
+      "options": {
+        "A": "Select Include Google-provided role grants on the IAM page",
+        "B": "Create a service account with the service agent's name",
+        "C": "Disable the Compute Engine API and enable it again",
+        "D": "Look for the service agent on the Service Accounts page"
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "Service agents are Google-managed service accounts. The IAM page leaves their role grants out of the list unless the Include Google-provided role grants checkbox is selected.",
+        "option_breakdown": {
+          "A": "Correct. With the checkbox selected, the page shows service agents and their email addresses, so a role can be added.",
+          "B": "A service agent is created and managed by Google; a user-managed account with a similar name is a different principal.",
+          "C": "The agent already exists, since VMs are running. Disabling the API would only disrupt them.",
+          "D": "The Service Accounts page lists the accounts the project owns; service agents are Google-managed and are not listed there."
+        },
+        "gcloud_command": "# Console > IAM & Admin > IAM > Include Google-provided role grants",
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/granting-changing-revoking-access"
+      }
+    },
+    {
+      "id": "ace-s4-080",
+      "uid": "57e3d0a3-ac67-493f-aa08-34bd6f953c2d",
+      "title": "A project Owner cannot create a deny policy",
+      "objective": "4.1",
+      "subtopic": "IAM Policies and Inheritance",
+      "summary": "Creating and managing deny policies requires the Deny Admin role; project ownership does not include it.",
+      "tags": [
+        "deny-policies",
+        "iam",
+        "roles"
+      ],
+      "source": "curated",
+      "question": "A security engineer at Ivybridge Water is Owner of the project iw-scada and wants to attach a deny policy to it, so that nobody can delete its Cloud Storage buckets. The attempt to create the deny policy fails with a permission error. Which role does the engineer need?",
+      "options": {
+        "A": "Project IAM Admin",
+        "B": "Organization Policy Administrator",
+        "C": "Deny Admin",
+        "D": "Storage Admin"
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "Deny policies have their own permissions. Viewing them takes Deny Reviewer, and creating, updating or deleting them takes Deny Admin; the Owner role does not carry these permissions.",
+        "option_breakdown": {
+          "A": "Project IAM Admin administers the project's allow policy; deny policies are managed with different permissions.",
+          "B": "This role manages organization policy constraints, which are a separate kind of policy from IAM deny policies.",
+          "C": "Correct. Deny Admin, granted on the organization, is the role for viewing, creating, updating and deleting deny policies.",
+          "D": "Storage Admin manages buckets and objects; it gives no permission to write an IAM deny policy."
+        },
+        "gcloud_command": "gcloud iam policies create no-bucket-delete --attachment-point=cloudresourcemanager.googleapis.com/projects/iw-scada --kind=denypolicies --policy-file=policy.json",
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/deny-access"
+      }
+    },
+    {
+      "id": "ace-s4-081",
+      "uid": "a03bf6cc-6f1f-4a0a-86ff-f19de8664353",
+      "title": "A role on the IAM page that cannot be edited",
+      "objective": "4.1",
+      "subtopic": "IAM Policies and Inheritance",
+      "summary": "An inherited role is shown on a child's IAM page but can be changed only on the resource where it was granted.",
+      "tags": [
+        "console",
+        "iam",
+        "inheritance"
+      ],
+      "source": "curated",
+      "question": "On the IAM page of the project vx-billing at Voxley Group, an administrator sees that the group interns has the Editor role, marked as inherited from the folder Shared. The administrator, who is Owner of the project and Folder Admin on Shared, wants to change that grant, but the project's IAM page does not allow editing it. Where should the change be made?",
+      "options": {
+        "A": "On the project, by adding a Viewer grant for interns that overrides Editor",
+        "B": "On the folder Shared, where the role was granted",
+        "C": "On the organization, where all inherited roles are stored",
+        "D": "On the project, with gcloud projects remove-iam-policy-binding"
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "The console lists inherited grants on a resource's IAM page for visibility, but an inherited role belongs to the policy of the ancestor that granted it and is edited there.",
+        "option_breakdown": {
+          "A": "Allow policies are additive. A Viewer grant on the project adds to the inherited Editor and overrides nothing.",
+          "B": "Correct. Inherited roles are edited on the resource where the role was granted, here the folder.",
+          "C": "The grant is in the folder's allow policy; the organization's policy does not contain it.",
+          "D": "The binding is not in the project's allow policy, so there is nothing for the project-level command to remove."
+        },
+        "gcloud_command": "gcloud resource-manager folders remove-iam-policy-binding FOLDER_ID --member=\"group:interns@example.com\" --role=\"roles/editor\"",
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/granting-changing-revoking-access"
+      }
+    },
+    {
+      "id": "ace-s4-082",
+      "uid": "c4da8dc1-5f42-4e94-b5bd-12fa60f45fb0",
+      "title": "An Owner who cannot delete a service account key",
+      "objective": "4.1",
+      "subtopic": "IAM Policies and Inheritance",
+      "summary": "A deny policy on a resource or an ancestor is checked before allow policies, so it blocks a permission whatever roles the principal holds.",
+      "tags": [
+        "deny-policies",
+        "iam",
+        "troubleshooting"
+      ],
+      "source": "curated",
+      "question": "An engineer at Quarrington Rail holds the Owner role on the project qr-signals, granted directly on the project. When the engineer tries to delete a service account key in that project, the request is refused for lack of the permission, although Owner contains it. The organization uses IAM deny policies. What is the most likely explanation?",
+      "options": {
+        "A": "The Owner role takes up to 24 hours to become effective on a project",
+        "B": "An allow policy on the folder grants the engineer only the Viewer role",
+        "C": "A deny policy on the project or one of its ancestors denies that permission",
+        "D": "The service account key was created by another user, who must delete it"
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "IAM checks relevant deny policies before allow policies. A denied permission cannot be used regardless of granted roles, and deny policies are inherited from the organization and folders.",
+        "option_breakdown": {
+          "A": "Role grants propagate in minutes, and nothing in the scenario suggests the grant is new.",
+          "B": "Allow policies add up, so a smaller role higher in the hierarchy cannot reduce what Owner on the project grants.",
+          "C": "Correct. A denied permission cannot be used whatever roles the principal has, and deny policies are inherited.",
+          "D": "Deleting a key depends on the permission, not on who created the key."
+        },
+        "gcloud_command": "gcloud iam policies list --attachment-point=cloudresourcemanager.googleapis.com/projects/qr-signals --kind=denypolicies",
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/deny-overview"
+      }
+    },
+    {
+      "id": "ace-s4-083",
+      "uid": "e58ba2ed-5877-4dbb-b6f5-80603622274b",
+      "title": "A custom role deleted two days ago",
+      "objective": "4.1",
+      "subtopic": "Role Types and Custom Roles",
+      "summary": "A deleted custom role can be undeleted within 7 days; its bindings stay in the policies and take effect again.",
+      "tags": [
+        "custom-roles",
+        "iam",
+        "recovery"
+      ],
+      "source": "curated",
+      "question": "Two days ago, during a clean-up, the custom role logReaderLite was deleted from the project ek-data at Eskdale Mills. The thirty analysts bound to it now get permission errors, although their bindings still appear in the project's allow policy. A deleted custom role can be undeleted for 7 days. Access must return exactly as it was. What should the administrator do?",
+      "options": {
+        "A": "Create a new custom role with the ID logReaderLite and the same permissions",
+        "B": "Add the thirty analysts' bindings to the allow policy again",
+        "C": "Undelete the custom role logReaderLite in the project",
+        "D": "Grant the analysts the Editor role until the role is rebuilt"
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "When a custom role is deleted, bindings that refer to it stay in the allow policy without effect. Undeleting the role within 7 days returns it to its previous state and the bindings work again.",
+        "option_breakdown": {
+          "A": "While the deleted role is still within its 7 days, its role ID is not free to be used for a new role.",
+          "B": "The bindings are still in the policy; they have no effect because the role they name is deleted.",
+          "C": "Correct. Undeleting returns the role to its previous state, and the existing bindings take effect again.",
+          "D": "Editor is far broader than a log-reading role and is not the access the analysts had."
+        },
+        "gcloud_command": "gcloud iam roles undelete logReaderLite --project=ek-data",
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/creating-custom-roles"
+      }
+    },
+    {
       "id": "ace-x-001",
       "uid": "4f59f304-4755-4780-9665-ba6421559735",
       "title": "A GKE Pod reading one bucket without keys",
@@ -3160,6 +3593,83 @@
       },
       "also_tests": [
         "3.1"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-085",
+      "uid": "84cd41ae-dceb-438b-9b0b-0646107f1bb3",
+      "title": "Firewall administrators for every network host project",
+      "objective": "4.1",
+      "subtopic": "IAM Policies and Inheritance",
+      "summary": "A role granted on a folder is inherited by present and future projects in it; firewall rules need Compute Security Admin, not Network Admin.",
+      "tags": [
+        "firewall",
+        "iam",
+        "inheritance",
+        "shared-vpc"
+      ],
+      "source": "curated",
+      "question": "Marchmont Energy keeps its Shared VPC host projects in the folder Networking, and adds a new host project there for each region it enters. The firewall team must create and change firewall rules in every host project, including future ones, with no per-project grants. The team must have no rights in projects outside that folder. What should be granted to the team's group?",
+      "options": {
+        "A": "Compute Network Admin on the folder Networking",
+        "B": "Compute Security Admin on each existing host project",
+        "C": "Compute Security Admin on the folder Networking",
+        "D": "Compute Security Admin on the organization"
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "Allow policies are inherited down the hierarchy, so a grant on the folder reaches every project in it, now and later. Firewall rules are managed with Compute Security Admin; Network Admin excludes them.",
+        "option_breakdown": {
+          "A": "Network Admin controls networks, subnets and routes but not firewall rules, which is the one thing the team needs.",
+          "B": "Per-project grants miss every host project added later and are the per-project work the company wants to avoid.",
+          "C": "Correct. Security Admin manages firewall rules, and the folder grant is inherited by all its projects, present and future.",
+          "D": "A grant on the organization is inherited by every project in the company, far outside the Networking folder."
+        },
+        "gcloud_command": "gcloud resource-manager folders add-iam-policy-binding FOLDER_ID --member=\"group:firewall-team@example.com\" --role=\"roles/compute.securityAdmin\"",
+        "doc_ref": "https://docs.cloud.google.com/vpc/docs/shared-vpc"
+      },
+      "also_tests": [
+        "2.3"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-086",
+      "uid": "24990c0b-4840-4212-bd19-4366e32f759c",
+      "title": "A bucket readable by one group, through IAM alone",
+      "objective": "4.1",
+      "subtopic": "IAM Policies and Inheritance",
+      "summary": "Uniform bucket-level access turns off ACLs so that only IAM grants access; a bucket-level role then gives one group read access.",
+      "tags": [
+        "cloud-storage",
+        "iam",
+        "uniform-bucket-level-access"
+      ],
+      "source": "curated",
+      "question": "Objects in the bucket hm-contracts at Hartsmere Legal have object ACLs added over the years, and nobody knows any more who can read what. From today, access to the bucket must be decided by IAM alone, and only the group legal-readers may read its objects. Other buckets in the project must not be affected. Which two actions should the engineer take? (Choose two.)",
+      "options": {
+        "A": "Enable uniform bucket-level access on hm-contracts",
+        "B": "Grant legal-readers Storage Object Viewer on the whole project",
+        "C": "Add an object ACL entry for legal-readers to every object",
+        "D": "Make the objects public and share them through signed URLs",
+        "E": "Grant legal-readers Storage Object Viewer on hm-contracts"
+      },
+      "correct_answer": "A,E",
+      "explanation": {
+        "summary": "IAM and ACLs work in parallel, and either one can grant access. Uniform bucket-level access disables ACLs in the bucket, so the IAM policy is the whole story, and a role on the bucket reaches that bucket only.",
+        "option_breakdown": {
+          "A": "Correct. It disables ACLs for everything in the bucket, so access is then granted exclusively through IAM.",
+          "B": "A project-level grant would let the group read objects in every bucket of the project.",
+          "C": "More ACL entries keep the ACL system in use, when access is supposed to be decided by IAM alone.",
+          "D": "Public objects can be read by anyone, the opposite of restricting them to one group.",
+          "E": "Correct. The role on this bucket lets the group read its objects and nothing in other buckets."
+        },
+        "gcloud_command": "gcloud storage buckets update gs://hm-contracts --uniform-bucket-level-access\ngcloud storage buckets add-iam-policy-binding gs://hm-contracts --member=\"group:legal-readers@example.com\" --role=\"roles/storage.objectViewer\"",
+        "doc_ref": "https://docs.cloud.google.com/storage/docs/uniform-bucket-level-access"
+      },
+      "also_tests": [
+        "3.2"
       ],
       "certifying_only": true
     }

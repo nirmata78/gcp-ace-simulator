@@ -1,18 +1,18 @@
 {
   "version": 2,
-  "generated_at": "2026-11-09T09:42:59+00:00",
-  "total": 786,
+  "generated_at": "2026-11-10T12:28:55+00:00",
+  "total": 862,
   "guide": "Associate Cloud Engineer exam guide, live from 2026-06-30",
   "counts_by_domain": {
-    "S1 · Setup": 127,
-    "S2 · Plan & build": 281,
+    "S1 · Setup": 186,
+    "S2 · Plan & build": 283,
     "S3 · Operate": 285,
-    "S4 · Access": 93
+    "S4 · Access": 108
   },
   "counts_by_objective": {
-    "1.1": 103,
-    "1.2": 24,
-    "2.1": 111,
+    "1.1": 139,
+    "1.2": 47,
+    "2.1": 113,
     "2.2": 77,
     "2.3": 69,
     "2.4": 24,
@@ -20,31 +20,31 @@
     "3.2": 57,
     "3.3": 39,
     "3.4": 77,
-    "4.1": 25,
+    "4.1": 40,
     "4.2": 68
   },
   "counts_by_kind": {
-    "multiple_select": 58,
-    "cross_domain": 78,
-    "certifying_only": 78
+    "multiple_select": 66,
+    "cross_domain": 86,
+    "certifying_only": 86
   },
   "subtopics_by_domain": {
     "S1 · Setup": {
-      "APIs and Quotas": 10,
+      "APIs and Quotas": 19,
       "Asset Inventory and Gemini Cloud Assist": 13,
-      "Billing Accounts": 7,
-      "Billing Export and Cost Attribution": 8,
-      "Budgets and Alerts": 9,
+      "Billing Accounts": 23,
+      "Billing Export and Cost Attribution": 12,
+      "Budgets and Alerts": 12,
       "Cloud Identity and Users": 10,
-      "Foundation Networking": 6,
-      "Observability Setup": 5,
+      "Foundation Networking": 9,
+      "Observability Setup": 10,
       "Organization Policy": 13,
-      "Project IAM Grants": 4,
+      "Project IAM Grants": 10,
       "Regions and Zones": 11,
-      "Resource Hierarchy": 8,
-      "Standalone Organizations": 4,
+      "Resource Hierarchy": 10,
+      "Standalone Organizations": 10,
       "Workforce Identity Federation": 14,
-      "gcloud CLI and Configurations": 5
+      "gcloud CLI and Configurations": 10
     },
     "S2 · Plan & build": {
       "AI-assisted Planning": 10,
@@ -64,13 +64,13 @@
       "Managed Instance Groups": 11,
       "Multi-region Redundancy": 32,
       "Network Service Tiers": 6,
-      "OS Login": 6,
+      "OS Login": 7,
       "Secure Tags and Service Accounts in Rules": 9,
       "Serverless Deployment and Events": 12,
       "Spot and Custom Machine Types": 8,
       "Storage Products": 8,
       "Storage for Compute Engine": 8,
-      "VM Manager": 6,
+      "VM Manager": 7,
       "VPC Design": 11,
       "kubectl Setup": 7
     },
@@ -116,8 +116,8 @@
     },
     "S4 · Access": {
       "Creating Service Accounts": 10,
-      "IAM Policies and Inheritance": 18,
-      "Role Types and Custom Roles": 7,
+      "IAM Policies and Inheritance": 32,
+      "Role Types and Custom Roles": 8,
       "Service Account Permissions and Impersonation": 10,
       "Service Accounts and Least Privilege": 12,
       "Service Accounts for GKE": 10,
@@ -6045,6 +6045,1123 @@
       "file": "sections/section-1-setup.json"
     },
     {
+      "id": "ace-s1-078",
+      "uid": "bb441082-7952-444b-a918-334704a280b9",
+      "title": "One role to reorganise every folder",
+      "domain": "S1 · Setup",
+      "objective": "1.1",
+      "subtopic": "Resource Hierarchy",
+      "new_in_2026": false,
+      "summary": "Folder Admin on the organization covers creating, moving and deleting folders, their IAM, and moving projects between folders.",
+      "tags": [
+        "folders",
+        "iam",
+        "resource-hierarchy"
+      ],
+      "source": "curated",
+      "fingerprint": "59716eae4a80",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-079",
+      "uid": "6d786bd8-4b0f-4e41-991a-667cc68c2c5d",
+      "title": "A project shut down by mistake twelve days ago",
+      "domain": "S1 · Setup",
+      "objective": "1.1",
+      "subtopic": "Resource Hierarchy",
+      "new_in_2026": false,
+      "summary": "A shut-down project stays restorable for 30 days and is brought back with gcloud projects undelete.",
+      "tags": [
+        "projects",
+        "recovery",
+        "resource-hierarchy"
+      ],
+      "source": "curated",
+      "fingerprint": "6eaadefa1560",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-080",
+      "uid": "2fcc75db-d438-4ce7-bde4-47659a8cfb04",
+      "title": "Owner for a consultant outside the organization",
+      "domain": "S1 · Setup",
+      "objective": "1.1",
+      "subtopic": "Project IAM Grants",
+      "new_in_2026": false,
+      "summary": "The Owner role can be granted to a user outside the organization only from the Google Cloud console, not with the gcloud CLI.",
+      "tags": [
+        "external-users",
+        "iam",
+        "owner-role"
+      ],
+      "source": "curated",
+      "fingerprint": "e1a4ebc890f9",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-081",
+      "uid": "679529e6-061a-4770-9b69-26f267989029",
+      "title": "Log access that ends itself on 30 June",
+      "domain": "S1 · Setup",
+      "objective": "1.1",
+      "subtopic": "Project IAM Grants",
+      "new_in_2026": false,
+      "summary": "A conditional role binding with an expiry time grants access that stops on its own, and it cannot be used with legacy basic roles.",
+      "tags": [
+        "iam",
+        "iam-conditions",
+        "temporary-access"
+      ],
+      "source": "curated",
+      "fingerprint": "978170dbf213",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-082",
+      "uid": "6f6cc39a-9470-4dba-bedc-9273e07c61e6",
+      "title": "Team leads who only manage access",
+      "domain": "S1 · Setup",
+      "objective": "1.1",
+      "subtopic": "Project IAM Grants",
+      "new_in_2026": false,
+      "summary": "Project IAM Admin lets a principal administer a project's allow policy without rights over the project's resources.",
+      "tags": [
+        "delegation",
+        "iam",
+        "least-privilege"
+      ],
+      "source": "curated",
+      "fingerprint": "ecf93b22da76",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-083",
+      "uid": "1711d5b5-5a64-48c3-ac1b-e38fc958f370",
+      "title": "A returning employee with a re-created account",
+      "domain": "S1 · Setup",
+      "objective": "1.1",
+      "subtopic": "Project IAM Grants",
+      "new_in_2026": false,
+      "summary": "A role binding for a deleted principal does not apply to a new principal with the same name; the new principal needs its own binding.",
+      "tags": [
+        "deleted-principals",
+        "iam",
+        "troubleshooting"
+      ],
+      "source": "curated",
+      "fingerprint": "33ede9342a19",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-084",
+      "uid": "1d53fbcb-5f6d-4024-adee-cba6e20f4e2f",
+      "title": "Two grants to deploy a Cloud Run revision",
+      "domain": "S1 · Setup",
+      "objective": "1.1",
+      "subtopic": "Project IAM Grants",
+      "new_in_2026": false,
+      "summary": "Deploying to Cloud Run needs Cloud Run Developer on the service and Service Account User on the service's identity.",
+      "tags": [
+        "cloud-run",
+        "iam",
+        "least-privilege",
+        "service-accounts"
+      ],
+      "source": "curated",
+      "fingerprint": "aa08245b0e63",
+      "choose": 2,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-085",
+      "uid": "a3dafd4b-c9c5-4978-a21c-bfc9661a9dcd",
+      "title": "A release engineer who only switches APIs on",
+      "domain": "S1 · Setup",
+      "objective": "1.1",
+      "subtopic": "APIs and Quotas",
+      "new_in_2026": false,
+      "summary": "Service Usage Admin is the narrow role for enabling and disabling services in a project.",
+      "tags": [
+        "apis",
+        "least-privilege",
+        "service-usage"
+      ],
+      "source": "curated",
+      "fingerprint": "5d313aec9a98",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-086",
+      "uid": "f769f62d-a1a3-43e3-811f-d1c6b16163a1",
+      "title": "The value on the Quotas page is a system limit",
+      "domain": "S1 · Setup",
+      "objective": "1.1",
+      "subtopic": "APIs and Quotas",
+      "new_in_2026": false,
+      "summary": "A system limit is fixed and cannot be raised by a quota request, so the design has to fit inside it.",
+      "tags": [
+        "quotas",
+        "system-limits"
+      ],
+      "source": "curated",
+      "fingerprint": "1dc3a4bd162c",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-087",
+      "uid": "3f2ac075-0c23-4ce8-bab0-4db52b231faa",
+      "title": "One more static address is needed within the hour",
+      "domain": "S1 · Setup",
+      "objective": "1.1",
+      "subtopic": "APIs and Quotas",
+      "new_in_2026": false,
+      "summary": "An allocation quota is freed at once by deleting unused resources that count against it.",
+      "tags": [
+        "allocation-quota",
+        "compute-engine",
+        "quotas"
+      ],
+      "source": "curated",
+      "fingerprint": "5588cee2da45",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-088",
+      "uid": "4324f42d-700f-42f1-805f-cbb623cb4f52",
+      "title": "A daily API quota that runs out every afternoon",
+      "domain": "S1 · Setup",
+      "objective": "1.1",
+      "subtopic": "APIs and Quotas",
+      "new_in_2026": false,
+      "summary": "When a per-day rate quota is exhausted long before the day ends, the lasting fix is a quota adjustment, not retries.",
+      "tags": [
+        "apis",
+        "quotas",
+        "rate-quota"
+      ],
+      "source": "curated",
+      "fingerprint": "702de451023e",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-089",
+      "uid": "c56ccec0-676a-4430-97f1-80955cbcf200",
+      "title": "Stopping BigQuery charges in a retired project",
+      "domain": "S1 · Setup",
+      "objective": "1.1",
+      "subtopic": "APIs and Quotas",
+      "new_in_2026": false,
+      "summary": "Disabling the API of a storage service does not delete its data, and the stored data keeps being billed.",
+      "tags": [
+        "apis",
+        "bigquery",
+        "cost"
+      ],
+      "source": "curated",
+      "fingerprint": "ce292ef66e9c",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-090",
+      "uid": "7d43d2e7-ebad-4832-8a25-77593c7b7f25",
+      "title": "GKE clusters suspended after an API clean-up",
+      "domain": "S1 · Setup",
+      "objective": "1.1",
+      "subtopic": "APIs and Quotas",
+      "new_in_2026": false,
+      "summary": "Disabling the Kubernetes Engine API suspends a project's clusters; re-enabling the API within 30 days brings them back.",
+      "tags": [
+        "apis",
+        "gke",
+        "troubleshooting"
+      ],
+      "source": "curated",
+      "fingerprint": "225030ecdb3f",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-091",
+      "uid": "66fdcc67-f210-42f9-9f11-da153699290d",
+      "title": "Load tests that starve production of API quota",
+      "domain": "S1 · Setup",
+      "objective": "1.1",
+      "subtopic": "APIs and Quotas",
+      "new_in_2026": false,
+      "summary": "Quota is counted per project and shared by everything in it, so workloads that must not compete need separate projects.",
+      "tags": [
+        "isolation",
+        "projects",
+        "quotas"
+      ],
+      "source": "curated",
+      "fingerprint": "30dbc1933818",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-092",
+      "uid": "88636f3b-96d3-4216-a98e-32f154a9601d",
+      "title": "gcloud services enable fails in one project only",
+      "domain": "S1 · Setup",
+      "objective": "1.1",
+      "subtopic": "APIs and Quotas",
+      "new_in_2026": false,
+      "summary": "Enabling a service goes through the Service Usage API, which must itself be enabled in the project making the request.",
+      "tags": [
+        "apis",
+        "service-usage",
+        "troubleshooting"
+      ],
+      "source": "curated",
+      "fingerprint": "634f31e26f2d",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-093",
+      "uid": "4a81d0b7-9fa5-4be6-96a5-658a719090db",
+      "title": "Admin Activity logs kept for three years",
+      "domain": "S1 · Setup",
+      "objective": "1.1",
+      "subtopic": "Observability Setup",
+      "new_in_2026": false,
+      "summary": "The _Required bucket's 400-day retention is fixed, so longer retention needs a sink to a bucket whose retention can be set.",
+      "tags": [
+        "audit-logs",
+        "log-buckets",
+        "logging",
+        "retention"
+      ],
+      "source": "curated",
+      "fingerprint": "bca4a8cede67",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-094",
+      "uid": "e846c220-085a-4ee7-9b11-16f762591212",
+      "title": "A log bucket created in the wrong region",
+      "domain": "S1 · Setup",
+      "objective": "1.1",
+      "subtopic": "Observability Setup",
+      "new_in_2026": false,
+      "summary": "A log bucket's region is fixed at creation; moving means a new bucket in the right region and redirecting the sinks.",
+      "tags": [
+        "data-residency",
+        "log-buckets",
+        "logging"
+      ],
+      "source": "curated",
+      "fingerprint": "50d241bd5aea",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-095",
+      "uid": "ecc40eed-77cb-4c25-939d-b6612cd673e7",
+      "title": "Managers who only look at the dashboards",
+      "domain": "S1 · Setup",
+      "objective": "1.1",
+      "subtopic": "Observability Setup",
+      "new_in_2026": false,
+      "summary": "Monitoring Viewer gives read-only access to dashboards and alerting policies without exposing the project's other resources.",
+      "tags": [
+        "iam",
+        "least-privilege",
+        "monitoring"
+      ],
+      "source": "curated",
+      "fingerprint": "e4b787b5a6ff",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-096",
+      "uid": "6c85002e-8b86-468e-be20-ff791df6226f",
+      "title": "Joining logs with sales tables in BigQuery",
+      "domain": "S1 · Setup",
+      "objective": "1.1",
+      "subtopic": "Observability Setup",
+      "new_in_2026": false,
+      "summary": "A log bucket upgraded to analytics can be exposed to BigQuery through a linked dataset, with no second copy of the logs.",
+      "tags": [
+        "bigquery",
+        "log-buckets",
+        "logging"
+      ],
+      "source": "curated",
+      "fingerprint": "4784b0ec6239",
+      "choose": 2,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-097",
+      "uid": "9f1bef91-c0bf-4bac-94e0-354f57f3e119",
+      "title": "One team may read only its own service's logs",
+      "domain": "S1 · Setup",
+      "objective": "1.1",
+      "subtopic": "Observability Setup",
+      "new_in_2026": false,
+      "summary": "A log view exposes a subset of a log bucket, and IAM on the view controls who can read that subset.",
+      "tags": [
+        "iam",
+        "log-views",
+        "logging"
+      ],
+      "source": "curated",
+      "fingerprint": "52e8dfdf2357",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-098",
+      "uid": "0addeeeb-9723-44b7-becb-3801cd4bda97",
+      "title": "The founder cannot create a folder",
+      "domain": "S1 · Setup",
+      "objective": "1.1",
+      "subtopic": "Standalone Organizations",
+      "new_in_2026": true,
+      "summary": "In a standalone organization the Organization Administrator role does not include creating folders or projects; those need additional roles.",
+      "tags": [
+        "iam",
+        "resource-hierarchy",
+        "standalone-organization"
+      ],
+      "source": "curated",
+      "fingerprint": "1de248a48d1f",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-099",
+      "uid": "da62b880-3288-45d1-93af-db2fab8cf19c",
+      "title": "Nobody can set IAM on the standalone organization",
+      "domain": "S1 · Setup",
+      "objective": "1.1",
+      "subtopic": "Standalone Organizations",
+      "new_in_2026": true,
+      "summary": "An Organization Owner of a standalone organization can grant Organization Administrator again from the Organization details page.",
+      "tags": [
+        "iam",
+        "recovery",
+        "standalone-organization"
+      ],
+      "source": "curated",
+      "fingerprint": "416b2bb208c0",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-100",
+      "uid": "8cc78f54-a9c4-448e-98ff-1d0d12d24fec",
+      "title": "A federated user as owner of a standalone organization",
+      "domain": "S1 · Setup",
+      "objective": "1.1",
+      "subtopic": "Standalone Organizations",
+      "new_in_2026": true,
+      "summary": "A workforce pool principal can be an Organization Owner; it is added by its principal identifier and accepts an emailed invitation.",
+      "tags": [
+        "organization-owner",
+        "standalone-organization",
+        "workforce-identity-federation"
+      ],
+      "source": "curated",
+      "fingerprint": "77d3de8b241c",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-101",
+      "uid": "32d98244-b5bf-4045-90ee-7462cb55d074",
+      "title": "Removing the founder's personal account as owner",
+      "domain": "S1 · Setup",
+      "objective": "1.1",
+      "subtopic": "Standalone Organizations",
+      "new_in_2026": true,
+      "summary": "A standalone organization must always keep at least one active Google Account among its owners.",
+      "tags": [
+        "organization-owner",
+        "standalone-organization"
+      ],
+      "source": "curated",
+      "fingerprint": "e5652e79dc3d",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-102",
+      "uid": "5f5b069d-3c85-45cf-8f69-1784eda9733c",
+      "title": "A second standalone organization for the same person",
+      "domain": "S1 · Setup",
+      "objective": "1.1",
+      "subtopic": "Standalone Organizations",
+      "new_in_2026": true,
+      "summary": "Only one standalone organization is created per user account, but one user can be invited to own several.",
+      "tags": [
+        "organization-owner",
+        "standalone-organization"
+      ],
+      "source": "curated",
+      "fingerprint": "d6d4c1acccdc",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-103",
+      "uid": "02bc433a-5eff-4e48-9f0d-eccf35b64a22",
+      "title": "A project owner cannot enable the Shared VPC host",
+      "domain": "S1 · Setup",
+      "objective": "1.1",
+      "subtopic": "Foundation Networking",
+      "new_in_2026": false,
+      "summary": "Enabling a host project needs the Compute Shared VPC Admin role, which is granted on the organization or a folder, not on the project.",
+      "tags": [
+        "foundation",
+        "iam",
+        "shared-vpc"
+      ],
+      "source": "curated",
+      "fingerprint": "ab4a07a04647",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-104",
+      "uid": "73ad03be-26c0-4335-a040-7057345607d8",
+      "title": "Two environment networks that will be peered",
+      "domain": "S1 · Setup",
+      "objective": "1.1",
+      "subtopic": "Foundation Networking",
+      "new_in_2026": false,
+      "summary": "Auto mode VPC networks all use the same predefined ranges and cannot be peered with each other, so a foundation uses custom mode.",
+      "tags": [
+        "custom-mode",
+        "foundation",
+        "ip-planning",
+        "vpc"
+      ],
+      "source": "curated",
+      "fingerprint": "5b1a4c97da21",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-105",
+      "uid": "c20a7f70-fb8e-44e3-be45-37faa8383251",
+      "title": "A service project limited to one shared subnet",
+      "domain": "S1 · Setup",
+      "objective": "1.1",
+      "subtopic": "Foundation Networking",
+      "new_in_2026": false,
+      "summary": "Granting Network User on selected subnets, not on the host project, restricts a service project team to those subnets.",
+      "tags": [
+        "least-privilege",
+        "shared-vpc",
+        "subnets"
+      ],
+      "source": "curated",
+      "fingerprint": "1eb9003d5dd0",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-106",
+      "uid": "7230fef8-a5a2-4e58-8eb9-b9321dfc1a18",
+      "title": "Two terminals, two gcloud configurations",
+      "domain": "S1 · Setup",
+      "objective": "1.1",
+      "subtopic": "gcloud CLI and Configurations",
+      "new_in_2026": false,
+      "summary": "CLOUDSDK_ACTIVE_CONFIG_NAME selects a configuration for one terminal without changing the active configuration elsewhere.",
+      "tags": [
+        "configurations",
+        "environment-variables",
+        "gcloud"
+      ],
+      "source": "curated",
+      "fingerprint": "75c01fcfe25c",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-107",
+      "uid": "c843f48c-7217-4deb-9cf7-9908be2fd38d",
+      "title": "gcloud works, but the local script finds no credentials",
+      "domain": "S1 · Setup",
+      "objective": "1.1",
+      "subtopic": "gcloud CLI and Configurations",
+      "new_in_2026": false,
+      "summary": "Client libraries use Application Default Credentials, which a local shell gets from gcloud auth application-default login.",
+      "tags": [
+        "adc",
+        "authentication",
+        "client-libraries",
+        "gcloud"
+      ],
+      "source": "curated",
+      "fingerprint": "bf8b607bfeeb",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-108",
+      "uid": "3d87455b-ef14-4701-b1a0-f3d0c575ce33",
+      "title": "gcloud commands inside an unattended script",
+      "domain": "S1 · Setup",
+      "objective": "1.1",
+      "subtopic": "gcloud CLI and Configurations",
+      "new_in_2026": false,
+      "summary": "A script disables prompts with --quiet and asks for a fixed output format with --format, not the default output.",
+      "tags": [
+        "automation",
+        "gcloud",
+        "scripting"
+      ],
+      "source": "curated",
+      "fingerprint": "6fd04fd5cd47",
+      "choose": 2,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-109",
+      "uid": "8a216f38-d67c-4a97-a7d3-dee0c2946d8f",
+      "title": "A contractor leaves a shared build workstation",
+      "domain": "S1 · Setup",
+      "objective": "1.1",
+      "subtopic": "gcloud CLI and Configurations",
+      "new_in_2026": false,
+      "summary": "gcloud auth revoke invalidates a principal's stored gcloud credentials so the CLI can no longer act for them.",
+      "tags": [
+        "authentication",
+        "credentials",
+        "gcloud"
+      ],
+      "source": "curated",
+      "fingerprint": "e1317f8c9b79",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-110",
+      "uid": "562211bc-1e69-4095-b884-d0a06c4323dc",
+      "title": "A production project unlinked by accident, twice",
+      "domain": "S1 · Setup",
+      "objective": "1.2",
+      "subtopic": "Billing Accounts",
+      "new_in_2026": false,
+      "summary": "Locking the link between a project and its billing account prevents accidental moves and unlinking.",
+      "tags": [
+        "billing",
+        "billing-account",
+        "safeguards"
+      ],
+      "source": "curated",
+      "fingerprint": "8f8c4a689e79",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-111",
+      "uid": "7ada00a2-55e5-4970-84ff-b69fd117180c",
+      "title": "Pausing spend by disabling billing",
+      "domain": "S1 · Setup",
+      "objective": "1.2",
+      "subtopic": "Billing Accounts",
+      "new_in_2026": false,
+      "summary": "Disabling billing stops a project's services and can remove resources for good, so it is not a way to pause costs.",
+      "tags": [
+        "billing",
+        "cost",
+        "risk"
+      ],
+      "source": "curated",
+      "fingerprint": "25a8085bd722",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-112",
+      "uid": "dd52f0fe-ddd1-4cc0-b7f6-d0cb63cd1a64",
+      "title": "A subsidiary that must pay its own bills",
+      "domain": "S1 · Setup",
+      "objective": "1.2",
+      "subtopic": "Billing Accounts",
+      "new_in_2026": false,
+      "summary": "A separate legal entity paying in its own currency needs its own Cloud Billing account on its own payments profile.",
+      "tags": [
+        "billing",
+        "billing-account",
+        "payments-profile"
+      ],
+      "source": "curated",
+      "fingerprint": "797dadbcd82b",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-113",
+      "uid": "ac753c3d-651a-40e1-9e30-edddeadfcef4",
+      "title": "The finance lead cannot be added to the payments profile",
+      "domain": "S1 · Setup",
+      "objective": "1.2",
+      "subtopic": "Billing Accounts",
+      "new_in_2026": false,
+      "summary": "An Individual payments profile can be managed only by its creator and its type cannot be changed; shared management needs an Organization profile.",
+      "tags": [
+        "billing",
+        "payments-profile"
+      ],
+      "source": "curated",
+      "fingerprint": "696ad57ddbac",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-114",
+      "uid": "48222e7b-5eb3-4cad-9cfa-652c7500d30f",
+      "title": "A reseller keeps each customer's charges apart",
+      "domain": "S1 · Setup",
+      "objective": "1.2",
+      "subtopic": "Billing Accounts",
+      "new_in_2026": false,
+      "summary": "Billing subaccounts let a reseller on invoiced billing group each customer's projects and charges separately under one parent account.",
+      "tags": [
+        "billing",
+        "resellers",
+        "subaccounts"
+      ],
+      "source": "curated",
+      "fingerprint": "6466b95eeac1",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-115",
+      "uid": "e8e6889c-37a1-48ad-8561-503ffcbb6e11",
+      "title": "Paying by wire transfer against an invoice",
+      "domain": "S1 · Setup",
+      "objective": "1.2",
+      "subtopic": "Billing Accounts",
+      "new_in_2026": false,
+      "summary": "Paying by check or wire transfer against a monthly invoice is the invoiced account type, for which a customer must be eligible.",
+      "tags": [
+        "billing",
+        "invoiced-billing",
+        "payment"
+      ],
+      "source": "curated",
+      "fingerprint": "56edc7370d04",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-116",
+      "uid": "0a766c9e-e068-480d-9125-bd78f8969b7d",
+      "title": "A billing administrator who cannot list the VMs",
+      "domain": "S1 · Setup",
+      "objective": "1.2",
+      "subtopic": "Billing Accounts",
+      "new_in_2026": false,
+      "summary": "Roles on a Cloud Billing account are not inherited by the projects linked to it; seeing a project's resources needs a role on the project.",
+      "tags": [
+        "billing",
+        "iam",
+        "inheritance"
+      ],
+      "source": "curated",
+      "fingerprint": "c22b617e0f40",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-117",
+      "uid": "b85f5fd7-4d8e-4263-929d-3afa7c5717f5",
+      "title": "Who pays for usage before the project moved",
+      "domain": "S1 · Setup",
+      "objective": "1.2",
+      "subtopic": "Billing Accounts",
+      "new_in_2026": false,
+      "summary": "After a project changes billing account, charges incurred before the move stay with the former account and later charges go to the new one.",
+      "tags": [
+        "billing",
+        "billing-account",
+        "chargeback"
+      ],
+      "source": "curated",
+      "fingerprint": "433a35173ddb",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-118",
+      "uid": "2044480f-f76c-46b5-a9ed-9ac1bc455450",
+      "title": "Resources stopped when the Free Trial ran out",
+      "domain": "S1 · Setup",
+      "objective": "1.2",
+      "subtopic": "Billing Accounts",
+      "new_in_2026": false,
+      "summary": "When a Free Trial ends, resources stop and a 30-day grace period begins; upgrading to a Paid account in that period can recover them.",
+      "tags": [
+        "billing",
+        "free-trial",
+        "recovery"
+      ],
+      "source": "curated",
+      "fingerprint": "a70ff5c8c07e",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-119",
+      "uid": "399bc544-c375-4843-80ab-94f09c401deb",
+      "title": "A billing account closed after a declined card",
+      "domain": "S1 · Setup",
+      "objective": "1.2",
+      "subtopic": "Billing Accounts",
+      "new_in_2026": false,
+      "summary": "A closed Cloud Billing account can be reopened only after its payment problem has been resolved.",
+      "tags": [
+        "billing",
+        "billing-account",
+        "payment",
+        "recovery"
+      ],
+      "source": "curated",
+      "fingerprint": "b8d25249a6a1",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-120",
+      "uid": "c6e544b5-1c3f-4e4e-85b8-e7d790b1a41a",
+      "title": "Retiring one of two billing accounts",
+      "domain": "S1 · Setup",
+      "objective": "1.2",
+      "subtopic": "Billing Accounts",
+      "new_in_2026": false,
+      "summary": "To retire a billing account without stopping workloads, link its projects to another active account and then close it.",
+      "tags": [
+        "billing",
+        "billing-account",
+        "consolidation"
+      ],
+      "source": "curated",
+      "fingerprint": "f50223d872c2",
+      "choose": 2,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-121",
+      "uid": "5961d5ff-50c7-4a9d-a16d-2f2b80117eb0",
+      "title": "Invoices rejected for a missing purchase order number",
+      "domain": "S1 · Setup",
+      "objective": "1.2",
+      "subtopic": "Billing Accounts",
+      "new_in_2026": false,
+      "summary": "An invoiced Cloud Billing account can carry a purchase order number that is printed in the header of its invoices.",
+      "tags": [
+        "billing",
+        "invoiced-billing",
+        "invoices"
+      ],
+      "source": "curated",
+      "fingerprint": "4a2d24fbc8cf",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-122",
+      "uid": "991d38fd-db49-479b-aed0-b798b9ba7bbd",
+      "title": "Disable billing is refused on a retired project",
+      "domain": "S1 · Setup",
+      "objective": "1.2",
+      "subtopic": "Billing Accounts",
+      "new_in_2026": false,
+      "summary": "Billing cannot be disabled on a project that holds an active or pending committed use discount.",
+      "tags": [
+        "billing",
+        "committed-use-discounts",
+        "troubleshooting"
+      ],
+      "source": "curated",
+      "fingerprint": "1b9b597fd039",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-123",
+      "uid": "c298d751-eaf2-4df7-bce6-65ea689f0374",
+      "title": "Cost visibility across every billing account",
+      "domain": "S1 · Setup",
+      "objective": "1.2",
+      "subtopic": "Billing Accounts",
+      "new_in_2026": false,
+      "summary": "A billing role granted on the organization applies to every Cloud Billing account in it, including accounts created later.",
+      "tags": [
+        "billing",
+        "iam",
+        "inheritance"
+      ],
+      "source": "curated",
+      "fingerprint": "8e2bc9ccd9f7",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-124",
+      "uid": "48a8cdf3-a2dc-4621-8848-fa987c606262",
+      "title": "A budget that ignores the promotional credit",
+      "domain": "S1 · Setup",
+      "objective": "1.2",
+      "subtopic": "Budgets and Alerts",
+      "new_in_2026": false,
+      "summary": "A budget tracks cost before discounts and credits when no Savings options are selected.",
+      "tags": [
+        "billing",
+        "budgets",
+        "credits"
+      ],
+      "source": "curated",
+      "fingerprint": "35e55862f0e8",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-125",
+      "uid": "beb2eb92-a24a-4bf4-8bf9-bbf2d19c92bc",
+      "title": "A team lead who manages budgets and nothing else",
+      "domain": "S1 · Setup",
+      "objective": "1.2",
+      "subtopic": "Budgets and Alerts",
+      "new_in_2026": false,
+      "summary": "Billing Account Costs Manager can create and edit budgets without the rights to link projects or administer the billing account.",
+      "tags": [
+        "billing",
+        "budgets",
+        "iam",
+        "least-privilege"
+      ],
+      "source": "curated",
+      "fingerprint": "82a04dbf8d65",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-126",
+      "uid": "32b74d8d-bbc9-4da8-874b-15e2d3a0fad2",
+      "title": "A budget for a grant that runs mid-April to June",
+      "domain": "S1 · Setup",
+      "objective": "1.2",
+      "subtopic": "Budgets and Alerts",
+      "new_in_2026": false,
+      "summary": "A budget with a custom time range tracks spend between two chosen dates and does not reset each calendar period.",
+      "tags": [
+        "billing",
+        "budgets",
+        "time-range"
+      ],
+      "source": "curated",
+      "fingerprint": "76fb9b837b14",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-127",
+      "uid": "d0bb301d-0792-45c4-86fc-7735c90bf708",
+      "title": "Monthly cost trends per service, nothing finer",
+      "domain": "S1 · Setup",
+      "objective": "1.2",
+      "subtopic": "Billing Export and Cost Attribution",
+      "new_in_2026": false,
+      "summary": "The standard usage cost export is enough for broad trends by service, project and label; the detailed export adds resource-level rows.",
+      "tags": [
+        "bigquery",
+        "billing",
+        "billing-export"
+      ],
+      "source": "curated",
+      "fingerprint": "ab0dc18b7ee8",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-128",
+      "uid": "a38f5426-4ad9-4f7f-a2f2-418a2c37183e",
+      "title": "Last month's costs in a new billing export",
+      "domain": "S1 · Setup",
+      "objective": "1.2",
+      "subtopic": "Billing Export and Cost Attribution",
+      "new_in_2026": false,
+      "summary": "A billing export into a multi-region dataset is backfilled for the current and previous month; a regional dataset gets data only from the day of enabling.",
+      "tags": [
+        "bigquery",
+        "billing",
+        "billing-export",
+        "locations"
+      ],
+      "source": "curated",
+      "fingerprint": "438985943751",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-129",
+      "uid": "8b492a69-58c9-4f9e-93b6-d8fed3eabbc6",
+      "title": "When to switch on the billing export",
+      "domain": "S1 · Setup",
+      "objective": "1.2",
+      "subtopic": "Billing Export and Cost Attribution",
+      "new_in_2026": false,
+      "summary": "A billing export collects data only from about the time it is enabled, so it must be enabled before the history is needed.",
+      "tags": [
+        "billing",
+        "billing-export",
+        "planning"
+      ],
+      "source": "curated",
+      "fingerprint": "665383cfabc0",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-s1-130",
+      "uid": "a22175f7-ed55-4318-bf33-95869b664894",
+      "title": "Invalid dataset region when saving the export",
+      "domain": "S1 · Setup",
+      "objective": "1.2",
+      "subtopic": "Billing Export and Cost Attribution",
+      "new_in_2026": false,
+      "summary": "Cloud Billing export supports the EU and US multi-regions and only some regions; an unsupported dataset region is rejected.",
+      "tags": [
+        "bigquery",
+        "billing",
+        "billing-export",
+        "troubleshooting"
+      ],
+      "source": "curated",
+      "fingerprint": "593bd1d27db8",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-1-setup.json"
+    },
+    {
       "id": "ace-s2-001",
       "uid": "c471edda-ab12-489c-93a0-c9f13de18ddf",
       "title": "Hosting an agent without building serving infrastructure",
@@ -9528,6 +10645,50 @@
       ],
       "source": "curated",
       "fingerprint": "9078a08cc007",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-2-planning.json"
+    },
+    {
+      "id": "ace-s2-168",
+      "uid": "1dcda0d6-0b14-49f3-bab5-e043e5ad32a0",
+      "title": "A metadata SSH key stops working after OS Login",
+      "domain": "S2 · Plan & build",
+      "objective": "2.1",
+      "subtopic": "OS Login",
+      "new_in_2026": false,
+      "summary": "With OS Login enabled, a VM ignores SSH keys stored in metadata; access comes from an OS Login IAM role.",
+      "tags": [
+        "compute-engine",
+        "os-login",
+        "ssh",
+        "troubleshooting"
+      ],
+      "source": "curated",
+      "fingerprint": "cd74b6082ccd",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-2-planning.json"
+    },
+    {
+      "id": "ace-s2-169",
+      "uid": "a811c3f0-df39-447c-a414-8e9a0ba35404",
+      "title": "Which VMs still carry the vulnerable package",
+      "domain": "S2 · Plan & build",
+      "objective": "2.1",
+      "subtopic": "VM Manager",
+      "new_in_2026": false,
+      "summary": "VM Manager's OS inventory management collects OS details and installed packages from VMs without logging in to them.",
+      "tags": [
+        "compute-engine",
+        "os-inventory",
+        "security",
+        "vm-manager"
+      ],
+      "source": "curated",
+      "fingerprint": "420c2cded029",
       "choose": 1,
       "also_tests": [],
       "certifying_only": false,
@@ -14995,6 +16156,281 @@
       "file": "sections/section-4-security.json"
     },
     {
+      "id": "ace-s4-071",
+      "uid": "72fd2323-d6a5-4314-be71-64985dd04fdf",
+      "title": "Testing a policy change, explaining a denial",
+      "domain": "S4 · Access",
+      "objective": "4.1",
+      "subtopic": "IAM Policies and Inheritance",
+      "new_in_2026": false,
+      "summary": "Policy Simulator shows the effect of an allow policy change before it is made; Policy Troubleshooter explains one principal's access to one resource.",
+      "tags": [
+        "iam",
+        "policy-intelligence",
+        "troubleshooting"
+      ],
+      "source": "curated",
+      "fingerprint": "aa5cb92a09e8",
+      "choose": 2,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-072",
+      "uid": "a8d06e8b-07ed-49a7-88a2-a202f901f312",
+      "title": "Everyone who can read one sensitive dataset",
+      "domain": "S4 · Access",
+      "objective": "4.1",
+      "subtopic": "IAM Policies and Inheritance",
+      "new_in_2026": false,
+      "summary": "Policy Analyzer answers which principals have what access to a resource, across inherited policies and groups.",
+      "tags": [
+        "audit",
+        "iam",
+        "policy-intelligence"
+      ],
+      "source": "curated",
+      "fingerprint": "8540606bb5f7",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-073",
+      "uid": "e7771dff-89e4-4a81-aa64-b532ae06d87e",
+      "title": "Developers locked out after the project moved folders",
+      "domain": "S4 · Access",
+      "objective": "4.1",
+      "subtopic": "IAM Policies and Inheritance",
+      "new_in_2026": false,
+      "summary": "When a project moves, policies inherited from its old parent stop applying, while policies attached to the project itself stay.",
+      "tags": [
+        "iam",
+        "inheritance",
+        "resource-hierarchy",
+        "troubleshooting"
+      ],
+      "source": "curated",
+      "fingerprint": "cc02c21cd9ab",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-074",
+      "uid": "84a99585-6b0c-4fc7-870d-721a3bc44e2b",
+      "title": "Read access for every employee, present and future",
+      "domain": "S4 · Access",
+      "objective": "4.1",
+      "subtopic": "IAM Policies and Inheritance",
+      "new_in_2026": false,
+      "summary": "A domain principal stands for all Google Accounts in the Cloud Identity or Workspace domain, so new accounts are covered automatically.",
+      "tags": [
+        "domain",
+        "iam",
+        "principals"
+      ],
+      "source": "curated",
+      "fingerprint": "1c3b1fc07988",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-075",
+      "uid": "d3c63818-61ac-42f4-b24d-78551b63e820",
+      "title": "Access that did not expire with its condition",
+      "domain": "S4 · Access",
+      "objective": "4.1",
+      "subtopic": "IAM Policies and Inheritance",
+      "new_in_2026": false,
+      "summary": "A conditional binding does not limit a principal who also holds the same role without a condition; the unconditional binding must go.",
+      "tags": [
+        "iam",
+        "iam-conditions",
+        "troubleshooting"
+      ],
+      "source": "curated",
+      "fingerprint": "77a031105333",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-076",
+      "uid": "e12714cb-5117-4255-88f2-e40dfbf618ad",
+      "title": "An operator for a single VM",
+      "domain": "S4 · Access",
+      "objective": "4.1",
+      "subtopic": "IAM Policies and Inheritance",
+      "new_in_2026": false,
+      "summary": "Some resources, such as a Compute Engine instance, accept their own allow policy, so a role can be limited to one resource in a project.",
+      "tags": [
+        "compute-engine",
+        "iam",
+        "least-privilege",
+        "resource-level"
+      ],
+      "source": "curated",
+      "fingerprint": "5362120ff1e0",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-077",
+      "uid": "85530be9-1f5f-4e79-895b-caa910baf4dd",
+      "title": "Read everywhere in the folder, edit in one project",
+      "domain": "S4 · Access",
+      "objective": "4.1",
+      "subtopic": "IAM Policies and Inheritance",
+      "new_in_2026": false,
+      "summary": "The effective policy is the union of a resource's own policy and what it inherits, so a narrow folder grant plus a broader project grant adds up.",
+      "tags": [
+        "iam",
+        "inheritance",
+        "least-privilege"
+      ],
+      "source": "curated",
+      "fingerprint": "455e2c8fd551",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-078",
+      "uid": "81ef97d3-83f8-46ff-aae6-fdaaba8ef309",
+      "title": "Federated staff refused by allAuthenticatedUsers",
+      "domain": "S4 · Access",
+      "objective": "4.1",
+      "subtopic": "IAM Policies and Inheritance",
+      "new_in_2026": false,
+      "summary": "allAuthenticatedUsers covers Google Accounts only, not federated identities; workforce pool users are granted access through the pool's principal set.",
+      "tags": [
+        "iam",
+        "principals",
+        "workforce-identity-federation"
+      ],
+      "source": "curated",
+      "fingerprint": "ba0aa4c0765c",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-079",
+      "uid": "468b6f09-23e1-48f4-950e-c7ea311ba0ed",
+      "title": "The service agent is missing from the IAM page",
+      "domain": "S4 · Access",
+      "objective": "4.1",
+      "subtopic": "IAM Policies and Inheritance",
+      "new_in_2026": false,
+      "summary": "The console's IAM page hides service agents until Include Google-provided role grants is selected.",
+      "tags": [
+        "console",
+        "iam",
+        "service-agents"
+      ],
+      "source": "curated",
+      "fingerprint": "8fa5ff589cc2",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-080",
+      "uid": "57e3d0a3-ac67-493f-aa08-34bd6f953c2d",
+      "title": "A project Owner cannot create a deny policy",
+      "domain": "S4 · Access",
+      "objective": "4.1",
+      "subtopic": "IAM Policies and Inheritance",
+      "new_in_2026": false,
+      "summary": "Creating and managing deny policies requires the Deny Admin role; project ownership does not include it.",
+      "tags": [
+        "deny-policies",
+        "iam",
+        "roles"
+      ],
+      "source": "curated",
+      "fingerprint": "3f047bdb62aa",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-081",
+      "uid": "a03bf6cc-6f1f-4a0a-86ff-f19de8664353",
+      "title": "A role on the IAM page that cannot be edited",
+      "domain": "S4 · Access",
+      "objective": "4.1",
+      "subtopic": "IAM Policies and Inheritance",
+      "new_in_2026": false,
+      "summary": "An inherited role is shown on a child's IAM page but can be changed only on the resource where it was granted.",
+      "tags": [
+        "console",
+        "iam",
+        "inheritance"
+      ],
+      "source": "curated",
+      "fingerprint": "dccf66f4144a",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-082",
+      "uid": "c4da8dc1-5f42-4e94-b5bd-12fa60f45fb0",
+      "title": "An Owner who cannot delete a service account key",
+      "domain": "S4 · Access",
+      "objective": "4.1",
+      "subtopic": "IAM Policies and Inheritance",
+      "new_in_2026": false,
+      "summary": "A deny policy on a resource or an ancestor is checked before allow policies, so it blocks a permission whatever roles the principal holds.",
+      "tags": [
+        "deny-policies",
+        "iam",
+        "troubleshooting"
+      ],
+      "source": "curated",
+      "fingerprint": "ccd04bc170f4",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-s4-083",
+      "uid": "e58ba2ed-5877-4dbb-b6f5-80603622274b",
+      "title": "A custom role deleted two days ago",
+      "domain": "S4 · Access",
+      "objective": "4.1",
+      "subtopic": "Role Types and Custom Roles",
+      "new_in_2026": false,
+      "summary": "A deleted custom role can be undeleted within 7 days; its bindings stay in the policies and take effect again.",
+      "tags": [
+        "custom-roles",
+        "iam",
+        "recovery"
+      ],
+      "source": "curated",
+      "fingerprint": "ca69013a5fb8",
+      "choose": 1,
+      "also_tests": [],
+      "certifying_only": false,
+      "file": "sections/section-4-security.json"
+    },
+    {
       "id": "ace-x-001",
       "uid": "4f59f304-4755-4780-9665-ba6421559735",
       "title": "A GKE Pod reading one bucket without keys",
@@ -16841,6 +18277,194 @@
       ],
       "certifying_only": true,
       "file": "sections/section-2-planning.json"
+    },
+    {
+      "id": "ace-x-079",
+      "uid": "85af8755-833e-4f74-a448-f7a815df1706",
+      "title": "Analysts can read the dataset but cannot query it",
+      "domain": "S1 · Setup",
+      "objective": "1.1",
+      "subtopic": "Project IAM Grants",
+      "new_in_2026": false,
+      "summary": "Reading a dataset and running a query are separate grants: queries are jobs, and jobs need BigQuery Job User on a project.",
+      "tags": [
+        "bigquery",
+        "iam",
+        "least-privilege"
+      ],
+      "source": "curated",
+      "fingerprint": "ea57d7aa9fae",
+      "choose": 1,
+      "also_tests": [
+        "3.2"
+      ],
+      "certifying_only": true,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-x-080",
+      "uid": "38ed53fa-54e8-48b4-9dea-4971f71b9ee5",
+      "title": "A first regional GKE cluster in a fresh project",
+      "domain": "S1 · Setup",
+      "objective": "1.1",
+      "subtopic": "APIs and Quotas",
+      "new_in_2026": false,
+      "summary": "A new project needs the service's API enabled, and a regional cluster multiplies nodes by its zones, which can exceed a regional CPU quota.",
+      "tags": [
+        "apis",
+        "gke",
+        "quotas",
+        "regional-clusters"
+      ],
+      "source": "curated",
+      "fingerprint": "9360d22a70d7",
+      "choose": 2,
+      "also_tests": [
+        "2.1"
+      ],
+      "certifying_only": true,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-x-081",
+      "uid": "64f129b7-e958-4ab0-88aa-30b20ecedd95",
+      "title": "A pipeline creating projects in a standalone organization",
+      "domain": "S1 · Setup",
+      "objective": "1.1",
+      "subtopic": "Standalone Organizations",
+      "new_in_2026": true,
+      "summary": "A service account cannot be an Organization Owner, but an Organization Administrator can grant it Project Creator on the organization.",
+      "tags": [
+        "least-privilege",
+        "service-accounts",
+        "standalone-organization"
+      ],
+      "source": "curated",
+      "fingerprint": "a1d493f3c452",
+      "choose": 1,
+      "also_tests": [
+        "4.2"
+      ],
+      "certifying_only": true,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-x-082",
+      "uid": "b6f49f78-8b5d-4820-9de0-27530799ff73",
+      "title": "Every gcloud command as the deploy account",
+      "domain": "S1 · Setup",
+      "objective": "1.1",
+      "subtopic": "gcloud CLI and Configurations",
+      "new_in_2026": false,
+      "summary": "The auth/impersonate_service_account property makes every gcloud command run with short-lived credentials of a service account.",
+      "tags": [
+        "gcloud",
+        "impersonation",
+        "service-accounts"
+      ],
+      "source": "curated",
+      "fingerprint": "00e63f57083b",
+      "choose": 1,
+      "also_tests": [
+        "4.2"
+      ],
+      "certifying_only": true,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-x-083",
+      "uid": "07101b28-4c06-4fca-9934-e83853e7c32a",
+      "title": "A first GPU VM on a Free Trial account",
+      "domain": "S1 · Setup",
+      "objective": "1.2",
+      "subtopic": "Billing Accounts",
+      "new_in_2026": false,
+      "summary": "A Free Trial billing account cannot add GPUs or request quota; it must be upgraded to a Paid account before GPU quota can be requested.",
+      "tags": [
+        "billing",
+        "free-trial",
+        "gpu",
+        "quotas"
+      ],
+      "source": "curated",
+      "fingerprint": "45f72da34b11",
+      "choose": 2,
+      "also_tests": [
+        "2.1"
+      ],
+      "certifying_only": true,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-x-084",
+      "uid": "c33abd3e-04cf-4430-bf22-de7414bdb78a",
+      "title": "Anyone in the company can open a billing account",
+      "domain": "S1 · Setup",
+      "objective": "1.2",
+      "subtopic": "Billing Accounts",
+      "new_in_2026": false,
+      "summary": "A new organization grants Billing Account Creator to the whole domain; restricting it means granting the role to chosen principals and removing the domain-wide binding.",
+      "tags": [
+        "billing",
+        "default-roles",
+        "iam",
+        "organization"
+      ],
+      "source": "curated",
+      "fingerprint": "5cacb8d3477c",
+      "choose": 1,
+      "also_tests": [
+        "4.1"
+      ],
+      "certifying_only": true,
+      "file": "sections/section-1-setup.json"
+    },
+    {
+      "id": "ace-x-085",
+      "uid": "84cd41ae-dceb-438b-9b0b-0646107f1bb3",
+      "title": "Firewall administrators for every network host project",
+      "domain": "S4 · Access",
+      "objective": "4.1",
+      "subtopic": "IAM Policies and Inheritance",
+      "new_in_2026": false,
+      "summary": "A role granted on a folder is inherited by present and future projects in it; firewall rules need Compute Security Admin, not Network Admin.",
+      "tags": [
+        "firewall",
+        "iam",
+        "inheritance",
+        "shared-vpc"
+      ],
+      "source": "curated",
+      "fingerprint": "c9b8fa3e08b3",
+      "choose": 1,
+      "also_tests": [
+        "2.3"
+      ],
+      "certifying_only": true,
+      "file": "sections/section-4-security.json"
+    },
+    {
+      "id": "ace-x-086",
+      "uid": "24990c0b-4840-4212-bd19-4366e32f759c",
+      "title": "A bucket readable by one group, through IAM alone",
+      "domain": "S4 · Access",
+      "objective": "4.1",
+      "subtopic": "IAM Policies and Inheritance",
+      "new_in_2026": false,
+      "summary": "Uniform bucket-level access turns off ACLs so that only IAM grants access; a bucket-level role then gives one group read access.",
+      "tags": [
+        "cloud-storage",
+        "iam",
+        "uniform-bucket-level-access"
+      ],
+      "source": "curated",
+      "fingerprint": "db6d8fed474d",
+      "choose": 2,
+      "also_tests": [
+        "3.2"
+      ],
+      "certifying_only": true,
+      "file": "sections/section-4-security.json"
     }
   ]
 }

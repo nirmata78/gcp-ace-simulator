@@ -96,6 +96,14 @@ manages IAM on the resource hierarchy. Google's set-up guidance is to grant org-
 
 <a id="s2-3"></a>
 
+**Running a standalone organization.** The founder starts with two roles: *Organization Owner* (managed outside IAM,
+on the **Organization details** page) and *Organization Administrator*. The administrator role sets policies and
+grants roles but **cannot create folders or projects**: grant Folder Creator or Project Creator first, to yourself
+or to a service account. Owners are invited and may be Google Accounts or workforce pool principals (added by
+principal identifier), never service accounts, and **at least one active Google Account must always remain an
+owner**. If every Organization Administrator is removed by mistake, an owner grants the role again from the
+Organization details page. Sign-up creates one organization per account; a person owns several by being invited.
+
 ## 2.3 Folders and projects in practice
 
 {: .cmds }
@@ -236,6 +244,13 @@ network ships with permissive firewall rules ([§4.4](04-networking.md#s4-4)).
 
 <a id="s2-5"></a>
 
+**Who may switch APIs on, and what switching off does.** The narrow role is **Service Usage Admin**
+(`roles/serviceusage.serviceUsageAdmin`); Service Usage Consumer only uses what is already enabled. Enabling goes
+through the Service Usage API itself, so if that API was disabled in a project, re-enable it first. Disabling is
+not harmless and not uniform: for storage services such as BigQuery and Cloud Storage the **data stays and is still
+billed**, so delete the data to stop the charge; disabling the Cloud Run API deletes its resources; disabling the
+Kubernetes Engine API **suspends** the clusters, which are deleted after 30 days unless the API is re-enabled.
+
 ## 2.5 Quotas and limits
 
 | Kind | Caps | Example | When hit |
@@ -261,6 +276,11 @@ distractor.
 > quota request. Quota increases can also depend on billing history for a new account (*verify* current rules).
 
 <a id="s2-6"></a>
+
+**Three more quota facts.** Quota is counted **per project** and shared by every caller in it, whatever the service
+account, region or source IP: workloads that must not compete for quota go in separate projects. An *allocation*
+quota is freed at once by deleting unused resources that count against it, while a *rate* quota only comes back
+when its period resets. A **system limit** is fixed and cannot be raised by any request.
 
 ## 2.6 Billing accounts and the roles around them
 
@@ -289,6 +309,25 @@ billing account stops its paid services, and resources may be deleted.
 | Link a project to a billing account | `gcloud billing projects link P --billing-account=ID` |
 
 <a id="s2-7"></a>
+
+**Billing account facts worth knowing.**
+
+- A billing account works in **one currency** and is tied to a **payments profile**, which is the legal entity that
+  pays. Another entity or currency means another billing account. A profile's type is fixed at creation: an
+  *Individual* profile is managed only by its creator, an *Organization* profile can have several users.
+- **Self-serve** accounts are charged automatically to a card or bank debit; **invoiced** accounts are paid by check
+  or wire against a monthly invoice (you must be eligible), and can print a purchase order number in the invoice
+  header. **Subaccounts** are for resellers on invoiced billing: one per customer, subtotalled on the invoice.
+- Roles on a billing account are **not inherited by its projects**; a billing role on the *organization* applies to
+  every billing account in it. A new organization grants Billing Account Creator and Project Creator to the whole
+  domain: grant them to chosen groups and remove the domain-wide bindings.
+- The **link** between a project and its billing account can be **locked** against accidental moves. Disabling
+  billing stops every service in the project and may remove resources for good, so it is not a pause; it is refused
+  while the project holds an active committed use discount. After a move, charges incurred before it stay with the
+  former account. To retire an account, link its projects to another active account, then close it. A closed
+  account is reopened only after its payment problem is resolved.
+- A **Free Trial** account cannot add GPUs, request quota, use Marketplace or run Windows Server images; upgrade to
+  a Paid account first. When the trial ends, resources stop and a 30-day grace period starts.
 
 ## 2.7 Budgets, alerts and exports
 
@@ -325,6 +364,15 @@ nothing is backfilled. *"We need two years of queryable history"* is only possib
 It is configured on the **billing account**, into a dataset in a project you choose.
 
 <a id="s2-8"></a>
+
+**Budget and export details.** A budget's period is monthly, quarterly, yearly or a non-recurring **custom range**
+(for a grant with fixed dates; a custom range cannot alert on forecast). By default a budget subtracts discounts
+and credits: clear the **Savings** options to track cost before credits. **Billing Account Costs Manager** creates
+and edits budgets without the rest of the administrator role. For exports, the *standard* usage cost table is
+enough for trends by service, project and label, and the *detailed* one adds resource-level rows. An export is not
+a history: a dataset in the **EU or US multi-region** is backfilled for the current and previous month, a regional
+dataset starts on the day of enabling, and an unsupported region is rejected with *Invalid dataset region*. Enable
+the export before you need the data.
 
 ## 2.8 Reading and predicting cost
 

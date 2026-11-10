@@ -192,6 +192,12 @@ answer to *"switch between work contexts in one command"*:
 > pick up. A program that says "could not find default credentials" on a laptop where `gcloud` works fine needs
 > the second. And the Docker daemon is a third client again (`gcloud auth configure-docker`, [§6.7](06-containers-serverless.md#s6-7)).
 
+**Three scripting and hygiene details.** `CLOUDSDK_ACTIVE_CONFIG_NAME` selects a configuration for one terminal
+only, whereas `gcloud config configurations activate` switches it for the whole installation. In scripts, add
+`--quiet` so that no prompt blocks the run, and ask for `--format=json` (or another explicit format) because the
+default output may change. `gcloud auth revoke ACCOUNT` invalidates an account's stored credentials on a shared
+machine; unsetting the `account` property does not.
+
 ### Cloud Shell
 
 | Property | Value |

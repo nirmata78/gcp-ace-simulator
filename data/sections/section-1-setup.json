@@ -1,8 +1,8 @@
 {
   "domain": "Section 1: Setting up a cloud solution environment",
   "version": 2,
-  "updated_at": "2026-11-09T09:42:59+00:00",
-  "count": 127,
+  "updated_at": "2026-11-10T12:28:55+00:00",
+  "count": 186,
   "questions": [
     {
       "id": "ace-dom1-001",
@@ -3873,6 +3873,1767 @@
       }
     },
     {
+      "id": "ace-s1-078",
+      "uid": "bb441082-7952-444b-a918-334704a280b9",
+      "title": "One role to reorganise every folder",
+      "objective": "1.1",
+      "subtopic": "Resource Hierarchy",
+      "summary": "Folder Admin on the organization covers creating, moving and deleting folders, their IAM, and moving projects between folders.",
+      "tags": [
+        "folders",
+        "iam",
+        "resource-hierarchy"
+      ],
+      "source": "curated",
+      "question": "Northquay Freight is restructuring its organization. Its platform lead must create, move and delete folders anywhere in the hierarchy, change IAM on those folders, and move projects between them. She must not be able to change the organization's own allow policy. Which role should the Organization Administrator grant her on the organization?",
+      "options": {
+        "A": "Folder Creator (roles/resourcemanager.folderCreator)",
+        "B": "Folder Admin (roles/resourcemanager.folderAdmin)",
+        "C": "Organization Administrator (roles/resourcemanager.organizationAdmin)",
+        "D": "Project Mover (roles/resourcemanager.projectMover)"
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "Folder Admin is the role for managing the folder hierarchy: it carries every folder operation, IAM on folders, and moving projects between folders, without rights over the organization's allow policy.",
+        "option_breakdown": {
+          "A": "Folder Creator only lets her create folders; she could not move or delete them, set their IAM or move projects.",
+          "B": "Correct. Folder Admin lets her create, edit, delete and move folders, change IAM on them and move projects between folders.",
+          "C": "Organization Administrator can also set the organization's allow policy, which Northquay explicitly rules out for her.",
+          "D": "Project Mover relocates projects but gives no control over the folders themselves or over folder IAM."
+        },
+        "gcloud_command": "gcloud organizations add-iam-policy-binding ORG_ID --member=\"user:lead@example.com\" --role=\"roles/resourcemanager.folderAdmin\"",
+        "doc_ref": "https://docs.cloud.google.com/resource-manager/docs/creating-managing-folders"
+      }
+    },
+    {
+      "id": "ace-s1-079",
+      "uid": "6d786bd8-4b0f-4e41-991a-667cc68c2c5d",
+      "title": "A project shut down by mistake twelve days ago",
+      "objective": "1.1",
+      "subtopic": "Resource Hierarchy",
+      "summary": "A shut-down project stays restorable for 30 days and is brought back with gcloud projects undelete.",
+      "tags": [
+        "projects",
+        "recovery",
+        "resource-hierarchy"
+      ],
+      "source": "curated",
+      "question": "Twelve days ago an engineer at Calder Optics shut down the project co-lab-tools by mistake. The console still lists the project as pending deletion, inside its 30-day recovery period. The team needs the project back with its project ID and as many of its resources as can be recovered. What should a project owner do first?",
+      "options": {
+        "A": "Restore the project with gcloud projects undelete",
+        "B": "Create a new project that reuses the ID co-lab-tools",
+        "C": "Link co-lab-tools to the Cloud Billing account again",
+        "D": "Restore the folder that used to contain the project"
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "Shutting a project down starts a 30-day recovery period in which a project owner can restore it; only after that is the project permanently deleted.",
+        "option_breakdown": {
+          "A": "Correct. Within the recovery period an owner restores the project, with its ID and most resources, by undeleting it.",
+          "B": "A project ID is unique and permanent, so the ID cannot be given to a new project, and a new project would hold none of the resources.",
+          "C": "Billing does have to be linked again, but only after the restore; linking alone does not bring a project out of pending deletion.",
+          "D": "The folder was never deleted, so there is nothing to restore there, and restoring a folder would not restore a project inside it."
+        },
+        "gcloud_command": "gcloud projects undelete PROJECT_ID",
+        "doc_ref": "https://docs.cloud.google.com/resource-manager/docs/delete-restore-projects"
+      }
+    },
+    {
+      "id": "ace-s1-080",
+      "uid": "2fcc75db-d438-4ce7-bde4-47659a8cfb04",
+      "title": "Owner for a consultant outside the organization",
+      "objective": "1.1",
+      "subtopic": "Project IAM Grants",
+      "summary": "The Owner role can be granted to a user outside the organization only from the Google Cloud console, not with the gcloud CLI.",
+      "tags": [
+        "external-users",
+        "iam",
+        "owner-role"
+      ],
+      "source": "curated",
+      "question": "The project tidal-web belongs to the Harborline organization, which has no organization policy restricting the domains that can be granted roles. A handover contract requires an external consultant, whose Google Account is not part of Harborline, to hold the Owner role on the project. An engineer who is an Owner runs gcloud projects add-iam-policy-binding with roles/owner for the consultant, and the command is rejected. What should the engineer do?",
+      "options": {
+        "A": "Apply the same binding from a policy file with gcloud projects set-iam-policy",
+        "B": "Enable the Identity and Access Management API in tidal-web and rerun the command",
+        "C": "Grant the consultant the Project IAM Admin role with the same gcloud command",
+        "D": "Grant the consultant the Owner role on the IAM page of the Google Cloud console"
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "Most roles can be granted with any tool, but granting Owner on a project to a user outside the organization must be done in the Google Cloud console.",
+        "option_breakdown": {
+          "A": "set-iam-policy is still the gcloud CLI, and the restriction on granting Owner to an outside user applies to it as well.",
+          "B": "The rejection comes from the rule on Owner grants to outside users, not from a disabled API, so enabling one changes nothing.",
+          "C": "Project IAM Admin is a different role; the contract requires the consultant to hold Owner itself.",
+          "D": "Correct. Owner for a user outside the organization has to be granted through the Google Cloud console."
+        },
+        "gcloud_command": "# Console > IAM & Admin > IAM > Grant access",
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/granting-changing-revoking-access"
+      }
+    },
+    {
+      "id": "ace-s1-081",
+      "uid": "679529e6-061a-4770-9b69-26f267989029",
+      "title": "Log access that ends itself on 30 June",
+      "objective": "1.1",
+      "subtopic": "Project IAM Grants",
+      "summary": "A conditional role binding with an expiry time grants access that stops on its own, and it cannot be used with legacy basic roles.",
+      "tags": [
+        "iam",
+        "iam-conditions",
+        "temporary-access"
+      ],
+      "source": "curated",
+      "question": "An auditor from an outside firm needs to read the application logs in the project med-claims until 30 June. Vantor Health requires the access to stop on that date without any person, script or scheduled job having to revoke it, and the auditor must get no more than log reading. What should an administrator do?",
+      "options": {
+        "A": "Grant Logs Viewer now, and create a Cloud Scheduler job that removes the binding",
+        "B": "Grant the Viewer basic role with an IAM condition that expires on 30 June",
+        "C": "Grant the Logs Viewer role with an IAM condition that expires on 30 June",
+        "D": "Grant Logs Viewer, and shorten the auditor's session length to end on 30 June"
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "A condition on a role binding can compare request.time with a timestamp, so the binding stops granting the role at the expiry time with nothing left to clean up.",
+        "option_breakdown": {
+          "A": "A scheduled job is exactly what the requirement forbids, and if the job fails the access stays.",
+          "B": "Conditions cannot be attached to the legacy basic roles, and Viewer would also give far more than log reading.",
+          "C": "Correct. A conditional binding for Logs Viewer with an expiry time ends the access on the date by itself.",
+          "D": "Session length controls how often the auditor signs in again; after signing in, the unconditional binding still grants the role."
+        },
+        "gcloud_command": "gcloud projects add-iam-policy-binding PROJECT_ID --member=\"user:auditor@example.com\" --role=\"roles/logging.viewer\" --condition='expression=request.time < timestamp(\"2027-07-01T00:00:00.000Z\"),title=expires_july_1'",
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/configuring-temporary-access"
+      }
+    },
+    {
+      "id": "ace-s1-082",
+      "uid": "6f6cc39a-9470-4dba-bedc-9273e07c61e6",
+      "title": "Team leads who only manage access",
+      "objective": "1.1",
+      "subtopic": "Project IAM Grants",
+      "summary": "Project IAM Admin lets a principal administer a project's allow policy without rights over the project's resources.",
+      "tags": [
+        "delegation",
+        "iam",
+        "least-privilege"
+      ],
+      "source": "curated",
+      "question": "Kestrel Robotics wants each team lead to grant and revoke roles on the team's own project, such as kr-vision. Security policy says the role a lead holds may contain only permissions for managing access: none for creating, changing or deleting resources such as VMs or buckets, and none that apply outside the project. Which grant meets these requirements for the lead of kr-vision?",
+      "options": {
+        "A": "Owner on the project kr-vision",
+        "B": "Editor on the project kr-vision",
+        "C": "Organization Administrator on the organization",
+        "D": "Project IAM Admin on the project kr-vision"
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "Project IAM Admin (roles/resourcemanager.projectIamAdmin) carries the permissions to read and set a project's allow policy and none to manage the resources inside it.",
+        "option_breakdown": {
+          "A": "Owner can set the allow policy, but it also gives full control of every VM and bucket in kr-vision.",
+          "B": "Editor can change resources, which is forbidden, and cannot set the project's allow policy, which is required.",
+          "C": "A grant on the organization reaches every project under it, so the lead would have rights far outside kr-vision.",
+          "D": "Correct. Project IAM Admin on kr-vision lets the lead administer that project's allow policy and nothing else."
+        },
+        "gcloud_command": "gcloud projects add-iam-policy-binding kr-vision --member=\"user:lead@example.com\" --role=\"roles/resourcemanager.projectIamAdmin\"",
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/roles-permissions/resourcemanager"
+      }
+    },
+    {
+      "id": "ace-s1-083",
+      "uid": "1711d5b5-5a64-48c3-ac1b-e38fc958f370",
+      "title": "A returning employee with a re-created account",
+      "objective": "1.1",
+      "subtopic": "Project IAM Grants",
+      "summary": "A role binding for a deleted principal does not apply to a new principal with the same name; the new principal needs its own binding.",
+      "tags": [
+        "deleted-principals",
+        "iam",
+        "troubleshooting"
+      ],
+      "source": "curated",
+      "question": "An analyst left Orrin Analytics and her user account was deleted. Months later she returned, and because the old account could no longer be restored, an administrator created a new account with the same email address. She cannot open the project oa-reports, although its allow policy still shows her address in a Viewer binding with the prefix deleted:. What should a project administrator do?",
+      "options": {
+        "A": "Add a Viewer role binding for her new account to the allow policy of oa-reports",
+        "B": "Wait for the existing Viewer binding to lose its deleted: prefix by itself",
+        "C": "Ask the identity administrator to restore the original account that was deleted",
+        "D": "Ask her to sign out of the console and sign in again to refresh her access"
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "A binding stays tied to the principal that was deleted. A new principal with the same name is a different principal and inherits nothing, so it must be granted the role itself.",
+        "option_breakdown": {
+          "A": "Correct. The old binding does not apply to the new account, so the new account needs its own Viewer binding.",
+          "B": "The prefix marks a principal that no longer exists; the binding never converts itself to a new account of the same name.",
+          "C": "The stem says the old account can no longer be restored, so this path is closed.",
+          "D": "Signing in again fetches the same policy, which has no binding for the new account."
+        },
+        "gcloud_command": "gcloud projects add-iam-policy-binding oa-reports --member=\"user:analyst@example.com\" --role=\"roles/viewer\"",
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/allow-policies"
+      }
+    },
+    {
+      "id": "ace-s1-084",
+      "uid": "1d53fbcb-5f6d-4024-adee-cba6e20f4e2f",
+      "title": "Two grants to deploy a Cloud Run revision",
+      "objective": "1.1",
+      "subtopic": "Project IAM Grants",
+      "summary": "Deploying to Cloud Run needs Cloud Run Developer on the service and Service Account User on the service's identity.",
+      "tags": [
+        "cloud-run",
+        "iam",
+        "least-privilege",
+        "service-accounts"
+      ],
+      "source": "curated",
+      "question": "A developer at Pinecrest Media must deploy new revisions of the existing Cloud Run service encoder in the project pm-prod. The service runs as the user-managed service account encoder-run. The developer can already read the container image in Artifact Registry and holds no other roles. Following least privilege, which two grants does the developer need? (Choose two.)",
+      "options": {
+        "A": "Cloud Run Invoker on the service encoder",
+        "B": "Service Account Token Creator on encoder-run",
+        "C": "Cloud Run Developer on the service encoder",
+        "D": "Editor on the project pm-prod",
+        "E": "Service Account User on encoder-run"
+      },
+      "correct_answer": "C,E",
+      "explanation": {
+        "summary": "A deployment changes the service, which needs Cloud Run Developer, and attaches the service's identity to the new revision, which needs Service Account User on that service account.",
+        "option_breakdown": {
+          "A": "Invoker lets a principal send requests to the running service; it carries no permission to deploy a revision.",
+          "B": "Token Creator lets the developer impersonate encoder-run, which is not what a deployment checks when it attaches the account.",
+          "C": "Correct. Cloud Run Developer on the service allows deploying new revisions of it.",
+          "D": "Editor on the whole project would be enough to deploy, but it also grants change rights on almost every resource in pm-prod.",
+          "E": "Correct. Service Account User on encoder-run lets the developer deploy a revision that runs as that account."
+        },
+        "gcloud_command": "gcloud run services add-iam-policy-binding encoder --region=REGION --member=\"user:dev@example.com\" --role=\"roles/run.developer\"\ngcloud iam service-accounts add-iam-policy-binding encoder-run@pm-prod.iam.gserviceaccount.com --member=\"user:dev@example.com\" --role=\"roles/iam.serviceAccountUser\"",
+        "doc_ref": "https://docs.cloud.google.com/run/docs/deploying"
+      }
+    },
+    {
+      "id": "ace-s1-085",
+      "uid": "a3dafd4b-c9c5-4978-a21c-bfc9661a9dcd",
+      "title": "A release engineer who only switches APIs on",
+      "objective": "1.1",
+      "subtopic": "APIs and Quotas",
+      "summary": "Service Usage Admin is the narrow role for enabling and disabling services in a project.",
+      "tags": [
+        "apis",
+        "least-privilege",
+        "service-usage"
+      ],
+      "source": "curated",
+      "question": "At Ferrowick Labs a release engineer prepares new projects by enabling the APIs each team asks for, and sometimes disabling ones no longer used. The engineer must not be able to create or change the resources those APIs manage. Following least privilege, which role should the engineer be granted on each project?",
+      "options": {
+        "A": "Editor (roles/editor)",
+        "B": "Service Usage Consumer (roles/serviceusage.serviceUsageConsumer)",
+        "C": "Service Usage Admin (roles/serviceusage.serviceUsageAdmin)",
+        "D": "API Keys Admin (roles/serviceusage.apiKeysAdmin)"
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "Enabling and disabling services is a Service Usage operation, and Service Usage Admin is the predefined role that carries it without rights over the resources of the enabled services.",
+        "option_breakdown": {
+          "A": "Editor can enable services, but it can also create and change nearly every resource in the project.",
+          "B": "Service Usage Consumer lets a principal use services that are already enabled; it cannot enable or disable one.",
+          "C": "Correct. Service Usage Admin grants the permissions to enable and disable services on the project.",
+          "D": "API Keys Admin manages API keys for a project and does not switch services on or off."
+        },
+        "gcloud_command": "gcloud projects add-iam-policy-binding PROJECT_ID --member=\"user:release@example.com\" --role=\"roles/serviceusage.serviceUsageAdmin\"",
+        "doc_ref": "https://docs.cloud.google.com/service-usage/docs/enable-disable"
+      }
+    },
+    {
+      "id": "ace-s1-086",
+      "uid": "f769f62d-a1a3-43e3-811f-d1c6b16163a1",
+      "title": "The value on the Quotas page is a system limit",
+      "objective": "1.1",
+      "subtopic": "APIs and Quotas",
+      "summary": "A system limit is fixed and cannot be raised by a quota request, so the design has to fit inside it.",
+      "tags": [
+        "quotas",
+        "system-limits"
+      ],
+      "source": "curated",
+      "question": "A data team at Marlowe Transit hits a ceiling in one Google Cloud service. On the Quotas & System Limits page the value they reached is listed as a system limit, not as a quota. The team lead asks the cloud engineer to get the value raised for their project before next week's launch. What should the engineer do?",
+      "options": {
+        "A": "Request an adjustment for that value from the Quotas & System Limits page",
+        "B": "Turn on the quota adjuster so the value rises as usage grows",
+        "C": "Change the design so the workload stays within the limit",
+        "D": "Upgrade the project's support plan and resubmit the request"
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "Quotas can be adjusted on request; system limits are fixed constraints of a service that apply to everyone, so the only way forward is a design that respects them.",
+        "option_breakdown": {
+          "A": "An adjustment request applies to quotas. A system limit cannot be increased, so there is nothing to approve.",
+          "B": "The quota adjuster files increase requests for supported quotas; a fixed system limit is outside what it can change.",
+          "C": "Correct. A system limit cannot be increased or decreased, so the workload has to be redesigned to fit.",
+          "D": "A support plan changes how quickly Google answers, not whether a fixed limit of the service can move."
+        },
+        "gcloud_command": "# Console > IAM & Admin > Quotas & System Limits",
+        "doc_ref": "https://docs.cloud.google.com/docs/quotas/overview"
+      }
+    },
+    {
+      "id": "ace-s1-087",
+      "uid": "3f2ac075-0c23-4ce8-bab0-4db52b231faa",
+      "title": "One more static address is needed within the hour",
+      "objective": "1.1",
+      "subtopic": "APIs and Quotas",
+      "summary": "An allocation quota is freed at once by deleting unused resources that count against it.",
+      "tags": [
+        "allocation-quota",
+        "compute-engine",
+        "quotas"
+      ],
+      "source": "curated",
+      "question": "Brackenridge Media must reserve one more static external IP address in europe-west1 within the hour for a launch. The project has reached its regional quota for static addresses, and a quota increase request may take longer than an hour to be approved. Four addresses reserved for a cancelled campaign are attached to nothing. What should the engineer do?",
+      "options": {
+        "A": "Wait for the address quota to reset at the end of the current period",
+        "B": "Release the unused reserved addresses, then reserve the new one",
+        "C": "Retry the reservation with exponential backoff until it succeeds",
+        "D": "Turn on the quota adjuster for the project and retry in a few minutes"
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "A static-address quota is an allocation quota: it counts resources held, never resets with time, and gains headroom the moment an unused resource is deleted.",
+        "option_breakdown": {
+          "A": "Only rate quotas reset with a time period. An allocation quota stays full for as long as the addresses stay reserved.",
+          "B": "Correct. Releasing addresses that nothing uses frees allocation quota immediately, with no approval needed.",
+          "C": "Backoff suits short rate-limit errors. Here each retry meets the same full allocation and fails the same way.",
+          "D": "The adjuster reacts to usage trends over time and files increase requests; it cannot deliver headroom within minutes."
+        },
+        "gcloud_command": "gcloud compute addresses delete ADDRESS_NAME --region=europe-west1",
+        "doc_ref": "https://docs.cloud.google.com/docs/quotas/overview"
+      }
+    },
+    {
+      "id": "ace-s1-088",
+      "uid": "4324f42d-700f-42f1-805f-cbb623cb4f52",
+      "title": "A daily API quota that runs out every afternoon",
+      "objective": "1.1",
+      "subtopic": "APIs and Quotas",
+      "summary": "When a per-day rate quota is exhausted long before the day ends, the lasting fix is a quota adjustment, not retries.",
+      "tags": [
+        "apis",
+        "quotas",
+        "rate-quota"
+      ],
+      "source": "curated",
+      "question": "A translation service at Odessa Books calls one Google Cloud API from a single project. Every working day the project uses up the API's per-day request quota by about 15:00, and every later call is refused until the next day. The API's documentation lists this quota as adjustable. The business needs calls to succeed all day and accepts the higher cost. What should the engineer do?",
+      "options": {
+        "A": "Add exponential backoff with jitter to the calls that are refused",
+        "B": "Delete unused resources in the project to free up quota",
+        "C": "Request a higher value for the API's per-day quota",
+        "D": "Send the calls from several service accounts in the project"
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "A per-day rate quota resets only when the day ends. If normal demand exceeds it, the quota value itself has to change, which is done with a quota adjustment request.",
+        "option_breakdown": {
+          "A": "Backoff smooths short bursts. With the day's quota spent, every retry is refused until the reset.",
+          "B": "Deleting resources frees allocation quotas. A request-rate quota is not consumed by resources that exist.",
+          "C": "Correct. A quota adjustment raises the per-day value so that the calls fit within it.",
+          "D": "The quota belongs to the project and is shared by every caller in it, whichever service account sends the request."
+        },
+        "gcloud_command": "# Console > IAM & Admin > Quotas & System Limits > select the quota > Edit",
+        "doc_ref": "https://docs.cloud.google.com/docs/quotas/overview"
+      }
+    },
+    {
+      "id": "ace-s1-089",
+      "uid": "c56ccec0-676a-4430-97f1-80955cbcf200",
+      "title": "Stopping BigQuery charges in a retired project",
+      "objective": "1.1",
+      "subtopic": "APIs and Quotas",
+      "summary": "Disabling the API of a storage service does not delete its data, and the stored data keeps being billed.",
+      "tags": [
+        "apis",
+        "bigquery",
+        "cost"
+      ],
+      "source": "curated",
+      "question": "Tolland Insurance has retired an analytics application, but its project must stay because other services run in it. Finance wants every BigQuery charge from the project to stop. The datasets are no longer needed, and nothing in the project should be able to use BigQuery afterwards. What should the engineer do?",
+      "options": {
+        "A": "Disable the BigQuery API in the project and leave the datasets in place",
+        "B": "Remove every BigQuery role binding from the project's allow policy",
+        "C": "Delete the datasets first, and then disable the BigQuery API",
+        "D": "Create a budget for BigQuery in the project with a threshold of zero"
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "For services that store data, such as BigQuery and Cloud Storage, a disabled API leaves the data in place and storage is still billed. The data has to be deleted to end the charge.",
+        "option_breakdown": {
+          "A": "Disabling the BigQuery API leaves the datasets where they are, and their storage continues to be charged.",
+          "B": "With no bindings nobody can run queries, yet the stored tables are still there and still billed.",
+          "C": "Correct. Deleting the data ends the storage charge; disabling the API afterwards stops any further use.",
+          "D": "A budget only reports and alerts on spend. It does not stop a service or remove data."
+        },
+        "gcloud_command": "bq rm -r -f -d PROJECT_ID:DATASET\ngcloud services disable bigquery.googleapis.com",
+        "doc_ref": "https://docs.cloud.google.com/service-usage/docs/enable-disable"
+      }
+    },
+    {
+      "id": "ace-s1-090",
+      "uid": "7d43d2e7-ebad-4832-8a25-77593c7b7f25",
+      "title": "GKE clusters suspended after an API clean-up",
+      "objective": "1.1",
+      "subtopic": "APIs and Quotas",
+      "summary": "Disabling the Kubernetes Engine API suspends a project's clusters; re-enabling the API within 30 days brings them back.",
+      "tags": [
+        "apis",
+        "gke",
+        "troubleshooting"
+      ],
+      "source": "curated",
+      "question": "Yesterday a script that tidies up unused APIs disabled the Kubernetes Engine API in the project hx-platform at Halix Systems. Today the project's two GKE clusters are shown as suspended and their workloads are unreachable. The clusters and their configuration must come back as they were. What should the engineer do?",
+      "options": {
+        "A": "Create two new GKE clusters and redeploy every workload from the manifests",
+        "B": "Enable the Kubernetes Engine API in hx-platform again",
+        "C": "Shut the project down and restore it to reset its services",
+        "D": "Request a higher regional CPU quota so that the nodes can restart"
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "With the Kubernetes Engine API disabled, clusters are suspended rather than deleted at once; they are deleted only after 30 days, and re-enabling the API reactivates them.",
+        "option_breakdown": {
+          "A": "New clusters would not be the old ones as they were, and rebuilding is unnecessary while the suspended clusters can be reactivated.",
+          "B": "Correct. Re-enabling the API reactivates the suspended clusters, as long as it happens within 30 days.",
+          "C": "A shutdown starts the project's own deletion period and disconnects billing; it does not switch the API back on.",
+          "D": "Nothing in the scenario points to quota. The clusters are suspended because their API is disabled."
+        },
+        "gcloud_command": "gcloud services enable container.googleapis.com --project=hx-platform",
+        "doc_ref": "https://docs.cloud.google.com/service-usage/docs/enable-disable"
+      }
+    },
+    {
+      "id": "ace-s1-091",
+      "uid": "66fdcc67-f210-42f9-9f11-da153699290d",
+      "title": "Load tests that starve production of API quota",
+      "objective": "1.1",
+      "subtopic": "APIs and Quotas",
+      "summary": "Quota is counted per project and shared by everything in it, so workloads that must not compete need separate projects.",
+      "tags": [
+        "isolation",
+        "projects",
+        "quotas"
+      ],
+      "source": "curated",
+      "question": "At Sennet Payments, a production service and the QA team's load tests run in the same project and call the same Google Cloud API. During each load test the project's per-minute request quota for the API is used up and production calls are refused. Production must never lose quota to the tests again. What should the engineer do?",
+      "options": {
+        "A": "Give the load tests their own service account in the same project",
+        "B": "Move the load tests into a separate project",
+        "C": "Run the load tests from VMs in a different region",
+        "D": "Send the load-test calls from a different range of IP addresses"
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "Quotas generally apply to a project. Usage in one project does not draw on another project's quota, while inside a project all callers share the same quota.",
+        "option_breakdown": {
+          "A": "A second service account still calls from the same project, and the project's quota is shared by all of its callers.",
+          "B": "Correct. A separate project has its own quota, so load tests there cannot consume production's.",
+          "C": "The request quota is counted for the project; where in the world the calling VMs run does not split it.",
+          "D": "A project's quota is shared across all IP addresses, so new source addresses draw on the same pool."
+        },
+        "gcloud_command": "gcloud projects create PROJECT_ID --folder=FOLDER_ID",
+        "doc_ref": "https://docs.cloud.google.com/docs/quotas/overview"
+      }
+    },
+    {
+      "id": "ace-s1-092",
+      "uid": "88636f3b-96d3-4216-a98e-32f154a9601d",
+      "title": "gcloud services enable fails in one project only",
+      "objective": "1.1",
+      "subtopic": "APIs and Quotas",
+      "summary": "Enabling a service goes through the Service Usage API, which must itself be enabled in the project making the request.",
+      "tags": [
+        "apis",
+        "service-usage",
+        "troubleshooting"
+      ],
+      "source": "curated",
+      "question": "A deployment pipeline at Corbel Energy runs gcloud services enable for several APIs in each project. Its service account has Service Usage Admin on every project, and every project is linked to billing. In the project ce-meter the command fails with an error saying the Service Usage API is disabled; an engineer had switched that API off there last week. What should the engineer do?",
+      "options": {
+        "A": "Grant the pipeline's service account the Owner role on ce-meter",
+        "B": "Request a higher quota for Service Usage requests in ce-meter",
+        "C": "Enable the Service Usage API in ce-meter again",
+        "D": "Link ce-meter to a different Cloud Billing account"
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "The Service Usage API is on by default and is what processes requests to enable other services. If it has been disabled in a project, those requests fail until it is re-enabled.",
+        "option_breakdown": {
+          "A": "The account already has the role that enabling services needs; a broader role does not switch a disabled API back on.",
+          "B": "The error reports a disabled API, not an exhausted quota, so more quota changes nothing.",
+          "C": "Correct. Re-enabling the Service Usage API in the project lets requests to enable other services work again.",
+          "D": "The project is already linked to billing, and the billing account has no bearing on whether this API is enabled."
+        },
+        "gcloud_command": "gcloud services enable serviceusage.googleapis.com --project=ce-meter",
+        "doc_ref": "https://docs.cloud.google.com/service-usage/docs/enable-disable"
+      }
+    },
+    {
+      "id": "ace-s1-093",
+      "uid": "4a81d0b7-9fa5-4be6-96a5-658a719090db",
+      "title": "Admin Activity logs kept for three years",
+      "objective": "1.1",
+      "subtopic": "Observability Setup",
+      "summary": "The _Required bucket's 400-day retention is fixed, so longer retention needs a sink to a bucket whose retention can be set.",
+      "tags": [
+        "audit-logs",
+        "log-buckets",
+        "logging",
+        "retention"
+      ],
+      "source": "curated",
+      "question": "A new compliance rule at Aldgate Bank says Admin Activity audit logs written by the project ab-core from now on must be kept in Cloud Logging for three years. These logs are stored in the project's _Required log bucket, which retains them for 400 days. What should the engineer set up?",
+      "options": {
+        "A": "A retention period of 1,095 days on the _Required log bucket",
+        "B": "A retention period of 1,095 days on the _Default log bucket",
+        "C": "A sink that routes these logs to a user-defined log bucket with 1,095 days of retention",
+        "D": "Data Access audit logs for all services in ab-core"
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "The _Required bucket's retention cannot be changed. A user-defined log bucket accepts custom retention, and a sink can route a copy of the Admin Activity logs into it.",
+        "option_breakdown": {
+          "A": "The _Required bucket keeps entries for 400 days and that period cannot be changed.",
+          "B": "Admin Activity logs are stored in _Required, not _Default, so a longer _Default retention does not cover them.",
+          "C": "Correct. A sink to a user-defined bucket with three-year retention keeps the entries for the required time.",
+          "D": "Data Access logs are a different kind of audit log; enabling them does not lengthen how long Admin Activity logs are kept."
+        },
+        "gcloud_command": "gcloud logging buckets create audit-3y --location=global --retention-days=1095\ngcloud logging sinks create admin-activity-3y logging.googleapis.com/projects/ab-core/locations/global/buckets/audit-3y --log-filter='logName:\"cloudaudit.googleapis.com%2Factivity\"'",
+        "doc_ref": "https://docs.cloud.google.com/logging/docs/store-log-entries"
+      }
+    },
+    {
+      "id": "ace-s1-094",
+      "uid": "e846c220-085a-4ee7-9b11-16f762591212",
+      "title": "A log bucket created in the wrong region",
+      "objective": "1.1",
+      "subtopic": "Observability Setup",
+      "summary": "A log bucket's region is fixed at creation; moving means a new bucket in the right region and redirecting the sinks.",
+      "tags": [
+        "data-residency",
+        "log-buckets",
+        "logging"
+      ],
+      "source": "curated",
+      "question": "Six months ago Veldt Pharma created the user-defined log bucket app-logs in the global location, and a sink routes application logs into it. A new policy requires that application logs written from now on are stored in europe-west3. What should the engineer do?",
+      "options": {
+        "A": "Update the app-logs bucket and change its location to europe-west3",
+        "B": "Set the organization's default Logging storage location to europe-west3",
+        "C": "Add a CMEK key from europe-west3 to the app-logs bucket",
+        "D": "Create a log bucket in europe-west3 and point the sink at it"
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "The region of a log bucket cannot be changed after creation. The supported path is a new bucket in the target region, with the sinks redirected to it.",
+        "option_breakdown": {
+          "A": "A log bucket's region cannot be changed once the bucket exists, so there is no such update.",
+          "B": "Default settings decide where the system buckets of new projects are created; they do not move an existing user-defined bucket.",
+          "C": "A key's region controls where the key lives; it does not move the log entries out of the global bucket.",
+          "D": "Correct. A new bucket in europe-west3 with the sink redirected to it stores new entries in that region."
+        },
+        "gcloud_command": "gcloud logging buckets create app-logs-eu --location=europe-west3\ngcloud logging sinks update SINK_NAME logging.googleapis.com/projects/PROJECT_ID/locations/europe-west3/buckets/app-logs-eu",
+        "doc_ref": "https://docs.cloud.google.com/logging/docs/buckets"
+      }
+    },
+    {
+      "id": "ace-s1-095",
+      "uid": "ecc40eed-77cb-4c25-939d-b6612cd673e7",
+      "title": "Managers who only look at the dashboards",
+      "objective": "1.1",
+      "subtopic": "Observability Setup",
+      "summary": "Monitoring Viewer gives read-only access to dashboards and alerting policies without exposing the project's other resources.",
+      "tags": [
+        "iam",
+        "least-privilege",
+        "monitoring"
+      ],
+      "source": "curated",
+      "question": "Tarn Hill Retail runs a dedicated monitoring project. Its department managers must be able to open the custom dashboards and see the alerting policies in that project. They must not be able to change any Monitoring configuration, and they should receive no access to anything in the project outside Cloud Monitoring. Which role should the managers' group be granted on the monitoring project?",
+      "options": {
+        "A": "Monitoring Viewer",
+        "B": "Monitoring Editor",
+        "C": "Viewer",
+        "D": "Logs Viewer"
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "Monitoring Viewer is the read-only Monitoring role: it shows Monitoring data and configuration, such as custom dashboards and alerting policies, and allows no changes.",
+        "option_breakdown": {
+          "A": "Correct. Monitoring Viewer lets the managers view dashboards and alerting policies and change nothing.",
+          "B": "Monitoring Editor would let the managers create and edit dashboards and alerting policies, which is forbidden.",
+          "C": "The basic Viewer role reads every service's resources in the project, which is access outside Cloud Monitoring.",
+          "D": "Logs Viewer opens log entries in Cloud Logging; it does not show Monitoring dashboards or alerting policies."
+        },
+        "gcloud_command": "gcloud projects add-iam-policy-binding MONITORING_PROJECT --member=\"group:managers@example.com\" --role=\"roles/monitoring.viewer\"",
+        "doc_ref": "https://docs.cloud.google.com/monitoring/access-control"
+      }
+    },
+    {
+      "id": "ace-s1-096",
+      "uid": "6c85002e-8b86-468e-be20-ff791df6226f",
+      "title": "Joining logs with sales tables in BigQuery",
+      "objective": "1.1",
+      "subtopic": "Observability Setup",
+      "summary": "A log bucket upgraded to analytics can be exposed to BigQuery through a linked dataset, with no second copy of the logs.",
+      "tags": [
+        "bigquery",
+        "log-buckets",
+        "logging"
+      ],
+      "source": "curated",
+      "question": "Analysts at Brightmoor Travel want to join request logs with sales tables in BigQuery, using SQL in BigQuery Studio. The logs are stored in a user-defined log bucket in the project bt-web. Finance insists that the logs are not stored a second time anywhere. Which two steps should the engineer take? (Choose two.)",
+      "options": {
+        "A": "Upgrade the log bucket to use analytics",
+        "B": "Create a sink that routes the logs to a BigQuery dataset",
+        "C": "Route the logs to Cloud Storage and define an external table",
+        "D": "Create a linked BigQuery dataset for the log bucket",
+        "E": "Create a log-based metric for the request logs"
+      },
+      "correct_answer": "A,D",
+      "explanation": {
+        "summary": "An upgraded log bucket can have a linked BigQuery dataset. The linked dataset gives BigQuery read access to the entries in the log bucket, so nothing is ingested or stored twice.",
+        "option_breakdown": {
+          "A": "Correct. The bucket has to be upgraded to use analytics before a linked dataset can be created for it.",
+          "B": "A BigQuery sink writes the entries into BigQuery tables, which is a second stored copy of the logs.",
+          "C": "Routing to Cloud Storage also writes a second copy, this time as objects in a storage bucket.",
+          "D": "Correct. The linked dataset makes the bucket's entries queryable from BigQuery Studio without copying them.",
+          "E": "A log-based metric counts or measures matching entries for Monitoring; it cannot be joined with tables in SQL."
+        },
+        "gcloud_command": "gcloud logging buckets update BUCKET_ID --location=LOCATION --enable-analytics\ngcloud logging links create LINK_ID --bucket=BUCKET_ID --location=LOCATION",
+        "doc_ref": "https://docs.cloud.google.com/logging/docs/log-analytics"
+      }
+    },
+    {
+      "id": "ace-s1-097",
+      "uid": "9f1bef91-c0bf-4bac-94e0-354f57f3e119",
+      "title": "One team may read only its own service's logs",
+      "objective": "1.1",
+      "subtopic": "Observability Setup",
+      "summary": "A log view exposes a subset of a log bucket, and IAM on the view controls who can read that subset.",
+      "tags": [
+        "iam",
+        "log-views",
+        "logging"
+      ],
+      "source": "curated",
+      "question": "At Pellam Insurance one log bucket in the project pi-ops stores the logs of every microservice. The claims team must be able to read the entries of the claims service in Logs Explorer, and no other entries in that bucket. The logs must stay in the one bucket. What should the engineer do?",
+      "options": {
+        "A": "Create a log view on the bucket and grant the team access to that view",
+        "B": "Grant the claims team the Logs Viewer role on the project pi-ops",
+        "C": "Add exclusion filters to the sink so that only claims entries are stored",
+        "D": "Create a log-based metric for the claims service and share its chart"
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "A log view is a filtered window onto a log bucket. Access is granted per view with IAM, so a team can be limited to the entries its view selects.",
+        "option_breakdown": {
+          "A": "Correct. A log view provides access to a subset of the bucket, and IAM on the view limits the team to it.",
+          "B": "Logs Viewer on the project lets the team read the entries of every service, not only claims.",
+          "C": "Exclusions stop the other services' entries from being stored at all, which takes them away from everyone.",
+          "D": "A metric shows counts or values over time; the team needs to read the log entries themselves."
+        },
+        "gcloud_command": "gcloud logging views create claims-view --bucket=BUCKET_ID --location=LOCATION --log-filter='resource.labels.service_name=\"claims\"'",
+        "doc_ref": "https://docs.cloud.google.com/logging/docs/store-log-entries"
+      }
+    },
+    {
+      "id": "ace-s1-098",
+      "uid": "0addeeeb-9723-44b7-becb-3801cd4bda97",
+      "title": "The founder cannot create a folder",
+      "objective": "1.1",
+      "subtopic": "Standalone Organizations",
+      "summary": "In a standalone organization the Organization Administrator role does not include creating folders or projects; those need additional roles.",
+      "tags": [
+        "iam",
+        "resource-hierarchy",
+        "standalone-organization"
+      ],
+      "source": "curated",
+      "question": "A founder signed up for Google Cloud with a personal Google Account and received a standalone organization, with the Organization Owner and Organization Administrator roles. When the founder tries to create a first folder under the organization, the request is denied for lack of permission. What should the founder do?",
+      "options": {
+        "A": "Sign up for Cloud Identity and verify a domain for the organization",
+        "B": "Add a second Organization Owner and ask that person to create the folder",
+        "C": "Grant their own account the Folder Creator role on the organization",
+        "D": "Start a new Free Trial to receive a second standalone organization"
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "Organization Administrator manages policies and grants roles but, by design, cannot create folders or projects. An administrator assigns the additional role, such as Folder Creator, including to themselves.",
+        "option_breakdown": {
+          "A": "A standalone organization exists so that no Cloud Identity account or domain is needed; neither would add the missing permission.",
+          "B": "Organization Owner manages owners and administrators. A second owner has no more right to create folders than the first.",
+          "C": "Correct. The Organization Administrator role lacks folder creation, so the founder assigns the additional role to the account.",
+          "D": "Another organization would start with the same two roles and the same missing permission."
+        },
+        "gcloud_command": "gcloud organizations add-iam-policy-binding ORG_ID --member=\"user:founder@example.com\" --role=\"roles/resourcemanager.folderCreator\"",
+        "doc_ref": "https://docs.cloud.google.com/resource-manager/docs/standalone-organization-overview"
+      }
+    },
+    {
+      "id": "ace-s1-099",
+      "uid": "da62b880-3288-45d1-93af-db2fab8cf19c",
+      "title": "Nobody can set IAM on the standalone organization",
+      "objective": "1.1",
+      "subtopic": "Standalone Organizations",
+      "summary": "An Organization Owner of a standalone organization can grant Organization Administrator again from the Organization details page.",
+      "tags": [
+        "iam",
+        "recovery",
+        "standalone-organization"
+      ],
+      "source": "curated",
+      "question": "While tidying the allow policy of a standalone organization, its only administrator removed the Organization Administrator role from every principal, including herself. Now nobody can set IAM policies on the organization. She is still listed as an Organization Owner. How should access be restored?",
+      "options": {
+        "A": "Run gcloud organizations add-iam-policy-binding to grant herself the role",
+        "B": "Sign up for a new Free Trial and move the projects to its organization",
+        "C": "Restore the organization's previous allow policy from the audit logs",
+        "D": "Grant Organization Administrator from the Organization details page"
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "The Organization Owner role is managed outside IAM, so it survives a mistake in the allow policy. From the Organization details page an owner can grant Organization Administrator to a principal again.",
+        "option_breakdown": {
+          "A": "That command needs permission to set the organization's allow policy, which is exactly what nobody holds any more.",
+          "B": "A new organization does not restore control of this one, and moving projects out of it would itself need rights she has lost.",
+          "C": "Audit logs record what the policy was, but writing a policy back still requires the permission that is missing.",
+          "D": "Correct. An Organization Owner grants the Organization Administrator role from the Organization details page."
+        },
+        "gcloud_command": "# Console > Organization details > Organization owners > More actions > Grant Organization Administrator role",
+        "doc_ref": "https://docs.cloud.google.com/resource-manager/docs/standalone-organization-overview"
+      }
+    },
+    {
+      "id": "ace-s1-100",
+      "uid": "8cc78f54-a9c4-448e-98ff-1d0d12d24fec",
+      "title": "A federated user as owner of a standalone organization",
+      "objective": "1.1",
+      "subtopic": "Standalone Organizations",
+      "summary": "A workforce pool principal can be an Organization Owner; it is added by its principal identifier and accepts an emailed invitation.",
+      "tags": [
+        "organization-owner",
+        "standalone-organization",
+        "workforce-identity-federation"
+      ],
+      "source": "curated",
+      "question": "A standalone organization has Workforce Identity Federation configured with the company's identity provider. The operations manager signs in through the workforce pool and has no Google Account. The founder wants her to become a second Organization Owner without creating a Google Account for her. What should the founder do?",
+      "options": {
+        "A": "Add her as an organization owner by her workforce pool principal identifier",
+        "B": "Grant roles/owner on the organization to the principal set of the whole workforce pool",
+        "C": "Create a consumer Google Account for her, because only Google Accounts can be owners",
+        "D": "Add her to the Organization Administrator role, which makes her an owner after 30 days"
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "Organization owners can be individuals or principals within a workforce pool. A federated owner is added on the Organization details page by principal identifier, and accepts an invitation sent to an email address.",
+        "option_breakdown": {
+          "A": "Correct. A workforce pool principal is added as owner by its identifier and confirms through the emailed invitation.",
+          "B": "Organization Owner is managed outside IAM, so an IAM grant does not create an owner, and a principal set would cover every pool user.",
+          "C": "Workforce pool principals can be owners, so a Google Account for her is not needed.",
+          "D": "Organization Administrator is a separate role; holding it never turns a principal into an owner."
+        },
+        "gcloud_command": "# Console > Organization details > Organization Owner > Add organization Owner",
+        "doc_ref": "https://docs.cloud.google.com/resource-manager/docs/standalone-organization-overview"
+      }
+    },
+    {
+      "id": "ace-s1-101",
+      "uid": "32d98244-b5bf-4045-90ee-7462cb55d074",
+      "title": "Removing the founder's personal account as owner",
+      "objective": "1.1",
+      "subtopic": "Standalone Organizations",
+      "summary": "A standalone organization must always keep at least one active Google Account among its owners.",
+      "tags": [
+        "organization-owner",
+        "standalone-organization"
+      ],
+      "source": "curated",
+      "question": "A standalone organization has three Organization Owners: the founder's personal Google Account and two users from a workforce identity pool. The founder is leaving, and the company wants to remove the founder's personal account from the owners. What must the company do before it removes that account?",
+      "options": {
+        "A": "Wait until 30 days have passed since the two federated owners accepted",
+        "B": "Add another active Google Account as an organization owner",
+        "C": "Grant the two federated owners the Organization Administrator role",
+        "D": "Remove the two federated owners and invite them again afterwards"
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "Owners may be Google Accounts or workforce pool principals, but every standalone organization must keep at least one active Google Account as owner, so another Google Account has to be added before the founder's is removed.",
+        "option_breakdown": {
+          "A": "The 30 days is the time an invited principal has to accept; it is not a waiting period before another owner can be removed.",
+          "B": "Correct. With the founder gone no Google Account would be an owner, so another one has to be added first.",
+          "C": "Organization Administrator is a separate IAM role; granting it does not satisfy the rule about who the owners are.",
+          "D": "Re-inviting the federated owners leaves the same two workforce pool principals and still no Google Account among the owners."
+        },
+        "gcloud_command": "# Console > Organization details > Organization Owner > Add organization Owner",
+        "doc_ref": "https://docs.cloud.google.com/resource-manager/docs/standalone-organization-overview"
+      }
+    },
+    {
+      "id": "ace-s1-102",
+      "uid": "5f5b069d-3c85-45cf-8f69-1784eda9733c",
+      "title": "A second standalone organization for the same person",
+      "objective": "1.1",
+      "subtopic": "Standalone Organizations",
+      "summary": "Only one standalone organization is created per user account, but one user can be invited to own several.",
+      "tags": [
+        "organization-owner",
+        "standalone-organization"
+      ],
+      "source": "curated",
+      "question": "A consultant already owns the standalone organization that was created when she signed up for Google Cloud. A client that signed up last month has its own standalone organization and wants her to administer it as an owner, using the Google Account she already has. What should be done?",
+      "options": {
+        "A": "A current owner of the client's organization invites her account as an organization owner",
+        "B": "She signs up for Google Cloud again with the same account to get a second organization",
+        "C": "The client's organization is merged into her organization as a folder",
+        "D": "She asks the client to move its projects into her own organization"
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "Sign-up creates one standalone organization per user account. A user comes to own more than one by being invited as an owner of the others.",
+        "option_breakdown": {
+          "A": "Correct. One user can be invited to own and administer several organizations, each through its own invitation.",
+          "B": "Only one organization is created per user account, and standalone organizations are not offered to existing accounts.",
+          "C": "An organization is the root of its own hierarchy; it cannot be attached under another organization as a folder.",
+          "D": "Moving the projects would empty the client's organization instead of giving her ownership of it, which is what the client asked for."
+        },
+        "gcloud_command": "# Console > Organization details > Organization Owner > Add organization Owner",
+        "doc_ref": "https://docs.cloud.google.com/resource-manager/docs/standalone-organization-overview"
+      }
+    },
+    {
+      "id": "ace-s1-103",
+      "uid": "02bc433a-5eff-4e48-9f0d-eccf35b64a22",
+      "title": "A project owner cannot enable the Shared VPC host",
+      "objective": "1.1",
+      "subtopic": "Foundation Networking",
+      "summary": "Enabling a host project needs the Compute Shared VPC Admin role, which is granted on the organization or a folder, not on the project.",
+      "tags": [
+        "foundation",
+        "iam",
+        "shared-vpc"
+      ],
+      "source": "curated",
+      "question": "Wexcombe Group is building its network foundation. An engineer who is Owner of the project wx-net-host tries to enable it as a Shared VPC host project and is denied. The project sits in the folder Platform, and the engineer has no roles on the folder or the organization. What should the Organization Administrator do?",
+      "options": {
+        "A": "Grant the engineer Compute Shared VPC Admin on the folder Platform",
+        "B": "Grant the engineer Compute Network Admin on the project wx-net-host",
+        "C": "Grant the engineer Compute Network User on the project wx-net-host",
+        "D": "Grant the engineer Owner on each project that will be attached"
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "A Shared VPC Admin enables host projects and attaches service projects. That role, compute.xpnAdmin, is held at the organization or folder level, so project ownership alone does not allow it.",
+        "option_breakdown": {
+          "A": "Correct. Shared VPC Admins hold the role for the organization or a folder, and it lets them enable host projects.",
+          "B": "Network Admin manages networks, subnets and routes inside the project; it does not include enabling Shared VPC.",
+          "C": "Network User lets a principal use the shared subnets after sharing exists; it cannot turn a project into a host.",
+          "D": "Owning the future service projects gives no right to make wx-net-host a host project."
+        },
+        "gcloud_command": "gcloud resource-manager folders add-iam-policy-binding FOLDER_ID --member=\"user:engineer@example.com\" --role=\"roles/compute.xpnAdmin\"",
+        "doc_ref": "https://docs.cloud.google.com/vpc/docs/shared-vpc"
+      }
+    },
+    {
+      "id": "ace-s1-104",
+      "uid": "73ad03be-26c0-4335-a040-7057345607d8",
+      "title": "Two environment networks that will be peered",
+      "objective": "1.1",
+      "subtopic": "Foundation Networking",
+      "summary": "Auto mode VPC networks all use the same predefined ranges and cannot be peered with each other, so a foundation uses custom mode.",
+      "tags": [
+        "custom-mode",
+        "foundation",
+        "ip-planning",
+        "vpc"
+      ],
+      "source": "curated",
+      "question": "Ravensworth Tools is planning two VPC networks, one for shared services and one for workloads, which will be connected with VPC Network Peering. Later the workloads network will also connect to an on-premises network that uses part of 10.128.0.0/9. How should the engineer create the two VPC networks?",
+      "options": {
+        "A": "As auto mode VPC networks, so that every region gets a subnet in each",
+        "B": "As the default network of two new projects, with the default firewall rules",
+        "C": "As custom mode VPC networks, with subnet ranges planned not to overlap",
+        "D": "As one auto mode network and one legacy network, to avoid equal ranges"
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "Every auto mode network draws its subnets from 10.128.0.0/9, so two of them overlap and cannot be peered, and they may collide with on-premises ranges. Custom mode gives full control of the ranges.",
+        "option_breakdown": {
+          "A": "Two auto mode networks use the same predefined ranges, so they cannot be connected with VPC Network Peering.",
+          "B": "A default network is an auto mode network, so the overlap is the same in both projects.",
+          "C": "Correct. Custom mode networks get only the subnets and ranges the engineer chooses, so the ranges can be kept apart.",
+          "D": "Legacy networks can no longer be created, and the auto mode network would still overlap the on-premises range."
+        },
+        "gcloud_command": "gcloud compute networks create shared-services --subnet-mode=custom\ngcloud compute networks subnets create shared-eu --network=shared-services --region=europe-west1 --range=10.10.0.0/20",
+        "doc_ref": "https://docs.cloud.google.com/vpc/docs/vpc"
+      }
+    },
+    {
+      "id": "ace-s1-105",
+      "uid": "c20a7f70-fb8e-44e3-be45-37faa8383251",
+      "title": "A service project limited to one shared subnet",
+      "objective": "1.1",
+      "subtopic": "Foundation Networking",
+      "summary": "Granting Network User on selected subnets, not on the host project, restricts a service project team to those subnets.",
+      "tags": [
+        "least-privilege",
+        "shared-vpc",
+        "subnets"
+      ],
+      "source": "curated",
+      "question": "The host project of Ostler Foods has a Shared VPC network with ten subnets. The web team's service project is attached to it. The web team must be able to create VMs only in the subnet web-eu, and must not gain access to the other subnets or to subnets added later. What should the Shared VPC Admin grant the web team?",
+      "options": {
+        "A": "Compute Network User on the host project",
+        "B": "Compute Network Admin on the host project",
+        "C": "Compute Instance Admin on the host project",
+        "D": "Compute Network User on the subnet web-eu"
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "Network User can be granted for the whole host project or for selected subnets. A project-level grant covers every subnet, present and future; a subnet-level grant covers only the named subnets.",
+        "option_breakdown": {
+          "A": "On the host project the role allows use of all ten subnets and of any subnet added in future.",
+          "B": "Network Admin lets the team change the shared network itself, which is central control they should not have.",
+          "C": "Instance Admin on the host project manages VMs in the host project; it does not let the service project use a shared subnet.",
+          "D": "Correct. With Network User on web-eu only, the team is restricted to using that one subnet."
+        },
+        "gcloud_command": "gcloud compute networks subnets add-iam-policy-binding web-eu --region=europe-west1 --project=HOST_PROJECT_ID --member=\"group:web-team@example.com\" --role=\"roles/compute.networkUser\"",
+        "doc_ref": "https://docs.cloud.google.com/vpc/docs/shared-vpc"
+      }
+    },
+    {
+      "id": "ace-s1-106",
+      "uid": "7230fef8-a5a2-4e58-8eb9-b9321dfc1a18",
+      "title": "Two terminals, two gcloud configurations",
+      "objective": "1.1",
+      "subtopic": "gcloud CLI and Configurations",
+      "summary": "CLOUDSDK_ACTIVE_CONFIG_NAME selects a configuration for one terminal without changing the active configuration elsewhere.",
+      "tags": [
+        "configurations",
+        "environment-variables",
+        "gcloud"
+      ],
+      "source": "curated",
+      "question": "An engineer at Lowmill Data has two named gcloud configurations, dev and prod, on one laptop. She wants one terminal window to use dev and another to use prod at the same time, for every command typed in each, without one window changing what the other uses. What should she do?",
+      "options": {
+        "A": "Set CLOUDSDK_ACTIVE_CONFIG_NAME to a different configuration in each terminal",
+        "B": "Run gcloud config configurations activate with a different configuration in each terminal",
+        "C": "Run gcloud config set project with a different project ID in each terminal",
+        "D": "Run gcloud init in each terminal and choose a different project when asked"
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "The active configuration is stored once for the installation, so activating one changes every terminal. The environment variable overrides it for the commands in the terminal where it is set.",
+        "option_breakdown": {
+          "A": "Correct. The variable changes the active configuration for all commands in that terminal only.",
+          "B": "Activation is recorded for the whole installation, so the second window's activation also switches the first.",
+          "C": "The property is written into whichever configuration is active, which both windows share.",
+          "D": "gcloud init rewrites the shared active configuration; the last run wins in both windows."
+        },
+        "gcloud_command": "export CLOUDSDK_ACTIVE_CONFIG_NAME=prod",
+        "doc_ref": "https://docs.cloud.google.com/sdk/docs/configurations"
+      }
+    },
+    {
+      "id": "ace-s1-107",
+      "uid": "c843f48c-7217-4deb-9cf7-9908be2fd38d",
+      "title": "gcloud works, but the local script finds no credentials",
+      "objective": "1.1",
+      "subtopic": "gcloud CLI and Configurations",
+      "summary": "Client libraries use Application Default Credentials, which a local shell gets from gcloud auth application-default login.",
+      "tags": [
+        "adc",
+        "authentication",
+        "client-libraries",
+        "gcloud"
+      ],
+      "source": "curated",
+      "question": "A developer at Finch Abbey installed the gcloud CLI on a laptop and ran gcloud auth login. gcloud commands work. A Python script on the same laptop that uses the Cloud Storage client library fails, reporting that it cannot find default credentials. The developer wants the script to run locally with the developer's own identity. What should the developer run?",
+      "options": {
+        "A": "gcloud config set account",
+        "B": "gcloud auth application-default login",
+        "C": "gcloud auth configure-docker",
+        "D": "gcloud init"
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "gcloud auth login authorizes the gcloud CLI itself. Client libraries look for Application Default Credentials, a separate local credential file that application-default login creates.",
+        "option_breakdown": {
+          "A": "This picks which signed-in account gcloud commands use; it writes no credential file for client libraries.",
+          "B": "Correct. It creates the local credentials that Application Default Credentials, and so the client library, will find.",
+          "C": "This registers gcloud as a credential helper for container registries and has no effect on client libraries.",
+          "D": "gcloud init repeats the CLI sign-in and sets a project; the library still has no default credentials to load."
+        },
+        "gcloud_command": "gcloud auth application-default login",
+        "doc_ref": "https://docs.cloud.google.com/docs/authentication/set-up-adc-local-dev-environment"
+      }
+    },
+    {
+      "id": "ace-s1-108",
+      "uid": "3d87455b-ef14-4701-b1a0-f3d0c575ce33",
+      "title": "gcloud commands inside an unattended script",
+      "objective": "1.1",
+      "subtopic": "gcloud CLI and Configurations",
+      "summary": "A script disables prompts with --quiet and asks for a fixed output format with --format, not the default output.",
+      "tags": [
+        "automation",
+        "gcloud",
+        "scripting"
+      ],
+      "source": "curated",
+      "question": "A nightly script at Holloway Print deletes old test VMs with gcloud and then reads the remaining VM names from a gcloud list command. Twice it hung waiting for a confirmation, and after a CLI update its text parsing broke because the default table layout had changed. Which two changes make the script reliable? (Choose two.)",
+      "options": {
+        "A": "Parse the default table output with stricter grep and awk patterns",
+        "B": "Run the commands with --verbosity=debug and read the log lines",
+        "C": "Pin the script to the gcloud beta version of each command",
+        "D": "Add the --quiet flag to the commands that ask for confirmation",
+        "E": "Request the list with --format=json and parse that"
+      },
+      "correct_answer": "D,E",
+      "explanation": {
+        "summary": "Scripts should not meet prompts or depend on default output. --quiet, or the disable_prompts property, accepts default answers, and --format gives output in a format that stays predictable.",
+        "option_breakdown": {
+          "A": "The default output of a command may change in a future release, so tighter patterns only break in a new way.",
+          "B": "Debug logging adds diagnostic lines; it neither answers a prompt nor fixes the layout of the result.",
+          "C": "Beta commands are no more stable in their output, and they still stop to ask for confirmation.",
+          "D": "Correct. --quiet disables prompts, so the delete command proceeds with its default answer.",
+          "E": "Correct. An explicit --format gives predictable output that does not follow changes to the default table."
+        },
+        "gcloud_command": "gcloud compute instances delete VM_NAME --zone=ZONE --quiet\ngcloud compute instances list --format=json",
+        "doc_ref": "https://docs.cloud.google.com/sdk/docs/scripting-gcloud"
+      }
+    },
+    {
+      "id": "ace-s1-109",
+      "uid": "8a216f38-d67c-4a97-a7d3-dee0c2946d8f",
+      "title": "A contractor leaves a shared build workstation",
+      "objective": "1.1",
+      "subtopic": "gcloud CLI and Configurations",
+      "summary": "gcloud auth revoke invalidates a principal's stored gcloud credentials so the CLI can no longer act for them.",
+      "tags": [
+        "authentication",
+        "credentials",
+        "gcloud"
+      ],
+      "source": "curated",
+      "question": "A contractor at Tamsin Yard signed in with gcloud auth login on a shared build workstation. Today is the contractor's last day. The team must make sure the gcloud CLI on that workstation can no longer act with the contractor's user account, while other users' sign-ins on the machine stay as they are. What should be run on the workstation?",
+      "options": {
+        "A": "gcloud config unset account",
+        "B": "gcloud config configurations delete for the contractor's configuration",
+        "C": "gcloud auth application-default revoke",
+        "D": "gcloud auth revoke for the contractor's account"
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "Credentials from gcloud auth login stay stored until the session expires or they are revoked. Revoking invalidates them on Google's authorization servers and removes the principal from the configuration.",
+        "option_breakdown": {
+          "A": "Unsetting the property only clears which account is selected; the stored credentials remain and can be selected again.",
+          "B": "Deleting a configuration removes its properties, not the credentials stored for the account.",
+          "C": "This removes the Application Default Credentials file used by client libraries, not the gcloud CLI's own credentials.",
+          "D": "Correct. Revoking the account's credentials stops the gcloud CLI from acting on the contractor's behalf."
+        },
+        "gcloud_command": "gcloud auth revoke contractor@example.com",
+        "doc_ref": "https://docs.cloud.google.com/sdk/docs/authorizing"
+      }
+    },
+    {
+      "id": "ace-s1-110",
+      "uid": "562211bc-1e69-4095-b884-d0a06c4323dc",
+      "title": "A production project unlinked by accident, twice",
+      "objective": "1.2",
+      "subtopic": "Billing Accounts",
+      "summary": "Locking the link between a project and its billing account prevents accidental moves and unlinking.",
+      "tags": [
+        "billing",
+        "billing-account",
+        "safeguards"
+      ],
+      "source": "curated",
+      "question": "Twice this year a billing administrator at Estrel Foods, tidying up the Account management page, removed the production project ef-orders from the company's Cloud Billing account by mistake, and its services stopped. Billing administrators must keep their role and must still link and unlink other projects. What should be done for ef-orders?",
+      "options": {
+        "A": "Create a budget for ef-orders with alerts at 50%, 90% and 100%",
+        "B": "Remove the Billing Account User role from every billing administrator",
+        "C": "Lock the link between ef-orders and its Cloud Billing account",
+        "D": "Turn on deletion protection for every VM in ef-orders"
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "A project's billing link can be locked. A locked link must be unlocked deliberately before the project can be moved to another billing account or unlinked.",
+        "option_breakdown": {
+          "A": "Budget alerts report spend against a threshold; they do nothing to stop a project from being unlinked.",
+          "B": "The administrators must keep working with other projects, and removing one role from them would not protect this link alone.",
+          "C": "Correct. Locking the link prevents the project from being moved or unlinked unintentionally.",
+          "D": "Deletion protection guards VMs against being deleted; it has no effect on the project's billing link."
+        },
+        "gcloud_command": "# Console > Billing > Account management > project row > Actions",
+        "doc_ref": "https://docs.cloud.google.com/billing/docs/how-to/modify-project"
+      }
+    },
+    {
+      "id": "ace-s1-111",
+      "uid": "7ada00a2-55e5-4970-84ff-b69fd117180c",
+      "title": "Pausing spend by disabling billing",
+      "objective": "1.2",
+      "subtopic": "Billing Accounts",
+      "summary": "Disabling billing stops a project's services and can remove resources for good, so it is not a way to pause costs.",
+      "tags": [
+        "billing",
+        "cost",
+        "risk"
+      ],
+      "source": "curated",
+      "question": "To save money during a two-week shutdown, a manager at Pryce Metals proposes disabling billing on the project pm-lab and enabling it again afterwards. The project holds test databases and disks whose data must be intact when work resumes. What should the cloud engineer do?",
+      "options": {
+        "A": "Disable billing on pm-lab now and link the billing account again in two weeks",
+        "B": "Keep billing enabled, and stop or scale down the resources that cost money",
+        "C": "Shut the project down now and restore it within the 30-day recovery period",
+        "D": "Move pm-lab to a new Cloud Billing account that has no payment method"
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "Disabling billing is not a pause. All services in the project stop, and some resources might be removed and become unrecoverable, so costs are cut by stopping resources while billing stays on.",
+        "option_breakdown": {
+          "A": "With billing disabled, services stop and some resources might be removed for good, so the data may not survive the two weeks.",
+          "B": "Correct. Stopping or shrinking resources cuts the cost while the project stays billed and its data stays in place.",
+          "C": "A shutdown also disconnects billing, and some resources may be deleted before a restore, so the data is again at risk.",
+          "D": "An account that cannot pay is not an active billing account, which puts the project in the same state as disabled billing."
+        },
+        "gcloud_command": "gcloud compute instances stop VM_NAME --zone=ZONE",
+        "doc_ref": "https://docs.cloud.google.com/billing/docs/how-to/modify-project"
+      }
+    },
+    {
+      "id": "ace-s1-112",
+      "uid": "dd52f0fe-ddd1-4cc0-b7f6-d0cb63cd1a64",
+      "title": "A subsidiary that must pay its own bills",
+      "objective": "1.2",
+      "subtopic": "Billing Accounts",
+      "summary": "A separate legal entity paying in its own currency needs its own Cloud Billing account on its own payments profile.",
+      "tags": [
+        "billing",
+        "billing-account",
+        "payments-profile"
+      ],
+      "source": "curated",
+      "question": "Corvane Group pays for all its projects through one Cloud Billing account in US dollars, registered to the US parent company. Its new UK subsidiary is a separate legal entity that must receive and pay its own Google Cloud charges in pounds sterling. The UK projects stay in the same organization. What should be set up?",
+      "options": {
+        "A": "A second Cloud Billing account on a payments profile for the UK entity, with the UK projects linked to it",
+        "B": "A UK folder for the projects, with a budget in pounds sterling on that folder",
+        "C": "A label on each UK project, used to filter the cost reports of the existing account",
+        "D": "A BigQuery billing export of the existing account, converted to pounds each month"
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "A Cloud Billing account works in one currency and is tied to a payments profile, which represents the legal entity that pays. A different entity and currency therefore means another billing account.",
+        "option_breakdown": {
+          "A": "Correct. A billing account on the UK entity's own payments profile bills that entity, in its currency, for the linked projects.",
+          "B": "A folder and a budget organise and track spend; the charges would still go to the US parent's account in dollars.",
+          "C": "Labels split the report of one account into parts, but the parent's account still receives and pays the whole bill.",
+          "D": "An export is data for analysis. Converting it changes neither who is charged nor the currency of the charge."
+        },
+        "gcloud_command": "gcloud billing projects link PROJECT_ID --billing-account=UK_BILLING_ACCOUNT_ID",
+        "doc_ref": "https://docs.cloud.google.com/billing/docs/concepts"
+      }
+    },
+    {
+      "id": "ace-s1-113",
+      "uid": "ac753c3d-651a-40e1-9e30-edddeadfcef4",
+      "title": "The finance lead cannot be added to the payments profile",
+      "objective": "1.2",
+      "subtopic": "Billing Accounts",
+      "summary": "An Individual payments profile can be managed only by its creator and its type cannot be changed; shared management needs an Organization profile.",
+      "tags": [
+        "billing",
+        "payments-profile"
+      ],
+      "source": "curated",
+      "question": "A founder at Nettlebed Labs set up the company's Cloud Billing account two years ago and chose the Individual type for its Google payments profile. The company now has a finance lead who must manage the payments profile together with the founder, but the profile offers no way to add users. What should the company do?",
+      "options": {
+        "A": "Change the type of the existing payments profile from Individual to Organization",
+        "B": "Create an Organization payments profile and use it for the company's billing",
+        "C": "Grant the finance lead the Billing Account Viewer role on the billing account",
+        "D": "Add the finance lead as a second Organization Owner of the company's organization"
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "The profile type is fixed when the payments profile is created. An Individual profile is managed only by the person who registered it; an Organization profile lets several users manage it.",
+        "option_breakdown": {
+          "A": "The profile type cannot be changed after the payments profile has been created.",
+          "B": "Correct. An Organization profile lets other users be added, so the finance lead can manage it alongside the founder.",
+          "C": "An IAM role on the billing account lets the finance lead see costs; it does not make her a user of the payments profile.",
+          "D": "Organization ownership governs the resource hierarchy and has no bearing on who can manage a payments profile."
+        },
+        "gcloud_command": "# Google payments center > Settings > Payments profile",
+        "doc_ref": "https://docs.cloud.google.com/billing/docs/concepts"
+      }
+    },
+    {
+      "id": "ace-s1-114",
+      "uid": "48222e7b-5eb3-4cad-9cfa-652c7500d30f",
+      "title": "A reseller keeps each customer's charges apart",
+      "objective": "1.2",
+      "subtopic": "Billing Accounts",
+      "summary": "Billing subaccounts let a reseller on invoiced billing group each customer's projects and charges separately under one parent account.",
+      "tags": [
+        "billing",
+        "resellers",
+        "subaccounts"
+      ],
+      "source": "curated",
+      "question": "Hartwell Cloud is a Google Cloud reseller on invoiced billing. It pays Google for all of its customers' usage and charges each customer back. It wants each customer's projects grouped and subtotalled separately on its invoice, with billing access for each customer kept apart from the others. What should Hartwell Cloud use?",
+      "options": {
+        "A": "One folder per customer, with a budget on each folder",
+        "B": "One label per customer on every project, and a filtered cost report",
+        "C": "One self-serve Cloud Billing account per customer, each with its own card",
+        "D": "One billing subaccount per customer under its Cloud Billing account"
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "Subaccounts are made for resellers. Each is a billing account owned by the reseller's invoiced parent account: its projects' charges are subtotalled on the parent's invoice and it has its own IAM policy.",
+        "option_breakdown": {
+          "A": "Folders and budgets track spending but do not create separate sections on the invoice or separate billing access.",
+          "B": "Labels allow filtering in reports; the invoice is still one undivided total and billing access is still shared.",
+          "C": "Separate self-serve accounts would each be charged to their own card, not paid by Hartwell on its invoice.",
+          "D": "Correct. A subaccount per customer groups that customer's charges on the invoice and separates access control."
+        },
+        "gcloud_command": "# Cloud Billing Account API: billingAccounts.create with the parent billing account",
+        "doc_ref": "https://docs.cloud.google.com/billing/docs/concepts"
+      }
+    },
+    {
+      "id": "ace-s1-115",
+      "uid": "e8e6889c-37a1-48ad-8561-503ffcbb6e11",
+      "title": "Paying by wire transfer against an invoice",
+      "objective": "1.2",
+      "subtopic": "Billing Accounts",
+      "summary": "Paying by check or wire transfer against a monthly invoice is the invoiced account type, for which a customer must be eligible.",
+      "tags": [
+        "billing",
+        "invoiced-billing",
+        "payment"
+      ],
+      "source": "curated",
+      "question": "The finance policy at Maresfield Steel forbids company credit cards and automatic debits. Google Cloud charges must be paid by wire transfer against a monthly invoice with agreed payment terms. The company currently has a self-serve Cloud Billing account charged to a director's credit card. What should the company do?",
+      "options": {
+        "A": "Add a bank account as the backup payment method of the self-serve account",
+        "B": "Apply for invoiced billing, and use an invoiced Cloud Billing account",
+        "C": "Create a billing subaccount and pay its charges by wire transfer",
+        "D": "Set a budget on the self-serve account and pay manually before each month ends"
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "Self-serve accounts are charged automatically to a card or bank debit. Invoiced accounts are paid by check or wire transfer against an invoice, and a customer must be eligible for them.",
+        "option_breakdown": {
+          "A": "A bank account on a self-serve account is an automatic debit, which the policy forbids, and no invoice with terms is issued.",
+          "B": "Correct. An invoiced account issues a monthly invoice that is paid by check or wire transfer.",
+          "C": "Subaccounts are for resellers and are paid through their parent account; they do not change how the company pays.",
+          "D": "A manual payment still goes through the self-serve account's payment methods, and a budget changes nothing about payment."
+        },
+        "gcloud_command": "# Console > Billing > Payment settings",
+        "doc_ref": "https://docs.cloud.google.com/billing/docs/concepts"
+      }
+    },
+    {
+      "id": "ace-s1-116",
+      "uid": "0a766c9e-e068-480d-9125-bd78f8969b7d",
+      "title": "A billing administrator who cannot list the VMs",
+      "objective": "1.2",
+      "subtopic": "Billing Accounts",
+      "summary": "Roles on a Cloud Billing account are not inherited by the projects linked to it; seeing a project's resources needs a role on the project.",
+      "tags": [
+        "billing",
+        "iam",
+        "inheritance"
+      ],
+      "source": "curated",
+      "question": "The finance lead at Sorrel Outdoor is Billing Account Administrator on the company's Cloud Billing account. To investigate a cost spike she tries to list the Compute Engine VMs in the project so-web, which is linked to that account, and is denied. She only needs to look at the VMs. What should be done?",
+      "options": {
+        "A": "Grant her Billing Account Viewer on the billing account as well",
+        "B": "Grant her Billing Account Costs Manager on the billing account",
+        "C": "Link so-web to the billing account again to refresh her access",
+        "D": "Grant her Compute Viewer on the project so-web"
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "A billing account pays for projects but is not their parent in the IAM hierarchy. Projects inherit nothing from it, so access to resources is granted on the project, folder or organization.",
+        "option_breakdown": {
+          "A": "Another billing role is still a role on the billing account, and projects do not inherit from the billing account.",
+          "B": "Costs Manager covers budgets and cost data on the billing account, not the resources inside a linked project.",
+          "C": "Linking again produces the same link; her billing role would apply to the project no more than before.",
+          "D": "Correct. A read-only Compute Engine role on the project lets her list the VMs there."
+        },
+        "gcloud_command": "gcloud projects add-iam-policy-binding so-web --member=\"user:finance-lead@example.com\" --role=\"roles/compute.viewer\"",
+        "doc_ref": "https://docs.cloud.google.com/billing/docs/concepts"
+      }
+    },
+    {
+      "id": "ace-s1-117",
+      "uid": "b85f5fd7-4d8e-4263-929d-3afa7c5717f5",
+      "title": "Who pays for usage before the project moved",
+      "objective": "1.2",
+      "subtopic": "Billing Accounts",
+      "summary": "After a project changes billing account, charges incurred before the move stay with the former account and later charges go to the new one.",
+      "tags": [
+        "billing",
+        "billing-account",
+        "chargeback"
+      ],
+      "source": "curated",
+      "question": "On 15 May the project rm-analytics at Rowan Mead was moved from the Marketing department's Cloud Billing account to the Data department's account. The Data department objects to paying for the project's usage from 1 to 15 May and asks the engineer to make sure Marketing pays for it. What should the engineer do?",
+      "options": {
+        "A": "Move the project back to Marketing's account until the end of May",
+        "B": "Nothing: usage before the move is billed to Marketing's account",
+        "C": "Ask Cloud Billing support to split the May charges between the accounts",
+        "D": "Disable billing on the project and link it to the Data account again"
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "Changing a project's billing account is not retroactive. Charges already incurred are billed to the former account, even if they have not yet appeared in its transaction history.",
+        "option_breakdown": {
+          "A": "Moving back would send the second half of May to Marketing too, which nobody asked for.",
+          "B": "Correct. Charges incurred before the move are billed to the former account, here Marketing's, without any action.",
+          "C": "There is nothing to split: the accounts are already billed according to the date of the move.",
+          "D": "Disabling billing stops the project's services, and the earlier charges would go to Marketing's account regardless."
+        },
+        "gcloud_command": "gcloud billing projects describe rm-analytics",
+        "doc_ref": "https://docs.cloud.google.com/billing/docs/how-to/modify-project"
+      }
+    },
+    {
+      "id": "ace-s1-118",
+      "uid": "2044480f-f76c-46b5-a9ed-9ac1bc455450",
+      "title": "Resources stopped when the Free Trial ran out",
+      "objective": "1.2",
+      "subtopic": "Billing Accounts",
+      "summary": "When a Free Trial ends, resources stop and a 30-day grace period begins; upgrading to a Paid account in that period can recover them.",
+      "tags": [
+        "billing",
+        "free-trial",
+        "recovery"
+      ],
+      "source": "curated",
+      "question": "Ten days ago the 90 days of a student team's Free Trial ran out. Its Free Trial billing account was closed and the VMs and databases in its project stopped. The team wants to continue with the same project and the same resources and is ready to pay for usage. What should the team do?",
+      "options": {
+        "A": "Sign up for a new Free Trial with another email address and link the project to it",
+        "B": "Shut the project down and restore it to start the resources again",
+        "C": "Upgrade the billing account to a Paid billing account",
+        "D": "Request a quota increase for the project's stopped resources"
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "An expired Free Trial account enters a 30-day grace period. Upgrading to a Paid billing account within it may recover the stopped resources and data; after it they are permanently deleted.",
+        "option_breakdown": {
+          "A": "The Free Trial is a one-time offer for new customers; a second sign-up is not a way to resume an expired one.",
+          "B": "The project was not deleted. Its resources stopped because billing was disabled, which a restore does not change.",
+          "C": "Correct. Upgrading within the 30-day grace period re-enables billing and may recover the stopped resources.",
+          "D": "The resources stopped for lack of an active billing account, not for lack of quota, and a trial account cannot request quota anyway."
+        },
+        "gcloud_command": "# Console > Billing > Overview > Activate",
+        "doc_ref": "https://docs.cloud.google.com/free/docs/free-cloud-features"
+      }
+    },
+    {
+      "id": "ace-s1-119",
+      "uid": "399bc544-c375-4843-80ab-94f09c401deb",
+      "title": "A billing account closed after a declined card",
+      "objective": "1.2",
+      "subtopic": "Billing Accounts",
+      "summary": "A closed Cloud Billing account can be reopened only after its payment problem has been resolved.",
+      "tags": [
+        "billing",
+        "billing-account",
+        "payment",
+        "recovery"
+      ],
+      "source": "curated",
+      "question": "The only Cloud Billing account of Wynford Crafts was closed after its credit card was declined twice, and the services in its projects stopped. The owner has a new card and wants to go on using the same billing account, with its history. What should the owner do?",
+      "options": {
+        "A": "Create new projects and link them to a new Free Trial billing account",
+        "B": "Shut down each project and restore it to restart its services",
+        "C": "Resolve the declined payment, then reopen the billing account",
+        "D": "Request a higher project quota for the closed billing account"
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "A closed or inactive billing account can be reopened, but only once any Google payments issue or suspension behind it has been resolved.",
+        "option_breakdown": {
+          "A": "New projects on a new account would not bring back the existing account, its history or the existing projects.",
+          "B": "The projects stopped because their billing account is closed; restoring a project does not reopen the account.",
+          "C": "Correct. The payment issue must be resolved first; then the same billing account can be reopened.",
+          "D": "The account is closed for a payment failure. Project quota has nothing to do with its state."
+        },
+        "gcloud_command": "# Console > Billing > Payment method, then Billing > Account management > Reopen billing account",
+        "doc_ref": "https://docs.cloud.google.com/billing/docs/how-to/manage-billing-account"
+      }
+    },
+    {
+      "id": "ace-s1-120",
+      "uid": "c6e544b5-1c3f-4e4e-85b8-e7d790b1a41a",
+      "title": "Retiring one of two billing accounts",
+      "objective": "1.2",
+      "subtopic": "Billing Accounts",
+      "summary": "To retire a billing account without stopping workloads, link its projects to another active account and then close it.",
+      "tags": [
+        "billing",
+        "billing-account",
+        "consolidation"
+      ],
+      "source": "curated",
+      "question": "After a merger, Aldous Marine has two active Cloud Billing accounts, A and B. Finance wants account B retired so that everything is paid through A. The projects linked to B run production workloads that must not be interrupted. Which two steps should the billing administrator take? (Choose two.)",
+      "options": {
+        "A": "Link each project that is on account B to account A",
+        "B": "Disable billing on each project that is on account B",
+        "C": "Shut down the projects on account B and recreate them under A",
+        "D": "Close account B once no projects are linked to it",
+        "E": "Remove the payment method from account B before anything else"
+      },
+      "correct_answer": "A,D",
+      "explanation": {
+        "summary": "A project keeps running as long as it is linked to an active billing account. Moving the links to account A changes who pays without stopping anything, and the empty account B can then be closed.",
+        "option_breakdown": {
+          "A": "Correct. Linking the projects to a different, active account keeps their services running while A takes over the charges.",
+          "B": "Disabling billing stops all the services in those projects, which is the interruption that must be avoided.",
+          "C": "Recreating projects means rebuilding production from nothing, with new project IDs and downtime.",
+          "D": "Correct. With its projects moved, account B has nothing left to pay for and can be closed.",
+          "E": "An account with linked projects and no valid payment method fails to pay, which leads to suspended services."
+        },
+        "gcloud_command": "gcloud billing projects link PROJECT_ID --billing-account=ACCOUNT_A_ID",
+        "doc_ref": "https://docs.cloud.google.com/billing/docs/how-to/manage-billing-account"
+      }
+    },
+    {
+      "id": "ace-s1-121",
+      "uid": "5961d5ff-50c7-4a9d-a16d-2f2b80117eb0",
+      "title": "Invoices rejected for a missing purchase order number",
+      "objective": "1.2",
+      "subtopic": "Billing Accounts",
+      "summary": "An invoiced Cloud Billing account can carry a purchase order number that is printed in the header of its invoices.",
+      "tags": [
+        "billing",
+        "invoiced-billing",
+        "invoices"
+      ],
+      "source": "curated",
+      "question": "Pendle Aerospace pays for Google Cloud through an invoiced Cloud Billing account. Its accounts payable system rejects any supplier invoice that does not show the company's purchase order number in the invoice header, and the Google Cloud invoices show none. What should the billing administrator do?",
+      "options": {
+        "A": "Add a label with the purchase order number to every project",
+        "B": "Rename the Cloud Billing account so that its name contains the number",
+        "C": "Export the billing data to BigQuery and add the number as a column",
+        "D": "Set the purchase order number on the Cloud Billing account"
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "For accounts billed by monthly invoice, a purchase order number can be set or changed on the billing account, and it then appears in the header of the invoices.",
+        "option_breakdown": {
+          "A": "Labels appear in cost reports and exports for filtering; they are not printed in an invoice header.",
+          "B": "The account name is a display name in the console, not the purchase order field of the invoice.",
+          "C": "An export is a copy of cost data for analysis; editing it does not change the invoice Google issues.",
+          "D": "Correct. The purchase order number set on an invoiced account appears in the header of its invoices."
+        },
+        "gcloud_command": "# Console > Billing > Payment settings > Purchase order number",
+        "doc_ref": "https://docs.cloud.google.com/billing/docs/how-to/manage-billing-account"
+      }
+    },
+    {
+      "id": "ace-s1-122",
+      "uid": "991d38fd-db49-479b-aed0-b798b9ba7bbd",
+      "title": "Disable billing is refused on a retired project",
+      "objective": "1.2",
+      "subtopic": "Billing Accounts",
+      "summary": "Billing cannot be disabled on a project that holds an active or pending committed use discount.",
+      "tags": [
+        "billing",
+        "committed-use-discounts",
+        "troubleshooting"
+      ],
+      "source": "curated",
+      "question": "An engineer at Garrick Paper has deleted every VM in the retired project gp-batch and now tries to disable billing on it. The request is refused. The project's billing link shows no padlock, the engineer is Billing Account Administrator and Owner of the project, and three months ago a one-year committed use discount was purchased in gp-batch. What explains the refusal, and what follows from it?",
+      "options": {
+        "A": "The link is locked for the first year, so the engineer must wait before unlinking",
+        "B": "The project has an active commitment, so billing has to stay enabled on it",
+        "C": "The engineer lacks Project Billing Manager, so that role must be granted first",
+        "D": "The project has no resources left, so it must be shut down, not unlinked"
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "A project with an active or pending committed use discount cannot have its billing disabled. The commitment is billed for its whole term, so the project stays linked.",
+        "option_breakdown": {
+          "A": "A lock is something an administrator sets, shown by a padlock, and none is shown; no lock is tied to a project's first year.",
+          "B": "Correct. Billing cannot be disabled while the project has an active or pending committed use discount.",
+          "C": "As project Owner and Billing Account Administrator the engineer already has the permissions on both sides of the link.",
+          "D": "An empty project can be unlinked like any other; the lack of resources is not what blocks the request."
+        },
+        "gcloud_command": "gcloud compute commitments list --project=gp-batch",
+        "doc_ref": "https://docs.cloud.google.com/billing/docs/how-to/modify-project"
+      }
+    },
+    {
+      "id": "ace-s1-123",
+      "uid": "c298d751-eaf2-4df7-bce6-65ea689f0374",
+      "title": "Cost visibility across every billing account",
+      "objective": "1.2",
+      "subtopic": "Billing Accounts",
+      "summary": "A billing role granted on the organization applies to every Cloud Billing account in it, including accounts created later.",
+      "tags": [
+        "billing",
+        "iam",
+        "inheritance"
+      ],
+      "source": "curated",
+      "question": "Thornbury Group has twelve Cloud Billing accounts in its organization, and business units create new ones several times a year. The central finance team must be able to view the costs of all of them, including accounts that do not exist yet, without anyone having to grant access for each new account. What should be granted to the finance group?",
+      "options": {
+        "A": "Billing Account Viewer on each of the twelve billing accounts",
+        "B": "Billing Account Viewer on every folder that contains projects",
+        "C": "Billing Account Viewer on the organization",
+        "D": "Viewer on every project linked to a billing account"
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "Billing accounts belong to the organization. A billing role granted on the organization is also held on each of its billing accounts, so new accounts are covered automatically.",
+        "option_breakdown": {
+          "A": "Per-account grants cover today's twelve and must be repeated by hand for each account created later.",
+          "B": "Billing accounts are not inside folders, so a grant on a folder does not reach any billing account.",
+          "C": "Correct. A billing role on the organization applies to every billing account in it, present and future.",
+          "D": "A project role shows the project's resources; it does not open the billing account's cost data."
+        },
+        "gcloud_command": "gcloud organizations add-iam-policy-binding ORG_ID --member=\"group:finance@example.com\" --role=\"roles/billing.viewer\"",
+        "doc_ref": "https://docs.cloud.google.com/billing/docs/concepts"
+      }
+    },
+    {
+      "id": "ace-s1-124",
+      "uid": "48a8cdf3-a2dc-4621-8848-fa987c606262",
+      "title": "A budget that ignores the promotional credit",
+      "objective": "1.2",
+      "subtopic": "Budgets and Alerts",
+      "summary": "A budget tracks cost before discounts and credits when no Savings options are selected.",
+      "tags": [
+        "billing",
+        "budgets",
+        "credits"
+      ],
+      "source": "curated",
+      "question": "A startup at Ivel Park has a large promotional credit that currently covers all of its Google Cloud usage, so its monthly budget shows almost no spend and never alerts. The founders want the budget to alert on what the usage would cost without the credit, so that they know what to expect when the credit runs out. How should the budget be configured?",
+      "options": {
+        "A": "With thresholds on forecasted cost in place of actual cost",
+        "B": "With no Savings options selected, so that credits are not subtracted",
+        "C": "With the amount set to last month's spend in place of a fixed amount",
+        "D": "With a custom time range that ends on the day the credit expires"
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "By default a budget subtracts all discounts and credits from cost. Clearing the Savings options makes it track the cost of usage before any credit is applied.",
+        "option_breakdown": {
+          "A": "A forecast is still calculated on spend after credits, so it stays close to zero while the credit lasts.",
+          "B": "Correct. With no Savings selected, the budget tracks spend before discounts and credits are applied.",
+          "C": "Last month's spend, with credits applied, was almost nothing, so the target would be almost nothing too.",
+          "D": "The time range changes which dates are tracked, not whether the credit is subtracted from the cost."
+        },
+        "gcloud_command": "gcloud billing budgets create --billing-account=ACCOUNT_ID --display-name=\"usage-before-credits\" --budget-amount=2000USD --credit-types-treatment=exclude-all-credits --threshold-rule=percent=0.9",
+        "doc_ref": "https://docs.cloud.google.com/billing/docs/how-to/budgets"
+      }
+    },
+    {
+      "id": "ace-s1-125",
+      "uid": "beb2eb92-a24a-4bf4-8bf9-bbf2d19c92bc",
+      "title": "A team lead who manages budgets and nothing else",
+      "objective": "1.2",
+      "subtopic": "Budgets and Alerts",
+      "summary": "Billing Account Costs Manager can create and edit budgets without the rights to link projects or administer the billing account.",
+      "tags": [
+        "billing",
+        "budgets",
+        "iam",
+        "least-privilege"
+      ],
+      "source": "curated",
+      "question": "At Hexham Dairy a FinOps analyst must create, change and delete budgets on the company's Cloud Billing account and view its cost reports. The analyst must not be able to link or unlink projects, change payment settings, or manage who has access to the billing account. Which role should the analyst be granted on the billing account?",
+      "options": {
+        "A": "Billing Account Administrator",
+        "B": "Billing Account Viewer",
+        "C": "Billing Account User",
+        "D": "Billing Account Costs Manager"
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "Creating and managing budgets needs Billing Account Costs Manager or Billing Account Administrator. Costs Manager is the narrower of the two, limited to cost data and budgets.",
+        "option_breakdown": {
+          "A": "The administrator role can manage budgets, but it also links projects, changes payment settings and manages access.",
+          "B": "Billing Account Viewer can read costs and budgets but cannot create or change a budget.",
+          "C": "Billing Account User is the role for linking projects to the account, which the analyst must not do.",
+          "D": "Correct. Costs Manager can create and manage budgets and view costs, without the administrative rights."
+        },
+        "gcloud_command": "gcloud billing accounts add-iam-policy-binding ACCOUNT_ID --member=\"user:finops@example.com\" --role=\"roles/billing.costsManager\"",
+        "doc_ref": "https://docs.cloud.google.com/billing/docs/how-to/budgets"
+      }
+    },
+    {
+      "id": "ace-s1-126",
+      "uid": "32b74d8d-bbc9-4da8-874b-15e2d3a0fad2",
+      "title": "A budget for a grant that runs mid-April to June",
+      "objective": "1.2",
+      "subtopic": "Budgets and Alerts",
+      "summary": "A budget with a custom time range tracks spend between two chosen dates and does not reset each calendar period.",
+      "tags": [
+        "billing",
+        "budgets",
+        "time-range"
+      ],
+      "source": "curated",
+      "question": "A research project at Calloway Institute has been running, and spending, in its Google Cloud project since January. It is now funded by a grant of 40,000 dollars that must cover all Google Cloud spend from 15 April to 30 June. The principal investigator wants email alerts when 50%, 80% and 100% of the grant has actually been spent over that whole period. Which budget should be created for the project?",
+      "options": {
+        "A": "A monthly budget of 40,000 dollars with the three thresholds",
+        "B": "A quarterly budget of 40,000 dollars with the three thresholds",
+        "C": "A yearly budget of 40,000 dollars with the three thresholds",
+        "D": "A custom range budget of 40,000 dollars with the three thresholds"
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "Calendar budgets reset at the start of each month, quarter or year. A custom range budget is non-recurring and accumulates actual spend between the dates that are set.",
+        "option_breakdown": {
+          "A": "A monthly budget returns to zero on 1 May and 1 June, so it never adds up the whole grant period.",
+          "B": "The calendar quarter starts on 1 April, so spend from before the grant began would count against it.",
+          "C": "A yearly budget counts spend from 1 January and keeps counting after 30 June.",
+          "D": "Correct. A custom range budget begins and ends on the grant's dates and tracks the spend across them."
+        },
+        "gcloud_command": "gcloud billing budgets create --billing-account=ACCOUNT_ID --display-name=\"grant\" --budget-amount=40000USD --filter-projects=projects/PROJECT_ID --custom-period-start-date=2027-04-15 --custom-period-end-date=2027-06-30 --threshold-rule=percent=0.5 --threshold-rule=percent=0.8 --threshold-rule=percent=1.0",
+        "doc_ref": "https://docs.cloud.google.com/billing/docs/how-to/budgets"
+      }
+    },
+    {
+      "id": "ace-s1-127",
+      "uid": "d0bb301d-0792-45c4-86fc-7735c90bf708",
+      "title": "Monthly cost trends per service, nothing finer",
+      "objective": "1.2",
+      "subtopic": "Billing Export and Cost Attribution",
+      "summary": "The standard usage cost export is enough for broad trends by service, project and label; the detailed export adds resource-level rows.",
+      "tags": [
+        "bigquery",
+        "billing",
+        "billing-export"
+      ],
+      "source": "curated",
+      "question": "The finance team at Orchard Lane wants a BigQuery table of Cloud Billing data to chart monthly cost trends by service, project and label. They will never look at individual resources such as a single VM or disk, and they want to store and query as little data as possible. Which export should be enabled?",
+      "options": {
+        "A": "The detailed usage cost export",
+        "B": "The standard usage cost export",
+        "C": "The pricing export",
+        "D": "A Cloud Logging sink to BigQuery"
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "The standard usage cost export carries services, SKUs, projects, labels, cost and credits, which is what broad trend analysis needs. The detailed export holds all of that plus a row per resource.",
+        "option_breakdown": {
+          "A": "The detailed export adds resource-level rows the team will never use, which means more data to store and scan.",
+          "B": "Correct. The standard export has cost by service, project and label and is meant for analysing broad trends.",
+          "C": "The pricing export lists SKU prices; it contains nothing about what the company used or was charged.",
+          "D": "A log sink exports log entries, not Cloud Billing cost data."
+        },
+        "gcloud_command": "# Console > Billing > Billing export > BigQuery export > Standard usage cost > Edit settings",
+        "doc_ref": "https://docs.cloud.google.com/billing/docs/how-to/export-data-bigquery"
+      }
+    },
+    {
+      "id": "ace-s1-128",
+      "uid": "a38f5426-4ad9-4f7f-a2f2-418a2c37183e",
+      "title": "Last month's costs in a new billing export",
+      "objective": "1.2",
+      "subtopic": "Billing Export and Cost Attribution",
+      "summary": "A billing export into a multi-region dataset is backfilled for the current and previous month; a regional dataset gets data only from the day of enabling.",
+      "tags": [
+        "bigquery",
+        "billing",
+        "billing-export",
+        "locations"
+      ],
+      "source": "curated",
+      "question": "On 20 March the FinOps team at Dunster Rail enables the detailed usage cost export for the first time. They need the export to also contain the costs of February and of 1 to 19 March. The data must stay in the European Union. Which location should the BigQuery dataset use?",
+      "options": {
+        "A": "The EU multi-region",
+        "B": "The region europe-west1",
+        "C": "The region europe-west3",
+        "D": "The US multi-region"
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "For usage cost exports, a dataset in a multi-region (EU or US) receives data retroactively for the current and previous month. A dataset in a single region receives data only from the date the export was enabled.",
+        "option_breakdown": {
+          "A": "Correct. The EU multi-region keeps the data in the EU and is backfilled for the current and the previous month.",
+          "B": "A regional dataset gets no retroactive data, so February and early March would be missing.",
+          "C": "This is also a single region, so the export would start on 20 March with nothing earlier.",
+          "D": "The US multi-region would be backfilled, but it stores the data outside the European Union."
+        },
+        "gcloud_command": "bq --location=EU mk --dataset PROJECT_ID:billing_export",
+        "doc_ref": "https://docs.cloud.google.com/billing/docs/how-to/export-data-bigquery"
+      }
+    },
+    {
+      "id": "ace-s1-129",
+      "uid": "8b492a69-58c9-4f9e-93b6-d8fed3eabbc6",
+      "title": "When to switch on the billing export",
+      "objective": "1.2",
+      "subtopic": "Billing Export and Cost Attribution",
+      "summary": "A billing export collects data only from about the time it is enabled, so it must be enabled before the history is needed.",
+      "tags": [
+        "billing",
+        "billing-export",
+        "planning"
+      ],
+      "source": "curated",
+      "question": "Brackley Foods has just created its Cloud Billing account and linked its first projects. Finance says it will not analyse costs in BigQuery until the yearly review in ten months, when it will want a full year of cost data broken down by project and label. When should the engineer enable the Cloud Billing export to BigQuery?",
+      "options": {
+        "A": "In ten months, because the export then loads the whole billing history",
+        "B": "After the first invoice, because the export needs one closed invoice",
+        "C": "Now, because the export does not go back further than the previous month",
+        "D": "Never, because Cloud Billing reports can be queried with SQL at any time"
+      },
+      "correct_answer": "C",
+      "explanation": {
+        "summary": "An export does not load an account's history. At best a multi-region dataset is backfilled for the current and previous month; a regional one starts on the day of enabling. Data for the review has to be collected from the start.",
+        "option_breakdown": {
+          "A": "Enabling in ten months would yield at most the then-current and previous month, not a year.",
+          "B": "The export does not depend on invoices; waiting only loses the usage data of the weeks before it.",
+          "C": "Correct. Data is collected from about the time of enabling, so the export has to be on from the beginning.",
+          "D": "Cloud Billing reports are charts in the console; they are not a BigQuery table that SQL can query."
+        },
+        "gcloud_command": "# Console > Billing > Billing export > BigQuery export > Edit settings",
+        "doc_ref": "https://docs.cloud.google.com/billing/docs/how-to/export-data-bigquery"
+      }
+    },
+    {
+      "id": "ace-s1-130",
+      "uid": "a22175f7-ed55-4318-bf33-95869b664894",
+      "title": "Invalid dataset region when saving the export",
+      "objective": "1.2",
+      "subtopic": "Billing Export and Cost Attribution",
+      "summary": "Cloud Billing export supports the EU and US multi-regions and only some regions; an unsupported dataset region is rejected.",
+      "tags": [
+        "bigquery",
+        "billing",
+        "billing-export",
+        "troubleshooting"
+      ],
+      "source": "curated",
+      "question": "An engineer at Selwyn Glass creates a BigQuery dataset in a region close to the office and selects it in the Cloud Billing export settings. Saving the settings fails with the error Invalid dataset region. The engineer is Billing Account Administrator and owns the dataset's project. What should the engineer do?",
+      "options": {
+        "A": "Grant the billing account's service agent BigQuery Admin on the dataset",
+        "B": "Enable the BigQuery Data Transfer Service API and save the settings again",
+        "C": "Wait one day for the new dataset to become visible to Cloud Billing",
+        "D": "Use a dataset in a supported location, such as the EU or US multi-region"
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "The export can write to datasets in the EU or US multi-regions and in a subset of regions. Choosing a dataset in any other region produces the Invalid dataset region error.",
+        "option_breakdown": {
+          "A": "The error names the dataset's region, not a missing permission, and the engineer already has the roles needed.",
+          "B": "The error is about where the dataset is located; enabling another API does not change its location.",
+          "C": "The dataset is visible already, since it could be selected. Its region will be just as unsupported tomorrow.",
+          "D": "Correct. The export accepts only supported locations, so the dataset must be in one of them."
+        },
+        "gcloud_command": "bq --location=EU mk --dataset PROJECT_ID:billing_export",
+        "doc_ref": "https://docs.cloud.google.com/billing/docs/how-to/export-data-bigquery"
+      }
+    },
+    {
       "id": "ace-x-004",
       "uid": "182400ac-23f3-4dee-8bcb-f73b63cb9c6c",
       "title": "Stopping a sandbox's charges when its budget runs out",
@@ -4246,6 +6007,235 @@
         },
         "gcloud_command": "gcloud resource-manager folders add-iam-policy-binding FOLDER_ID \\\n  --member=group:data-team@example.com --role=roles/resourcemanager.projectCreator\ngcloud resource-manager org-policies allow gcp.resourceLocations in:eu-locations --folder=FOLDER_ID",
         "doc_ref": "https://cloud.google.com/resource-manager/docs/organization-policy/defining-locations"
+      },
+      "also_tests": [
+        "4.1"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-079",
+      "uid": "85af8755-833e-4f74-a448-f7a815df1706",
+      "title": "Analysts can read the dataset but cannot query it",
+      "objective": "1.1",
+      "subtopic": "Project IAM Grants",
+      "summary": "Reading a dataset and running a query are separate grants: queries are jobs, and jobs need BigQuery Job User on a project.",
+      "tags": [
+        "bigquery",
+        "iam",
+        "least-privilege"
+      ],
+      "source": "curated",
+      "question": "The analysts group at Lumen Grocers has BigQuery Data Viewer on the dataset sales in the project lg-data, and no other roles. When an analyst runs a query on a table in sales, BigQuery returns an error saying the bigquery.jobs.create permission is missing in lg-data. The group must be able to run queries with the fewest additional permissions. What should be granted to the group?",
+      "options": {
+        "A": "BigQuery Data Editor on the dataset sales",
+        "B": "BigQuery Job User on the project lg-data",
+        "C": "BigQuery Data Viewer on the project lg-data",
+        "D": "BigQuery Admin on the project lg-data"
+      },
+      "correct_answer": "B",
+      "explanation": {
+        "summary": "A query runs as a BigQuery job in a project. Data roles let a principal read tables; BigQuery Job User on the project lets the principal create the job.",
+        "option_breakdown": {
+          "A": "Data Editor adds the right to change tables in sales, yet it still does not allow creating a query job.",
+          "B": "Correct. Job User on lg-data provides the permission to run jobs, including queries, and nothing over the data.",
+          "C": "Data Viewer at project level widens reading to every dataset in lg-data and still lacks bigquery.jobs.create.",
+          "D": "BigQuery Admin would let the analysts query, but also manage and delete every dataset, far beyond the fewest permissions."
+        },
+        "gcloud_command": "gcloud projects add-iam-policy-binding lg-data --member=\"group:analysts@example.com\" --role=\"roles/bigquery.jobUser\"",
+        "doc_ref": "https://docs.cloud.google.com/bigquery/docs/access-control"
+      },
+      "also_tests": [
+        "3.2"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-080",
+      "uid": "38ed53fa-54e8-48b4-9dea-4971f71b9ee5",
+      "title": "A first regional GKE cluster in a fresh project",
+      "objective": "1.1",
+      "subtopic": "APIs and Quotas",
+      "summary": "A new project needs the service's API enabled, and a regional cluster multiplies nodes by its zones, which can exceed a regional CPU quota.",
+      "tags": [
+        "apis",
+        "gke",
+        "quotas",
+        "regional-clusters"
+      ],
+      "source": "curated",
+      "question": "A new project at Quillon Freight is linked to a billing account and has only the Compute Engine API enabled. Its CPUS quota in us-east4 is 24. The approved design is a regional GKE Standard cluster in us-east4 with private nodes: three zones, three e2-standard-8 nodes in each, with 8 vCPUs per node. The cluster must be built exactly as designed. Which two actions are needed first? (Choose two.)",
+      "options": {
+        "A": "Enable the Kubernetes Engine API in the project",
+        "B": "Request more in-use external IP addresses in us-east4",
+        "C": "Link the project to a second Cloud Billing account",
+        "D": "Create the cluster as zonal with three nodes in one zone",
+        "E": "Request a higher CPUS quota for the project in us-east4"
+      },
+      "correct_answer": "A,E",
+      "explanation": {
+        "summary": "GKE cannot be used until its API is enabled in the project. A regional cluster runs the per-zone node count in every zone, here nine nodes and 72 vCPUs, three times the regional quota of 24.",
+        "option_breakdown": {
+          "A": "Correct. Only the Compute Engine API is enabled, and cluster creation needs the Kubernetes Engine API.",
+          "B": "Private nodes have no external IP addresses, so that quota does not limit this cluster.",
+          "C": "A project has one billing account and it is already linked; billing is not what blocks the cluster.",
+          "D": "Three nodes would fit the quota of 24 vCPUs, but a zonal cluster is not the regional design that was approved.",
+          "E": "Correct. Nine nodes of 8 vCPUs need 72 vCPUs in the region, so the quota of 24 has to be raised."
+        },
+        "gcloud_command": "gcloud services enable container.googleapis.com\n# Console > IAM & Admin > Quotas & System Limits > CPUS (us-east4) > Edit",
+        "doc_ref": "https://docs.cloud.google.com/kubernetes-engine/docs/concepts/regional-clusters"
+      },
+      "also_tests": [
+        "2.1"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-081",
+      "uid": "64f129b7-e958-4ab0-88aa-30b20ecedd95",
+      "title": "A pipeline creating projects in a standalone organization",
+      "objective": "1.1",
+      "subtopic": "Standalone Organizations",
+      "summary": "A service account cannot be an Organization Owner, but an Organization Administrator can grant it Project Creator on the organization.",
+      "tags": [
+        "least-privilege",
+        "service-accounts",
+        "standalone-organization"
+      ],
+      "source": "curated",
+      "question": "A startup runs on a standalone organization. Its founder is Organization Owner and Organization Administrator. A CI pipeline that authenticates as the service account provisioner must create a new project under the organization for each customer, and should hold no permission beyond that. What should the founder do?",
+      "options": {
+        "A": "Invite the service account to become an Organization Owner",
+        "B": "Grant the service account Organization Administrator on the organization",
+        "C": "Let the pipeline sign in with the founder's own Google Account",
+        "D": "Grant the service account Project Creator on the organization"
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "Creating projects is not part of the owner or administrator roles of a standalone organization. An Organization Administrator grants the additional role, and a service account can receive it like any principal.",
+        "option_breakdown": {
+          "A": "Service accounts can't be invited to become organization owners, and ownership would not add project creation anyway.",
+          "B": "Organization Administrator sets policies and grants roles; it does not create projects, and it is far more than the pipeline should hold.",
+          "C": "Sharing a person's credentials gives the pipeline everything the founder can do and removes any separate audit trail.",
+          "D": "Correct. Project Creator on the organization gives the service account exactly the permission to create projects there."
+        },
+        "gcloud_command": "gcloud organizations add-iam-policy-binding ORG_ID --member=\"serviceAccount:provisioner@PROJECT_ID.iam.gserviceaccount.com\" --role=\"roles/resourcemanager.projectCreator\"",
+        "doc_ref": "https://docs.cloud.google.com/resource-manager/docs/standalone-organization-overview"
+      },
+      "also_tests": [
+        "4.2"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-082",
+      "uid": "b6f49f78-8b5d-4820-9de0-27530799ff73",
+      "title": "Every gcloud command as the deploy account",
+      "objective": "1.1",
+      "subtopic": "gcloud CLI and Configurations",
+      "summary": "The auth/impersonate_service_account property makes every gcloud command run with short-lived credentials of a service account.",
+      "tags": [
+        "gcloud",
+        "impersonation",
+        "service-accounts"
+      ],
+      "source": "curated",
+      "question": "At Carrow Mills engineers hold no roles on the production project; changes are made as the service account deployer. Creating service account keys is blocked by policy. An engineer has Service Account Token Creator on deployer and is signed in to gcloud with her own account. She wants every gcloud command in her prod configuration to run as deployer. What should she do?",
+      "options": {
+        "A": "Download a key for deployer and run gcloud auth activate-service-account",
+        "B": "Run gcloud auth login and sign in with the email address of deployer",
+        "C": "Ask for deployer's roles to be granted to her own user account",
+        "D": "Set the property auth/impersonate_service_account to deployer"
+      },
+      "correct_answer": "D",
+      "explanation": {
+        "summary": "With the impersonation property set, gcloud requests short-lived credentials for the service account on every command. No key exists, and the caller needs only permission to impersonate the account.",
+        "option_breakdown": {
+          "A": "This needs a service account key, and creating keys is blocked by policy.",
+          "B": "gcloud auth login is the browser sign-in for user accounts; a service account has no password to sign in with.",
+          "C": "Direct grants would give engineers roles on production, which is what the company's rule forbids.",
+          "D": "Correct. The property makes gcloud use short-lived credentials of deployer for every command in the configuration."
+        },
+        "gcloud_command": "gcloud config set auth/impersonate_service_account deployer@PROJECT_ID.iam.gserviceaccount.com",
+        "doc_ref": "https://docs.cloud.google.com/docs/authentication/use-service-account-impersonation"
+      },
+      "also_tests": [
+        "4.2"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-083",
+      "uid": "07101b28-4c06-4fca-9934-e83853e7c32a",
+      "title": "A first GPU VM on a Free Trial account",
+      "objective": "1.2",
+      "subtopic": "Billing Accounts",
+      "summary": "A Free Trial billing account cannot add GPUs or request quota; it must be upgraded to a Paid account before GPU quota can be requested.",
+      "tags": [
+        "billing",
+        "free-trial",
+        "gpu",
+        "quotas"
+      ],
+      "source": "curated",
+      "question": "A startup's only Cloud Billing account shows the status Free trial account. A data scientist needs one Compute Engine VM with an NVIDIA T4 GPU in us-central1 for model training. The project's GPU quota in that region is 0. Which two actions are needed before the VM can be created? (Choose two.)",
+      "options": {
+        "A": "Upgrade the Cloud Billing account to a Paid account",
+        "B": "Choose an E2 machine type so that no GPU quota is needed",
+        "C": "Request GPU quota for the project in us-central1",
+        "D": "Create the VM as a Spot VM, which is exempt from GPU quota",
+        "E": "Link the project to a second Free Trial billing account"
+      },
+      "correct_answer": "A,C",
+      "explanation": {
+        "summary": "While a billing account is a Free trial account, GPUs cannot be added to VMs and quota increases cannot be requested. Upgrading unlocks both, and the regional GPU quota of 0 then has to be raised.",
+        "option_breakdown": {
+          "A": "Correct. GPUs and quota requests are unavailable on a Free trial account, so the account is upgraded first.",
+          "B": "E2 machine types cannot have GPUs attached, so the VM would not meet the requirement at all.",
+          "C": "Correct. With a quota of 0 no GPU can be attached, so the regional GPU quota has to be requested.",
+          "D": "Spot VMs with GPUs consume GPU quota too; Spot only changes the price and the availability policy.",
+          "E": "Another Free Trial account carries the same restrictions on GPUs and quota requests."
+        },
+        "gcloud_command": "# Console > Billing > Overview > Activate\n# Console > IAM & Admin > Quotas & System Limits > NVIDIA T4 GPUs (us-central1) > Edit",
+        "doc_ref": "https://docs.cloud.google.com/free/docs/free-cloud-features"
+      },
+      "also_tests": [
+        "2.1"
+      ],
+      "certifying_only": true
+    },
+    {
+      "id": "ace-x-084",
+      "uid": "c33abd3e-04cf-4430-bf22-de7414bdb78a",
+      "title": "Anyone in the company can open a billing account",
+      "objective": "1.2",
+      "subtopic": "Billing Accounts",
+      "summary": "A new organization grants Billing Account Creator to the whole domain; restricting it means granting the role to chosen principals and removing the domain-wide binding.",
+      "tags": [
+        "billing",
+        "default-roles",
+        "iam",
+        "organization"
+      ],
+      "source": "curated",
+      "question": "Six weeks after Lindale Brewing created its Google Cloud organization, an audit finds that three employees have each created a Cloud Billing account with a personal credit card. The organization's allow policy has not been changed since creation. Only the finance group should be able to create billing accounts from now on. What should the Organization Administrator do?",
+      "options": {
+        "A": "Grant Billing Account Creator to the finance group and remove it from the domain",
+        "B": "Grant Billing Account Administrator to the finance group on each existing billing account",
+        "C": "Remove the Project Creator role from the domain on the organization",
+        "D": "Create a budget with a zero amount on every billing account the employees created"
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "When an organization is created, every user in the domain receives Billing Account Creator and Project Creator. Because roles on the organization are inherited by everyone named there, the domain-wide binding must be removed after the role is granted to the intended group.",
+        "option_breakdown": {
+          "A": "Correct. Finance receives the role directly, and removing the default domain-wide binding takes it from everyone else.",
+          "B": "Administering existing accounts does not stop other employees from creating new ones while the domain still holds the creator role.",
+          "C": "Project Creator controls who can create projects; billing accounts are created with a different role.",
+          "D": "A budget reports spend and sends alerts. It cannot stop anyone from creating another billing account."
+        },
+        "gcloud_command": "gcloud organizations add-iam-policy-binding ORG_ID --member=\"group:finance@example.com\" --role=\"roles/billing.creator\"\ngcloud organizations remove-iam-policy-binding ORG_ID --member=\"domain:example.com\" --role=\"roles/billing.creator\"",
+        "doc_ref": "https://docs.cloud.google.com/resource-manager/docs/default-access-control"
       },
       "also_tests": [
         "4.1"

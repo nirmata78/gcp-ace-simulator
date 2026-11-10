@@ -1,0 +1,1753 @@
+{
+  "standard": "docs/question-standard.md",
+  "entries": [
+    {
+      "id": "ace-s1-078",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/resource-manager/docs/creating-managing-folders",
+        "quote": "This role grants the user permission to create, edit, delete, move, and change IAM permissions on folders, as well as permission to move projects between folders."
+      },
+      "blind_solve": {
+        "answer": "B",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-079",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/resource-manager/docs/delete-restore-projects",
+        "quote": "Project owners can restore a deleted project within the 30-day recovery period that begins when the project is shut down."
+      },
+      "blind_solve": {
+        "answer": "A",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-080",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/granting-changing-revoking-access",
+        "quote": "To grant the Owner role (roles/owner) on a project to a user outside of your organization, you must use the Google Cloud console, not the gcloud CLI."
+      },
+      "blind_solve": {
+        "answer": "D",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-081",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/configuring-temporary-access",
+        "quote": "A conditional role binding can be used to grant time-bounded access to a resource, ensuring that a user can no longer access the resource after the specified expiry date and time."
+      },
+      "blind_solve": {
+        "answer": "C",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-x-079",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/bigquery/docs/access-control",
+        "quote": "Provides permissions to run jobs, including queries, within the project."
+      },
+      "blind_solve": {
+        "answer": "B",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-082",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/roles-permissions/resourcemanager",
+        "quote": "Provides permissions to administer allow policies on projects."
+      },
+      "blind_solve": {
+        "answer": "D",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-083",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/allow-policies",
+        "quote": "If you create a new service account with the same name, the allow policy's role bindings for the deleted service account don't apply to the new service account. This behavior applies for all types of deleted principals."
+      },
+      "blind_solve": {
+        "answer": "A",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-084",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/run/docs/deploying",
+        "quote": "Cloud Run Developer (roles/run.developer) on the Cloud Run service Service Account User (roles/iam.serviceAccountUser) on the service identity"
+      },
+      "blind_solve": {
+        "answer": "C,E",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-085",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/service-usage/docs/enable-disable",
+        "quote": "To get the permissions that you need to enable and disable services, ask your administrator to grant you the Service Usage Admin (roles/serviceusage.serviceUsageAdmin) IAM role on your project."
+      },
+      "blind_solve": {
+        "answer": "C",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-086",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/docs/quotas/overview",
+        "quote": "System limits are fixed constraints, such as maximum file sizes or database schema limitations, which cannot be increased or decreased."
+      },
+      "blind_solve": {
+        "answer": "C",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-087",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/docs/quotas/overview",
+        "quote": "For allocation quotas, you can free up quota by deleting unused resources that count towards the quota or system limit that you want to consume."
+      },
+      "blind_solve": {
+        "answer": "B",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-088",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/docs/quotas/overview",
+        "quote": "If you want to change your quota value to accommodate more resource use, you can request a quota adjustment."
+      },
+      "blind_solve": {
+        "answer": "C",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-089",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/service-usage/docs/enable-disable",
+        "quote": "For these services, you'll continue to be billed for data storage even after the API is disabled."
+      },
+      "blind_solve": {
+        "answer": "C",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-090",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/service-usage/docs/enable-disable",
+        "quote": "If you disable the Kubernetes Engine API, running clusters in the project become suspended. After 30 days, these suspended clusters are deleted. To reactivate your clusters, re-enable the GKE API."
+      },
+      "blind_solve": {
+        "answer": "B",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-x-080",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/kubernetes-engine/docs/concepts/regional-clusters",
+        "quote": "In Standard mode, regional clusters require more of your project's regional quotas than a similar zonal or multi-zonal cluster."
+      },
+      "blind_solve": {
+        "answer": "A,E",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-091",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/docs/quotas/overview",
+        "quote": "Your use of a resource in one project doesn't affect your available quota in another project. Within a Google Cloud project, quotas are shared across all applications and IP addresses."
+      },
+      "blind_solve": {
+        "answer": "B",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-092",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/service-usage/docs/enable-disable",
+        "quote": "By default, the Service Usage API is enabled for projects, but if you disabled it for the project that's performing the request to enable a service, you receive an error when you attempt the request."
+      },
+      "blind_solve": {
+        "answer": "C",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-093",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/logging/docs/store-log-entries",
+        "quote": "Log entries in this log bucket are retained for 400 days; you can't change this retention period."
+      },
+      "blind_solve": {
+        "answer": "C",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-094",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/logging/docs/buckets",
+        "quote": "If you need a bucket in a different region, you must create a new bucket in that region, redirect the appropriate sinks to the new bucket, and then delete the old bucket."
+      },
+      "blind_solve": {
+        "answer": "D",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-095",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/monitoring/access-control",
+        "quote": "For example, principals with this role can view custom dashboards and alerting policies."
+      },
+      "blind_solve": {
+        "answer": "A",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-096",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/logging/docs/log-analytics",
+        "quote": "After you upgrade your log bucket to use Observability Analytics, create a linked BigQuery dataset."
+      },
+      "blind_solve": {
+        "answer": "A,D",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-097",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/logging/docs/store-log-entries",
+        "quote": "A log view provides access to only a subset of the log data stored in a log bucket."
+      },
+      "blind_solve": {
+        "answer": "A",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-098",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/resource-manager/docs/standalone-organization-overview",
+        "quote": "Following the principle of least privilege, this role prevents you from performing other actions, such as creating folders or projects. To get these permissions, an Organization Administrator must assign additional roles to your account."
+      },
+      "blind_solve": {
+        "answer": "C",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-x-081",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/resource-manager/docs/standalone-organization-overview",
+        "quote": "Following the principle of least privilege, this role prevents you from performing other actions, such as creating folders or projects. To get these permissions, an Organization Administrator must assign additional roles to your account."
+      },
+      "blind_solve": {
+        "answer": "D",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-099",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/resource-manager/docs/standalone-organization-overview",
+        "quote": "This is useful if you have inadvertently removed Organization Administrator permissions from all users who can set IAM policies on the organization, and need to restore access."
+      },
+      "blind_solve": {
+        "answer": "D",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-100",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/resource-manager/docs/standalone-organization-overview",
+        "quote": "Enter the principal identifier of the user in the format principal://iam.googleapis.com/locations/LOCATION/workforcePools/POOL_ID/subject/SUBJECT_ATTRIBUTE_VALUE."
+      },
+      "blind_solve": {
+        "answer": "A",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-101",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/resource-manager/docs/standalone-organization-overview",
+        "quote": "Each standalone organization must always have at least one active Google Account as the organization owner."
+      },
+      "blind_solve": {
+        "answer": "B",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-102",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/resource-manager/docs/standalone-organization-overview",
+        "quote": "Only one organization is created per user account. However, you can invite a single user to own and administer multiple organizations."
+      },
+      "blind_solve": {
+        "answer": "A",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-103",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/vpc/docs/shared-vpc",
+        "quote": "Shared VPC Admins have the Compute Shared VPC Admin (compute.xpnAdmin) and Project IAM Admin (resourcemanager.projectIamAdmin) roles for the organization or one or more folders."
+      },
+      "blind_solve": {
+        "answer": "A",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-104",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/vpc/docs/vpc",
+        "quote": "Because the subnets of every auto mode VPC network use the same predefined range of IP addresses, you can't connect auto mode VPC networks to one another by using VPC Network Peering or Cloud VPN."
+      },
+      "blind_solve": {
+        "answer": "C",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-105",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/vpc/docs/shared-vpc",
+        "quote": "A Service Project Admin who only has subnet-level permissions is restricted to using only those subnets."
+      },
+      "blind_solve": {
+        "answer": "D",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-106",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/sdk/docs/configurations",
+        "quote": "To change the active configuration for all commands in your current terminal, you can set the environment variable CLOUDSDK_ACTIVE_CONFIG_NAME to the name of the configuration you'd like to use."
+      },
+      "blind_solve": {
+        "answer": "A",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-x-082",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/docs/authentication/use-service-account-impersonation",
+        "quote": "With this config property set, the gcloud CLI requests short-lived credentials for the specified service account and uses them to authenticate to the API and authorize the access to the resource for every command."
+      },
+      "blind_solve": {
+        "answer": "D",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-107",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/docs/authentication/set-up-adc-local-dev-environment",
+        "quote": "If you're using a local shell, then create local authentication credentials for your user account: gcloud auth application-default login"
+      },
+      "blind_solve": {
+        "answer": "B",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-108",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/sdk/docs/scripting-gcloud",
+        "quote": "You can disable prompts from gcloud CLI commands by setting the disable_prompts property in your configuration to True or by using the global --quiet or -q flag."
+      },
+      "blind_solve": {
+        "answer": "D,E",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-109",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/sdk/docs/authorizing",
+        "quote": "Revoking invalidates the credentials on Google's authorization servers, and removes the principal from the active gcloud CLI configuration."
+      },
+      "blind_solve": {
+        "answer": "D",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-110",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/billing/docs/how-to/modify-project",
+        "quote": "After you link a project to a billing account, you can lock the link to prevent the project from unintentionally being moved (linked) to a different billing account or the project link being deleted from the billing account."
+      },
+      "blind_solve": {
+        "answer": "C",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-111",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/billing/docs/how-to/modify-project",
+        "quote": "When billing is disabled for a project, some of your Google Cloud resources might be removed and become non-recoverable."
+      },
+      "blind_solve": {
+        "answer": "B",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-112",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/billing/docs/concepts",
+        "quote": "The payments profile represents the legal entity responsible for bills associated with a Google payments account."
+      },
+      "blind_solve": {
+        "answer": "A",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-113",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/billing/docs/concepts",
+        "quote": "If you register your payments profile as an individual, then only you can manage the profile."
+      },
+      "blind_solve": {
+        "answer": "B",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-114",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/billing/docs/concepts",
+        "quote": "If you are a reseller, you can use subaccounts to represent your customers' charges for the purpose of chargebacks."
+      },
+      "blind_solve": {
+        "answer": "D",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-115",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/billing/docs/concepts",
+        "quote": "The billable status of an invoiced account is Paid account. Payment instrument can be check or wire transfer."
+      },
+      "blind_solve": {
+        "answer": "B",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-x-083",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/free/docs/free-cloud-features",
+        "quote": "While your billing account is a non-billable Free trial account, you can't do any of the following: Add GPUs to your VM instances."
+      },
+      "blind_solve": {
+        "answer": "A,C",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-116",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/billing/docs/concepts",
+        "quote": "Note: Although you link Cloud Billing accounts to projects, Cloud Billing accounts aren't parents of projects in an IAM sense, and therefore projects don't inherit permissions from the Cloud Billing account that they are linked to."
+      },
+      "blind_solve": {
+        "answer": "D",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-117",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/billing/docs/how-to/modify-project",
+        "quote": "After you change the Cloud Billing account on a project, charges already incurred prior to moving the project are billed to the former Cloud Billing account."
+      },
+      "blind_solve": {
+        "answer": "B",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-118",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/free/docs/free-cloud-features",
+        "quote": "If you upgrade to a Paid billing account during this 30-day grace period, then you might be able to recover your stopped resources and data."
+      },
+      "blind_solve": {
+        "answer": "C",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-119",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/billing/docs/how-to/manage-billing-account",
+        "quote": "Before a Cloud Billing account can be reactivated, you must resolve any Google payments-related issues or suspensions."
+      },
+      "blind_solve": {
+        "answer": "C",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-120",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/billing/docs/how-to/manage-billing-account",
+        "quote": "Link your projects to a different, active Cloud Billing account."
+      },
+      "blind_solve": {
+        "answer": "A,D",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-121",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/billing/docs/how-to/manage-billing-account",
+        "quote": "For Cloud Billing accounts configured to be billed by a monthly invoice, you can set or modify the invoice purchase order number (also called IO number, CPE, or client code), an identifier that appears in the header of your invoices."
+      },
+      "blind_solve": {
+        "answer": "D",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-122",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/billing/docs/how-to/modify-project",
+        "quote": "Limitation: You can't disable billing on a project if you have any active or pending committed-use discounts (CUDs) in that project."
+      },
+      "blind_solve": {
+        "answer": "B",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-123",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/billing/docs/concepts",
+        "quote": "In this example, any users who are granted IAM billing roles on the organization also have those roles on the Cloud Billing account or the projects."
+      },
+      "blind_solve": {
+        "answer": "C",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-x-084",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/resource-manager/docs/default-access-control",
+        "quote": "When an organization resource is created, Google Cloud grants all users in your domain the Billing Account Creator and Project Creator roles by default."
+      },
+      "blind_solve": {
+        "answer": "A",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-124",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/billing/docs/how-to/budgets",
+        "quote": "For budget purposes, if you want to calculate and monitor your actual spend before any discounts and credits are applied, don't select any Savings options."
+      },
+      "blind_solve": {
+        "answer": "B",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-125",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/billing/docs/how-to/budgets",
+        "quote": "To gain these permissions using a predefined role, ask your administrator to grant you one of the following Cloud Billing IAM roles on your Cloud Billing account: Billing Account Costs Manager Billing Account Administrator"
+      },
+      "blind_solve": {
+        "answer": "D",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-126",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/billing/docs/how-to/budgets",
+        "quote": "Custom range: A non-recurring budget time range that begins and ends on the dates you set."
+      },
+      "blind_solve": {
+        "answer": "D",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-127",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/billing/docs/how-to/export-data-bigquery",
+        "quote": "Use the Standard usage cost export to analyze broad trends in your cost data."
+      },
+      "blind_solve": {
+        "answer": "B",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-128",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/billing/docs/how-to/export-data-bigquery",
+        "quote": "That is, Google Cloud billing data is added retroactively for the current and previous month."
+      },
+      "blind_solve": {
+        "answer": "A",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-129",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/billing/docs/how-to/export-data-bigquery",
+        "quote": "That is, Google Cloud billing data is not added retroactively for non-multi-region dataset locations, so you won't see Cloud Billing data from before you enable export."
+      },
+      "blind_solve": {
+        "answer": "C",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s1-130",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/billing/docs/how-to/export-data-bigquery",
+        "quote": "When you're configuring your Cloud Billing export settings, if you create or select a dataset that's configured to use an unsupported region location, when you attempt to save your export settings, you'll see an Invalid dataset region error."
+      },
+      "blind_solve": {
+        "answer": "D",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s2-168",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/compute/docs/oslogin",
+        "quote": "If you enable OS Login for a compute instance, then the compute instance's guest agent ignores the keys stored in metadata."
+      },
+      "blind_solve": {
+        "answer": "A",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s2-169",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/compute/docs/instances/os-inventory-management",
+        "quote": "The OS Config agent also uses package managers such as apt, yum, or GooGet to collect information about the installed packages and available updates for the instance."
+      },
+      "blind_solve": {
+        "answer": "A",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-x-085",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/vpc/docs/shared-vpc",
+        "quote": "Network Admins have full control over all network resources except for firewall rules and SSL certificates."
+      },
+      "blind_solve": {
+        "answer": "C",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-071",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/policy-intelligence/docs/iam-simulator-overview",
+        "quote": "Policy Simulator for Identity and Access Management allow policies lets you see how a change to an allow policy might affect a principal's access before you commit to making the change."
+      },
+      "blind_solve": {
+        "answer": "C,D",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-072",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/policy-intelligence/docs/policy-analyzer-overview",
+        "quote": "Policy Analyzer for allow policies lets you find out which principals (for example, users, service accounts, groups, and domains) have what access to which Google Cloud resources based on your IAM allow policies."
+      },
+      "blind_solve": {
+        "answer": "B",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-073",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/resource-manager/docs/create-migration-plan",
+        "quote": "However, inherited allow, deny, and organization policies don't migrate with the project, while directly attached policies and service accounts persist."
+      },
+      "blind_solve": {
+        "answer": "A",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-074",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/principals-overview",
+        "quote": "When you create a Google Account for a new user, such as username@example.com, that Google Account is added to the virtual group for your Google Workspace account or Cloud Identity domain."
+      },
+      "blind_solve": {
+        "answer": "A",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-075",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/configuring-temporary-access",
+        "quote": "If a principal is bound to a role, and the role binding does not have a condition, then the principal always has that role."
+      },
+      "blind_solve": {
+        "answer": "D",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-076",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/resource-hierarchy-access-control",
+        "quote": "additional resources such as Pub/Sub topics and Compute Engine instances support lower-level roles so that you can grant certain users permission to a single resource within a project."
+      },
+      "blind_solve": {
+        "answer": "A",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-077",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/resource-hierarchy-access-control",
+        "quote": "The effective allow policy for a resource is the union of the allow policy set at that resource and the allow policy inherited from its parent."
+      },
+      "blind_solve": {
+        "answer": "D",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-078",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/principals-overview",
+        "quote": "This principal type doesn't include federated identities, which are managed by external identity providers (IdPs)."
+      },
+      "blind_solve": {
+        "answer": "C",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-079",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/granting-changing-revoking-access",
+        "quote": "To grant a role to a service agent, select the Include Google-provided role grants checkbox to see its email address."
+      },
+      "blind_solve": {
+        "answer": "A",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-x-086",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/storage/docs/uniform-bucket-level-access",
+        "quote": "Using this feature on a bucket disables ACLs for all Cloud Storage resources in the bucket; access to Cloud Storage resources then is granted exclusively through IAM."
+      },
+      "blind_solve": {
+        "answer": "A,E",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-080",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/deny-access",
+        "quote": "To view, create, update, and delete deny policies: Deny Admin (roles/iam.denyAdmin)"
+      },
+      "blind_solve": {
+        "answer": "C",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-081",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/granting-changing-revoking-access",
+        "quote": "Note: You cannot edit inherited roles when managing access to a resource. To edit inherited roles, go to the resource where the role was granted."
+      },
+      "blind_solve": {
+        "answer": "B",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-082",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/deny-overview",
+        "quote": "When a principal is denied a permission, they can't do anything that requires that permission, regardless of the IAM roles they've been granted."
+      },
+      "blind_solve": {
+        "answer": "C",
+        "agrees": true
+      }
+    },
+    {
+      "id": "ace-s4-083",
+      "verdict": "new",
+      "ac": {
+        "AC1": "pass",
+        "AC2": "pass",
+        "AC3": "pass",
+        "AC4": "pass",
+        "AC5": "pass",
+        "AC6": "pass",
+        "AC7": "pass"
+      },
+      "notes": "Added by /expand on 2026-11-10, written from the guide bullet and the documentation page in doc_ref.",
+      "replacement_id": null,
+      "evidence": {
+        "doc_ref": "https://docs.cloud.google.com/iam/docs/creating-custom-roles",
+        "quote": "When a role is deleted, any role bindings that refer to the role remain in your allow policies, but they have no effect. You can undelete a role within 7 days."
+      },
+      "blind_solve": {
+        "answer": "C",
+        "agrees": true
+      }
+    }
+  ]
+}

@@ -262,6 +262,10 @@ associated. To record what a policy rule matches, set **`--enable-logging`** on 
 | Attach a service project | `gcloud compute shared-vpc associated-projects add SVC_PROJECT --host-project=HOST_PROJECT` |
 | Least privilege: one subnet only | `gcloud compute networks subnets add-iam-policy-binding web-euc2 --region=R --member=group:team-a@example.com --role=roles/compute.networkUser` |
 
+Only a **Shared VPC Admin** (`roles/compute.xpnAdmin`, granted on the organization or a folder) can enable a host
+project; being Owner of the project is not enough. Network User granted on the **host project** covers every
+subnet, present and future, while the same role on **selected subnets** restricts a service project to those.
+
 ### VPC Network Peering
 
 - **Both sides must create** the peering before it becomes active; the networks can be in different projects or

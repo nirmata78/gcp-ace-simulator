@@ -8,6 +8,10 @@ All notable changes to this project are recorded here. The format follows
 
 ### Added
 
+- **76 more questions** (bank 862), written by the first `/expand` run: 59 in Section 1 (projects and accounts 36,
+  billing 23), 15 in Section 4 (IAM), 2 in Section 2. Eight are cross-domain (`ace-x-079`…`ace-x-086`) and eight are
+  multiple-select. Section 1 is now at its exam weight; Section 4 is still below it. The theory gained the facts behind
+  them (standalone organizations, disabling APIs, quota types, billing account and export details, IAM policy tools).
 - **`/expand`: grow the bank by a planned amount.** `claude "/expand 10%" --model opus --effort high` plans where the
   new questions go, steering the sections toward the exam weights, and mixes in multiple-select and cross-domain
   questions. Each key is fixed in advance and proven by a sentence quoted from its documentation page; each question

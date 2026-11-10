@@ -150,7 +150,10 @@ needed when conditions are present). Each resource has at most one allow policy.
 | **Custom** | Your list of permissions | **Only when the need falls strictly between two predefined roles** |
 
 **What Owner has that Editor lacks:** managing IAM on the resource (and a few billing associations). *"Who can grant
-roles on this project?"* — an Owner or someone with a Security Admin-type role, never an Editor.
+roles on this project?"* — an Owner or someone with a Security Admin-type role, never an Editor. The narrow role for
+exactly that job on one project is **Project IAM Admin** (`roles/resourcemanager.projectIamAdmin`): it administers
+the project's allow policy and carries no permissions on the project's resources. Granting **Owner to a user outside
+your organization** is the one grant that must be made in the Google Cloud console; `gcloud` rejects it.
 
 ### Predefined roles worth naming on sight
 
@@ -186,6 +189,10 @@ roles on this project?"* — an Owner or someone with a Security Admin-type role
 | Start from a predefined role | `gcloud iam roles copy --source=roles/compute.viewer --destination=myViewer --dest-organization=ORG` |
 | Add a permission to a custom role | `gcloud iam roles update vmOperator --project=P --add-permissions=compute.instances.start` |
 
+Two more states of a custom role: setting its launch stage to **`DISABLED`** leaves its bindings in place but
+without effect, and a **deleted** role can be undeleted for 7 days (`gcloud iam roles undelete`), after which its
+bindings work again. Creating project-level custom roles needs Role Administrator (`roles/iam.roleAdmin`).
+
 <a id="s3-5"></a>
 
 ## 3.5 Viewing and changing policies
@@ -208,6 +215,23 @@ roles on this project?"* — an Owner or someone with a Security Admin-type role
 secret, a service account. Resource-level bindings are how you grant access to *one* bucket rather than all of
 them.
 
+**Deleted principals.** When a user or service account is deleted, its bindings stay in the policy with a
+`deleted:` prefix. A new principal created later with the same name is a different principal: the old bindings do
+not apply to it, so it needs a binding of its own.
+
+**Reading a policy correctly.** The effective allow policy is the **union** of the resource's own policy and what
+it inherits, so a narrow grant high up plus a broader grant on one project adds up, and nothing lower down can
+subtract. An inherited role is edited only where it was granted. When a **project moves**, the old parent's
+inherited policies stop applying and only policies attached to the project itself come along. The console hides
+service agents until **Include Google-provided role grants** is selected. A `domain:` principal covers every Google
+Account in the domain, including future ones; `allAuthenticatedUsers` means any Google Account on the internet and
+does **not** include federated identities, which are granted through a workforce pool `principalSet`. Deny policies
+are managed with **Deny Admin** (`roles/iam.denyAdmin`), not with Owner.
+
+**Three tools.** *Policy Analyzer*: who has what access to a resource, across inheritance and groups. *Policy
+Troubleshooter*: why one principal is allowed or denied one permission on one resource. *Policy Simulator*: what a
+proposed allow policy change would break, tested against recent access.
+
 <a id="s3-6"></a>
 
 ## 3.6 Conditions, deny policies and Privileged Access Manager
@@ -227,6 +251,8 @@ them.
 | Grant that expires by itself | `add-iam-policy-binding ... --condition='expression=request.time < timestamp("2026-10-31T00:00:00Z"),title=audit-window'` |
 
 *"The contractor's access must end on 31 October without anyone remembering to remove it"* is a condition.
+A condition cannot be attached to the legacy basic roles (Owner, Editor, Viewer), nor to a grant for `allUsers` or
+`allAuthenticatedUsers`.
 
 ### Deny policies — the IAM subtraction
 

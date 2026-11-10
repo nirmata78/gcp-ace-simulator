@@ -1,8 +1,8 @@
 {
   "domain": "Section 2: Planning and implementing a cloud solution",
   "version": 2,
-  "updated_at": "2026-11-09T09:42:59+00:00",
-  "count": 281,
+  "updated_at": "2026-11-10T12:28:55+00:00",
+  "count": 283,
   "questions": [
     {
       "id": "ace-dom2-001",
@@ -8439,6 +8439,74 @@
         },
         "gcloud_command": "bq mk --external_table_definition=CSV=gs://wexcombe-drop/*.csv partners.incoming",
         "doc_ref": "https://docs.cloud.google.com/bigquery/docs/external-data-cloud-storage"
+      }
+    },
+    {
+      "id": "ace-s2-168",
+      "uid": "1dcda0d6-0b14-49f3-bab5-e043e5ad32a0",
+      "title": "A metadata SSH key stops working after OS Login",
+      "objective": "2.1",
+      "subtopic": "OS Login",
+      "summary": "With OS Login enabled, a VM ignores SSH keys stored in metadata; access comes from an OS Login IAM role.",
+      "tags": [
+        "compute-engine",
+        "os-login",
+        "ssh",
+        "troubleshooting"
+      ],
+      "source": "curated",
+      "question": "Last night Farrow Dyeworks enabled OS Login in the metadata of the project fd-plant. This morning an operator from the company's own organization, who has always connected with an SSH key stored in the project metadata, can no longer SSH to the Linux VMs, which run without an attached service account. Colleagues who hold OS Login roles connect normally. The operator needs SSH access without sudo. What should the administrator do?",
+      "options": {
+        "A": "Grant the operator the Compute OS Login role on the project",
+        "B": "Add the operator's public key to the metadata of each VM",
+        "C": "Add the operator's public key to the project metadata again",
+        "D": "Create a firewall rule that allows TCP port 22 from the operator"
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "A VM that uses OS Login cannot use metadata-based SSH keys: its guest agent ignores them. Who may log in is decided by the OS Login IAM roles.",
+        "option_breakdown": {
+          "A": "Correct. With OS Login on, access is granted through IAM, and Compute OS Login gives SSH access without sudo.",
+          "B": "Instance metadata keys are metadata-based keys too, and the guest agent ignores them while OS Login is enabled.",
+          "C": "The key is still in the project metadata; it is being ignored, so adding it again changes nothing.",
+          "D": "Colleagues connect over the same network path, so port 22 is already open; the block is at login."
+        },
+        "gcloud_command": "gcloud projects add-iam-policy-binding fd-plant --member=\"user:operator@example.com\" --role=\"roles/compute.osLogin\"",
+        "doc_ref": "https://docs.cloud.google.com/compute/docs/oslogin"
+      }
+    },
+    {
+      "id": "ace-s2-169",
+      "uid": "a811c3f0-df39-447c-a414-8e9a0ba35404",
+      "title": "Which VMs still carry the vulnerable package",
+      "objective": "2.1",
+      "subtopic": "VM Manager",
+      "summary": "VM Manager's OS inventory management collects OS details and installed packages from VMs without logging in to them.",
+      "tags": [
+        "compute-engine",
+        "os-inventory",
+        "security",
+        "vm-manager"
+      ],
+      "source": "curated",
+      "question": "A vulnerability is announced in one version of a Linux package. The security team at Kelso Freight must find out, today and without logging in to any machine, which of its 400 Compute Engine VMs have that package version installed. VM Manager is already set up on all of them. Nothing may be changed on the VMs yet. Which VM Manager service should the team use?",
+      "options": {
+        "A": "OS inventory management",
+        "B": "A patch job",
+        "C": "An OS policy assignment",
+        "D": "A patch deployment"
+      },
+      "correct_answer": "A",
+      "explanation": {
+        "summary": "OS inventory management has the OS Config agent report each VM's operating system details and installed packages, so the fleet can be queried for a package version without touching the machines.",
+        "option_breakdown": {
+          "A": "Correct. OS inventory management collects operating system information, including installed packages, for review.",
+          "B": "A patch job applies patches to the VMs immediately, which changes them; it is not a way to look up a package.",
+          "C": "An OS policy assignment enforces a desired state by installing or removing packages, which also changes the VMs.",
+          "D": "A patch deployment schedules patching for later; it does not report which package versions are installed now."
+        },
+        "gcloud_command": "gcloud compute instances os-inventory list-instances --inventory-filter=\"PackageName:PACKAGE_NAME\"",
+        "doc_ref": "https://docs.cloud.google.com/compute/docs/instances/os-inventory-management"
       }
     },
     {
