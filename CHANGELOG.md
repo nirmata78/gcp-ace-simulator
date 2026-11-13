@@ -6,6 +6,12 @@ All notable changes to this project are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- **The image is published on every release tag**, for linux/amd64 and linux/arm64 with provenance and SBOM
+  attestations: `ghcr.io/nirmata78/gcp-ace-simulator`, mirrored to `docker.io/aoreshkevich/gcp-ace-simulator`. Tags are
+  the full version, plus `MAJOR.MINOR`, `MAJOR` and `latest` for the newest release (#7).
+
 ## [1.3.0] - 2026-11-13
 
 ### Added

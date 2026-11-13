@@ -61,6 +61,10 @@ Start from an up-to-date `main` with CI green.
    gh release create "v$V" --title "v$V" --notes-file /tmp/notes.md --verify-tag
    ```
 
+   Pushing the tag also runs `.github/workflows/publish.yml`, which builds the image for amd64 and arm64, pushes it to
+   GHCR (and to Docker Hub when the `DOCKERHUB_TOKEN` secret is set) and smoke-tests the pulled image on both
+   architectures. A pre-release tag such as `v1.4.0-rc.1` is a dry run: it publishes `1.4.0-rc.1` only and never moves
+   `1.4`, `1` or `latest`. The tag, without its pre-release suffix, must equal `VERSION`.
 4. **Check it:** clone the tag somewhere fresh, run the tests and sit a short exam.
 5. **A version is released only when its tag and GitHub release exist.** A dated heading in the changelog without a
    tag is not a release: tag the commit that set that version and publish it, as was done late for 1.1.0.

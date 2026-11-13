@@ -137,7 +137,11 @@ decisions:
     rationale: Smaller image and attack surface, and no API keys near the container. Contributors keep the venv flow.
   - id: D7
     topic: Image registry and tags
-    choice: GHCR, with tags 1.2.0, 1.2, 1 and latest, for linux/amd64 and linux/arm64. Reopened in issue 7, which weighs GHCR, Docker Hub and release tarballs
+    choice: >
+      Settled in issue 7 on 2026-11-13: GHCR (ghcr.io/nirmata78/gcp-ace-simulator) is canonical, mirrored to Docker Hub
+      (docker.io/aoreshkevich/gcp-ace-simulator) by the same workflow when the DOCKERHUB_TOKEN secret is set. No release
+      tarballs. Tags: the full version always; MAJOR.MINOR, MAJOR and latest only for the highest release, never for a
+      pre-release. Both linux/amd64 and linux/arm64.
     rationale: Free for public images and tied to the repository. Apple Silicon users need arm64. Tags are part of the public API (RELEASE.md).
   - id: D8
     topic: Network exposure
@@ -392,10 +396,10 @@ tasks:
 
   - id: T14
     title: Publish the image on release tags
-    status: todo
+    status: in_progress
     size: M
     depends_on: [T13]
-    files: [.github/workflows/publish.yml]
+    files: [.github/workflows/publish.yml, tests/test_publish_workflow.py]
     steps:
       - Trigger only on v*.*.* tags. Fail if the tag doesn't match the VERSION file.
       - Build linux/amd64 and linux/arm64 with Buildx. Use docker/metadata-action for the tags in D7.
