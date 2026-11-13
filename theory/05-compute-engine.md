@@ -155,7 +155,8 @@ stopped**</mark>; disks can be attached live; labels, tags and metadata change l
 | **OS Login** | Linux accounts **tied to Google identities**; access is an **IAM role** | Removing the IAM role, or suspending the user | **The recommended answer** for teams |
 
 **OS Login** is enabled with metadata `enable-oslogin=TRUE` (project or instance) or enforced org-wide with
-`compute.requireOsLogin`. Access is then pure IAM:
+`compute.requireOsLogin`; with the constraint enforced, any request that sets `enable-oslogin` to false in project or
+instance metadata is rejected, so Owners cannot switch it off. Access is then pure IAM:
 
 | Role | Grants |
 |:--------------------------------------|:----------------------------------------------------------|
@@ -182,7 +183,8 @@ a metadata key needs an OS Login role instead (Compute OS Login, or Compute OS A
 | **IAP TCP forwarding** | `gcloud compute ssh vm --tunnel-through-iap`; a firewall rule allowing **`35.235.240.0/20`** on 22 (or 3389); **`roles/iap.tunnelResourceAccessor`** |
 | Bastion host | A VM with an external IP you harden and patch — the assembled alternative |
 | VPN / Interconnect | Private path from on-premises |
-| **Serial console** | Boot problems, broken networking: `gcloud compute connect-to-serial-port vm`, metadata `serial-port-enable=TRUE` |
+| **Serial port output** | Read-only boot and kernel messages, nothing changed, no sign-in and no network needed: `gcloud compute instances get-serial-port-output vm` |
+| **Interactive serial console** | Type into a guest whose network configuration is broken: metadata `serial-port-enable=TRUE`, then `gcloud compute connect-to-serial-port vm` |
 
 {: .tip }
 > *"SSH to VMs with no public IP, per-user authorisation, no bastion"* — **IAP TCP forwarding + OS Login**.

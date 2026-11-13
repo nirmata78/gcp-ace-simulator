@@ -192,6 +192,12 @@ answer to *"switch between work contexts in one command"*:
 > pick up. A program that says "could not find default credentials" on a laptop where `gcloud` works fine needs
 > the second. And the Docker daemon is a third client again (`gcloud auth configure-docker`, [§6.7](06-containers-serverless.md#s6-7)).
 
+**A package-manager install turns the component manager off.** When gcloud comes from `apt` or `yum`, the
+`gcloud components` commands are disabled on purpose. Update with the package manager (for example
+`apt-get install --only-upgrade google-cloud-cli`), add extra tools such as `kubectl` as separate packages, and
+never unpack a tarball on top of it. The `gcloud components install kubectl` row above is for the standalone
+installer.
+
 **Three scripting and hygiene details.** `CLOUDSDK_ACTIVE_CONFIG_NAME` selects a configuration for one terminal
 only, whereas `gcloud config configurations activate` switches it for the whole installation. In scripts, add
 `--quiet` so that no prompt blocks the run, and ask for `--format=json` (or another explicit format) because the
@@ -223,6 +229,7 @@ machine; unsetting the `account` property does not.
 | A VPC is ... ; a subnet is ... | Global ; regional |
 | Recreate a disk in another region | From a **snapshot** or **image** — both are global |
 | Is GPU type X offered in this zone? | `gcloud compute accelerator-types list` |
+| Which CPU platforms (Ice Lake, Milan …) does this zone offer? | `gcloud compute zones describe ZONE` — its `availableCpuPlatforms` |
 | Compare regions by carbon footprint, price and latency | The Google Cloud **Region Picker** tool |
 | Stop anyone creating resources outside the EU | `gcp.resourceLocations` org policy |
 | Switch account + project + region in one command | `gcloud config configurations activate NAME` |

@@ -121,7 +121,10 @@ workforce identities (*verify* the supported-products list before choosing it).
 | **Condition** (optional) | A CEL expression on time, resource name/type or tags | [§3.6](#s3-6) |
 
 An allow policy is a list of **bindings** plus an **etag** (for safe concurrent edits) and a **version** (3 is
-needed when conditions are present). Each resource has at most one allow policy.
+needed when conditions are present). Each resource has at most one allow policy. The console and gcloud pick the
+version for you; a REST or client-library caller that sends no `requestedPolicyVersion` gets **version 1**, which
+shows conditional bindings **without their conditions**, so a script that edits policies must request version 3 and
+keep the etag.
 
 ### Inheritance — the rules that decide most items
 
@@ -443,7 +446,9 @@ A workload on Google Cloud runs **as** an attached service account and receives 
 
 **Attaching an account from another project** — a central `identities` project is a common design — also
 requires that the organization policy `iam.disableCrossProjectServiceAccountUsage` is **not** enforced on the project
-that owns the service account; where it is enforced, the attach fails however the IAM grants look.
+that owns the service account; where it is enforced, the attach fails however the IAM grants look. The constraint
+is set per project (not on a folder or the organization), so loosening it for the identities project leaves every
+other project's accounts confined.
 
 **Access scopes** are a legacy VM-level filter applied *on top of* IAM. Best practice: the `cloud-platform` scope
 plus narrow IAM roles on a dedicated service account. Changing a VM's service account or scopes requires the VM
@@ -457,6 +462,10 @@ to be **stopped**.
 | Let `ci` impersonate `deployer` | `gcloud iam service-accounts add-iam-policy-binding deployer@P.iam.gserviceaccount.com --member=serviceAccount:ci@P.iam.gserviceaccount.com --role=roles/iam.serviceAccountTokenCreator` |
 | Run one command as `deployer` | `gcloud compute instances list --impersonate-service-account=deployer@P.iam.gserviceaccount.com` |
 | Make it the default for gcloud | `gcloud config set auth/impersonate_service_account SA_EMAIL` |
+| Local client libraries as `deployer` | `gcloud auth application-default login --impersonate-service-account=SA_EMAIL` |
+
+The `auth/impersonate_service_account` property changes **gcloud only**. Client libraries read the ADC file, so
+make that file with the last row's command.
 
 Impersonation issues **short-lived tokens**, writes **no key material**, and the audit log records **both** the
 caller and the impersonated account — the original principal is in
@@ -589,6 +598,9 @@ from two providers become one principal. Map `google.subject` to an attribute th
 not an email address). For multi-tenant issuers such as GitHub or Terraform Cloud, an attribute condition must
 check the organization. A credential that federation does not accept (Kerberos, say) can first be exchanged at an
 identity provider for one it does. Reusing an existing identity provider's tokens means no second secret to rotate.
+By default an OIDC provider accepts only tokens whose `aud` is its own resource URI; when the IdP can only put its
+client ID there, add that value to the provider's **allowed audiences** (`--allowed-audiences`), or every exchange is
+rejected for its audience. An attribute condition cannot fix this: it only narrows what is accepted.
 
 **Workload Identity Federation for GKE, operationally.** All clusters in a project share the pool
 `PROJECT_ID.svc.id.goog`, so the same namespace and ServiceAccount names in two clusters are **one identity**: use

@@ -105,6 +105,8 @@ or to a service account. Owners are invited and may be Google Accounts or workfo
 principal identifier), never service accounts, and **at least one active Google Account must always remain an
 owner**. If every Organization Administrator is removed by mistake, an owner grants the role again from the
 Organization details page. Sign-up creates one organization per account; a person owns several by being invited.
+A deleted standalone organization is only soft-deleted: for **30 days** (*verify*) an Organization Administrator can
+select it on the **My organizations** page and restore it, folders and policies included. After that it is purged.
 
 ## 2.3 Folders and projects in practice
 
@@ -269,6 +271,9 @@ When a legitimate workload needs more, the answer is to **request an increase fo
 automatically as usage approaches them. Spreading the workload across extra projects to dodge a quota is the
 distractor.
 
+**Warn before a quota runs out.** Quota usage and limit are Cloud Monitoring metrics (the `serviceruntime.googleapis.com/quota/...`
+family for consumer quotas). Create an alerting policy on **usage divided by limit** above a threshold such as 0.8, and read the
+current values on the **Quotas & System Limits** page. Audit logs record calls and a budget measures money; neither shows quota headroom.
 
 {: .key }
 > <mark markdown="span">**A quota is a hard stop; a budget is only an alert ([§2.7](#s2-7)).**</mark> You can also *lower* a quota deliberately — for
@@ -310,6 +315,10 @@ billing account stops its paid services, and resources may be deleted.
 > <mark markdown="span">**Linking a project needs a grant on both sides:**</mark> permission on the **project** (Project Billing Manager, or
 > Owner) **and** Billing Account User on the **billing account**. Owner of the project alone cannot attach it to an
 > account it has no role on. This two-sided rule is the single most examined billing fact.
+
+A billing account created **before** the organization existed has no parent. Move it under the organization with
+**Change Organization** on its **Account management** page: you need Billing Account Administrator on the account and
+Billing Account Creator on the organization, and the linked projects keep running with no relinking.
 
 {: .cmds }
 | Task | Command |
@@ -437,12 +446,16 @@ answer whenever a question needs a view *across* projects.
 | Find every VM with an external IP across the org | `gcloud asset search-all-resources --scope=organizations/ORG --query="..."` |
 | Find every binding that grants `roles/owner` | `gcloud asset search-all-iam-policies --scope=organizations/ORG --query="policy:roles/owner"` |
 | Who can do X on Y? | `gcloud asset analyze-iam-policy` — this is **Policy Analyzer** ([§3.8](03-identity-access.md#s3-8)) |
+| The same analysis is too big: console results incomplete, or `DEADLINE_EXCEEDED` | `gcloud asset analyze-iam-policy-longrunning`, writing the full result to **BigQuery** or Cloud Storage |
 | Snapshot everything into BigQuery for SQL | `gcloud asset export --content-type=resource --bigquery-table=...` |
 | React to changes in near real time | **Asset feeds** to a Pub/Sub topic |
 | What did this resource look like last month? | Change **history** (about 35 days) with `gcloud asset get-history` |
 
 Content types include `resource`, `iam-policy`, `org-policy`, `access-policy` and `os-inventory` (from VM
-Manager, [§5.6](05-compute-engine.md#s5-6)). Reading it needs `roles/cloudasset.viewer` at the scope you query.
+Manager, [§5.6](05-compute-engine.md#s5-6)). Reading it needs `roles/cloudasset.viewer` at the scope you query,
+and the **Cloud Asset Inventory API enabled in the project you run the commands from** (the gcloud project), even
+when the scope is the whole organization: *"API has not been used in project X or it is disabled"* is fixed there,
+not with a bigger role.
 
 {: .new-title }
 > New in the June 2026 guide — Asset Inventory with Gemini Cloud Assist

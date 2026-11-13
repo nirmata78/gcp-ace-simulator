@@ -79,7 +79,7 @@ policy** through VM Manager ([§5.6](05-compute-engine.md#s5-6)) or the console'
 |:----------------------------------|:------------------------------------------------------------------|
 | **Condition** | Metric threshold · metric **absence** · **forecast** · **PromQL** query · **log match** (log-based alert) |
 | **Duration / retest window** | How long the condition must hold — *"for 5 minutes"* avoids flapping |
-| **Notification channels** | Email, SMS, mobile app, Slack, PagerDuty, webhooks, **Pub/Sub** — defined once, reused |
+| **Notification channels** | Email, SMS, mobile app, Slack, PagerDuty, webhooks, **Pub/Sub** — defined once, reused. A Pub/Sub channel publishes as the **notification service agent** `service-PROJECT_NUMBER@gcp-sa-monitoring-notification.iam.gserviceaccount.com`, which needs **Pub/Sub Publisher** on the topic |
 | Documentation | Markdown sent with the notification — the runbook link |
 | Incident | Opened when the condition fires; closes automatically when it clears |
 
@@ -127,6 +127,9 @@ retains them long-term, and lets you query with **PromQL** in Metrics Explorer, 
 | **Managed collection** (GKE, the default on new clusters) | You declare **`PodMonitoring`** / `ClusterPodMonitoring` resources; Google runs the collectors |
 | Self-deployed collection | A drop-in replacement Prometheus binary you run |
 | On VMs | The **Ops Agent's Prometheus receiver** |
+
+Keep the two apart: a **Compute Engine VM** scrapes with the Ops Agent (a `prometheus` receiver in its config, pointing
+at the local `/metrics` endpoint), and **GKE** scrapes with a `PodMonitoring` resource. Each is the trap answer in the other's question.
 
 
 

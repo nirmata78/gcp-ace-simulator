@@ -267,7 +267,9 @@ associated. To record what a policy rule matches, set **`--enable-logging`** on 
 | Least privilege: one subnet only | `gcloud compute networks subnets add-iam-policy-binding web-euc2 --region=R --member=group:team-a@example.com --role=roles/compute.networkUser` |
 
 Only a **Shared VPC Admin** (`roles/compute.xpnAdmin`, granted on the organization or a folder) can enable a host
-project; being Owner of the project is not enough. Network User granted on the **host project** covers every
+project; being Owner of the project is not enough. Granted on a **folder**, the role covers that folder and every
+folder nested under it, and nothing outside it, so one business unit's network team gets it on that unit's folder;
+an admin linking projects in two folders needs it on both. Network User granted on the **host project** covers every
 subnet, present and future, while the same role on **selected subnets** restricts a service project to those.
 
 ### VPC Network Peering
@@ -447,7 +449,9 @@ Four questions choose every load balancer: **external or internal · global or r
 
 Envoy-based load balancers, such as the internal Application Load Balancer and the regional external one, need a
 **proxy-only subnet** in each region they use (`--purpose=REGIONAL_MANAGED_PROXY`, *verify*): the proxies take
-their addresses from it, so backend firewall rules must allow that range.
+their addresses from it, so backend firewall rules must allow that range. A **passthrough** load balancer has no
+proxies: its backends see the clients' own addresses, so they need one ingress rule for the **client ranges** and one
+for the **health-check probe ranges** (`35.191.0.0/16`, `130.211.0.0/22`); the implied deny-ingress rule blocks both.
 
 {: .key }
 > **Three eliminations answer most load-balancer items.** *UDP* or *not HTTP* removes every Application LB.

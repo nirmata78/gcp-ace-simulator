@@ -280,6 +280,8 @@ as OCI). **Container Registry is shut down** — `gcr.io` paths are now served b
 | (b) Let it impersonate a Google service account | `roles/iam.workloadIdentityUser` on the Google SA for member `serviceAccount:P.svc.id.goog[shop/web]`, then annotate the KSA with `iam.gke.io/gcp-service-account=GSA_EMAIL` |
 
 The Pod spec names `serviceAccountName: web`. Client libraries then find credentials through ADC with no change.
+A Pod spec that names no ServiceAccount runs as the namespace's **`default`** ServiceAccount, so a grant to `web`
+never reaches it: *"granted, but still permission denied"* often means the Deployment forgot `serviceAccountName`.
 
 {: .watch }
 > **Node service account versus workload identity.** The **node** service account is for the node's own jobs —
