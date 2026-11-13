@@ -424,7 +424,7 @@ file, so they don't touch your simulator or your history, but they do rebuild th
 ## Releases
 
 The project uses [semantic versioning](https://github.com/nirmata78/gcp-ace-simulator/blob/main/RELEASE.md). See the [changelog](https://github.com/nirmata78/gcp-ace-simulator/blob/main/CHANGELOG.md) for what changed and for known
-limitations, and the [roadmap](https://github.com/nirmata78/gcp-ace-simulator/blob/main/RELEASE.md#roadmap) for what is next, starting with a ready-made Docker image in 1.3.0
+limitations, and the [roadmap](https://github.com/nirmata78/gcp-ace-simulator/blob/main/RELEASE.md#roadmap) for what is next, starting with a ready-made Docker image in 1.4.0
 ([#7](https://github.com/nirmata78/gcp-ace-simulator/issues/7)).
 
 ## Contributing
