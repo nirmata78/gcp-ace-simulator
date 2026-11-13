@@ -29,6 +29,11 @@ Growing the bank by a planned amount (the /expand skill; docs/question-standard.
     kb.py blind FILE                the candidates without keys, for a blind solver; --answers records the result
     kb.py accept FILE --plan PLAN --ledger LEDGER     add a vetted, blind-solved batch
 
+Replacing questions you have already seen with new ones (the /rework skill):
+
+    kb.py rework 50 --out build/rework/RUN/plan.json  the 50 seen longest ago; then slots, vet, blind and accept as above
+    kb.py rework 3 --id ace-s2-004 --id ace-s3-010 --out PLAN         named questions, without reading the history
+
 Every write path re-validates the whole bank and rebuilds the register, so the
 index can never drift from the questions.
 """
@@ -714,6 +719,51 @@ def cmd_plan(args) -> int:
     return 0
 
 
+def seen_order(path: Optional[Path] = None) -> List[str]:
+    """Question ids from the attempt history, the one seen longest ago first.
+
+    The only thing a rework run takes from the history: no answers, scores or dates leave this function.
+    """
+    from src.models import History
+    from src.paths import history_path
+
+    attempts = sorted(History.load(path or history_path()).attempts, key=lambda a: (a.started_at, a.attempt_id))
+    return list(dict.fromkeys(a.question_id for att in attempts for a in att.answers))
+
+
+def cmd_rework(args) -> int:
+    from src.expansion import rework_plan, rework_summary
+
+    bank = load(args.data_dir)
+    have = {q.id for q in bank.questions}
+    if args.ids:
+        missing = [i for i in args.ids if i not in have]
+        if missing:
+            print(f"[ERROR] not in the bank: {', '.join(missing)}", file=sys.stderr)
+            return 1
+        ids = args.ids
+    else:
+        ids = [i for i in seen_order(args.history) if i in have]
+        print(f"Seen and still in the bank: {len(ids)} of {len(bank.questions)} questions.")
+    try:
+        p = rework_plan(bank, ids, args.count, cross_share=args.cross_share, multi_share=args.multi_share,
+                        batch_size=args.batch_size, request=f"rework {args.count}")
+    except ValueError as exc:
+        print(f"[ERROR] {exc}", file=sys.stderr)
+        return 1
+    print("\n".join(rework_summary(p)))
+    if args.out:
+        if args.out.exists():
+            print(f"[ERROR] {args.out} exists; continue that run with 'kb.py slots', or pick another --out",
+                  file=sys.stderr)
+            return 1
+        _write_json(args.out, p)
+        print(green(f"\n[OK] wrote {args.out}"))
+    else:
+        print(dim("\nNothing written; pass --out FILE to start a run."))
+    return 0
+
+
 def cmd_slots(args) -> int:
     from src.expansion import describe_slots, open_batch
 
@@ -783,7 +833,7 @@ def cmd_blind(args) -> int:
 
 def cmd_accept(args) -> int:
     """Add a batch that passes every gate. All or nothing: one error and the bank is untouched."""
-    from src.expansion import ledger_entry, mark
+    from src.expansion import ledger_entry, mark, retired_entry
 
     bank = load(args.data_dir)
     raws = _candidates(args.file)
@@ -802,14 +852,22 @@ def cmd_accept(args) -> int:
     ledger = _read_json(args.ledger) if args.ledger.exists() else {"standard": "docs/question-standard.md",
                                                                   "entries": []}
     added = []
+    replaced = []  # a rework slot retires the question it replaces in the same write
+    slots = {s["slot"]: s for s in plan["slots"]}
     for i, raw in enumerate(raws):
         if "skip" in raw:
             mark(plan, raw["slot"], "skipped", reason=str(raw["skip"]).strip())
             continue
         q = parsed[f"slot {raw['slot']}"]
         q.id = bank.next_id(q.domain, retired, cross=q.is_cross_domain)
+        gone = bank.get(slots[raw["slot"]].get("replaces") or "")
         bank.questions.append(q)
-        ledger["entries"].append(ledger_entry(q, raw))
+        ledger["entries"].append(ledger_entry(q, raw, replaces=gone.id if gone else None))
+        if gone:
+            line, entry = retired_entry(gone, q.id)
+            replaced.append(line)
+            ledger["entries"].append(entry)
+            bank.questions.remove(gone)
         mark(plan, raw["slot"], "filled", id=q.id)
         raw["id"] = q.id
         added.append(q.id)
@@ -821,10 +879,18 @@ def cmd_accept(args) -> int:
     # The batch file first: it carries the new ids, so a repeated accept is refused even if a later write is lost.
     _write_json(args.file, raws)
     bank.save(args.data_dir)
+    if replaced:
+        from src.models import RETIRED_FILE
+
+        book = _read_json(args.data_dir / RETIRED_FILE)
+        book["retired"] += replaced
+        (args.data_dir / RETIRED_FILE).write_text(json.dumps(book, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
     _write_json(args.plan, plan)
     _write_json(args.ledger, ledger)
     left = sum(s["status"] == "open" for s in plan["slots"])
     print(green(f"\n[OK] added {len(added)}: {' '.join(added)}"))
+    if replaced:
+        print(f"Retired {len(replaced)}: {' '.join(r['id'] for r in replaced)}")
     print(f"Bank now {len(bank.questions)}. {left} slot(s) still open in the plan.")
     return 0
 
@@ -925,6 +991,21 @@ def main() -> int:
     p.add_argument("--batch-size", type=int, default=BATCH_SIZE)
     p.add_argument("--out", type=Path, help="write the plan here and start a run")
     p.set_defaults(func=cmd_plan)
+
+    from src.expansion import REWORK_CROSS_SHARE
+
+    p = sub.add_parser("rework", help="plan a rework: replace questions already seen, the oldest first")
+    p.add_argument("count", type=int, help="how many questions to replace")
+    p.add_argument("--id", dest="ids", action="append",
+                   help="rework this question (repeatable); without it, the ones seen longest ago in the history")
+    p.add_argument("--history", type=Path, help=argparse.SUPPRESS)
+    p.add_argument("--cross-share", type=float, default=REWORK_CROSS_SHARE,
+                   help=f"share that becomes cross-domain (default {REWORK_CROSS_SHARE})")
+    p.add_argument("--multi-share", type=float, default=MULTI_SHARE,
+                   help=f"share that becomes multiple-select (default {MULTI_SHARE})")
+    p.add_argument("--batch-size", type=int, default=BATCH_SIZE)
+    p.add_argument("--out", type=Path, help="write the plan here and start a run")
+    p.set_defaults(func=cmd_rework)
 
     p = sub.add_parser("slots", help="what the next batch of a plan must contain")
     p.add_argument("plan", type=Path)

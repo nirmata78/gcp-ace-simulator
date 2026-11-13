@@ -17,6 +17,7 @@ python scripts/kb.py lint                      # the question standard (docs/que
 python scripts/kb.py blueprint --min 3 --strict  # every guide bullet has 3+ questions
 python scripts/kb.py add --file newq.json      # add questions through validation
 python scripts/kb.py plan 10%                  # where an expansion would put its questions (/expand runs the rest)
+python scripts/kb.py rework 50                 # which seen questions a rework would replace (/rework runs the rest)
 ```
 
 After changing dependencies in `pyproject.toml`, regenerate both lock files with the command at the top of each.
@@ -37,7 +38,10 @@ After changing dependencies in `pyproject.toml`, regenerate both lock files with
 - `src/expansion.py`: the expansion plan (`kb.py plan`, `slots`), the gates on a candidate (`vet`, `blind`,
   `accept`) and the doc-page reader (`doc`). `.claude/skills/expand/` is the `/expand` skill that drives them and
   `.claude/agents/ace-blind-solver.md` the agent that answers candidates without the key. Run state is in the
-  gitignored `build/expand/`.
+  gitignored `build/expand/`. `.claude/skills/rework/` is the `/rework` skill: the same gates, but each slot
+  replaces a question the user has already seen (`rework_plan`, the `rework-*` findings, and the retirement in
+  `accept`). `kb.py rework` is the only code that reads the attempt history for it, and it takes ids only. Run state
+  is in `build/rework/`.
 - `data/sections/*.json`: **the bank, source of truth**. `data/register.json` is generated: run
   `kb.py reindex`, never edit it.
 - `theory/*.md`: **the theory, source of truth**, published by GitHub Pages (just-the-docs; config in
@@ -50,7 +54,7 @@ After changing dependencies in `pyproject.toml`, regenerate both lock files with
 - Write questions to `docs/question-standard.md`: a scenario, one decision, four plausible options (or four or five
   for a "Choose two" question), a rationale for each, and a `doc_ref` you have actually checked. Cross-domain
   questions set `also_tests` and are certifying-only. Never reuse an id; removed ids are in `data/retired.json`.
-- To add many questions, run the `/expand` skill; do not write a batch freehand. Never bypass or loosen its gates
+- To add many questions, run the `/expand` skill, and to replace seen ones the `/rework` skill; do not write a batch freehand. Never bypass or loosen its gates
   (planned keys, evidence quotes, blind-solve records, overlap limits): skip the slot.
 - A key never depends on a feature that was Preview in June 2026 (AC7 in `docs/question-standard.md`). Check the
   doc page for a Preview banner before keying a newer feature.

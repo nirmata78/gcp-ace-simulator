@@ -259,6 +259,86 @@ def plan_summary(bank: QuestionBank, p: dict) -> List[str]:
     return out
 
 
+#: A reworked question must leave its old scenario further behind than a new question must leave the bank.
+REWORK_STEM_LIMIT = NOVEL_STEM_WARN
+REWORK_SHARED_OPTIONS = 1
+REWORK_CROSS_SHARE = 0.20
+
+
+def rework_plan(bank: QuestionBank, ids: Iterable[str], count: int, *, cross_share: float = REWORK_CROSS_SHARE,
+                multi_share: float = MULTI_SHARE, batch_size: int = BATCH_SIZE, request: str = "") -> dict:
+    """The slots of a rework run: one per question to replace, in the order of ``ids`` (the ``/rework`` skill).
+
+    A slot keeps the old question's objective and subtopic, so coverage does not move, and fixes a key letter
+    other than the old one. A cross-domain or multiple-select question keeps that form; ``cross_share`` and
+    ``multi_share`` of the run take it as well, to make some replacements harder than what they replace.
+    """
+    if count < 1:
+        raise ValueError("give a positive number of questions to rework")
+    if batch_size < 1:
+        raise ValueError("batch size must be at least 1")
+    if not (0 <= cross_share <= 1 and 0 <= multi_share <= 1):
+        raise ValueError("cross and multi shares are fractions between 0 and 1")
+    by_id = {q.id: q for q in bank.questions}
+    olds = [by_id[i] for i in dict.fromkeys(ids) if i in by_id][:count]
+    if not olds:
+        raise ValueError("none of those questions is in the bank: nothing to rework")
+    total = len(olds)
+
+    def spread(share: float, kept: set) -> set:
+        rest = [i for i in range(total) if i not in kept]
+        more = max(0, math.floor(total * share + 0.5) - len(kept))
+        return kept | ({rest[p] for p in _spaced(more, len(rest))} if rest else set())
+
+    cross = spread(cross_share, {i for i, q in enumerate(olds) if q.is_cross_domain})
+    multi = spread(multi_share, {i for i, q in enumerate(olds) if q.is_multi})
+
+    gone = {q.id for q in olds}
+    stay = [q for q in bank.questions if q.id not in gone]
+    single_use = Counter(q.correct_answer for q in stay if not q.is_multi)
+    multi_use = Counter(q.correct_answer for q in stay if q.is_multi)
+    pairs = Counter((q.objective, o) for q in stay for o in q.also_tests)
+    partner_use = Counter(o for q in stay for o in q.also_tests)
+    slots = []
+    for i, old in enumerate(olds):
+        obj = OBJECTIVES[old.objective]
+        is_multi = i in multi
+        use, letters = (multi_use, MULTI_KEYS) if is_multi else (single_use, OPTION_KEYS)
+        key = min((k for k in letters if k != old.correct_answer), key=lambda k: (use[k], k))
+        use[key] += 1
+        mate = None
+        if i in cross:
+            others = [o.id for o in OBJECTIVE_LIST if o.section != obj.section]
+            kept = [o for o in old.also_tests if o in others]
+            known = [o for o in others if pairs[(old.objective, o)]] or others
+            mate = kept[0] if kept else min(known, key=lambda o: (pairs[(old.objective, o)], partner_use[o], o))
+            pairs[(old.objective, mate)] += 1
+            partner_use[mate] += 1
+        slots.append({"slot": i + 1, "batch": i // batch_size + 1, "status": "open", "replaces": old.id,
+                      "section": obj.section, "objective": old.objective, "subtopic": old.subtopic,
+                      "bullets": list(SUBTOPICS[old.subtopic].bullets), "kind": "multi" if is_multi else "single",
+                      "options": 5 if is_multi else 4, "choose": 2 if is_multi else 1, "key": key,
+                      "cross": i in cross, "pair_with": mate})
+    return {"created": date.today().isoformat(), "mode": "rework", "request": request or str(count),
+            "bank_before": len(bank.questions), "grow": 0, "slots": slots}
+
+
+def rework_summary(p: dict) -> List[str]:
+    """A rework plan as a few lines a person can check."""
+    slots = p["slots"]
+    out = [f"Rework plan: {len(slots)} question(s) to replace; the bank stays at {p['bank_before']} "
+           f"(request {p['request']})", ""]
+    per_sec = Counter(s["section"] for s in slots)
+    for sec in SECTION_LIST:
+        out.append(f"  {sec.short:<18} {per_sec[sec.number]:>3}")
+    n_multi = sum(s["kind"] == "multi" for s in slots)
+    n_cross = sum(s["cross"] for s in slots)
+    out += ["", f"  Mix: {len(slots) - n_multi} single-answer, {n_multi} multiple-select; {n_cross} cross-domain",
+            f"  Batches: {max(s['batch'] for s in slots)}", "",
+            "  Replaces, in order: " + " ".join(s["replaces"] for s in slots)]
+    return out
+
+
 def open_batch(p: dict) -> Optional[int]:
     """The first batch that still has an open slot."""
     return min((s["batch"] for s in p["slots"] if s["status"] == "open"), default=None)
@@ -275,6 +355,13 @@ def describe_slots(bank: QuestionBank, p: dict, batch: int) -> List[str]:
         for b in s["bullets"]:
             out.append(f"  guide bullet {b}: {BULLETS[b].text}")
         out.append(f"  form: {shape}; correct_answer must be \"{s['key']}\"")
+        gone = bank.get(s["replaces"]) if s.get("replaces") else None
+        if gone:
+            out.append(f"  replaces {gone.id} ({gone.title}). Write a different scenario with a different correct "
+                       "option; reuse at most one of its options:")
+            out.append(f"    stem: {gone.question}")
+            out += [f"    {k}{'*' if k in gone.correct_keys else ' '} {gone.options[k]}" for k in gone.keys]
+            out.append(f"    it tested: {gone.summary}  (* = its key)")
         if s["cross"]:
             mate = s["pair_with"]
             out.append(f"  cross-domain: set also_tests; suggested partner {mate} {OBJECTIVES[mate].title} "
@@ -510,6 +597,23 @@ def vet(bank: QuestionBank, raws: List[dict], *, plan: Optional[dict] = None,
                 out.append(("error", "slot", "this slot is cross-domain: set also_tests" if slot["cross"]
                             else "this slot is not cross-domain: remove also_tests"))
 
+        # A rework: far enough from the question it replaces that someone who remembers that one meets a new one.
+        gone = bank.get(slot["replaces"]) if slot and slot.get("replaces") else None
+        if slot and slot.get("replaces") and gone is None:
+            out.append(("error", "rework", f"{slot['replaces']} is not in the bank, so there is nothing to replace"))
+        if gone:
+            mine = {_normalise(q.options[k]) for k in q.correct_keys}
+            if mine & {_normalise(gone.options[k]) for k in gone.correct_keys}:
+                out.append(("error", "rework-answer", f"the correct option is the one {gone.id} had; change the "
+                            "deciding fact so that a different option is right"))
+            shared = len(q.option_set() & gone.option_set())
+            if shared > REWORK_SHARED_OPTIONS:
+                out.append(("error", "rework-options", f"{shared} options are word for word those of {gone.id}; "
+                            f"reuse at most {REWORK_SHARED_OPTIONS}"))
+            if REWORK_STEM_LIMIT <= q.similarity(gone) < NOVEL_STEM_LIMIT:
+                out.append(("error", "rework-stem", f"{q.similarity(gone):.0%} of the stem's words match {gone.id}, "
+                            "the question it replaces; write a different scenario"))
+
         # New against the bank and against the candidates before it.
         near = max(peers, key=q.similarity)
         score = q.similarity(near)
@@ -574,16 +678,28 @@ def vet(bank: QuestionBank, raws: List[dict], *, plan: Optional[dict] = None,
     return {k: v for k, v in found.items() if v}, parsed
 
 
-def ledger_entry(q: Question, raw: dict, today: Optional[str] = None) -> dict:
+def ledger_entry(q: Question, raw: dict, today: Optional[str] = None, replaces: Optional[str] = None) -> dict:
     """The review record of a question added by a run."""
     blind = raw.get("blind") or {}
+    how = f"Added by /rework in place of {replaces}" if replaces else "Added by /expand"
     return {
         "id": q.id,
         "verdict": "new",
         "ac": {f"AC{n}": "pass" for n in range(1, 8)},
-        "notes": f"Added by /expand on {today or date.today().isoformat()}, written from the guide bullet and the "
+        "notes": f"{how} on {today or date.today().isoformat()}, written from the guide bullet and the "
                  "documentation page in doc_ref.",
         "replacement_id": None,
         "evidence": {"doc_ref": q.explanation.doc_ref, "quote": str(raw.get("evidence", "")).strip()},
         "blind_solve": {"answer": blind.get("answer"), "agrees": bool(blind.get("agrees"))},
     }
+
+
+def retired_entry(old: Question, new_id: str, today: Optional[str] = None) -> Tuple[dict, dict]:
+    """What a rework leaves behind for the question it replaced: its line in ``retired.json`` and in the ledger."""
+    day = today or date.today().isoformat()
+    reason = f"Reworked into {new_id}: a new scenario and a different answer on the same subtopic (/rework)."
+    ledger = {"id": old.id, "verdict": "removed", "ac": {f"AC{n}": "pass" for n in range(1, 8)}, "notes": reason,
+              "replacement_id": new_id,
+              "original": {"question": old.question, "options": dict(old.options),
+                           "correct_answer": old.correct_answer}}
+    return {"id": old.id, "date": day, "reason": reason}, ledger

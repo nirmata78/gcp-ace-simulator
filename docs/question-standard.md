@@ -174,6 +174,21 @@ gates are code, so that the author, a person or a model, decides only what a que
 A slot that cannot be filled honestly is skipped with a reason. The run then ends smaller than planned, which is the
 intended result: the plan is a target and the gates are the limit.
 
+## Reworking seen questions
+
+The simulator draws questions a person has not answered before any they have, by id. A question that has been seen
+is replaced, not reworded (`/rework 50` in Claude Code, or `kb.py rework` and the same commands as an expansion).
+
+- `kb.py rework N` plans one slot for each of the N questions seen longest ago in the local attempt history, or for
+  the ids given with `--id`. Only the ids leave the history. A slot keeps the old question's objective and subtopic,
+  fixes a key letter other than the old one, and a fifth of a run becomes cross-domain and a tenth multiple-select.
+- The replacement is written, vetted, solved blind and accepted exactly as a new question is. `kb.py vet` adds three
+  limits against the question it replaces: the correct option is a different one (`rework-answer`), at most one
+  option is repeated (`rework-options`), and the stems share less than 33% of their content words (`rework-stem`).
+- `kb.py accept` adds the replacement under a new id and, in the same write, removes the old question, lists its id
+  in `data/retired.json`, and records both in `docs/reviews/rework-YYYY-MM-DD.json` (the old one as `removed`, with
+  its `replacement_id` and original text). A skipped slot leaves its question in the bank unchanged.
+
 ## How a reviewed question changes
 
 - **Keep the id when the decision tested and the correct option stay the same, under the same letter.** Wording,

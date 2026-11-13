@@ -282,6 +282,23 @@ a run can end smaller than planned. You are still the reviewer: read the questio
 the [question standard](docs/question-standard.md#growing-the-bank), and the procedure a model follows is
 [`.claude/skills/expand/SKILL.md`](.claude/skills/expand/SKILL.md).
 
+### Getting seen questions back with `/rework`
+
+The simulator draws questions you have not answered before any you have. Once you have seen most of the bank, a
+second skill replaces the ones you saw longest ago:
+
+```bash
+claude "/rework 50" --model opus --effort high         # replace the 50 questions you saw longest ago
+claude "/rework 2 --id ace-s2-004 --id ace-s3-010"     # replace named questions, without reading your history
+claude "/rework 8 --dry-run"                           # plan, write and check one batch; change nothing
+```
+
+Each replacement is a new scenario with a different correct answer on the same subtopic, a fifth of them cross-domain.
+It passes the same evidence and blind-solve gates as `/expand`, gets a new id, and the old id is retired, so the
+question is unseen again. The bank's size does not change. `kb.py rework` takes only question ids from
+`data/history.json`; the retired ids do appear in the commit, so a rework run shows which questions you had seen,
+though not how you answered them. The procedure is [`.claude/skills/rework/SKILL.md`](.claude/skills/rework/SKILL.md).
+
 ### Keeping questions unique
 
 Questions **may test the same concept**, because a second scenario on a weak topic is how it gets learned. What they

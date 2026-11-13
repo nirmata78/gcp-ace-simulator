@@ -28,9 +28,10 @@ from src.expansion import (  # noqa: E402
     plan,
     preview_notes,
     record_blind,
+    rework_plan,
     vet,
 )
-from src.models import OPTION_KEYS, QuestionBank  # noqa: E402
+from src.models import OPTION_KEYS, Question, QuestionBank  # noqa: E402
 
 DATA = ROOT / "data"
 QUOTE = "Custom roles that you create at the organization level can be granted in any project in that organization"
@@ -334,4 +335,77 @@ def test_accept_adds_a_batch_and_records_it(tmp_path, capsys):
     assert "slot" not in json.dumps(json.loads((tmp_path / "data/sections/section-4-security.json").read_text())["questions"][-1])
 
     assert kb.cmd_accept(_args(tmp_path)) == 1, "a filled slot cannot be filled twice"
+    capsys.readouterr()
+
+
+# -- reworking seen questions (/rework) ----------------------------------------
+
+
+def _old(bank) -> "Question":
+    """A single-answer question on the fixture's subtopic, to stand for one somebody has seen."""
+    return next(q for q in bank.questions if q.subtopic == "Role Types and Custom Roles"
+                and not q.is_multi and not q.is_cross_domain and q.correct_answer != "C")
+
+
+def test_rework_plan_keeps_the_place_and_moves_the_key(bank):
+    ids = [q.id for q in bank.questions[:40]]
+    p = rework_plan(bank, ["no-such-id", *ids, ids[0]], 20)
+    by_id = {q.id: q for q in bank.questions}
+    assert [s["replaces"] for s in p["slots"]] == ids[:20], "the order given, unknown and repeated ids dropped"
+    for s in p["slots"]:
+        old = by_id[s["replaces"]]
+        assert (s["objective"], s["subtopic"]) == (old.objective, old.subtopic)
+        assert s["key"] != old.correct_answer and s["status"] == "open"
+        assert s["cross"] or not old.is_cross_domain
+        assert (s["kind"] == "multi") == (s["options"] == 5) and (s["pair_with"] is not None) == s["cross"]
+    assert sum(s["cross"] for s in p["slots"]) >= 4 and sum(s["kind"] == "multi" for s in p["slots"]) >= 2
+    assert p == rework_plan(bank, ids, 20)
+    with pytest.raises(ValueError):
+        rework_plan(bank, ["no-such-id"], 5)
+
+
+def test_seen_order_is_oldest_first_and_reads_only_ids(tmp_path):
+    def attempt(n, started, ids):
+        return {"attempt_id": n, "mode": "learning", "started_at": started, "finished_at": started,
+                "duration_seconds": 1, "question_count": len(ids), "correct_count": 0,
+                "answers": [{"question_id": i, "domain": "x", "subtopic": "y", "correct_answer": "A"} for i in ids]}
+    path = tmp_path / "history.json"
+    path.write_text(json.dumps({"attempts": [attempt("b", "2026-02-01T10:00:00", ["q3", "q1"]),
+                                             attempt("a", "2026-01-01T10:00:00", ["q1", "q2"])]}))
+    assert kb.seen_order(path) == ["q1", "q2", "q3"]
+    assert kb.seen_order(tmp_path / "missing.json") == []
+
+
+def test_a_rework_must_leave_the_old_question_behind(bank):
+    old = _old(bank)
+    p = one_slot(replaces=old.id)
+    assert not codes(vet(bank, [candidate()], plan=p)[0])
+    same = candidate()
+    same["options"]["C"] = old.correct_text
+    assert "rework-answer" in codes(vet(bank, [same], plan=p)[0])
+    reused = candidate()
+    wrong = [old.options[k] for k in old.keys if k not in old.correct_keys]
+    reused["options"]["A"], reused["options"]["B"] = wrong[0], wrong[1]
+    assert "rework-options" in codes(vet(bank, [reused], plan=p)[0])
+    assert "rework" in codes(vet(bank, [candidate()], plan=one_slot(replaces="ace-s4-999"))[0])
+
+
+def test_accepting_a_rework_retires_what_it_replaces(tmp_path, bank, capsys):
+    shutil.copytree(DATA / "sections", tmp_path / "data" / "sections")
+    shutil.copy(DATA / "retired.json", tmp_path / "data" / "retired.json")
+    old = _old(bank)
+    (tmp_path / "plan.json").write_text(json.dumps(one_slot(replaces=old.id)))
+    batch = [candidate()]
+    record_blind(batch, {"1": "C"})
+    (tmp_path / "batch.json").write_text(json.dumps(batch))
+    assert kb.cmd_accept(_args(tmp_path)) == 0
+    after = QuestionBank.load(tmp_path / "data")
+    assert len(after.questions) == len(bank.questions) and after.get(old.id) is None
+    new_id = json.loads((tmp_path / "plan.json").read_text())["slots"][0]["id"]
+    assert after.get(new_id).subtopic == old.subtopic and new_id != old.id
+    assert old.id in QuestionBank.retired_ids(tmp_path / "data")
+    new, gone = json.loads((tmp_path / "ledger.json").read_text())["entries"]
+    assert new["id"] == new_id and old.id in new["notes"]
+    assert (gone["id"], gone["verdict"], gone["replacement_id"]) == (old.id, "removed", new_id)
+    assert gone["original"]["question"] == old.question
     capsys.readouterr()
