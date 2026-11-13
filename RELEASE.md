@@ -83,4 +83,5 @@ Only the latest release is supported.
 | 1.0.1 | Corrections from verifying the five newest questions | [#2](https://github.com/nirmata78/gcp-ace-simulator/issues/2) |
 | **1.1.0** | Docker from a clone with `bin/start.sh`, the review report with theory and video links, the study panel | [Changelog](CHANGELOG.md) |
 | **1.2.0** | The reviewed bank (question standard, the 104 settled), multiple-select and cross-domain questions, draws that avoid seen questions, the in-app score report | [#1](https://github.com/nirmata78/gcp-ace-simulator/issues/1), [Changelog](CHANGELOG.md) |
-| 1.3.0 | A published image anyone can pull in one line, and the rest of the tech debt | [#7](https://github.com/nirmata78/gcp-ace-simulator/issues/7), [#3](https://github.com/nirmata78/gcp-ace-simulator/issues/3), [plan](docs/plans/v1.1.0-docker.yaml) |
+| **1.3.0** | The bank grown to 927 by `/expand` (quoted evidence, a blind solve), no key on a Preview feature, five network blueprints in the theory | [#11](https://github.com/nirmata78/gcp-ace-simulator/pull/11), [Changelog](CHANGELOG.md) |
+| 1.4.0 | A published image anyone can pull in one line, and the rest of the tech debt | [#7](https://github.com/nirmata78/gcp-ace-simulator/issues/7), [#3](https://github.com/nirmata78/gcp-ace-simulator/issues/3), [plan](docs/plans/v1.1.0-docker.yaml) |
