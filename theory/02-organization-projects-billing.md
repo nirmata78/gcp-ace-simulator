@@ -247,7 +247,9 @@ network ships with permissive firewall rules ([§4.4](04-networking.md#s4-4)).
 <a id="s2-5"></a>
 
 **Who may switch APIs on, and what switching off does.** The narrow role is **Service Usage Admin**
-(`roles/serviceusage.serviceUsageAdmin`); Service Usage Consumer only uses what is already enabled. Enabling goes
+(`roles/serviceusage.serviceUsageAdmin`); Service Usage Consumer only uses what is already enabled, and carries
+`serviceusage.services.use`, which a user needs to designate a project as the **quota project** for a client-based
+API called with user credentials (`gcloud auth application-default set-quota-project PROJECT`). Enabling goes
 through the Service Usage API itself, so if that API was disabled in a project, re-enable it first. Disabling is
 not harmless and not uniform: for storage services such as BigQuery and Cloud Storage the **data stays and is still
 billed**, so delete the data to stop the charge; disabling the Cloud Run API deletes its resources; disabling the
@@ -460,7 +462,9 @@ Manager, [§5.6](05-compute-engine.md#s5-6)). Reading it needs `roles/cloudasset
 - **Protect and verify.** An IAM **deny policy** on `projects.delete` stops even an Owner deleting a project, and
   it is GA. A **lien** does the same but is still in **Preview**, so it is not an exam answer. **Assured
   Workloads** applies a control package to a folder — data location **and** support-personnel controls; the
-  `gcp.resourceLocations` constraint covers location only ([§2.3](#s2-3)).
+  `gcp.resourceLocations` constraint covers location only ([§2.3](#s2-3)). The **trusted image** constraint
+  `compute.trustedImageProjects` lets principals create boot disks only from images in the listed projects; granting
+  access to one image project cannot remove the public images everyone can already use.
 - **Organization policy beyond the catalogue.** `sql.restrictPublicIp` blocks public IPs on Cloud SQL
   (`sql.restrictAuthorizedNetworks` only blocks authorized networks). **Custom constraints** use CEL on resource
   fields when no predefined constraint fits — for example *every new GKE cluster must have Workload Identity

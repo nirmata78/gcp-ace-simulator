@@ -41,7 +41,7 @@ VMs running your Pods. The two modes differ in who owns those nodes.
 | **Zonal** | One control-plane replica in one zone — a zone outage takes the control plane |
 | **Regional** | Control plane replicated across **three zones**; nodes spread across them. <mark markdown="span">`--num-nodes` is **per zone**, so `--num-nodes=2` creates **six** nodes</mark> |
 | **Private nodes** | Nodes have **internal IPs only** (`--enable-private-nodes`); they need **Cloud NAT** to pull images from the internet, and Private Google Access for Artifact Registry |
-| **Control-plane endpoint** | Public endpoint limited by **authorized networks**, a private endpoint only (`--enable-private-endpoint`), or the **DNS-based endpoint** secured by IAM |
+| **Control-plane endpoint** | Public endpoint limited by **authorized networks**, a private endpoint only (`--enable-private-endpoint`), or the **DNS-based endpoint** secured by IAM. Private nodes and the public endpoint combine: nodes keep internal IPs only while authorized networks limit which source ranges reach the control plane over the internet |
 | **VPC-native** | Pods and Services take IPs from subnet **secondary ranges** (alias IPs) — the default |
 | **Release channel** | Rapid · **Regular** (default) · Stable · Extended; with maintenance windows and exclusions. An exclusion's scope is *no upgrades*, *no minor upgrades* or *no minor or node upgrades* (control-plane patches still allowed); channel clusters can't turn off node auto-upgrade |
 
@@ -111,7 +111,7 @@ RBAC.
 | Apply manifests (the normal way) | `kubectl apply -f k8s/` |
 | Hold a rollout part-way, then continue | `kubectl rollout pause deployment/web` · `kubectl rollout resume deployment/web` |
 | New image, watch it, roll it back | `kubectl set image deployment/web web=IMG:1.5` · `kubectl rollout status deployment/web` · `kubectl rollout undo deployment/web` |
-| Scale by hand | `kubectl scale deployment web --replicas=6` |
+| Scale by hand | `kubectl scale deployment web --replicas=6` (scaling, or editing fields outside the Pod template, does not start a rollout; changing the template, such as the image, does) |
 
 {: .tip }
 > *"Each replica needs its own disk and a stable hostname"* — **StatefulSet**. *"Run exactly one collector on every
@@ -299,7 +299,7 @@ idle.
 
 | Resource | Is |
 |:----------------------|:----------------------------------------------------------------------|
-| **Service** | Serves **requests** (HTTP, gRPC, WebSockets) at a stable HTTPS URL; scales on load |
+| **Service** | Serves **requests** (HTTP, gRPC, WebSockets) at a stable HTTPS URL; scales on load. It is an HTTPS endpoint only: a workload that must accept raw **UDP** or other non-HTTP traffic belongs on GKE (a `LoadBalancer` Service) or Compute Engine |
 | **Job** | Runs **tasks to completion** — in parallel, with retries — on demand or on a schedule via Cloud Scheduler |
 | **Worker pool** | Always-on, non-request workloads such as queue consumers (*recognise*) |
 | **Revision** | An **immutable** snapshot of a service's code and configuration, created by every deploy |
@@ -403,7 +403,9 @@ and IAM work exactly as in [§6.9](#s6-9)–[§6.10](#s6-10).
 
 **Eventarc** routes events from sources to targets — Cloud Run services, functions, GKE services, Workflows. A
 trigger has **filters**, a **destination**, and a **service account** that needs `roles/eventarc.eventReceiver`
-and `roles/run.invoker` on the target.
+and `roles/run.invoker` on the target. A plain **Pub/Sub push subscription** to a private Cloud Run service works the
+same way: set `--push-auth-service-account` to an account that holds `roles/run.invoker` on the service, otherwise
+every delivery fails with HTTP 403 (granting `allUsers` would open the service to everyone).
 
 
 {: .trap }

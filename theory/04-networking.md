@@ -399,6 +399,10 @@ appears in Google Cloud without anyone editing a route. Classic VPN can use stat
 | **Inbound server policy** | Gives the VPC resolver an address **on-premises clients can query** — so on-prem can resolve private zones |
 | Response policy | Overrides answers for specific names — e.g. steer `*.googleapis.com` to private endpoints |
 
+A public zone answers the internet only once the domain is **delegated** to it: after creating the zone, change the
+name servers at the domain's registrar to the zone's Cloud DNS name servers (`gcloud dns managed-zones describe`
+lists them). Resolvers may keep using the old name servers until the old NS records' TTL expires.
+
 VMs also get **internal DNS** automatically: `VM_NAME.ZONE.c.PROJECT_ID.internal`.
 
 

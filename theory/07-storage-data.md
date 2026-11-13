@@ -72,6 +72,11 @@ had stayed the full minimum (the **early-deletion charge**).
 early-deletion charges — the answer to *"access patterns are unknown or change"*. It replaces lifecycle class
 transitions on that bucket.
 
+**Changing a class.** A bucket's default class applies only to objects uploaded without a class of their own, so
+changing it leaves existing objects where they are. An existing object changes class when it is **rewritten**
+(`gcloud storage objects update --storage-class`) or moved by a lifecycle rule or Autoclass. Daily reads of
+Coldline objects are charged retrieval fees, so hot data belongs in Standard.
+
 {: .cmds }
 | Task | Command |
 |:------------------------------------|:----------------------------------------------------------------------|

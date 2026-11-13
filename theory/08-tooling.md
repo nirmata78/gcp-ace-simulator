@@ -55,7 +55,9 @@ match them. The exam prefers it over console clicks and shell scripts for anythi
 - **One state per environment** (separate directories or backends) limits the blast radius of a mistake.
 - **Existing resources** made by hand are brought under management with **`import`** blocks or `terraform import`
   — not by deleting and recreating them.
-- **Pin** provider and module versions so a plan today means the same tomorrow.
+- **Pin** provider and module versions so a plan today means the same tomorrow. For a shared module, a version
+  constraint that pins the **major** version (`version = "~> 20.0"`) accepts compatible minor and patch releases and
+  blocks breaking ones; an unversioned reference takes every change.
 
 {: .cmds }
 | Task | How |

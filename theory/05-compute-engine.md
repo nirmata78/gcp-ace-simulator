@@ -123,7 +123,7 @@ stopped**</mark>; disks can be attached live; labels, tags and metadata change l
 | **pd-ssd** | Higher IOPS per GB | Databases on older machine series |
 | **pd-standard** | HDD-backed | Cheapest, sequential throughput |
 | pd-extreme | Provisioned IOPS | Top PD performance on some series |
-| **Hyperdisk Balanced / Throughput / Extreme** | Network block storage with **performance (IOPS, throughput) provisioned independently of size** | The storage of the **newest machine series** — several (e.g. C4, N4) support **only** Hyperdisk (*verify* per series) |
+| **Hyperdisk Balanced / Throughput / Extreme** | Network block storage with **performance (IOPS, throughput) provisioned independently of size** | The storage of the **newest machine series** — several (e.g. C4, N4) support **only** Hyperdisk (*verify* per series). **Hyperdisk Throughput** is the low-cost choice for large, sequential, capacity-heavy data that needs little IOPS (not a boot disk). Provisioned IOPS and throughput can be changed on a disk attached to a running VM, with no effect on its data |
 | **Hyperdisk ML** | Read-only, attachable to **many VMs at once** | Serving model weights to a fleet |
 | **Regional PD / Hyperdisk Balanced High Availability** | **Synchronously replicated across two zones** | Survives a zone failure; force-attach to a standby VM in the other zone |
 | **Local SSD** | Physically attached, 375 GB partitions | **Highest performance, ephemeral**: data survives a reboot or live migration, **lost when the VM stops or is deleted** |
@@ -299,7 +299,7 @@ a zone outage — the answer to *"must stay up if a zone fails"*.
 |:----------------------------------|:------------------------------------------------------------------|
 | **CPU utilisation** | Target 60% average |
 | **Load-balancing serving capacity** | Utilisation or requests per second per instance behind an HTTP(S) LB |
-| **Cloud Monitoring metric** | Per-instance or per-group, e.g. Pub/Sub backlog |
+| **Cloud Monitoring metric** | Per-instance or per-group, e.g. Pub/Sub backlog, or guest memory use: install the **Ops Agent** and target `agent.googleapis.com/memory/percent_used` (Compute Engine alone does not report memory) |
 | **Schedules** | Scale up at 08:00 on weekdays |
 
 Other controls: **min and max** replicas, the **initialisation period** (how long a new VM is ignored while it

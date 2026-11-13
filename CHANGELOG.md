@@ -21,6 +21,8 @@ All notable changes to this project are recorded here. The format follows
 
 - **49 questions replaced by new ones** through `/rework`: 10 of the replacements are cross-domain and 5 are
   multiple-select. The bank stays at 927.
+- **19 more questions replaced by new ones** through `/rework 100`, which stopped after three of its 13 batches
+  (5 slots skipped): 4 of the replacements are cross-domain and 2 are multiple-select. The bank stays at 927.
 
 ## [1.3.0] - 2026-11-13
 
