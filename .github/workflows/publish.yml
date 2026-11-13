@@ -1,0 +1,180 @@
+# Publishes the simulator image for a release tag (decision D7 in docs/plans/v1.1.0-docker.yaml, issue #7):
+#   ghcr.io/nirmata78/gcp-ace-simulator        canonical, pushed with GITHUB_TOKEN
+#   docker.io/aoreshkevich/gcp-ace-simulator   mirror, only when the DOCKERHUB_TOKEN secret is set
+# Tags: 1.3.0 always; 1.3, 1 and latest only for the highest release (never for a pre-release such as 1.4.0-rc.1).
+# Run it by hand for an existing tag (e.g. one released before this workflow existed):
+#   gh workflow run publish.yml -f tag=v1.3.0
+name: publish
+on:
+  push:
+    tags: ["v*.*.*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: An existing release tag, such as v1.3.0
+        required: true
+permissions:
+  contents: read
+concurrency:
+  group: publish
+  cancel-in-progress: false
+env:
+  GHCR_IMAGE: ghcr.io/nirmata78/gcp-ace-simulator
+  DOCKERHUB_IMAGE: docker.io/aoreshkevich/gcp-ace-simulator
+  DOCKERHUB_USER: aoreshkevich
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      version: ${{ steps.ref.outputs.version }}
+      hub: ${{ steps.tags.outputs.hub }}
+    steps:
+      - name: Read the tag
+        id: ref
+        env:
+          TAG: ${{ inputs.tag || github.ref_name }}
+        run: |
+          if [[ ! "$TAG" =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)(-[0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error::$TAG is not a release tag (vMAJOR.MINOR.PATCH[-pre])"; exit 1
+          fi
+          {
+            echo "tag=$TAG"
+            echo "version=${TAG#v}"
+            echo "minor=${BASH_REMATCH[1]}.${BASH_REMATCH[2]}"
+            echo "major=${BASH_REMATCH[1]}"
+            echo "prerelease=$([ -n "${BASH_REMATCH[4]}" ] && echo true || echo false)"
+          } >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: refs/tags/${{ steps.ref.outputs.tag }}
+          persist-credentials: false
+
+      - name: The tag matches VERSION
+        env:
+          VERSION_TAG: ${{ steps.ref.outputs.version }}
+        run: |
+          file="$(cat VERSION)"
+          if [ "${VERSION_TAG%%-*}" != "$file" ]; then
+            echo "::error::tag $VERSION_TAG does not match VERSION $file"; exit 1
+          fi
+
+      - name: Choose the image tags
+        id: tags
+        env:
+          TAG: ${{ steps.ref.outputs.tag }}
+          VERSION_TAG: ${{ steps.ref.outputs.version }}
+          MINOR: ${{ steps.ref.outputs.minor }}
+          MAJOR: ${{ steps.ref.outputs.major }}
+          PRERELEASE: ${{ steps.ref.outputs.prerelease }}
+          HUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: |
+          highest="$(git ls-remote --tags --refs "https://github.com/${GITHUB_REPOSITORY}.git" 'v*.*.*' \
+            | sed 's#.*refs/tags/##' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1)"
+          floating=false
+          if [ "$PRERELEASE" = false ] && [ "$TAG" = "$highest" ]; then floating=true; fi
+          images=("$GHCR_IMAGE")
+          hub=false
+          if [ -n "$HUB_TOKEN" ]; then images+=("$DOCKERHUB_IMAGE"); hub=true; fi
+          {
+            echo "tags<<EOF"
+            for image in "${images[@]}"; do
+              echo "$image:$VERSION_TAG"
+              if [ "$floating" = true ]; then
+                echo "$image:$MINOR"; echo "$image:$MAJOR"; echo "$image:latest"
+              fi
+            done
+            echo "EOF"
+            echo "hub=$hub"
+          } >> "$GITHUB_OUTPUT"
+          echo "Highest release: $highest. Floating tags move: $floating. Docker Hub mirror: $hub."
+
+      - uses: docker/setup-qemu-action@c7c53464625b32c7a7e944ae62b3e17d2b600130 # v3.7.0
+      - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3.12.0
+
+      - uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3.7.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - if: steps.tags.outputs.hub == 'true'
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3.7.0
+        with:
+          username: ${{ env.DOCKERHUB_USER }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push linux/amd64 and linux/arm64
+        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6.19.2
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.tags.outputs.tags }}
+          build-args: ACE_VERSION=${{ steps.ref.outputs.version }}
+          labels: |
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.description=Practice simulator for the Google Cloud Associate Cloud Engineer exam
+          provenance: mode=max
+          sbom: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Both architectures are in the manifest
+        env:
+          VERSION_TAG: ${{ steps.ref.outputs.version }}
+          HUB: ${{ steps.tags.outputs.hub }}
+        run: |
+          images=("$GHCR_IMAGE")
+          if [ "$HUB" = true ]; then images+=("$DOCKERHUB_IMAGE"); fi
+          for image in "${images[@]}"; do
+            out="$(docker buildx imagetools inspect "$image:$VERSION_TAG")"
+            echo "$out"
+            grep -q 'linux/amd64' <<<"$out" && grep -q 'linux/arm64' <<<"$out" \
+              || { echo "::error::$image:$VERSION_TAG lacks an architecture"; exit 1; }
+          done
+
+  smoke:
+    needs: publish
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { runner: ubuntu-latest, arch: amd64 }
+          - { runner: ubuntu-24.04-arm, arch: arm64 }
+    runs-on: ${{ matrix.runner }}
+    permissions:
+      packages: read
+    steps:
+      # Logs in so the smoke test also works while a new GHCR package is still private.
+      - uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3.7.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: The pulled image starts and answers on its health endpoint
+        env:
+          IMAGE: ${{ env.GHCR_IMAGE }}:${{ needs.publish.outputs.version }}
+          VERSION_TAG: ${{ needs.publish.outputs.version }}
+          ARCH: ${{ matrix.arch }}
+        run: |
+          docker pull "$IMAGE"
+          got="$(docker image inspect --format '{{.Architecture}}' "$IMAGE")"
+          [ "$got" = "$ARCH" ] || { echo "::error::pulled $got, expected $ARCH"; exit 1; }
+          [ "$(docker run --rm --entrypoint cat "$IMAGE" /app/VERSION)" = "${VERSION_TAG%%-*}" ]
+          docker run -d --name ace -p 127.0.0.1:8501:8501 -v ace-state:/state --read-only --tmpfs /tmp \
+            --cap-drop ALL --security-opt no-new-privileges:true "$IMAGE"
+          for _ in $(seq 60); do
+            if curl -fsS http://127.0.0.1:8501/_stcore/health; then echo; docker rm -f ace; exit 0; fi
+            sleep 2
+          done
+          docker logs ace; exit 1
+      - name: The Docker Hub mirror pulls too
+        if: needs.publish.outputs.hub == 'true'
+        env:
+          IMAGE: docker.io/aoreshkevich/gcp-ace-simulator:${{ needs.publish.outputs.version }}
+        run: docker pull "$IMAGE"
