@@ -202,7 +202,9 @@ roles and you add it to yours. Launch stages are informational (`DEPRECATED` onl
 out); `DISABLED` is the one that switches the role off. A permission whose support level is `NOT_SUPPORTED` cannot
 go into any custom role, so it comes from a predefined role granted alongside, and a permission that works only at
 organization or folder level cannot go into a project-level custom role. `gcloud iam roles describe ROLE` lists what
-a role contains. Organization-level custom roles are managed with Organization Role Administrator.
+a role contains. Organization-level custom roles are managed with Organization Role Administrator. To get "this
+predefined role minus one permission", create a custom role **based on the predefined role** on the Roles page and
+remove that permission: predefined roles cannot be edited, and an IAM condition cannot take a permission out.
 
 **Narrow predefined roles to recognise.** Pub/Sub Viewer (see topics and subscriptions, no messages); Artifact
 Registry Writer (pull and push, no deleting or administering); Compute Storage Admin (disks, images and snapshots,
@@ -656,7 +658,12 @@ redeploy). GKE uses the Secret Manager add-on / CSI driver. Code can call the AP
   who may federate at all. **Disabling the pool** (`--disabled`) stops every federated user at once and can be
   undone. Custom attributes become principal sets: `principalSet://.../workforcePools/POOL/attribute.department/finance`.
   **Microsoft Entra ID** provisions Cloud Identity users through its enterprise application; GCDS is for LDAP /
-  on-premises AD.
+  on-premises AD. Federated users have no Google Account, so they use the **console (federated)** at
+  `https://console.cloud.google/` (not console.cloud.google.com), entering the pool's provider name on first visit.
+- **Personal accounts on your domain.** Verifying a domain in Cloud Identity surfaces consumer accounts that already
+  use it as **unmanaged users**; the **transfer tool for unmanaged users** sends each a transfer request, and an
+  account that accepts becomes managed with its data. Creating a new user with the same address makes a conflicting
+  account instead.
 - **Limits and delegation in IAM.** An allow policy holds at most **1,500 principals** — use groups.
   **Principal access boundary** policies say which resources a set of principals is *eligible* to use; they never
   grant, and they block access outside the boundary whatever roles are granted. A condition on

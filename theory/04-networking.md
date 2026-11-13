@@ -196,6 +196,8 @@ blocked**.
 > can add — adding `web` silently opens the VM to the web rule. A **target service account** can only be changed
 > by someone who may attach that service account (and only while the VM is stopped). *"Ensure only the web tier's
 > VMs receive this traffic, even if developers edit instances"* points at service accounts (or secure tags).
+> The other side of that coin: a VM created **without** the rule's tag gets nothing from it, and the fix is
+> `gcloud compute instances add-tags` — network tags can be added or removed **while the VM runs**.
 
 ### Firewall policies — hierarchical, global and regional
 
@@ -237,6 +239,11 @@ Policy rules add a fourth action to allow and deny: **`goto_next`**, which hands
 **Operating policies.** Move an existing VPC's rules into a policy with the **migration tool** (it keeps evaluation order; rules using
 network tags need tag-to-secure-tag mapping first), then **associate** the policy — a new policy does nothing until
 associated. To record what a policy rule matches, set **`--enable-logging`** on that rule; flow logs sample and do not name the rule.
+Hierarchical policies are always evaluated first. Between the rest, the network's **enforcement order** decides: the
+default **`AFTER_CLASSIC_FIREWALL`** evaluates VPC firewall rules *before* global and regional network firewall
+policies, so a matching legacy VPC allow wins over a policy deny; `gcloud compute networks update NET
+--network-firewall-policy-enforcement-order=BEFORE_CLASSIC_FIREWALL` puts the policies first. Priority numbers do not
+compare across the two.
 
 <a id="s4-5"></a>
 
@@ -347,6 +354,10 @@ appears in Google Cloud without anyone editing a route. Classic VPN can use stat
 > **Do the bandwidth sum first.** *"2 Gbps, encrypted, next week"* — HA VPN. *"20 Gbps sustained, we are in an
 > Equinix facility where Google is present"* — Dedicated Interconnect. *"5 Gbps, our data centre is nowhere near a
 > Google facility"* — Partner Interconnect.
+
+**Starting Partner Interconnect.** On the Google side you create a VLAN attachment of type **PARTNER** on a Cloud
+Router (whose ASN must be **16550**); the attachment generates a **pairing key**, which you give to the service
+provider so it can complete the connection. No LOA-CFA or cross-connect: those belong to Dedicated Interconnect.
 
 <a id="s4-7"></a>
 
@@ -489,7 +500,9 @@ LB, or via DNS authorisation in **Certificate Manager**) versus self-managed cer
 | **Standard** | Traffic rides the **public internet** to and from the region | **Regional only** | Lower egress price | Cost-sensitive, single-region, latency-tolerant |
 
 Set per project default (`gcloud compute project-info update --default-network-tier=STANDARD`) or per resource on
-IP addresses and forwarding rules.
+IP addresses and forwarding rules. A new default does not change existing resources. A VM's interface and its
+external address must be on the **same tier**, so moving a VM to Premium means removing its Standard Tier address
+first, then adding an access config on Premium with a Premium address.
 
 {: .tip }
 > *"Lowest network cost, users in one region, performance not critical"* — **Standard Tier**. *"Single anycast IP

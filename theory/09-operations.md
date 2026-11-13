@@ -38,7 +38,8 @@ on new clusters); **notification channels** created once and reused by alerts.
 
 A **metrics scope** makes one **scoping project** able to chart and alert on metrics of many **monitored
 projects** — *"one dashboard over twelve projects"*. Keep the scoping project free of workloads; add projects in
-**Monitoring → Settings**. The Logging equivalent is an **aggregated sink** or a **log scope** / Log Analytics view
+**Monitoring → Settings**. Changing a metrics scope needs **Monitoring Admin** on the scoping project **and** on each
+project added or removed; a viewer role on the monitored project is not enough. The Logging equivalent is an **aggregated sink** or a **log scope** / Log Analytics view
 across projects ([§9.5](#s9-5)).
 
 <a id="s9-2"></a>
@@ -305,6 +306,8 @@ savings or risk reduction:
 | Firewall Insights | Shadowed and unused rules |
 
 They appear in the **Recommendation Hub**, on resource pages, in the **FinOps hub**, and via the Recommender API.
+For analysis across the organization, the **BigQuery export** for Active Assist (a BigQuery Data Transfer Service
+transfer) writes daily snapshots of every project's recommendations and insights to a dataset, with no code.
 
 
 **Gemini Cloud Assist for Cloud Monitoring** helps you **build and read** observability in natural language:

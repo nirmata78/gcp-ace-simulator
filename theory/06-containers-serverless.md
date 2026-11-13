@@ -192,6 +192,8 @@ Healthy Pods behind a Service that answers nothing usually means the selector an
 > - **Compute classes** select hardware: the default general-purpose class, **Balanced**, **Scale-Out**,
 >   **Performance**, **Accelerator** — requested with a `nodeSelector` of `cloud.google.com/compute-class`; Spot Pods
 >   with `cloud.google.com/gke-spot: "true"`.
+> - **Scratch space** beyond the ephemeral storage maximum of a general-purpose Pod (*verify* the limit) comes from a
+>   **generic ephemeral volume**: a claim per Pod on any GKE storage option, such as pd-balanced, deleted with the Pod.
 >
 > *"Autopilot Pods cost more than expected"* — look for missing or oversized requests, and use VPA
 > recommendations to right-size them. *"A Pod was scheduled with more memory than we asked for"* — ratio or
@@ -280,6 +282,8 @@ as OCI). **Container Registry is shut down** — `gcr.io` paths are now served b
 | (b) Let it impersonate a Google service account | `roles/iam.workloadIdentityUser` on the Google SA for member `serviceAccount:P.svc.id.goog[shop/web]`, then annotate the KSA with `iam.gke.io/gcp-service-account=GSA_EMAIL` |
 
 The Pod spec names `serviceAccountName: web`. Client libraries then find credentials through ADC with no change.
+With route (b), GKE exchanges the federated token for the Google service account's token through the **IAM Service
+Account Credentials API**, so that API must be enabled in the project, or the Pods fail with an "API not enabled" error.
 A Pod spec that names no ServiceAccount runs as the namespace's **`default`** ServiceAccount, so a grant to `web`
 never reaches it: *"granted, but still permission denied"* often means the Deployment forgot `serviceAccountName`.
 
@@ -355,6 +359,10 @@ deliberate two-step:
 > **Revisions are immutable and stay addressable**, so a canary is a traffic percentage and a rollback is one
 > command that points traffic back — no rebuild, no DNS change. DNS weighting against a native split is always the
 > wrong answer: it is cached, coarse and slow to reverse.
+
+**Session affinity** (`gcloud run services update SERVICE --session-affinity`, set per revision) sends a client's
+sequential requests to the same revision instance through a cookie, best effort, which helps in-memory caches. A
+client with the cookie stays on its revision even while the traffic split changes.
 
 ### Autoscaling settings
 

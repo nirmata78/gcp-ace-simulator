@@ -449,6 +449,10 @@ limits).
 | **Firestore** | PITR (7 days), scheduled backups, export/import | **New database** / imported data |
 | BigQuery | Time travel, fail-safe, table snapshots, dataset replication | Table as of a time |
 
+Before a risky change on Cloud SQL, take an **on-demand backup** (`gcloud sql backups create --instance=I`): it can be
+taken at any moment, and a standard on-demand backup is kept until you delete it, while automated backups are pruned by
+their retention setting.
+
 **Backup and DR Service** centralises backup policy for VMs, disks, databases and file shares, with **backup
 vaults** that make backups immutable and indelible for a set period — the answer to *"backups ransomware cannot
 delete"*.
