@@ -99,6 +99,9 @@ policy** through VM Manager ([§5.6](05-compute-engine.md#s5-6)) or the console'
 > charts, and SLOs. Error Reporting groups exceptions but cannot express *"more than 50 in 10 minutes of this plain
 > line"*.
 
+A log-based metric can carry **labels** extracted from a log field: each value becomes its own time series, so one
+metric can be charted per customer plan or per region without a metric for each.
+
 **Uptime checks** probe HTTP(S), TCP or ICMP endpoints from several Google locations (or privately, inside a VPC),
 and chart availability and latency; they alert only through an attached policy. **SLOs** are defined on a
 **service** with an **SLI** (availability or latency), a target and a window (rolling or calendar); the **error
@@ -152,7 +155,8 @@ Log entries --> Log Router --> sinks (inclusion filter, exclusion filters)
 organization with `--include-children` routes every project's logs beneath it — the answer to *"central logging
 for all projects"*. Each sink has a **writer identity** (a service account) that <mark markdown="span">**must be granted write access at
 the destination**</mark> (`bigquery.dataEditor`, `storage.objectCreator`, `pubsub.publisher`, or `logging.bucketWriter`)
-— a sink that "does nothing" usually lacks this grant.
+— a sink that "does nothing" usually lacks this grant. A sink routes only entries that arrive after it exists;
+entries already stored are exported by **copying** them from the log bucket to Cloud Storage (`gcloud logging copy`).
 
 **Exclusion filters** drop entries **before storage** — the lever for the logging bill (*"we do not need debug
 logs from dev"*). Routing is free; ingestion and retention beyond the defaults cost money.

@@ -12,6 +12,16 @@ All notable changes to this project are recorded here. The format follows
   attestations: `ghcr.io/nirmata78/gcp-ace-simulator`, mirrored to `docker.io/aoreshkevich/gcp-ace-simulator`. Tags are
   the full version, plus `MAJOR.MINOR`, `MAJOR` and `latest` for the newest release (#7).
 
+- **`/rework N` replaces questions you have already seen.** It takes the N questions seen longest ago from your local
+  history (`kb.py rework`), writes for each a new scenario with a different correct answer on the same subtopic, and
+  puts it through the same evidence and blind-solve gates as `/expand`. The replacement gets a new id and the old id
+  is retired, so the question comes back into the draw as unseen.
+
+### Changed
+
+- **49 questions replaced by new ones** through `/rework`: 10 of the replacements are cross-domain and 5 are
+  multiple-select. The bank stays at 927.
+
 ## [1.3.0] - 2026-11-13
 
 ### Added

@@ -186,7 +186,9 @@ a metadata key needs an OS Login role instead (Compute OS Login, or Compute OS A
 
 {: .tip }
 > *"SSH to VMs with no public IP, per-user authorisation, no bastion"* — **IAP TCP forwarding + OS Login**.
-> *"The VM does not boot / sshd is dead"* — **serial console**.
+> *"The VM does not boot / sshd is dead"* — **serial console**. *"SSH stopped working and nobody knows why"* — the
+> **SSH troubleshooting tool** (`gcloud compute ssh VM --troubleshoot`), which tests IAM, network path and VM state
+> without changing anything.
 
 <a id="s5-6"></a>
 
@@ -302,6 +304,8 @@ a zone outage — the answer to *"must stay up if a zone fails"*.
 
 Other controls: **min and max** replicas, the **initialisation period** (how long a new VM is ignored while it
 warms up), **scale-in controls** (limit how fast it shrinks), and **predictive** autoscaling for CPU patterns.
+A **scaling schedule** sets a minimum number of VMs for a recurring window, for a known rush that arrives faster
+than a new VM can boot.
 
 ### Updating a group
 

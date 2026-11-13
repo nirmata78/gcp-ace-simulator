@@ -39,7 +39,8 @@ Organization                 the root: one per Cloud Identity / Workspace custom
    (`compute.vmExternalIpAccess`); the **organization policy** is your setting of that constraint on a node. Descendants inherit the policy; a lower node can **replace** it, or for
    list constraints **merge** with it ([§3.7](03-identity-access.md#s3-7)). Unlike IAM, it binds Owners too.
 3. **The project is the boundary** for billing linkage, quota, API enablement and, by default, networking.
-   *"Stop one team exhausting another's quota"* means separate projects.
+   *"Stop one team exhausting another's quota"* means separate projects. A project has **exactly one parent**:
+   a second department gets access through a grant on the project, not through a second folder.
 4. **Grant at the smallest node that covers the requirement, including its future.** *"All of Finance's projects,
    including new ones"* is one binding on the Finance folder — not forty project bindings.
 
@@ -80,7 +81,8 @@ now two routes to one:
 the **Organization Administrator** (`roles/resourcemanager.organizationAdmin`, IAM) are different roles in
 different systems. The super admin manages users, groups and domain settings; the Organization Administrator
 manages IAM on the resource hierarchy. Google's set-up guidance is to grant org-level roles to **groups** such as
-`gcp-organization-admins@` rather than to individuals.
+`gcp-organization-admins@` rather than to individuals. A super admin should have a **separate account with its own
+login**, used only for super admin tasks and never for daily work.
 
 {: .watch }
 > **Super admin versus Organization Administrator.** *"Create users, reset passwords, manage groups"* is the Admin
@@ -277,6 +279,10 @@ distractor.
 
 <a id="s2-6"></a>
 
+**Who may ask.** Seeing a quota and changing it are separate permissions: Viewer and **Quota Viewer** read values,
+while a quota increase request needs the update permission that **Quota Administrator**
+(`roles/servicemanagement.quotaAdmin`), Service Usage Admin, Editor and Owner carry.
+
 **Three more quota facts.** Quota is counted **per project** and shared by every caller in it, whatever the service
 account, region or source IP: workloads that must not compete for quota go in separate projects. An *allocation*
 quota is freed at once by deleting unused resources that count against it, while a *rate* quota only comes back
@@ -365,7 +371,8 @@ It is configured on the **billing account**, into a dataset in a project you cho
 
 <a id="s2-8"></a>
 
-**Budget and export details.** A budget's period is monthly, quarterly, yearly or a non-recurring **custom range**
+**Budget and export details.** A budget's scope can be narrowed to projects, services or **labels**, so one team's
+spend inside a shared project gets its own budget. A budget's period is monthly, quarterly, yearly or a non-recurring **custom range**
 (for a grant with fixed dates; a custom range cannot alert on forecast). By default a budget subtracts discounts
 and credits: clear the **Savings** options to track cost before credits. **Billing Account Costs Manager** creates
 and edits budgets without the rest of the administrator role. For exports, the *standard* usage cost table is

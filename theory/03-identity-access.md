@@ -47,6 +47,7 @@ contain users, service accounts and other groups.
 | **SAML / OIDC single sign-on** | Users authenticate at the corporate IdP; passwords never live at Google |
 | **Automatic provisioning (SCIM)** from Entra ID, Okta and others | The IdP creates, updates and suspends Cloud Identity accounts as HR changes flow through it |
 | **Directory API / scripts** | Programmatic account and group management |
+| **Dynamic groups** (Cloud Identity Premium) | A Google group whose members are whoever matches a **membership query** on user attributes, such as department; nothing to sync or edit by hand |
 
 {: .watch }
 > **Sync versus SSO.** GCDS or SCIM provisioning decides *which accounts exist* in Cloud Identity. SSO decides *where
@@ -326,6 +327,7 @@ what a new policy would block before you enforce it. Changing org policies needs
 | `storage.uniformBucketLevelAccess` | Buckets using ACLs |
 | `storage.publicAccessPrevention` | Buckets or objects being made public |
 | `gcp.restrictNonCmekServices` | Resources created without customer-managed keys ([§7.14](07-storage-data.md#s7-14)) |
+| `gcp.restrictCmekCryptoKeyProjects` | CMEK keys from any project other than the allowed key projects |
 
 {: .note }
 > **Secure by default.** Organizations created from 2024 onward have several of these enforced automatically —

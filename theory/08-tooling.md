@@ -205,6 +205,8 @@ timeouts** control cost.
   configuration.
 - **Standard tooling**: extend a Cloud Workstations **base image**, push it to Artifact Registry, set it as the
   configuration's container image.
+- **Slow starts**: **quick start workstations** keep a pool of pre-started VMs on the configuration, so a
+  workstation starts faster; the pool's VMs are billed while they wait.
 - **Only `/home` persists** (the persistent disk). Anything written elsewhere is recreated from the image on every
   start — *"my clone in /opt vanished overnight"*.
 

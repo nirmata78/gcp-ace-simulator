@@ -184,7 +184,7 @@ once reached, further queries fail until the next day. A budget only alerts.
 | **Cloud SQL** | Managed MySQL, PostgreSQL, SQL Server | **One primary for writes**; read replicas | "managed relational", "migrate our MySQL/Postgres/SQL Server", "regional is fine" |
 | **AlloyDB** | **PostgreSQL-compatible**, high performance | One primary + **read pools**; columnar engine for analytics | "Postgres, much faster", "transactions and analytics on the same data" |
 | **Spanner** | Relational, SQL, **horizontally scalable** | **Strong (external) consistency, global**, up to 99.999% | "**global** relational", "scale **writes**", "strong consistency across regions" |
-| **Bigtable** | Wide-column NoSQL, **row-key and range** access | Millions of ops/s, single-digit ms, petabytes | "time series", "IoT", "hundreds of thousands of writes/s", "ad-tech", "key lookups" |
+| **Bigtable** | Wide-column NoSQL, **row-key and range** access | Millions of ops/s, single-digit ms, petabytes | "time series", "IoT", "hundreds of thousands of writes/s", "ad-tech", "key lookups", "existing HBase application" (HBase client) |
 | **Firestore** | **Document** NoSQL, serverless | Strong consistency, auto-scaling; real-time listeners, offline SDKs | "mobile / web app", "documents", "sync clients in real time" |
 | **BigQuery** | Serverless **analytical warehouse**, columnar | Scans terabytes–petabytes | "analytics", "data warehouse", "SQL over huge datasets", "BI dashboards" |
 | **Memorystore** | Managed **Redis, Valkey, Memcached** | Sub-millisecond, in memory | "cache", "session store", "leaderboard" |
@@ -389,6 +389,7 @@ instead of loading it, and `gcloud storage cp` copies files, never into a table.
 | Retention | Unacked messages kept **7 days** by default (up to 31); topics can retain messages for replay |
 | Failure handling | Retry policy (immediate or exponential backoff); **dead-letter topic** after N delivery attempts. The **Pub/Sub service agent** forwards the messages, so it needs **Publisher** on the dead-letter topic and **Subscriber** on the source subscription |
 | Ordering | **Ordering keys** preserve order per key |
+| Filtering | A **subscription filter** on message attributes, set when the subscription is created, delivers only matching messages |
 | Replay | **Snapshots** and **seek** to a time |
 
 {: .key }

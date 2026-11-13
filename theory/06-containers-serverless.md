@@ -32,6 +32,7 @@ VMs running your Pods. The two modes differ in who owns those nodes.
 {: .trap }
 > <mark markdown="span">**"Do not want to manage nodes" is Autopilot — not Standard with node auto-provisioning and autoscaling.**</mark>
 > Automation on a Standard cluster changes how much work the nodes are, not who owns them or how you are billed.
+> The reverse also holds: a team that must pick the node image, sign in to nodes or tune them needs **Standard**.
 
 ### Cluster topology and access
 
@@ -70,6 +71,8 @@ is the modern *"kubectl cannot authenticate"* error. Cloud Shell has both pre-in
 **Version skew.** Kubernetes supports a `kubectl` **within one minor version** of the control plane, older or newer.
 A workstation three versions behind gives odd errors; the fix is a current `kubectl` (`gcloud components update`
 or the OS package), never downgrading the cluster. `get-credentials` writes configuration and installs nothing.
+It needs `container.clusters.get`; the least-privileged role with it is **Kubernetes Engine Cluster Viewer**
+(`roles/container.clusterViewer`), which gives no access to the workloads inside the cluster.
 
 **Authorisation is two layers.** **IAM** grants cluster-wide Kubernetes rights at the project
 (`roles/container.viewer`, `container.developer`, `container.admin`). **Kubernetes RBAC** (Roles and RoleBindings)
@@ -106,6 +109,7 @@ RBAC.
 |:------------------------------------|:----------------------------------------------------------------------|
 | Create and expose imperatively | `kubectl create deployment web --image=IMG` · `kubectl expose deployment web --port=80 --target-port=8080` |
 | Apply manifests (the normal way) | `kubectl apply -f k8s/` |
+| Hold a rollout part-way, then continue | `kubectl rollout pause deployment/web` · `kubectl rollout resume deployment/web` |
 | New image, watch it, roll it back | `kubectl set image deployment/web web=IMG:1.5` · `kubectl rollout status deployment/web` · `kubectl rollout undo deployment/web` |
 | Scale by hand | `kubectl scale deployment web --replicas=6` |
 
@@ -132,6 +136,9 @@ and makes health checks per Pod.
 > <mark markdown="span">**Path or host routing, or one IP for many Services, means Ingress or Gateway.**</mark> A `LoadBalancer` Service is one IP
 > for one Service at layer 4 — three apps behind *"one external IP routed by URL path"* is one Ingress, not three
 > LoadBalancer Services.
+
+A Service finds its Pods by **label selector**: a Pod must carry every label in the selector to receive traffic.
+Healthy Pods behind a Service that answers nothing usually means the selector and the Pod labels do not match.
 
 ### Traffic splitting on GKE
 

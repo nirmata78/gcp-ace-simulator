@@ -47,6 +47,7 @@ SSH, RDP, ICMP from anywhere). Production work starts on a custom-mode VPC, and 
 - A subnet has one **primary IPv4 range** (RFC 1918 or other private ranges) and optional **secondary ranges** —
   used by GKE for Pod and Service IPs (alias IPs).
 - <mark markdown="span">**Four addresses in every primary range are reserved**</mark>: network, default gateway, second-to-last, and broadcast.
+- The **smallest subnet is a /29**: a primary or secondary range holds at least eight addresses.
 - Subnet ranges in one VPC, and across peered VPCs, **must not overlap**.
 - Subnets can be **dual-stack** (IPv4 + IPv6) or IPv6-only (*recognise*).
 
@@ -219,7 +220,8 @@ Policy rules add a fourth action to allow and deny: **`goto_next`**, which hands
 {: .new-title }
 > New in the June 2026 guide — Cloud NGFW and secure tags
 >
-> **Secure tags** are resource-manager tags created with the firewall purpose and bound to a VPC. You attach tag
+> **Secure tags** are resource-manager tags created with the firewall purpose (`GCE_FIREWALL`) and bound to a VPC;
+> a tag key made for another use, such as cost reports, cannot be selected in a firewall policy rule. You attach tag
 > *values* to VM instances (or GKE node pools), and firewall-**policy** rules select sources and targets by those
 > values. Because attaching a tag value needs an IAM role (`roles/resourcemanager.tagUser` on the value), **a
 > developer cannot open a VM to a rule simply by editing it** — the property network tags lack. And the mapping
@@ -251,6 +253,8 @@ associated. To record what a policy rule matches, set **`--enable-logging`** on 
 - The **host project** owns the VPC; **service projects** are attached and create resources in its subnets.
   Resources (and their bills) belong to the service project; the network belongs to the host.
 - Requires an **organization**. A service project attaches to **one** host; a host cannot also be a service project.
+  Host and service projects must be in the **same organization**: a project from another organization is
+  migrated in before it can be attached.
 - **Roles:** the **Shared VPC Admin** (`roles/compute.xpnAdmin`, granted at the org or a folder) enables hosts and
   attaches service projects. **Network User** (`roles/compute.networkUser`) on the host project — or on
   **individual subnets** for least privilege — lets service-project developers put resources in those subnets.
