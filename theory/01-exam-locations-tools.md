@@ -223,6 +223,7 @@ machine; unsetting the `account` property does not.
 | A VPC is ... ; a subnet is ... | Global ; regional |
 | Recreate a disk in another region | From a **snapshot** or **image** — both are global |
 | Is GPU type X offered in this zone? | `gcloud compute accelerator-types list` |
+| Compare regions by carbon footprint, price and latency | The Google Cloud **Region Picker** tool |
 | Stop anyone creating resources outside the EU | `gcp.resourceLocations` org policy |
 | Switch account + project + region in one command | `gcloud config configurations activate NAME` |
 | Library code cannot find credentials on a laptop | `gcloud auth application-default login` |

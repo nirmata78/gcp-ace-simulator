@@ -464,7 +464,11 @@ Manager, [§5.6](05-compute-engine.md#s5-6)). Reading it needs `roles/cloudasset
   Workloads** applies a control package to a folder — data location **and** support-personnel controls; the
   `gcp.resourceLocations` constraint covers location only ([§2.3](#s2-3)). The **trusted image** constraint
   `compute.trustedImageProjects` lets principals create boot disks only from images in the listed projects; granting
-  access to one image project cannot remove the public images everyone can already use.
+  access to one image project cannot remove the public images everyone can already use. An organization policy can
+  also be **conditional on a tag** (`resource.matchTag(...)`): attach the tag to the projects or folders, then add an
+  enforcing rule for that tag beside a non-enforcing default, and only tagged resources are restricted. A **dry-run**
+  policy never enforces. `roles/logging.configWriter` (Logs Configuration Writer) is the narrow role for creating
+  and changing log sinks, exclusions and similar logging configuration.
 - **Organization policy beyond the catalogue.** `sql.restrictPublicIp` blocks public IPs on Cloud SQL
   (`sql.restrictAuthorizedNetworks` only blocks authorized networks). **Custom constraints** use CEL on resource
   fields when no predefined constraint fits — for example *every new GKE cluster must have Workload Identity
