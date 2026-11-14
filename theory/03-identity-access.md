@@ -95,10 +95,15 @@ principalSet://iam.googleapis.com/locations/global/workforcePools/POOL/*
 **Granting access** uses those identifiers exactly like `user:` or `group:` — typically a `principalSet` for a
 group coming from the IdP. **Signing in**: federated users reach a federated sign-in for the console, and
 `gcloud` uses a login configuration file created for the pool. <mark markdown="span">**Group bindings only work if the provider maps the
-IdP's groups claim to `google.groups`**</mark> — otherwise the `principalSet .../group/...` matches nobody. The pool's
+IdP's groups claim to `google.groups`**</mark> — otherwise the `principalSet .../group/...` matches nobody. A user in
+too many groups (more than 400, *verify*) cannot sign in at all: send and map only the groups Google Cloud uses. The pool's
 **session duration** (default 1 h, 15 min–12 h, e.g. `--session-duration=1800s`) sets how long console and gcloud
 sessions from that pool last — per pool, so contractors can get shorter sessions than employees. Some products and features do not support
-workforce identities (*verify* the supported-products list before choosing it).
+workforce identities (*verify* the supported-products list before choosing it). One that is examinable: **Cloud
+Storage accepts federated identities only on buckets with uniform bucket-level access**; a bucket on fine-grained
+ACLs rejects them whatever IAM roles they hold, and federated users cannot generate signed URLs. Where such a
+limitation blocks a federated workload (Compute Engine image import from an ACL bucket, for instance), let it
+**impersonate a service account**: service accounts are first-party credentials and not subject to federation limits.
 
 
 {: .watch }
@@ -467,7 +472,9 @@ to be **stopped**.
 | Local client libraries as `deployer` | `gcloud auth application-default login --impersonate-service-account=SA_EMAIL` |
 
 The `auth/impersonate_service_account` property changes **gcloud only**. Client libraries read the ADC file, so
-make that file with the last row's command.
+make that file with the last row's command. Impersonation is also how to **test a set of permissions**: give the
+candidate roles to a new test service account and run the task impersonating it, with no keys, no test users and no
+change to the production account. The **console** cannot impersonate; it always uses your own credentials.
 
 Impersonation issues **short-lived tokens**, writes **no key material**, and the audit log records **both** the
 caller and the impersonated account — the original principal is in
@@ -509,7 +516,7 @@ The **IAM Service Account Credentials API** (`iamcredentials.googleapis.com`) is
 
 | Call | Produces | Used for |
 |:----------------------|:--------------------------------------------------------|:------------------------------------------|
-| `generateAccessToken` | OAuth 2.0 access token, **1 hour** by default (extendable to 12 h by org policy) | Calling Google APIs |
+| `generateAccessToken` | OAuth 2.0 access token, **1 hour** by default (extendable to 12 h by org policy, then requested with a `lifetime` in the REST call; gcloud cannot set a lifetime) | Calling Google APIs |
 | `generateIdToken` | OIDC ID token for an **audience** | Calling Cloud Run, functions, IAP-protected apps |
 | `signBlob` / `signJwt` | A signature by the account's Google-managed key | Signed URLs without a key file ([§7.4](07-storage-data.md#s7-4)), custom JWTs |
 

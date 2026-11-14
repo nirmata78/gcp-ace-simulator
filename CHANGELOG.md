@@ -26,6 +26,9 @@ All notable changes to this project are recorded here. The format follows
   multiple-select. The bank stays at 927.
 - **75 more questions replaced by new ones** through `/rework 100` (25 slots skipped): 12 of the replacements are
   cross-domain and 8 are multiple-select. The bank stays at 927.
+- **47 more questions replaced by new ones** through `/rework 50` (3 slots skipped): 8 of the replacements are
+  cross-domain and 5 are multiple-select. The bank stays at 946. The theory's budget section no longer says budgets
+  alert to chat or SMS channels: a budget links only Cloud Monitoring email channels, and anything else goes through Pub/Sub.
 
 ## [1.3.0] - 2026-11-13
 

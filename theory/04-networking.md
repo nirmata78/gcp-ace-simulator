@@ -504,7 +504,9 @@ LB, or via DNS authorisation in **Certificate Manager**) versus self-managed cer
 | **Standard** | Traffic rides the **public internet** to and from the region | **Regional only** | Lower egress price | Cost-sensitive, single-region, latency-tolerant |
 
 Set per project default (`gcloud compute project-info update --default-network-tier=STANDARD`) or per resource on
-IP addresses and forwarding rules. A new default does not change existing resources. A VM's interface and its
+IP addresses and forwarding rules. A new default does not change existing resources, and a tier set on a resource
+always wins over the default: a MIG whose instance template names `PREMIUM` keeps creating Premium VMs until a new
+template with Standard Tier is rolled out (templates cannot be edited). A VM's interface and its
 external address must be on the **same tier**, so moving a VM to Premium means removing its Standard Tier address
 first, then adding an access config on Premium with a Premium address.
 

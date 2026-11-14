@@ -86,7 +86,10 @@ normal memory-per-vCPU ceiling.
 | Custom shape on a Spot VM | `gcloud compute instances create render-1 --machine-type=n2-custom-6-40960 --provisioning-model=SPOT --instance-termination-action=DELETE` |
 
 **On preemption** a Spot VM is **stopped** or **deleted** (your `--instance-termination-action`); a shutdown script
-gets the notice period to checkpoint. In a MIG, preempted VMs are recreated when capacity returns.
+gets the notice period to checkpoint. In a MIG, preempted VMs are recreated when capacity returns. To tell a
+preemption from an ordinary stop afterwards, list the system operations of type **`compute.instances.preempted`**
+(`gcloud compute operations list --filter="operationType=compute.instances.preempted"`); a shutdown script runs on
+every shutdown, so its output proves nothing either way.
 
 <a id="s5-3"></a>
 
@@ -239,7 +242,9 @@ service account never reports to VM Manager.
 ### Snapshots
 
 - **Incremental**: the first is full, later ones store changed blocks; deleting one never breaks the others.
-- Stored **multi-regionally or regionally** (you choose), so a disk can be created from them anywhere.
+- Stored **multi-regionally or regionally** (you choose), so a disk can be created from them anywhere. A **regional**
+  location saves network charges but may be unreachable in a regional disruption; snapshots that must survive the
+  loss of their region go in a **multi-region** (for example `eu`) or a second region.
 - **Snapshot schedules** are resource policies attached to disks, with retention — the managed answer to *"back up
   these disks nightly, keep 14 days"*. A cron job running `gcloud` is the assembled distractor.
 - **Archive snapshots** cost less to store and more to restore; **instant snapshots** are fast, in-place,
@@ -249,7 +254,8 @@ service account never reports to VM Manager.
 ### Images
 
 - **Image families** point at the newest non-deprecated image — build `hardened-v7`, add it to family
-  `hardened`, and every template using the family picks it up.
+  `hardened`, and every template using the family picks it up. To **roll back**, deprecate the newest image: the
+  family points to the previous non-deprecated one again, templates stay untouched, and the bad image is kept.
 - **Deprecation states**: `DEPRECATED` (warn), `OBSOLETE` (no new use), `DELETED`.
 - **Share** images across projects by granting `roles/compute.imageUser` on the image project.
 - The **golden-image** pattern: *"every VM must boot already hardened, with no configuration step at start-up"* —
@@ -366,7 +372,8 @@ like databases or legacy apps that need stable identity.
 ### Attaching GPUs — the constraints
 
 - **Accelerator-optimised series** (A2, A3, A4, G2) come with GPUs built into the machine type — one A100 40GB is
-  **`a2-highgpu-1g`**, the 80GB A100 is `a2-ultragpu-*`; you choose the machine type, not `--accelerator`. **N1** VMs
+  **`a2-highgpu-1g`**, the 80GB A100 is `a2-ultragpu-*`; you choose the machine type, not `--accelerator`, and to
+  change the GPU count you stop the VM and change its machine type (`g2-standard-8` has one L4, `g2-standard-24` two). **N1** VMs
   take attached GPUs (`--accelerator=type=nvidia-tesla-t4,count=1`); A100s cannot be attached to N1, and E2/C3 take
   no GPUs.
 - **Graphics desktops** (CAD, 3D) — NVIDIA GPUs such as the L4 with **RTX Virtual Workstation** images. TPUs never

@@ -127,6 +127,7 @@ Coldline objects are charged retrieval fees, so hot data belongs in Standard.
 |:------------------------------------------|:------------------------------------------------------------------|
 | **Uniform bucket-level access** | **IAM only**, no object ACLs — the recommended setting. Reversible for 90 days, then permanent |
 | Fine-grained access | IAM plus per-object **ACLs** — legacy needs only |
+| **Managed folders** | IAM roles on one **prefix** of a bucket (`gs://B/exports/`): the grant covers every object whose name starts with that path, and nothing else in the bucket. Needs uniform bucket-level access. Deny policies cannot be set on buckets or managed folders |
 | **Public access prevention** | Blocks `allUsers` / `allAuthenticatedUsers` on the bucket (also enforceable by org policy) |
 | **Signed URL** | **Time-limited** access to one object for someone **with no Google identity** — download or upload; V4 URLs last at most 7 days |
 | Signed policy document | Browser **form uploads** with constraints (size, type) |
@@ -338,7 +339,9 @@ rule stands: **a cache in front of a database, not the database**.
 > security and cost issues**: no automated backups, no HA, outdated versions, public IPs, missing deletion protection,
 > over-provisioning. It needs no agents, and Gemini can answer fleet questions in natural language (*"which Cloud SQL
 > instances in production have no backups?"*). *"One place to see and fix risk across all our databases"* is Database
-> Center; a spreadsheet or per-product consoles are the distractors. Self-managed MySQL, PostgreSQL and SQL Server
+> Center; a spreadsheet or per-product consoles are the distractors. **Database Center Viewer**
+> (`roles/databasecenter.viewer`) shows databases' metadata, not their data; grant it on a folder to cover its
+> present and future projects. Health issues that come from recommenders also need **Recommender Viewer**. Self-managed MySQL, PostgreSQL and SQL Server
 > on **Compute Engine VMs** can be added, but that is *Preview*: the GA fleet is Google's managed database products.
 
 <a id="s7-11"></a>
@@ -361,7 +364,7 @@ Volume / usable bandwidth = days.  Acceptable?
 | Tool | Right when |
 |:----------------------------------|:------------------------------------------------------------------|
 | **`gcloud storage cp / rsync`** | Small or scripted transfers; parallel composite uploads for big files are automatic |
-| **Storage Transfer Service** | Large or **recurring** transfers from other clouds, URL lists, on-premises (with **agent pools**), or between buckets; scheduling, retries, integrity checks, bandwidth limits |
+| **Storage Transfer Service** | Large or **recurring** transfers from other clouds, URL lists, on-premises (with **agent pools**), or between buckets; scheduling, retries, integrity checks, bandwidth limits. Cloud-to-cloud transfers are agentless and run as the **Storage Transfer Service service agent**, which needs roles on the destination bucket (the console grants them for you; Terraform does not). From S3 without access keys, use **federated identity**: an AWS role that trusts the service agent's Google identity |
 | **Transfer Appliance** | Hundreds of TB or more, a **thin or busy link**, or a deadline the network cannot meet |
 | **`bq load`** | One-off or batch loads of CSV, JSON, Avro, Parquet, ORC **from Cloud Storage** — batch loading is free |
 | **External tables / BigLake** | **Query in place** without loading |
@@ -533,6 +536,7 @@ Key ring   location is permanent: a region, a multi-region (eu, us) or global
 | Task | Command |
 |:------------------------------------|:----------------------------------------------------------------------|
 | Key ring and key (HSM, 90-day rotation) | `gcloud kms keyrings create data-eu --location=europe-central2` · `gcloud kms keys create sql-key --keyring=data-eu --location=europe-central2 --purpose=encryption --rotation-period=90d --protection-level=hsm` |
+| An app that may only **encrypt** with one key (never decrypt) | `roles/cloudkms.cryptoKeyEncrypter` on **that key**, not the key ring; the *Via Delegation* variants are for encryption done through other Google services |
 | Let the product use the key | grant `roles/cloudkms.cryptoKeyEncrypterDecrypter` on the key to the product's **service agent** — create it first if absent: `gcloud beta services identity create --service=sqladmin.googleapis.com` |
 | Use the key | `gcloud sql instances create ... --disk-encryption-key=KEY` · `gcloud storage buckets update gs://B --default-encryption-key=KEY` |
 | Stop data being readable | `gcloud kms keys versions disable 3 --key=sql-key --keyring=data-eu --location=europe-central2` |

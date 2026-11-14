@@ -165,7 +165,9 @@ entries already stored are exported by **copying** them from the log bucket to C
 **Exclusion filters** drop entries **before storage** — the lever for the logging bill (*"we do not need debug
 logs from dev"*). Routing is free; ingestion and retention beyond the defaults cost money.
 
-**Log views** restrict who sees which logs **inside** a bucket (`roles/logging.viewAccessor` on a view).
+**Log views** restrict who sees which logs **inside** a bucket (`roles/logging.viewAccessor` on a view). Logs that an
+aggregated sink routed to a central bucket are not in the source project's buckets: in Logs Explorer, **Refine
+scope** → *Log view* and select the central bucket's view to see them.
 
 A log bucket's **region is fixed at creation**: to store logs elsewhere, create a bucket in the new region and
 point the sinks at it. A **log view** exposes a subset of a bucket, and IAM on the view limits a team to that
@@ -257,7 +259,7 @@ charged by volume: tune sampling and aggregation for flow logs, and log only the
 | Symptom | Tool |
 |:----------------------------------------------|:------------------------------------------------------------------|
 | A request is slow — **which service** in the chain? | **Cloud Trace** (spans per service; automatic for Cloud Run and App Engine requests, OpenTelemetry elsewhere) |
-| One service is slow or expensive — **why, inside the code**? | **Cloud Profiler** (continuous CPU, heap, thread and contention profiles in production, low overhead) |
+| One service is slow or expensive — **why, inside the code**? | **Cloud Profiler** (continuous CPU, heap, thread and contention profiles in production, low overhead). The agent library uploads as the workload's service account, which needs **Cloud Profiler Agent** (`roles/cloudprofiler.agent`) unless it is an unmodified default account |
 | A new **exception** started appearing | **Error Reporting** (groups stack traces, counts, first seen, notifies) |
 | The **database** is slow — which queries, from which app or user? | **Query Insights** (Cloud SQL, AlloyDB): top queries, load, plans, tags |
 | A slow query needs an index | **Index advisor** (Cloud SQL, AlloyDB) recommends indexes from the real workload |

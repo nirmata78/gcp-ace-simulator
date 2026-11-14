@@ -117,6 +117,7 @@ select it on the **My organizations** page and restore it, folders and policies 
 | Create a project in a folder | `gcloud projects create kestrel-fin-prod --folder=FOLDER_ID` |
 | Move a project | `gcloud beta projects move P --folder=FOLDER_ID` |
 | Delete / restore a project | `gcloud projects delete P` · `gcloud projects undelete P` |
+| Delete a folder (it must be **empty**: move or delete its projects and subfolders first) | `gcloud resource-manager folders delete FOLDER_ID` |
 | Stop anyone, Owners included, deleting a project (GA) | an IAM **deny policy** on the project that denies `cloudresourcemanager.googleapis.com/projects.delete` |
 | Protect a project from deletion (*Preview*) | a **lien**: `gcloud alpha resource-manager liens create --project=P --restrictions=resourcemanager.projects.delete --reason=...` |
 
@@ -256,6 +257,8 @@ through the Service Usage API itself, so if that API was disabled in a project, 
 not harmless and not uniform: for storage services such as BigQuery and Cloud Storage the **data stays and is still
 billed**, so delete the data to stop the charge; disabling the Cloud Run API deletes its resources; disabling the
 Kubernetes Engine API **suspends** the clusters, which are deleted after 30 days unless the API is re-enabled.
+Disabling a service that other **enabled services depend on** fails with an error; `gcloud services disable SERVICE
+--force` disables it together with those dependent services.
 
 ## 2.5 Quotas and limits
 
@@ -320,6 +323,11 @@ A billing account created **before** the organization existed has no parent. Mov
 **Change Organization** on its **Account management** page: you need Billing Account Administrator on the account and
 Billing Account Creator on the organization, and the linked projects keep running with no relinking.
 
+**Moving a project that holds commitments.** Its resource-based committed use discounts then apply only through the
+**destination** billing account, and they reach that account's other projects only when its **CUD scope** is
+*Billing account* (CUD sharing). With scope *Project* they stay inside the moved project; set the scope on the
+destination account (CUD analysis → CUD scope & settings). New billing accounts share CUDs by default since June 2026 (*verify*).
+
 {: .cmds }
 | Task | Command |
 |:------------------------------------|:----------------------------------------------------------------------|
@@ -338,9 +346,13 @@ Billing Account Creator on the organization, and the linked projects keep runnin
 - Roles on a billing account are **not inherited by its projects**; a billing role on the *organization* applies to
   every billing account in it. A new organization grants Billing Account Creator and Project Creator to the whole
   domain: grant them to chosen groups and remove the domain-wide bindings.
-- The **link** between a project and its billing account can be **locked** against accidental moves. Disabling
+- The **link** between a project and its billing account can be **locked** against accidental moves; while locked,
+  billing can be neither changed nor disabled, so a move starts with **Unlock billing** (Billing Account
+  Administrator on the linked account). A project with **Marketplace purchases** cannot move until those purchases
+  are transferred. Disabling
   billing stops every service in the project and may remove resources for good, so it is not a pause; it is refused
-  while the project holds an active committed use discount. After a move, charges incurred before it stay with the
+  while the project holds an active committed use discount. On a **Shared VPC host project** it also shuts down the
+  service projects' VMs that use the shared network, whoever pays for them. After a move, charges incurred before it stay with the
   former account. To retire an account, link its projects to another active account, then close it. A closed
   account is reopened only after its payment problem is resolved.
 - A **Free Trial** account cannot add GPUs, request quota, use Marketplace or run Windows Server images; upgrade to
@@ -350,13 +362,14 @@ Billing Account Creator on the organization, and the linked projects keep runnin
 
 <mark markdown="span">**A budget watches spend and notifies. It never stops anything.**</mark> Each budget has a **scope** (the whole billing
 account, or selected projects, services or labels), an **amount** (fixed, or last month's spend), and **threshold
-rules** on **actual** or **forecasted** spend — for example 50%, 90% and 100%.
+rules** on **actual** or **forecasted** spend — for example 50%, 90% and 100%. A scope of **folders or organizations**
+covers every project in them that the billing account pays for, including projects created there later.
 
 | Notification route | Use |
 |:----------------------------------|:------------------------------------------------------------|
-| Email to billing admins and users | The default |
-| Cloud Monitoring notification channels | Route to on-call tools, SMS, chat |
-| **Pub/Sub topic** | **Programmatic response** — a function that scales down, notifies, or even unlinks billing |
+| Email to billing admins and users | The default: every Billing Account Administrator and Billing Account User. Clear *Email alerts to billing admins and users* to opt out |
+| Cloud Monitoring **email** notification channels | Email chosen people with no billing role; a budget links **only email** channels (*verify*) |
+| **Pub/Sub topic** | **Programmatic response** — a function that scales down, posts to chat or a ticketing tool, or even unlinks billing. Messages arrive several times a day with the budget's status, so the code decides when a threshold is newly crossed |
 
 {: .trap }
 > **"Automatically stop spending at the budget"** has no built-in switch. The supported pattern is a budget
@@ -378,7 +391,8 @@ The console's reports are for looking; **the BigQuery export is for querying**. 
 **Turn the export on early.** It is not a time machine: into a **multi-region** dataset (`US`, `EU`) the usage-cost
 exports backfill only from the **start of the previous month**; into a **single-region** dataset, and for **pricing**,
 nothing is backfilled. *"We need two years of queryable history"* is only possible if the export was on two years ago.
-It is configured on the **billing account**, into a dataset in a project you choose.
+It is configured on the **billing account**, into a dataset in a project you choose. The **pricing** export also needs
+the **BigQuery Data Transfer Service API** enabled in that dataset's project; the usage cost exports do not.
 
 <a id="s2-8"></a>
 
@@ -448,6 +462,7 @@ answer whenever a question needs a view *across* projects.
 | Who can do X on Y? | `gcloud asset analyze-iam-policy` — this is **Policy Analyzer** ([§3.8](03-identity-access.md#s3-8)) |
 | The same analysis is too big: console results incomplete, or `DEADLINE_EXCEEDED` | `gcloud asset analyze-iam-policy-longrunning`, writing the full result to **BigQuery** or Cloud Storage |
 | Snapshot everything into BigQuery for SQL | `gcloud asset export --content-type=resource --bigquery-table=...` |
+| The whole inventory **as it was** on a past date (up to 35 days back), as files | `gcloud asset export --organization=ORG --snapshot-time="2026-10-25" --output-path=gs://B/inv.txt` |
 | React to changes in near real time | **Asset feeds** to a Pub/Sub topic |
 | What did this resource look like last month? | Change **history** (about 35 days) with `gcloud asset get-history` |
 
@@ -455,7 +470,10 @@ Content types include `resource`, `iam-policy`, `org-policy`, `access-policy` an
 Manager, [§5.6](05-compute-engine.md#s5-6)). Reading it needs `roles/cloudasset.viewer` at the scope you query,
 and the **Cloud Asset Inventory API enabled in the project you run the commands from** (the gcloud project), even
 when the scope is the whole organization: *"API has not been used in project X or it is disabled"* is fixed there,
-not with a bigger role.
+not with a bigger role. A **feed publishes through a service agent in the project it was created in**, so that project
+must outlive the feed: when it is permanently deleted, the feed stops and is deleted, even for an organization-level
+feed. Create feeds from a long-lived project. A feed **condition** that reads a field some assets lack (a label, say)
+fails to evaluate for them and nothing is published; add an existence check (`has(...)`) to the condition.
 
 {: .new-title }
 > New in the June 2026 guide — Asset Inventory with Gemini Cloud Assist

@@ -183,7 +183,8 @@ Healthy Pods behind a Service that answers nothing usually means the selector an
 >   of 0.5 vCPU and 2 GiB — *verify*).
 > - Requests below the **minimums**, or with a **CPU-to-memory ratio** outside the allowed range, are **adjusted
 >   upward** automatically; values are rounded to allowed increments. `kubectl get pod -o yaml` shows the result, and
->   a warning explains the change.
+>   a warning explains the change. The added capacity goes to the **first container** in the manifest; the annotation
+  `autopilot.gke.io/primary-container: "NAME"` sends it to another one (useful when a sidecar is injected first).
 > - **Limits** equal requests unless the cluster supports **Pod bursting** (recent versions, cgroup v2): then a
 >   **limit above the request** lets the Pod use spare node capacity while you pay only for the request.
 > - **Hardware per workload, not per pool**: Arm with `nodeSelector: kubernetes.io/arch: arm64` (an arm64 image; older
@@ -253,6 +254,9 @@ as OCI). **Container Registry is shut down** — `gcr.io` paths are now served b
 - **Recommended: a minimal custom node service account** (`roles/container.defaultNodeServiceAccount`) — then you
   **must grant it `artifactregistry.reader`** explicitly.
 - **Repository in another project** — grant the node service account reader **on that repository**.
+- **Access scopes** still filter the node's token: pulling needs `storage-ro` or `cloud-platform` (the default with a
+  user-managed account). Scopes are set only when a cluster or node pool is **created**, so a pool made with a
+  narrower `--scopes` list is replaced by a new pool, not edited.
 - **Private nodes** reach Artifact Registry through **Private Google Access**; pulling from Docker Hub needs Cloud
   NAT, or a **remote repository**.
 
@@ -308,7 +312,7 @@ idle.
 | **Service** | Serves **requests** (HTTP, gRPC, WebSockets) at a stable HTTPS URL; scales on load. It is an HTTPS endpoint only: a workload that must accept raw **UDP** or other non-HTTP traffic belongs on GKE (a `LoadBalancer` Service) or Compute Engine |
 | **Job** | Runs **tasks to completion** — in parallel, with retries — on demand or on a schedule via Cloud Scheduler |
 | **Worker pool** | Always-on, non-request workloads such as queue consumers (*recognise*) |
-| **Revision** | An **immutable** snapshot of a service's code and configuration, created by every deploy |
+| **Revision** | An **immutable** snapshot of a service's code and configuration, created by every deploy. An image **tag is resolved to a digest** at deploy time, so pushing a new image under the same tag changes nothing until you deploy again |
 
 ### Deploying
 
@@ -478,7 +482,10 @@ Run, with promotion between targets, approvals and **canary** strategies.
 - **Sharing accelerators.** **GPU time-sharing** gives several Pods turns on one GPU; **multi-instance GPUs**
   partition an A100/H100 into isolated slices with their own memory.
 - **Images and serverless.** An Artifact Registry **remote repository** caches Docker Hub and avoids its rate
-  limits. Cloud Run **maximum instances** protects a database's connection limit. **Direct VPC egress** reaches
+  limits. A **virtual repository** puts several upstream repositories (standard and remote) behind one path,
+  searched in **priority** order (higher wins); it reads them as the **Artifact Registry service agent**, which needs
+  read access to each upstream. Cloud Run services can attach a **GPU** per instance and still **scale to zero**, so
+  idle GPU inference costs nothing for compute. Cloud Run **maximum instances** protects a database's connection limit. **Direct VPC egress** reaches
   private IPs without connector instances. Cloud Run functions react to **Firestore document events** through
   Eventarc. Choose the **snapshot storage location** explicitly when residency requires a region.
 
