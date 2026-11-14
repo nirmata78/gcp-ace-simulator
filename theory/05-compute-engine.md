@@ -99,9 +99,9 @@ gets the notice period to checkpoint. In a MIG, preempted VMs are recreated when
 | Disks | Boot disk type and size; extra disks created or attached ([§5.4](#s5-4)) |
 | Network | Subnet, `--no-address` for no external IP, network tags |
 | Identity | Service account and scopes ([§3.10](03-identity-access.md#s3-10)) |
-| **Metadata** | Key–values read by the guest from the metadata server: `startup-script`, `shutdown-script`, `enable-oslogin`, `ssh-keys` |
+| **Metadata** | Key–values read by the guest from the metadata server: `startup-script`, `shutdown-script`, `enable-oslogin`, `ssh-keys`. `startup-script-url` runs a script from Cloud Storage, fetched at each boot as the VM's **service account**, which needs Storage Object Viewer on the bucket |
 | **Availability policy** | `--maintenance-policy=MIGRATE` (live-migrate during host maintenance) or `TERMINATE`; `--restart-on-failure` (automatic restart if the host crashes) |
-| Protection | `--deletion-protection`; Shielded VM (secure boot, vTPM, integrity monitoring); Confidential VM (memory encryption) |
+| Protection | `--deletion-protection`; Shielded VM (secure boot, vTPM, integrity monitoring); Confidential VM (memory encryption). vTPM and integrity monitoring are on by default, **Secure Boot is off** until set (`--shielded-secure-boot`); integrity validation events can be alerted on in Cloud Monitoring |
 
 {: .key }
 > **The availability policy is two settings.** *On host maintenance*: **MIGRATE** keeps the VM running by moving it
@@ -112,6 +112,8 @@ gets the notice period to checkpoint. In a MIG, preempted VMs are recreated when
 **Changing a running VM:** the machine type, service account and scopes can be changed <mark markdown="span">**only while the VM is
 stopped**</mark>; disks can be attached live; labels, tags and metadata change live. A **stopped** VM, listed as
 `TERMINATED`, keeps its disks (billed) and loses an ephemeral external IP; a **suspended** VM also keeps its memory state.
+An **instance schedule** stops and starts VMs on a timetable through the **Compute Engine Service Agent**
+(`service-PROJECT_NUMBER@compute-system.iam.gserviceaccount.com`), which needs Compute Instance Admin (v1) on the project.
 
 <a id="s5-4"></a>
 
@@ -126,7 +128,7 @@ stopped**</mark>; disks can be attached live; labels, tags and metadata change l
 | **Hyperdisk Balanced / Throughput / Extreme** | Network block storage with **performance (IOPS, throughput) provisioned independently of size** | The storage of the **newest machine series** — several (e.g. C4, N4) support **only** Hyperdisk (*verify* per series). **Hyperdisk Throughput** is the low-cost choice for large, sequential, capacity-heavy data that needs little IOPS (not a boot disk). Provisioned IOPS and throughput can be changed on a disk attached to a running VM, with no effect on its data |
 | **Hyperdisk ML** | Read-only, attachable to **many VMs at once** | Serving model weights to a fleet |
 | **Regional PD / Hyperdisk Balanced High Availability** | **Synchronously replicated across two zones** | Survives a zone failure; force-attach to a standby VM in the other zone |
-| **Local SSD** | Physically attached, 375 GB partitions | **Highest performance, ephemeral**: data survives a reboot or live migration, **lost when the VM stops or is deleted** |
+| **Local SSD** | Physically attached, 375 GB partitions | **Highest performance, ephemeral**: data survives a reboot or live migration, **lost when the VM stops, suspends or is deleted**; cannot be snapshotted, cloned or imaged, so copy what must persist to a Hyperdisk or Persistent Disk |
 
 **Rules of thumb the exam uses:**
 
@@ -205,7 +207,9 @@ A project-level list is `gcloud compute instances list`; **across projects** it 
 ### VM Manager
 
 **VM Manager** is a suite for running a fleet of VMs, driven by the **OS Config agent** (pre-installed in most
-Google public images). Enable it with the OS Config API and metadata `enable-osconfig=TRUE`.
+Google public images). Enable it with the OS Config API and metadata `enable-osconfig=TRUE`. Each VM also needs an
+**attached service account**, which signs the agent's requests but needs **no IAM roles**; a VM created with no
+service account never reports to VM Manager.
 
 | Component | Does |
 |:----------------------------------|:----------------------------------------------------------------|

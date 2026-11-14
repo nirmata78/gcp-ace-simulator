@@ -516,6 +516,7 @@ not with a bigger role.
 | Warn on spend, never interrupt | **Budget** threshold rules |
 | Act automatically at a budget threshold | Budget → **Pub/Sub** → Cloud Run function |
 | Link project P to billing account B | Project Billing Manager (or Owner) on P **and** Billing Account User on B |
+| Create new projects already linked to B | **Project Creator** on the parent **and** Billing Account User on B (the creator gets Owner) |
 | Chargeback by team | **Labels** + BigQuery **billing export** |
 | Price something not yet built | **Pricing Calculator** |
 | Every public-IP VM across the org | **Cloud Asset Inventory** search |

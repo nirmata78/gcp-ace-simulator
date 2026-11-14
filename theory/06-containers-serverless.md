@@ -415,7 +415,8 @@ and IAM work exactly as in [§6.9](#s6-9)–[§6.10](#s6-10).
 trigger has **filters**, a **destination**, and a **service account** that needs `roles/eventarc.eventReceiver`
 and `roles/run.invoker` on the target. A plain **Pub/Sub push subscription** to a private Cloud Run service works the
 same way: set `--push-auth-service-account` to an account that holds `roles/run.invoker` on the service, otherwise
-every delivery fails with HTTP 403 (granting `allUsers` would open the service to everyone).
+every delivery fails with HTTP 403 (granting `allUsers` would open the service to everyone). Whoever creates or updates
+such a subscription needs `iam.serviceAccounts.actAs` (Service Account User) on the push account, or the create fails.
 
 
 {: .trap }
@@ -455,7 +456,9 @@ Where App Engine appears on the current exam it is mostly a distractor for *"sca
 **Cloud Build** runs a `cloudbuild.yaml` of container **steps** — build, test, push, deploy — on **triggers**
 (push to a branch, tag, pull request) or on demand. It runs as a **service account**; best practice is a
 **user-specified** service account with only the roles the pipeline needs (for example `run.developer` plus
-`iam.serviceAccountUser` on the runtime account). **Cloud Deploy** adds managed release pipelines to GKE and Cloud
+`iam.serviceAccountUser` on the runtime account). A build with a user-specified account cannot write its logs to the
+Google-owned default bucket, so the config must set `logsBucket` to a bucket you own or `logging: CLOUD_LOGGING_ONLY`;
+otherwise the build is refused. **Cloud Deploy** adds managed release pipelines to GKE and Cloud
 Run, with promotion between targets, approvals and **canary** strategies.
 
 {: .cmds }

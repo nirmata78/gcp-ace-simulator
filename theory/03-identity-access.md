@@ -472,7 +472,8 @@ make that file with the last row's command.
 Impersonation issues **short-lived tokens**, writes **no key material**, and the audit log records **both** the
 caller and the impersonated account — the original principal is in
 `protoPayload.authenticationInfo.serviceAccountDelegationInfo`, which is how *"which engineer acted as `deploy-sa`?"* is
-answered. It is also the recommended way for *humans* to use a privileged service
+answered. The creation of the short-lived credentials is itself logged only when **Data Access audit logs are
+enabled for IAM**; some services, such as GKE, do not record the creator in their own entries. It is also the recommended way for *humans* to use a privileged service
 account — grant the engineer Token Creator on it rather than handing out a key.
 
 {: .watch }

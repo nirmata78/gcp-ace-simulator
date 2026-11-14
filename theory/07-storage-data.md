@@ -136,7 +136,7 @@ Coldline objects are charged retrieval fees, so hot data belongs in Standard.
 | Role | Grants |
 |:--------------------------------------|:----------------------------------------------------------|
 | `roles/storage.objectViewer` | Read and list objects |
-| `roles/storage.objectCreator` | Create objects — **not** read, overwrite or delete them |
+| `roles/storage.objectCreator` | Create objects — **not** read, overwrite or delete them (re-uploading an existing name fails) |
 | `roles/storage.objectUser` | Read, create, update, delete objects |
 | `roles/storage.objectAdmin` | Full control of **objects**, not bucket settings |
 | `roles/storage.admin` | Full control of buckets **and** objects |
@@ -167,7 +167,9 @@ Coldline objects are charged retrieval fees, so hot data belongs in Standard.
 **Tools:** the **Pricing Calculator** before building; a BigQuery **dry run** before querying; **billing export**
 after; **Storage Insights** and Active Assist recommendations to find waste.
 To put a hard limit on BigQuery on-demand spend, set **custom quotas** on query usage per day, per project or per user:
-once reached, further queries fail until the next day. A budget only alerts.
+once reached, further queries fail until the next day. The per-user quota applies separately to every user and service
+account, and the per-project quota caps their combined total; neither can be set for one named user. **Maximum bytes
+billed** caps a single query only. A budget only alerts.
 
 {: .cmds }
 | Task | Command |
@@ -425,7 +427,9 @@ people launch pipelines without code.
 
 
 Job health is in the **Dataflow monitoring UI** (job graph, stage throughput, **system lag**, **data freshness**,
-worker logs), with metrics in Cloud Monitoring. Workers run as a service account that needs `roles/dataflow.worker`.
+worker logs), with metrics in Cloud Monitoring. Workers run as a service account that needs `roles/dataflow.worker`,
+plus access to exactly the data it reads and writes (for example Storage Object Viewer on the input bucket); Dataflow
+Admin and Service Account User on the worker account belong to whoever submits the job.
 
 **Recognise the neighbours:** **Dataproc** (managed Spark and Hadoop — *lift-and-shift existing Spark jobs*),
 **Cloud Composer** (managed Airflow — *orchestrate a DAG of dependent steps*), **Workflows** (orchestrate API

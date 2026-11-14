@@ -17,6 +17,9 @@ All notable changes to this project are recorded here. The format follows
   puts it through the same evidence and blind-solve gates as `/expand`. The replacement gets a new id and the old id
   is retired, so the question comes back into the draw as unseen.
 
+- **19 new cross-domain questions** through `/expand 5% --cross-share=1.0` (27 of 46 slots skipped): 5 in section 1,
+  4 in section 2, 4 in section 3 and 6 in section 4, of which 6 are multiple-select. The bank grows from 927 to 946.
+
 ### Changed
 
 - **49 questions replaced by new ones** through `/rework`: 10 of the replacements are cross-domain and 5 are

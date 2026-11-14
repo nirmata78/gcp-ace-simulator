@@ -298,7 +298,7 @@ savings or risk reduction:
 | Recommender | Suggests |
 |:----------------------------------|:------------------------------------------------------------------|
 | **VM machine-type (rightsizing)** | A smaller or larger machine type from observed use |
-| **Idle resources** | Idle VMs, unattached disks, unused static IPs, old images |
+| **Idle resources** | Idle VMs (recommends stopping them; `google.compute.instance.IdleResourceRecommender`), unattached disks, unused static IPs, old images |
 | **Committed use discounts** | Commitments that fit your steady usage |
 | **IAM role recommender** | Removing permissions a principal has not used (~90 days) |
 | **Unattended project** | Projects nobody uses — delete or reclaim |

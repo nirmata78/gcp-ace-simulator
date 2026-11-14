@@ -278,6 +278,9 @@ project; being Owner of the project is not enough. Granted on a **folder**, the 
 folder nested under it, and nothing outside it, so one business unit's network team gets it on that unit's folder;
 an admin linking projects in two folders needs it on both. Network User granted on the **host project** covers every
 subnet, present and future, while the same role on **selected subnets** restricts a service project to those.
+A **managed instance group** in a service project creates its VMs through that project's **Google APIs service
+account** (`PROJECT_NUMBER@cloudservices.gserviceaccount.com`), so that account also needs Network User in the host
+project; without it the group fails on `compute.subnetworks.use` even though the deployers can create single VMs.
 
 ### VPC Network Peering
 
@@ -289,7 +292,8 @@ subnet, present and future, while the same role on **selected subnets** restrict
 - **Subnet routes are exchanged automatically**; custom (static and dynamic) routes only if you enable export and
   import. **Firewall rules are not exchanged** — each side still controls its own ingress.
 - Peering is also how **private services access** works (Cloud SQL, Memorystore private IP, [§4.7](#s4-7)), which is why
-  those services inherit the non-transitivity.
+  those services inherit the non-transitivity. The **Service Networking API** must be enabled in the project first:
+  it creates that private connection (`gcloud services vpc-peerings connect`).
 
 {: .cmds }
 | Task | Command |
@@ -530,6 +534,8 @@ Protection** (ML-detected layer-7 attacks).
 > **Flow logs versus firewall logs.** Flow logs say **what traffic flowed** (sampled, per subnet). Firewall logs say
 > **which rule decided** a connection. The **implied** deny-ingress rule cannot be logged — to log denied traffic,
 > create an explicit low-priority deny rule with logging on. Both land in Cloud Logging and cost ingestion ([§9.7](09-operations.md#s9-7)).
+> Flow logs are written to the project of the **VPC network** that reported the flow, so for a shared subnet they are
+> in the **Shared VPC host project**, not in the service project whose VMs sent the traffic.
 
 {: .cmds }
 | Task | Command |
