@@ -7,7 +7,7 @@
 question's ``id`` and ``question`` are read. Each ``--ref`` is a plain-text file with one reference stem
 per line (blank lines ignored). Reference text is never committed to this repository: keep it locally.
 
-Method (the one recorded in review/excluded-questions/audit.json): the stem is normalised (case-folded,
+Method (the one recorded in banks/private/reviews/excluded-questions/audit.json, kept with the bank): the stem is normalised (case-folded,
 punctuation stripped), split into tokens, and stop words and tokens shorter than three characters are
 dropped. For each reference stem B and audited stem A, Jaccard = |A ∩ B| / |A ∪ B| and
 containment = |A ∩ B| / |A|, the share of the audited stem's words found in the reference stem (so a stem

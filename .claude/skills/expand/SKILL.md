@@ -28,8 +28,8 @@ to look inside the theory use the Grep tool, or a plain `grep -n "term" theory/*
    questions. If a question you are drafting feels remembered rather than built, drop it and build another.
 2. **No fact from memory.** Google Cloud changes and your memory of it is out of date. Every key rests on a sentence
    you read with `kb.py doc` in this run. If you cannot find the page or the sentence, skip the slot.
-3. **Only `kb.py accept` writes the bank.** Never edit `data/sections/*.json`, `data/register.json`,
-   `data/retired.json` or `data/study_links.json` by hand.
+3. **Only `kb.py accept` writes the bank.** Never edit `<bank>/sections/*.json`, `<bank>/register.json`,
+   `<bank>/retired.json` or `data/study_links.json` by hand (`<bank>` is `banks/private/`, or `$ACE_BANK_DIR`).
 4. **Never weaken a gate.** Do not change a planned key, a slot, a blind-solve record, a threshold, a test or the
    standard to get a question through. Do not swap the key letter after a blind solver disagrees. When a question
    cannot pass honestly, skip the slot with a reason. A skipped slot is a normal result.
@@ -46,8 +46,8 @@ to look inside the theory use the Grep tool, or a plain `grep -n "term" theory/*
 3. Look for a run to resume: `ls build/expand`. For the newest directory that has a `plan.json`, run
    `.venv/bin/python scripts/kb.py slots build/expand/<dir>/plan.json`. If slots are open, that directory is `RUN`:
    **resume it** from Step 1, do not plan again, and skip point 4. A resumed run has uncommitted changes of its own
-   under `data/`, `theory/` and `docs/reviews/`; that is expected.
-4. For a new run only: run `git status --short`. If files under `data/`, `theory/` or `docs/reviews/` are modified,
+   under `theory/` and in the bank folder; that is expected.
+4. For a new run only: run `git status --short`. If files under `data/` or `theory/` are modified,
    stop and tell the user: the run commits those paths and must not mix in someone else's edits. Then choose the run
    directory `build/expand/<today's date>`, for example `build/expand/2026-11-10`, and call it `RUN`. If that
    directory already holds a finished plan, use `RUN-2`, `RUN-3`, and so on.
@@ -232,10 +232,10 @@ Any edit to a stem or an option after a blind solve cancels that question's reco
 ### 1.6 Accept the batch, then teach its facts
 
 ```bash
-.venv/bin/python scripts/kb.py accept RUN/batch-01.json --plan RUN/plan.json --ledger docs/reviews/expand-2026-11-10.json
+.venv/bin/python scripts/kb.py accept RUN/batch-01.json --plan RUN/plan.json
 ```
 
-Use the run's date in the ledger name, and the same ledger for every batch of the run. `accept` checks everything
+The ledger defaults to `<bank>/reviews/<mode>-<plan date>.json`, the same file for every batch of the run. It quotes the questions, so it stays with the bank, outside git. `accept` checks everything
 again, and fetches each `doc_ref` page afresh to check the evidence quote against the page as it is now. It adds all
 of the batch or none of it, prints the new ids, and marks the slots filled or skipped.
 
@@ -257,12 +257,10 @@ file is stale.
    ```
 
    If one fails, do not edit the bank by hand and do not commit. Report the output and stop.
-2. Update the bank size in `README.md` (the badge near the top and the "A question bank of N items" line), and add one
-   line under `## [Unreleased]`, `### Added` in `CHANGELOG.md`: how many questions, in which sections, how many
-   cross-domain and multiple-select.
-3. Commit, and do not push. If the current branch is `main`, first `git checkout -b expand/<date>`. Add only these
-   paths: `data/sections`, `data/register.json`, `data/study_links.json`, `theory`,
-   `docs/reviews/expand-<date>.json`, `README.md`, `CHANGELOG.md`. Commit message: `Bank N: M new questions (/expand <request>)`.
+2. The bank and its ledger are outside git: never `git add` them, and never quote a question into a tracked file.
+3. If the run changed `theory/` or `data/study_links.json`, commit those, and do not push. If the current branch is
+   `main`, first `git checkout -b expand/<date>`. Add only these paths: `data/study_links.json`, `theory`. Commit
+   message: `Theory for /expand <request>`.
 4. Report to the user:
    - the plan table, and the bank size before and after;
    - the new ids, by section, marking cross-domain and multiple-select ones;

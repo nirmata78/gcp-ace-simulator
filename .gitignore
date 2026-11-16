@@ -1,4 +1,7 @@
 # ── Private: your attempts, reports and notes never leave this machine ──
+# Question banks are private by default (banks/README.md): only what is listed below is tracked.
+banks/*
+!banks/README.md
 data/history.json
 reports/*
 !reports/.gitkeep

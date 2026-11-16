@@ -37,7 +37,8 @@ def _free_port() -> int:
 
 
 PORT = _free_port()
-ENV = {**os.environ, "ACE_PORT": str(PORT), "ACE_VOLUME": VOLUME}
+# The bank under test (tests/conftest.py) is the one the stack mounts.
+ENV = {**os.environ, "ACE_PORT": str(PORT), "ACE_VOLUME": VOLUME, "ACE_BANK_HOST": os.environ["ACE_BANK_DIR"]}
 
 
 def _run(*args: str, cwd: Path = ROOT, check: bool = True) -> subprocess.CompletedProcess[str]:
@@ -137,7 +138,7 @@ def test_sc3_planted_personal_files_stay_out_of_the_image(tmp_path: Path) -> Non
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(source, target)
     for name in ("data/history.json", "private/x", "reports/x.pdf", "scripts/retro_content.py", ".env", "notes.txt",
-                 ".streamlit/secrets.toml"):
+                 ".streamlit/secrets.toml", "banks/private/sections/section-1-setup.json", "banks/mine/bank.json"):
         target = tmp_path / name
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_text(MARKER)
@@ -148,7 +149,7 @@ def test_sc3_planted_personal_files_stay_out_of_the_image(tmp_path: Path) -> Non
         script = (
             f"grep -rl {MARKER} /app /state; "
             "ls -d /app/private /app/reports /app/data/history.json /app/scripts/retro_content.py "
-            "/app/.env /app/notes.txt /app/tests /app/theory /app/.streamlit/secrets.toml 2>/dev/null; true"
+            "/app/.env /app/notes.txt /app/tests /app/theory /app/.streamlit/secrets.toml /app/banks 2>/dev/null; true"
         )
         assert _run("docker", "run", "--rm", image, "sh", "-c", script).stdout.strip() == ""
     finally:

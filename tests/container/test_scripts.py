@@ -32,6 +32,7 @@ def _free_port() -> int:
 @pytest.fixture
 def env(tmp_path: Path) -> Iterator[dict[str, str]]:
     env = {**os.environ, "ACE_PORT": str(_free_port()), "ACE_VOLUME": VOLUME,
+           "ACE_BANK_HOST": os.environ["ACE_BANK_DIR"],
            "COMPOSE_PROJECT_NAME": "ace-scripts-e2e",
            "ACE_LOCAL_HISTORY": str(tmp_path / "data" / "history.json"),
            "ACE_LOCAL_REPORTS": str(tmp_path / "reports")}
@@ -55,7 +56,8 @@ def _history(attempt_ids: list[str]) -> str:
         "update={'attempt_id':i,'finished_at':'2026-11-01T10:00:0'+str(n)}).model_dump(mode='json'))"
         " for n,i in enumerate(sys.argv[1:])];print(json.dumps({'version':1,'attempts':out}))"
     )
-    return subprocess.run(["docker", "run", "--rm", IMAGE, "python", "-c", code, *attempt_ids],
+    bank = ["-v", f"{os.environ['ACE_BANK_DIR']}:/app/banks/private:ro"]
+    return subprocess.run(["docker", "run", "--rm", *bank, IMAGE, "python", "-c", code, *attempt_ids],
                           check=True, capture_output=True, text=True).stdout
 
 

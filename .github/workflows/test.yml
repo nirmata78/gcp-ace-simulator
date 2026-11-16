@@ -13,6 +13,11 @@ jobs:
           python-version: "3.12"
       - run: pip install -r requirements.txt
       - run: pytest -q
+      # The question bank is private, so CI checks the kb.py gates on the generated fixture bank.
+      - run: python -m tests.fixture_bank build/fixture-bank
       - run: python scripts/kb.py check
+        env: {ACE_BANK_DIR: build/fixture-bank}
       - run: python scripts/kb.py lint
+        env: {ACE_BANK_DIR: build/fixture-bank}
       - run: python scripts/kb.py blueprint --min 3 --strict
+        env: {ACE_BANK_DIR: build/fixture-bank}

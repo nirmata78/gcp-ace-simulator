@@ -1,7 +1,7 @@
 """Pydantic schemas for the GCP ACE exam simulator.
 
 The question bank is stored as **one JSON file per exam-guide section** under
-``data/sections/``, with a generated ``data/register.json`` index carrying a
+``<bank>/sections/``, with a generated ``<bank>/register.json`` index carrying a
 compact row (id, title, objective, subtopic, summary, tags, fingerprint) for
 every question.
 
@@ -59,13 +59,13 @@ DOMAIN_SHORT: Dict[str, str] = {s.label: s.short for s in SECTION_LIST}
 #: ids: an id is a permanent key (history, retrospectives), not a classifier.
 DOMAIN_SLUG: Dict[str, str] = {s.label: f"s{s.number}" for s in SECTION_LIST}
 
-#: Filename each section's questions live in, under ``data/sections/``.
+#: Filename each section's questions live in, under ``<bank>/sections/``.
 DOMAIN_FILE: Dict[str, str] = {s.label: f"section-{s.number}-{s.slug}.json" for s in SECTION_LIST}
 
 #: ``--domain 3`` / ``--section 3`` on the CLI resolves through here.
 DOMAIN_BY_NUMBER: Dict[int, str] = {s.number: s.label for s in SECTION_LIST}
 
-#: Where the per-section files live, relative to the data directory.
+#: Where the per-section files live, relative to the bank folder.
 BANK_DIR = "sections"
 
 #: The retired five-domain labels, mapped to the section that absorbed most of
@@ -118,7 +118,7 @@ PASS_THRESHOLD = 0.70  # Google does not publish a cut score; 70% is the communi
 #: in one section must overlap below this Jaccard score, and two questions with the
 #: same correct answer may not share more than this many identical options.
 STEM_OVERLAP_LIMIT = 0.70
-#: Removed question ids, relative to the data directory. They are never reused.
+#: Removed question ids, relative to the bank folder. They are never reused.
 RETIRED_FILE = "retired.json"
 SHARED_OPTION_LIMIT = 2
 
@@ -509,15 +509,15 @@ class QuestionBank(BaseModel):
     def load(cls, root: Path | str) -> "QuestionBank":
         """Assemble the bank from ``<root>/sections/*.json``.
 
-        ``root`` is the data directory. There is no seed script any more: the
+        ``root`` is the bank folder (``paths.bank_dir()``). There is no seed script any more: the
         section files are the bank, and a missing directory is a real loss.
         """
         root = Path(root)
         domains_dir = root / BANK_DIR
         if not domains_dir.is_dir():
             raise FileNotFoundError(
-                f"{domains_dir} not found — the question bank lives in data/{BANK_DIR}/*.json "
-                "and is not generated; restore that directory."
+                f"no question bank at {root}: a bank is a folder with {BANK_DIR}/*.json. Put yours in "
+                "banks/private/ or set ACE_BANK_DIR (banks/README.md)."
             )
 
         questions: List[Question] = []

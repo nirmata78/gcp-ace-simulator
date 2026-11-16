@@ -8,7 +8,7 @@ and trunk-based development, testing and release discipline from [Software Engin
 
 `VERSION` is the single source of truth. The public API that semver protects is:
 
-1. **The question schema**: the fields and meaning of `data/sections/*.json`
+1. **The question schema**: the fields and meaning of a bank's `sections/*.json`
 2. **The history format**: an existing `history.json` must keep loading, in `data/` or in `ACE_STATE_DIR`
 3. **The `scripts/kb.py` commands**: their names, options and exit codes
 4. **How you launch it**: `streamlit run app.py`, `docker compose up`, `bin/start.sh` and `bin/stop.sh` with their
@@ -39,7 +39,7 @@ If a release does more than one of these, the largest bump wins.
   ([Google's guidance](https://testing.googleblog.com/2020/08/code-coverage-best-practices.html)).
 - **Add a line to `CHANGELOG.md`** under `Unreleased` for anything a user would notice.
 - **Question changes follow [the question standard](docs/question-standard.md)**: a new question gets a new id
-  (`kb.py add` mints it, `ace-x-NNN` for a cross-domain one), a removed id goes to `data/retired.json` and is never
+  (`kb.py add` mints it, `ace-x-NNN` for a cross-domain one), a removed id goes to the bank's `retired.json` and is never
   reused, and `kb.py lint` must report no errors.
 
 ## Cutting a release

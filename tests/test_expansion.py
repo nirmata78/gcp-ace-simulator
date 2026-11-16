@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import shutil
 import sys
 from collections import Counter
@@ -33,7 +34,7 @@ from src.expansion import (  # noqa: E402
 )
 from src.models import OPTION_KEYS, Question, QuestionBank  # noqa: E402
 
-DATA = ROOT / "data"
+DATA = Path(os.environ["ACE_BANK_DIR"])  # tests/conftest.py: the bank under test
 QUOTE = "Custom roles that you create at the organization level can be granted in any project in that organization"
 PAGE = f"<html><body><div class=\"devsite-article-body\"><p>{QUOTE.replace('organization level', '<b>organization</b> level')}.</p></div></body></html>"
 

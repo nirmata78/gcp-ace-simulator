@@ -11,8 +11,9 @@ Thanks for helping make this a better way to prepare for the exam.
 
 - **Wrong answers and stale facts.** Google Cloud renames and changes things constantly. An item whose answer is
   no longer true, with a link to current documentation, is the most valuable report you can make.
-- **New questions on thin topics.** Run `python scripts/kb.py blueprint` and look for the bullets with the fewest
-  questions. Section 4 (access and security) holds about 12% of the bank against a 20% exam weight.
+- **Question contributions are paused.** The project's bank is private, and a public sample bank is planned
+  ([#16](https://github.com/nirmata78/gcp-ace-simulator/issues/16)). Until it lands, please don't open pull requests
+  with questions. You can still write a bank of your own with the tools below ([`banks/README.md`](banks/README.md)).
 - **Theory fixes.** Every page on the [site](https://nirmata78.github.io/gcp-ace-simulator/) has a *Suggest a fix*
   link. Pages are plain Markdown in [`theory/`](theory/README.md).
 - **Simulator behaviour.** Anything that differs from a real delivery window in a way that changes how you practise.
@@ -51,7 +52,7 @@ A good item tests a decision, not a spelling. Every wrong option should be somet
 and should be wrong for a reason you can state. Avoid flag-name and console-label trivia.
 
 **Keep every id stable.** An id is a permanent key used by people's attempt history. New ids are minted for you. A removed
-question's id goes to `data/retired.json` and is never used again.
+question's id goes to the bank's `retired.json` and is never used again.
 
 **If you used an LLM** (including `kb.py add --topic`), you are still the author: check every answer against the
 documentation before opening the PR. Models are confidently wrong about recently renamed products.

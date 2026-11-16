@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Set
 
 from .blueprint import SECTION_LIST, objective_weights, objectives_in
-from .paths import DATA_DIR, history_path
+from .paths import bank_dir, history_path
 from .models import (
     CERTIFYING_QUESTION_COUNT,
     DOMAIN_WEIGHTS,
@@ -361,9 +361,9 @@ class ExamSession:
 # --------------------------------------------------------------------------
 
 
-def load_bank(data_dir: Path = DATA_DIR) -> QuestionBank:
-    """Assemble the bank from the per-section files under ``data/sections/``."""
-    return QuestionBank.load(data_dir)
+def load_bank(data_dir: Optional[Path] = None) -> QuestionBank:
+    """Assemble the bank from ``<bank>/sections/*.json``; the bank is ``paths.bank_dir()`` unless given."""
+    return QuestionBank.load(data_dir or bank_dir())
 
 
 def load_history(path: Optional[Path] = None) -> History:

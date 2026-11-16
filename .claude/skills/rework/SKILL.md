@@ -32,8 +32,8 @@ to look inside the theory use the Grep tool. If a command from this file is refu
    questions. If a question you are drafting feels remembered rather than built, drop it and build another.
 2. **No fact from memory.** Google Cloud changes and your memory of it is out of date. Every key rests on a sentence
    you read with `kb.py doc` in this run. If you cannot find the page or the sentence, skip the slot.
-3. **Only `kb.py accept` writes the bank.** Never edit `data/sections/*.json`, `data/register.json`,
-   `data/retired.json` or `data/study_links.json` by hand. Never remove a question yourself: `accept` retires the old
+3. **Only `kb.py accept` writes the bank.** Never edit `<bank>/sections/*.json`, `<bank>/register.json`,
+   `<bank>/retired.json` or `data/study_links.json` by hand (`<bank>` is `banks/private/`, or `$ACE_BANK_DIR`). Never remove a question yourself: `accept` retires the old
    one in the same write that adds its replacement.
 4. **Never weaken a gate.** Do not change a planned key, a slot, a blind-solve record, a threshold, a test or the
    standard to get a question through. Do not swap the key letter after a blind solver disagrees. When a replacement
@@ -56,7 +56,7 @@ to look inside the theory use the Grep tool. If a command from this file is refu
 3. Look for a run to resume: `ls build/rework`. For the newest directory that has a `plan.json`, run
    `.venv/bin/python scripts/kb.py slots build/rework/<dir>/plan.json`. If slots are open, that directory is `RUN`:
    **resume it** from Step 1, do not plan again, and skip point 4.
-4. For a new run only: run `git status --short`. If files under `data/`, `theory/` or `docs/reviews/` are modified,
+4. For a new run only: run `git status --short`. If files under `data/` or `theory/` are modified,
    stop and tell the user. Then choose the run directory `build/rework/<today's date>` and call it `RUN`. If it
    already holds a finished plan, use `RUN-2`, `RUN-3`, and so on.
 5. Plan:
@@ -268,12 +268,12 @@ Any edit to a stem or an option after a blind solve cancels that question's reco
 ### 1.6 Accept the batch, then teach its facts
 
 ```bash
-.venv/bin/python scripts/kb.py accept RUN/batch-01.json --plan RUN/plan.json --ledger docs/reviews/rework-2026-11-13.json
+.venv/bin/python scripts/kb.py accept RUN/batch-01.json --plan RUN/plan.json
 ```
 
-Use the run's date in the ledger name, and the same ledger for every batch of the run. `accept` checks everything
+The ledger defaults to `<bank>/reviews/<mode>-<plan date>.json`, the same file for every batch of the run. It quotes the questions, so it stays with the bank, outside git. `accept` checks everything
 again against the live documentation pages. It adds all of the batch or none of it. For each question added it
-removes the question that slot replaces, lists the old id in `data/retired.json`, and records both in the ledger. It
+removes the question that slot replaces, lists the old id in `<bank>/retired.json`, and records both in the ledger. It
 prints the new ids and the retired ids.
 
 Then, for each question added: `Grep` the fact behind its key in `theory/*.md`. If no page teaches it, add one or two
@@ -293,13 +293,10 @@ number or a limit that may change with *verify*. After editing any theory page, 
    ```
 
    If one fails, do not edit the bank by hand and do not commit. Report the output and stop.
-2. Add one line under `## [Unreleased]`, `### Changed` in `CHANGELOG.md` (create the heading if it is missing): how
-   many questions were replaced by new ones, how many of the replacements are cross-domain and multiple-select. The
-   bank size does not change, so `README.md` stays as it is.
-3. Commit, and do not push. If the current branch is `main`, first `git checkout -b rework/<date>`. Add only these
-   paths: `data/sections`, `data/register.json`, `data/retired.json`, `data/study_links.json`, `theory`,
-   `docs/reviews/rework-<date>.json`, `CHANGELOG.md`. Commit message:
-   `Rework M questions into new ones (/rework <request>)`.
+2. The bank and its ledger are outside git: never `git add` them, and never quote a question into a tracked file.
+3. If the run changed `theory/` or `data/study_links.json`, commit those, and do not push. If the current branch is
+   `main`, first `git checkout -b rework/<date>`. Add only these paths: `data/study_links.json`, `theory`. Commit
+   message: `Theory for /rework <request>`.
 4. Report to the user:
    - the plan table;
    - each pair "old id → new id", marking cross-domain and multiple-select replacements, with one phrase on what

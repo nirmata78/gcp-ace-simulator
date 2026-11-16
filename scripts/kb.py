@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Query and grow the question bank.
 
-The bank lives as one JSON file per exam-guide section under ``data/sections/``,
-indexed by a generated ``data/register.json``. Every question sits on the
+The bank is a folder outside git (``banks/private/`` unless ``ACE_BANK_DIR`` names another): one JSON file per
+exam-guide section under ``sections/``, indexed by a generated ``register.json``. Every question sits on the
 blueprint of the guide live from 30 June 2026 (``src/blueprint.py``): a section,
 an objective (1.1 … 4.2) and a subtopic that names the guide bullets it teaches.
 
@@ -61,6 +61,7 @@ from src.blueprint import (  # noqa: E402
     objectives_in,
     subtopics_in,
 )
+from src.paths import bank_dir  # noqa: E402
 from src.models import (  # noqa: E402
     DOMAIN_BY_NUMBER,
     DOMAIN_SHORT,
@@ -72,7 +73,6 @@ from src.models import (  # noqa: E402
     QuestionBank,
 )
 
-DATA_DIR = ROOT / "data"
 DEFAULT_MODEL = "claude-sonnet-5-5"
 
 # ANSI, disabled when not a TTY so piping to a file stays clean.
@@ -849,6 +849,8 @@ def cmd_accept(args) -> int:
         return 1
 
     retired = QuestionBank.retired_ids(args.data_dir)
+    if args.ledger is None:  # a ledger quotes the questions, so by default it lives with the bank, outside git
+        args.ledger = args.data_dir / "reviews" / f"{plan.get('mode', 'expand')}-{plan.get('created', 'run')}.json"
     ledger = _read_json(args.ledger) if args.ledger.exists() else {"standard": "docs/question-standard.md",
                                                                   "entries": []}
     added = []
@@ -911,7 +913,7 @@ def main() -> int:
         prog="kb.py", description="Query and grow the GCP ACE question bank.",
         formatter_class=argparse.RawDescriptionHelpFormatter, epilog=__doc__,
     )
-    ap.add_argument("--data-dir", type=Path, default=DATA_DIR, help=argparse.SUPPRESS)
+    ap.add_argument("--data-dir", type=Path, default=bank_dir(), help=argparse.SUPPRESS)
     sub = ap.add_subparsers(dest="command", required=True)
 
     p = sub.add_parser("blueprint", help="coverage of every exam-guide bullet")
@@ -1034,7 +1036,7 @@ def main() -> int:
     p = sub.add_parser("accept", help="add a vetted, blind-solved batch to the bank")
     p.add_argument("file", type=Path)
     p.add_argument("--plan", type=Path, required=True)
-    p.add_argument("--ledger", type=Path, required=True, help="review ledger of this run (created if missing)")
+    p.add_argument("--ledger", type=Path, help="review ledger of this run (created if missing; default <bank>/reviews/<plan mode>-<date>.json, which stays out of git)")
     p.add_argument("--offline", action="store_true", help=argparse.SUPPRESS)
     p.add_argument("--dry-run", action="store_true")
     p.set_defaults(func=cmd_accept)

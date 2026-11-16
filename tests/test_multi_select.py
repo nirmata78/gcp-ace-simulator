@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import os
+
 import random
 import sys
 import uuid
@@ -19,7 +21,7 @@ from src.question_lint import lint_question  # noqa: E402
 
 @pytest.fixture(scope="module")
 def bank() -> QuestionBank:
-    return QuestionBank.load(ROOT / "data")
+    return QuestionBank.load(os.environ["ACE_BANK_DIR"])
 
 
 def _multi(bank: QuestionBank) -> Question:

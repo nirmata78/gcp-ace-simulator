@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 import random
 import subprocess
 import sys
@@ -102,7 +103,7 @@ def test_a_choose_two_question_uses_checkboxes_and_is_scored_whole(tmp_path: Pat
     next(b for b in app.button if "Start practice" in b.label).click()
     app.run()
     sess = app.session_state.session
-    multi = next(q for q in QuestionBank.load(ROOT / "data").questions if q.is_multi and not q.certifying_only)
+    multi = next(q for q in QuestionBank.load(os.environ["ACE_BANK_DIR"]).questions if q.is_multi and not q.certifying_only)
     sess.questions[0] = multi
     sess.index = 0
     app.run()
@@ -301,7 +302,7 @@ def test_a_removed_short_pdf_is_rebuilt_not_a_crash(tmp_path: Path) -> None:
 
 def test_a_certifying_draw_avoids_questions_already_seen(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("ACE_STATE_DIR", str(tmp_path))
-    bank = QuestionBank.load(ROOT / "data")
+    bank = QuestionBank.load(os.environ["ACE_BANK_DIR"])
     first = ExamSession(weighted_sample(bank, 50, random.Random(21)), mode="certifying")
     record_attempt(first.build_attempt(), tmp_path / "history.json")
     app = AppTest.from_file(str(ROOT / "app.py"), default_timeout=30).run()

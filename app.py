@@ -31,7 +31,6 @@ st.set_page_config(
 
 from src.exam_engine import (  # noqa: E402
     ExamSession,
-    DATA_DIR,
     filtered_pool,
     load_bank,
     load_history,
@@ -590,9 +589,12 @@ def submit_exam(expired: bool = False) -> None:
 
 def screen_home() -> None:
     try:
-        bank = load_bank(DATA_DIR)
+        bank = load_bank()
     except FileNotFoundError as exc:
         st.error(str(exc))
+        st.markdown("The simulator ships without questions. Copy a bank folder to `banks/private/`, or start it "
+                    "with `ACE_BANK_DIR=/path/to/bank`. In Docker, set `ACE_BANK_HOST` to the folder before "
+                    "`docker compose up`.")
         return
 
     st.markdown(

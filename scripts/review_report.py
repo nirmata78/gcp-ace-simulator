@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Render the question review ledger as a readable Markdown report.
 
-    python scripts/review_report.py [--ledger docs/reviews/2026-11-bank-review.json] [--out docs/reviews/2026-11-bank-review.md]
+    python scripts/review_report.py [--ledger banks/private/reviews/2026-11-bank-review.json] [--out banks/private/reviews/2026-11-bank-review.md]
 
 For every reviewed question the report gives, in this order: the original against the refined question (when it
 changed), the audit against the seven criteria of docs/question-standard.md, and the final question with its key and
@@ -20,6 +20,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from src.models import QuestionBank, answer_keys  # noqa: E402
+from src.paths import bank_dir  # noqa: E402
 
 CRITERIA = {
     "AC1": "Associate scope", "AC2": "Complete scenario", "AC3": "Plausible distractors", "AC4": "One correct answer",
@@ -66,12 +67,12 @@ def render(ledger: dict, bank: QuestionBank) -> str:
 
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
-    p.add_argument("--ledger", type=Path, default=ROOT / "docs/reviews/2026-11-bank-review.json")
-    p.add_argument("--out", type=Path, default=ROOT / "docs/reviews/2026-11-bank-review.md")
+    p.add_argument("--ledger", type=Path, default=bank_dir() / "reviews/2026-11-bank-review.json")
+    p.add_argument("--out", type=Path, default=bank_dir() / "reviews/2026-11-bank-review.md")
     args = p.parse_args(argv)
     ledger = json.loads(args.ledger.read_text(encoding="utf-8"))
-    args.out.write_text(render(ledger, QuestionBank.load(ROOT / "data")), encoding="utf-8")
-    print(f"wrote {args.out.relative_to(ROOT)} ({len(ledger['entries'])} questions)")
+    args.out.write_text(render(ledger, QuestionBank.load(bank_dir())), encoding="utf-8")
+    print(f"wrote {args.out} ({len(ledger['entries'])} questions)")
     return 0
 
 

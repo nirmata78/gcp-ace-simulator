@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -17,7 +18,7 @@ from audit_overlap import CONTAINMENT_LIMIT, JACCARD_LIMIT, audit, flagged, scor
 from src.models import QuestionBank  # noqa: E402
 from src.question_lint import LONGEST_KEY_LIMIT, lint_bank, lint_question, longest_key_rate  # noqa: E402
 
-DATA = ROOT / "data"
+DATA = Path(os.environ["ACE_BANK_DIR"])  # tests/conftest.py: the bank under test
 
 
 @pytest.fixture(scope="module")
@@ -60,7 +61,7 @@ def test_no_bank_stem_matches_a_guarded_stem(bank):
 
 def test_retired_ids_are_never_in_the_bank(bank):
     retired = set(QuestionBank.retired_ids(DATA))
-    assert retired, "data/retired.json should list removed ids"
+    assert retired, "retired.json should list removed ids"
     assert not retired & {q.id for q in bank.questions}
 
 

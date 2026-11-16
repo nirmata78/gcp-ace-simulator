@@ -42,8 +42,9 @@ After changing dependencies in `pyproject.toml`, regenerate both lock files with
   replaces a question the user has already seen (`rework_plan`, the `rework-*` findings, and the retirement in
   `accept`). `kb.py rework` is the only code that reads the attempt history for it, and it takes ids only. Run state
   is in `build/rework/`.
-- `data/sections/*.json`: **the bank, source of truth**. `data/register.json` is generated: run
-  `kb.py reindex`, never edit it.
+- `banks/private/`: **the bank, source of truth, and not in git** (`banks/README.md`). It holds `sections/*.json`,
+  a generated `register.json` (run `kb.py reindex`, never edit it), `retired.json` and the run ledgers in `reviews/`.
+  `ACE_BANK_DIR` points everything at another bank. `src/paths.py` `bank_dir()` is the only place that decides.
 - `theory/*.md`: **the theory, source of truth**, published by GitHub Pages (just-the-docs; config in
   `_config.yml`).
 - `theory/pdf/`: optional local PDF build. `assemble.py` generates its input from the pages; do not edit the output.
@@ -53,7 +54,7 @@ After changing dependencies in `pyproject.toml`, regenerate both lock files with
 
 - Write questions to `docs/question-standard.md`: a scenario, one decision, four plausible options (or four or five
   for a "Choose two" question), a rationale for each, and a `doc_ref` you have actually checked. Cross-domain
-  questions set `also_tests` and are certifying-only. Never reuse an id; removed ids are in `data/retired.json`.
+  questions set `also_tests` and are certifying-only. Never reuse an id; removed ids are in the bank's `retired.json`.
 - To add many questions, run the `/expand` skill, and to replace seen ones the `/rework` skill; do not write a batch freehand. Never bypass or loosen its gates
   (planned keys, evidence quotes, blind-solve records, overlap limits): skip the slot.
 - A key never depends on a feature that was Preview in June 2026 (AC7 in `docs/question-standard.md`). Check the
@@ -61,6 +62,9 @@ After changing dependencies in `pyproject.toml`, regenerate both lock files with
 - Google Cloud products get renamed. Verify against current documentation rather than memory, and mark volatile
   facts *verify* in the theory.
 - If you add a fact to a question that the theory does not teach, add it to the theory page too.
+- **The question bank is private.** Never commit a question, never quote one into a tracked file (an issue, a PR, a
+  doc, a test, a commit message), and never add `banks/` to an image. Tests run on the generated fixture bank
+  (`tests/fixture_bank.py`); `ACE_TEST_BANK_DIR=banks/private pytest -q` runs them on the real one.
 - `data/history.json`, `reports/`, `private/` and `scripts/retro_content.py` hold someone's personal attempts. They
   are gitignored. Never commit them or quote them into a tracked file. `.dockerignore` denies everything by default, so
   add to its allow list only what the image needs.

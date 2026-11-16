@@ -6,6 +6,15 @@ All notable changes to this project are recorded here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- **The repository no longer contains questions.** The bank moved to a gitignored `banks/private/` folder, and the
+  app, `kb.py` and Docker read it from there, or from the folder named in `ACE_BANK_DIR` (Docker: `ACE_BANK_HOST`,
+  mounted read-only). Images no longer contain a bank. Tests and CI run on a generated fixture bank of placeholder
+  questions, and `ACE_TEST_BANK_DIR` runs them on a real one. Run ledgers now live with the bank, in `reviews/`
+  ([`banks/README.md`](banks/README.md)). A public sample bank under CC BY-NC-SA 4.0 is planned (#16,
+  [`LICENSE-QUESTIONS.md`](LICENSE-QUESTIONS.md)).
+
 ### Added
 
 - **The image is published on every release tag**, for linux/amd64 and linux/arm64 with provenance and SBOM
