@@ -55,11 +55,13 @@ class _Writer:
         self.n += 1
         multi = "," in key
         letters = ["A", "B", "C", "D", "E"] if multi else ["A", "B", "C", "D"]
-        stem = (f"Fixture scenario {self.n}. The {self.words(1)} team runs {self.words(6)}, and must keep "
+        # A bare command in every stem and a role ID in option A, so the monospace rendering has something to show.
+        stem = (f"Fixture scenario {self.n}. After gcloud config list, the {self.words(1)} team runs {self.words(6)}, and must keep "
                 f"{self.words(6)} without extra {self.words(4)}. Which option meets the {self.words(2)} constraint?")
         if multi:
             stem += " (Choose two.)"
         options = {k: f"Use {self.words(3)} with {self.words(2)}" for k in letters}
+        options["A"] = f"Use `roles/{self.words(1)}.viewer` with {self.words(2)}"
         keys = key.split(",")
         breakdown = {k: (f"Correct. {self.words(7)}." if k in keys else f"Fails here: {self.words(7)}.")
                      for k in letters}

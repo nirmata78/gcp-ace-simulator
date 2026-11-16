@@ -29,6 +29,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
+from src.identifiers import mark as mark_identifiers  # noqa: E402
 from src.exam_engine import (  # noqa: E402
     ExamSession,
     filtered_pool,
@@ -94,6 +95,9 @@ BASE_CSS = """
     --md-warning: #7c5800;
     --md-warning-container: #ffdf99;
     --md-elev-1: 0 1px 2px rgba(0,0,0,.30), 0 1px 3px 1px rgba(0,0,0,.15);
+    /* Identifiers (role IDs, commands, flags) are monospace, as the exam prints them (#17). System fonts only:
+       the app runs offline. */
+    --ace-mono: ui-monospace, "SF Mono", Menlo, Consolas, "Roboto Mono", "Liberation Mono", monospace;
     --md-elev-2: 0 1px 2px rgba(0,0,0,.30), 0 2px 6px 2px rgba(0,0,0,.15);
 
     --ace-ink: var(--md-on-surface);
@@ -172,10 +176,18 @@ BASE_CSS = """
   .ace-hdr .mid b { font-size: 1rem; color: var(--md-on-surface); font-weight: 600; }
   .ace-clock {
     font-variant-numeric: tabular-nums;
-    font-family: ui-monospace, "Roboto Mono", Menlo, Consolas, monospace;
+    font-family: var(--ace-mono);
     font-size: 1.375rem; font-weight: 600; line-height: 1.1; text-align: center;
     padding: 6px 14px; border-radius: 12px;
     background: var(--md-primary-container); color: var(--md-on-primary-container);
+  }
+  /* Identifiers in question text: the stem, the options, the analysis and the study panel. */
+  .ace-stem code, .ace-fb code, .ace-breakdown code, .ace-q code, .ace-opt code, .ace-panel code,
+  [data-testid="stRadio"] label code, [data-testid="stCheckbox"] label code, [data-testid="stMarkdownContainer"] code {
+    font-family: var(--ace-mono); font-size: 0.9em; font-weight: 500; letter-spacing: 0;
+    color: var(--md-on-surface); background: var(--md-surface-high);
+    border: 1px solid var(--md-outline-variant); border-radius: 4px;
+    padding: 0.05em 0.35em; white-space: normal; overflow-wrap: anywhere;
   }
   .ace-clock.warn { background: var(--md-warning-container); color: #261a00; }
   .ace-clock.crit { background: var(--md-error-container); color: #410e0b; animation: acepulse 1.4s infinite; }
@@ -817,7 +829,7 @@ def render_question(sess: ExamSession) -> None:
         f"<div class='ace-qnum'>Question {sess.index + 1} of {sess.total}"
         + ("&nbsp; <span class='ace-flagged-note'>⚑ Flagged</span>" if flagged else "")
         + "</div>"
-        f"<div class='ace-stem'>{q.question}</div>",
+        f"<div class='ace-stem'>{_inline(q.question)}</div>",
         unsafe_allow_html=True,
     )
 
@@ -832,7 +844,7 @@ def render_question(sess: ExamSession) -> None:
         ticked = []
         for k in q.keys:
             full = len(mine) >= q.choose and k not in mine
-            if st.checkbox(f"{k}.  {q.options[k]}", value=k in mine, key=f"cb_{q.id}_{k}",
+            if st.checkbox(f"{k}.  {_label(q.options[k])}", value=k in mine, key=f"cb_{q.id}_{k}",
                            disabled=revealed or full):
                 ticked.append(k)
         choice = answer_str(ticked)
@@ -850,7 +862,7 @@ def render_question(sess: ExamSession) -> None:
             q.keys,
             index=current_idx,
             key=f"radio_{q.id}",
-            format_func=lambda k: f"{k}.  {q.options[k]}",
+            format_func=lambda k: f"{k}.  {_label(q.options[k])}",
             disabled=revealed,
             label_visibility="collapsed",
         )
@@ -891,13 +903,13 @@ def render_question(sess: ExamSession) -> None:
                     else f"✗ Incorrect — you chose {format_answer(choice)}; "
                          f"the answer is {format_answer(q.correct_answer)}"
                 )
-                + f"</h4>{q.explanation.summary}</div>",
+                + f"</h4>{_inline(q.explanation.summary)}</div>",
                 unsafe_allow_html=True,
             )
             if st.session_state.study_panel_pref:
                 return  # the study panel carries the option analysis, command and links
             items = "".join(
-                f"<li><b>{k}.</b> {q.explanation.option_breakdown[k]}</li>"
+                f"<li><b>{k}.</b> {_inline(q.explanation.option_breakdown[k])}</li>"
                 for k in q.keys
             )
             st.markdown(
@@ -1022,18 +1034,18 @@ def render_study_panel(sess: ExamSession) -> None:
                 return
             right = q.correct_keys
             label = format_answer(q.correct_answer)
-            st.markdown(f"**The answer is {label}.** " + " ".join(q.options[k] for k in right))
+            st.markdown(f"**The answer is {label}.** " + " ".join(_label(q.options[k]) for k in right))
             if len(right) > 1 or not restates(q.explanation.summary, q.explanation.option_breakdown[right[0]]):
-                st.markdown(q.explanation.summary)
+                st.markdown(_label(q.explanation.summary))
             st.markdown(f"**Why {label} {'are' if len(right) > 1 else 'is'} right.** "
-                        + " ".join(q.explanation.option_breakdown[k] for k in right))
+                        + " ".join(_label(q.explanation.option_breakdown[k]) for k in right))
             st.markdown("**Why the others are wrong**")
-            st.markdown("\n".join(f"- **{o}.** {q.explanation.option_breakdown[o]}"
+            st.markdown("\n".join(f"- **{o}.** {_label(q.explanation.option_breakdown[o])}"
                                    for o in q.keys if o not in right))
             if q.explanation.gcloud_command:
                 st.markdown("**Command**")
                 st.code(q.explanation.gcloud_command, language="bash")
-            st.markdown(f"**Spot it next time.** {q.summary}")
+            st.markdown(f"**Spot it next time.** {_label(q.summary)}")
             if q.explanation.doc_ref:
                 st.markdown(f"📄 [Google Cloud documentation]({q.explanation.doc_ref})")
             if sections:
@@ -1078,9 +1090,14 @@ def screen_exam() -> None:
         confirm_submit(sess)
 
 
+def _label(text: str) -> str:
+    """Bank text as Markdown (option labels, st.markdown): identifiers in backticks, and ``$`` kept literal."""
+    return mark_identifiers(text or "").replace("$", "\\$")
+
+
 def _inline(text: str) -> str:
-    """Bank text as HTML: escaped, with `code` and **bold** kept."""
-    out = html.escape(text or "", quote=False)
+    """Bank text as HTML: escaped, identifiers as `code` (monospace), and **bold** kept."""
+    out = html.escape(mark_identifiers(text or ""), quote=False)
     out = re.sub(r"`([^`]+)`", r"<code>\1</code>", out)
     return re.sub(r"\*\*([^*]+)\*\*", r"<b>\1</b>", out)
 
