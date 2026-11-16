@@ -17,6 +17,11 @@ All notable changes to this project are recorded here. The format follows
 
 ### Added
 
+- **Commands, IAM role IDs and other identifiers are shown in a monospace font**, as on the exam (#17): in the
+  stem, the options, the answer analysis, the study panel and the PDF report. Questions written before the backtick
+  rule get them at display time, without any change to the stored text. A test keeps role IDs and commands in the
+  theory pages as code, and a typo there (`–field-selector`) is fixed.
+
 - **Question standard version 2** ([`docs/question-standard.md`](docs/question-standard.md), #15), from a passing
   candidate's report of the exam's format. Exact role IDs, permissions, commands and flags are fair options when
   knowing them is the decision, and `kb.py vet` checks each one against the IAM roles and gcloud reference pages.

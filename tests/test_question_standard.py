@@ -105,7 +105,12 @@ def test_identifiers_outside_backticks_are_found():
 
 
 def test_standard_two_makes_bare_identifiers_an_error(bank):
+    from src.identifiers import mark
+
     q = bank.questions[0].model_copy(deep=True)
+    q.question, q.explanation.summary = mark(q.question), mark(q.explanation.summary)
+    q.options = {k: mark(v) for k, v in q.options.items()}
+    q.explanation.option_breakdown = {k: mark(v) for k, v in q.explanation.option_breakdown.items()}
     q.options["A"] = "Grant roles/viewer on the project"
     assert ("warning", "ident-unformatted") in {(s, c) for s, c, _ in lint_question(q)}
     q.standard = 2
@@ -132,3 +137,41 @@ def test_a_legacy_question_keeps_its_stored_form(bank, tmp_path):
 
     q = bank.questions[0]
     assert {"standard", "decided_by", "step", "trap"}.isdisjoint(_stored(q))
+
+
+# -- identifiers in monospace (#17) -------------------------------------------------
+
+
+def test_mark_puts_bare_identifiers_in_backticks():
+    from src.identifiers import mark
+
+    cases = {
+        "Run gcloud compute instances create web-1 --zone=us-central1-a, then grant roles/iam.serviceAccountUser.":
+            "Run `gcloud compute instances create web-1 --zone=us-central1-a`, then grant `roles/iam.serviceAccountUser`.",
+        "kubectl rollout undo deployment/web restores it; bq load --source_format=CSV appends.":
+            "`kubectl rollout undo deployment/web` restores it; `bq load --source_format=CSV` appends.",
+        "The caller needs iam.serviceAccounts.actAs and storage.googleapis.com enabled.":
+            "The caller needs `iam.serviceAccounts.actAs` and `storage.googleapis.com` enabled.",
+        "gcloud sql connect to the instance with --user=admin": "`gcloud sql connect` to the instance with `--user=admin`",
+    }
+    for raw, want in cases.items():
+        assert mark(raw) == want
+        assert mark(want) == want, "idempotent"
+
+
+def test_mark_leaves_prose_alone():
+    from src.identifiers import mark
+
+    for prose in ("Use gcloud and the console; the gcloud CLI is installed -- see example.com.",
+                  "Grant `roles/viewer` and run `gcloud storage ls`.", "", "Cloud Run, GKE and BigQuery."):
+        assert mark(prose) == prose
+
+
+def test_the_bank_text_survives_marking(bank):
+    """Marking only adds backticks: removing them gives the stored text back."""
+    from src.identifiers import mark
+
+    for q in bank.questions[:200]:
+        for text in [q.question, *q.options.values(), *q.explanation.option_breakdown.values()]:
+            assert mark(text).replace("`", "") == text.replace("`", "")
+            assert mark(text).count("`") % 2 == 0

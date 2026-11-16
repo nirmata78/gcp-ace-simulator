@@ -97,6 +97,25 @@ def test_sc2_exam_report_and_history_survive_recreating_the_container(stack: Non
         browser.close()
 
 
+def test_identifiers_are_monospace(stack: None) -> None:
+    """Commands and role IDs are set in a monospace font, in the stem and in the options (#17)."""
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        page = browser.new_page()
+        page.goto(f"http://127.0.0.1:{PORT}")
+        page.get_by_role("spinbutton", name="Questions").fill("10")
+        page.get_by_role("spinbutton", name="Questions").press("Enter")
+        page.get_by_role("button", name="Begin examination").click()
+        stem = page.locator(".ace-stem code").first  # "gcloud config list", bare in the fixture stem
+        option = page.locator('[data-testid="stRadio"] label code, [data-testid="stCheckbox"] label code').first
+        for el in (stem, option):
+            el.wait_for()
+            assert "mono" in el.evaluate("e => getComputedStyle(e).fontFamily").lower()
+        assert stem.inner_text() == "gcloud config list"
+        assert option.inner_text().startswith("roles/")
+        browser.close()
+
+
 def test_sc4_runs_as_non_root(stack: None) -> None:
     assert _exec("id", "-u").stdout.strip() != "0"
 

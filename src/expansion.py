@@ -38,7 +38,7 @@ from src.blueprint import (
     subtopics_in,
 )
 from src.models import OPTION_KEYS, Question, QuestionBank, _normalise, _recycles, _STOPWORDS
-from src.question_lint import STEM_WORDS_V2, code_spans, commands, lint_question
+from src.question_lint import STEM_WORDS_V2, code_spans, lint_question
 
 Finding = Tuple[str, str, str]
 

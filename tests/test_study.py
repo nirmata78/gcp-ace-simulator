@@ -313,3 +313,19 @@ def test_a_certifying_draw_avoids_questions_already_seen(tmp_path: Path, monkeyp
     app.run()
     drawn = {q.id for q in app.session_state.session.questions}
     assert len(drawn) == 50 and not drawn & {q.id for q in first.questions}
+
+
+def test_the_theory_writes_identifiers_as_code() -> None:
+    """Role IDs, commands, flags, permissions and API names are code in the theory too (#17)."""
+    import re
+
+    from src.identifiers import bare
+
+    found = []
+    for page in sorted((ROOT / "theory").glob("*.md")):
+        text = re.sub(r"(?ms)^\s*```.*?^\s*```", "", page.read_text(encoding="utf-8"))  # fenced blocks are code
+        for para in re.split(r"\n\s*\n", text):
+            para = re.sub(r"\]\([^)]*\)", "]()", " ".join(ln.strip().lstrip(">").strip() for ln in para.splitlines()))
+            para = re.sub(r"<[^>]+>", "", para)
+            found += [f"{page.name}: {ident}" for _, ident in bare(para)]
+    assert not found, found

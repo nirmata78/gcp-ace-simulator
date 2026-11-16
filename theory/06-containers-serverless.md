@@ -476,7 +476,7 @@ Run, with promotion between targets, approvals and **canary** strategies.
   endpoint** is authorised by IAM, so no bastion or IP allow-list is needed. A **PodDisruptionBudget** limits
   evictions during drains. **Blue-green node pool upgrades** keep old nodes for a soak period. Environment
   variables from a ConfigMap change only after **`kubectl rollout restart`**. `kubectl get pods -A
-  –field-selector=status.phase=Pending` lists every Pending Pod. An HPA on the external metric
+  --field-selector=status.phase=Pending` lists every Pending Pod. An HPA on the external metric
   **`num_undelivered_messages`** scales Pub/Sub consumers. HPA utilisation is usage divided by **request**, so
   oversized requests delay scaling.
 - **Sharing accelerators.** **GPU time-sharing** gives several Pods turns on one GPU; **multi-instance GPUs**

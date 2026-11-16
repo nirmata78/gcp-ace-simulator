@@ -46,6 +46,7 @@ from reportlab.platypus import (
 
 from . import study_links
 from .exam_engine import load_bank
+from .identifiers import mark as mark_identifiers
 from .models import DOMAIN_SHORT, DOMAINS, PASS_THRESHOLD, Attempt, History, Question, answer_keys, format_answer
 from .paths import ensure_writable_dir, history_path, reports_dir
 
@@ -201,8 +202,8 @@ def esc(t: Any) -> str:
 
 
 def code(t: Any) -> str:
-    """Escape bank prose, and render its markdown `code` spans as monospace."""
-    return re.sub(r"`([^`]+)`", r'<font face="Courier">\1</font>', esc(t))
+    """Escape bank prose, and render identifiers and its markdown `code` spans as monospace (#17)."""
+    return re.sub(r"`([^`]+)`", r'<font face="Courier">\1</font>', esc(mark_identifiers("" if t is None else str(t))))
 
 
 def link(url: str, text: str) -> str:

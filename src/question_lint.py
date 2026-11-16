@@ -12,6 +12,7 @@ from collections import Counter
 from typing import Dict, Iterable, List, Tuple
 from urllib.parse import urlparse
 
+from src import identifiers
 from src.models import OPTION_KEYS, Question
 
 Finding = Tuple[str, str, str]
@@ -50,71 +51,14 @@ def _words(text: str) -> int:
 # Identifiers (AC6 of standard 2): role IDs, commands, flags, permissions and API names are code
 # --------------------------------------------------------------------------
 
-CODE_SPAN = re.compile(r"`([^`]+)`")
-#: The first word after each CLI that makes it a command rather than a mention of the tool.
-CLI_WORDS = {
-    "gcloud": "access-context-manager ai alloydb alpha app apphub artifacts asset auth backup-dr batch beta bigtable "
-              "billing builds certificate-manager composer compute config container database-migration dataflow "
-              "dataplex dataproc datastore deploy deployment-manager dns domains endpoints eventarc filestore "
-              "firestore functions iam iap identity infra-manager init kms logging looker memcache migration ml "
-              "monitoring network-connectivity network-management network-security observability organizations "
-              "policy-intelligence privateca projects pubsub quotas recommender redis resource-manager run "
-              "scheduler scc secrets services source spanner sql storage tasks transfer workflows workstations",
-    "kubectl": "annotate api-resources apply attach autoscale auth config cordon cp create delete describe diff drain "
-               "edit exec explain expose get kustomize label logs patch port-forward replace rollout run scale set "
-               "taint top uncordon wait",
-    "bq": "add-iam-policy-binding cancel cp extract get-iam-policy head insert load ls mk mkdef partition query rm "
-          "set-iam-policy show update wait",
-    "gsutil": "acl autoclass cat compose cors cp defacl du hash iam kms label lifecycle logging ls mb mv "
-              "notification rb requesterpays retention rm rsync setmeta signurl stat ubla versioning web",
-}
-#: Words that end a command written in prose ("gcloud sql connect to the instance").
-_STOP = {"and", "or", "to", "the", "a", "an", "with", "for", "in", "on", "at", "of", "is", "are", "then", "again",
-         "from", "as", "by", "so", "but", "which", "that", "this", "it", "its", "after", "before", "instead", "only"}
-_CLI = re.compile(r"\b(gcloud|kubectl|gsutil|bq)((?:\s+[a-z][a-z0-9-]*){1,5})")
-IDENT_PATTERNS = {
-    "role ID": re.compile(r"\broles/[A-Za-z][\w.]*[\w]"),
-    "flag": re.compile(r"(?<![\w-])--[a-z][a-z0-9-]+"),
-    "permission": re.compile(r"\b[a-z][a-z0-9]+\.[a-z][a-zA-Z]*[A-Z][A-Za-z]*\.[a-z][A-Za-z]+\b"
-                             r"|\b[a-z][a-z0-9]+\.[a-z]+s\.[a-z][A-Za-z]+\b"),
-    "API name": re.compile(r"\b[a-z0-9-]+\.googleapis\.com\b"),
-}
-_NOT_PERMISSION = re.compile(r"\.(com|org|io|dev|net|app|json|yaml|yml|py|txt|tf)$")
-
-
-def code_spans(text: str) -> List[str]:
-    """The text inside backticks."""
-    return CODE_SPAN.findall(text or "")
-
-
-def bare_identifiers(text: str) -> List[Tuple[str, str]]:
-    """``(kind, identifier)`` for each identifier written outside backticks."""
-    prose = CODE_SPAN.sub(" ", text or "")
-    out = []
-    for kind, pattern in IDENT_PATTERNS.items():
-        for m in pattern.finditer(prose):
-            hit = m.group(0).rstrip(".")
-            if kind == "permission" and _NOT_PERMISSION.search(hit):
-                continue
-            out.append((kind, hit))
-    out += [("command", c) for c in commands(prose)]
-    return out
+IDENT_PATTERNS = identifiers.PATTERNS
+code_spans = identifiers.code_spans
+bare_identifiers = identifiers.bare
 
 
 def commands(text: str) -> List[str]:
-    """CLI commands written in ``text``: the tool, a real group or verb, and the words of the command path."""
-    out = []
-    for m in _CLI.finditer(text or ""):
-        tool, words = m.group(1), m.group(2).split()
-        if words[0] not in CLI_WORDS[tool].split():
-            continue
-        path = []
-        for w in words:
-            if w in _STOP:
-                break
-            path.append(w)
-        out.append(" ".join([tool] + path))
-    return out
+    """CLI commands written in ``text`` outside backticks: the tool, a real group or verb, and the command path."""
+    return [i for kind, i in identifiers.bare(text) if kind == "command"]
 
 
 def _texts(q: Question) -> Dict[str, str]:
@@ -130,7 +74,7 @@ def _family(text: str) -> set:
     for span in code_spans(text) or [text]:
         for m in IDENT_PATTERNS["role ID"].finditer(span):
             fam.add("role:" + m.group(0).split(".")[0])
-        for c in commands(span):
+        for c in commands(span.replace("`", "")):
             fam.add("cmd:" + " ".join(c.split()[:3]))
         for m in IDENT_PATTERNS["API name"].finditer(span):
             fam.add("api:" + m.group(0))
