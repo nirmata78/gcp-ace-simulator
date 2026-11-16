@@ -1,7 +1,7 @@
 ---
 name: rework
 description: Replace questions the user has already seen with new ones, so they come back into the certifying draw as unseen, such as "/rework 50" or "/rework 3 --id ace-s2-004". Takes the questions seen longest ago from the attempt history, writes for each a new scenario with a different correct answer on the same subtopic (some cross-domain or multiple-select), proves every key with a quoted documentation sentence, has each one solved blind by a second agent, then adds the replacement and retires the old id. Use only when the user asks to rework, refresh, repair or recycle seen questions.
-argument-hint: "<N> [--id ID ...] [--cross-share 0.2] [--multi-share 0.1] [--dry-run]"
+argument-hint: "<N> [--id ID ...] [--cross-share 0.6] [--multi-share 0.1] [--dry-run]"
 disable-model-invocation: true
 allowed-tools: Read, Write, Edit, Grep, Glob, Agent, WebSearch, Bash(.venv/bin/python scripts/kb.py *), Bash(.venv/bin/python scripts/build_study_links.py), Bash(.venv/bin/pytest *), Bash(git status *), Bash(git diff *), Bash(git branch *), Bash(git checkout -b rework/*), Bash(git add *), Bash(git commit *), Bash(date *), Bash(ls *), Bash(mkdir -p build/rework/*)
 ---
@@ -97,8 +97,8 @@ slot's subtopic and guide bullet.
    symptom, an error, a failed rollout). Or the reverse.
 3. **Ask the neighbouring decision.** Another choice under the same guide bullet that neither the old question nor
    the "Already in the bank" list asks: another role, setting, tool or next step.
-4. **For a cross-domain slot,** take recipe 1, 2 or 3 and build the scenario so that a fact from the partner
-   objective is needed to rule out a wrong option (see "Cross-domain slots" below).
+4. **For a multi-topic slot,** take recipe 1, 2 or 3 and build the scenario so that a fact from the partner
+   objective is needed to rule out a wrong option (see "Multi-topic slots" below).
 
 Then check the result against the "Already in the bank" list, exactly as for any new question:
 
@@ -144,17 +144,25 @@ Read the page as plain text, never from memory and never through a summary:
 - When the options are IAM roles, read the description of every role you list. A wrong option that also holds the
   needed permission is a second correct answer; replace it.
 
-Then write the question **in this order**. The order prevents the usual defects.
+Write the replacement to **version 2** of `docs/question-standard.md`, whatever the old question's standard: exact
+role IDs and commands where the bullet is about access or a task, most scenarios across two or more areas of the
+guide, associate-level migration scenarios in scope, close sibling options, and every identifier in backticks. Then
+write the question **in this order**. The order prevents the usual defects.
 
 1. **The fact:** the evidence sentence, and in your own words what it means.
-2. **The decision and the correct option:** short and plain. Name the product, role or action. An option says what
-   to do and stops: no "so that…", "because…" or "which lets…" clause. Reasons belong in the rationales.
+2. **The decision and the correct option:** short and plain. Name the product, the exact role ID (`roles/…`), the
+   exact command or the action. An option says what to do and stops: no "so that…", "because…" or "which lets…"
+   clause. Reasons belong in the rationales.
 3. **Three wrong options** (four for a multiple-select slot, which has five options and two correct). Each one is a
-   real product, role, setting or command that solves a *neighbouring* problem. For each, write down the fact in the
-   scenario that makes it wrong. Each needs its **own** reason; if two fail for the same reason, replace one.
-4. **The stem:** a newly invented company (not the old question's), what exists, what is needed, and every fact from
-   points 2 and 3 that decides the answer. 25 to 90 words. The last sentence is one direct question. A
-   multiple-select stem ends with `(Choose two.)`.
+   real product, role, permission, setting or command. **At least two are close siblings of the key**: the next role
+   in the same family, another verb or flag in the same command group, the same feature at another scope, the same
+   service in another mode. The reader must need the stem's deciding fact to separate them. For each, write down the
+   fact in the scenario that makes it wrong. Each needs its **own** reason; if two fail for the same reason, replace
+   one. Pick the **tempting sibling**: the one a half-prepared reader would choose.
+4. **The stem:** a newly invented company (not the old question's), what exists (on premises or in Google Cloud),
+   what is needed, and every fact from points 2 and 3 that decides the answer. 25 to 130 words; migration and
+   architecture scenarios may use the upper half. The last sentence is one direct question. A multiple-select stem
+   ends with `(Choose two.)`.
 5. **Do not reuse the old option list.** When the old options are bare product names ("Bigtable", "Spanner"), write
    yours as what the product is used for here ("Bigtable for the order history"); two or more options identical to
    the old ones are rejected.
@@ -169,14 +177,19 @@ Then write the question **in this order**. The order prevents the usual defects.
    read; do not compose them from memory.
 9. **`title`** (under 60 characters, a label, no final full stop, different from the old title), **`summary`** (one
    sentence: the single idea tested), **`tags`** (two to five, lowercase, hyphenated).
+10. **The problem-first fields:** `"standard": 2`; `decided_by`, the one to three phrases of the stem that settle the
+   key, copied exactly; `step`, the one reasoning step in 20 words or fewer, as a question and its answer;
+   `trap`, `{"option": "<the tempting sibling's letter>", "why": "<one sentence on why it fails here>"}`.
+11. **Backticks:** every role ID, permission, command, flag, condition expression, API name and resource name in the
+   stem, the options and the rationales is in backticks. Product names stay prose.
 
 **Multiple-select slots.** Five options A to E, two correct, on the letters the slot gives (`"correct_answer": "A,D"`).
 The two correct options are two separate actions or facts that are *both* needed; if one alone would satisfy the stem,
 the question is broken. Do not write them as two halves of one sentence, and do not let two wrong options pair off as
 an obvious couple.
 
-**Cross-domain slots.** The scenario needs knowledge from the slot's objective *and* from an objective in another
-section: put those in `"also_tests": ["4.2"]`. The slot's own objective is the decision the question ends on. The
+**Multi-topic slots** (most of a run). The scenario needs knowledge from the slot's objective *and* from an objective
+in another section: put those in `"also_tests": ["4.2"]`. The slot's own objective is the decision the question ends on. The
 test is this: a reader who knows only the slot's objective cannot rule out every wrong option. Mentioning another
 product is not enough. The slot suggests a partner objective; use another one if it gives a more natural scenario.
 
@@ -188,7 +201,10 @@ Before a question goes into the file, answer these honestly. A "no" means rewrit
   recalling the old key or by avoiding it, rewrite.)
 - Could a careful engineer defend a second option under an assumption the stem does not rule out?
 - Does the stem state every fact needed, including network facts (external IP, Cloud NAT, which VPC or project)?
-- Is every option real? No invented flag, role, command or feature.
+- Is every option real? No invented flag, role, permission, command or feature. Every role ID and `gcloud` command
+  is spelled exactly as its reference page spells it; `vet` checks them, and a `kubectl`, `bq` or `gsutil` command
+  needs its page in `"identifier_refs": {"<command>": "<url>"}`.
+- Are at least two distractors close siblings of the key, so that no option falls without the deciding fact?
 - Does the key avoid resting on a price, a quota value or anything marked *verify* in the theory?
 
 Write `RUN/batch-01.json` (number it as the batch): a JSON list with one object per slot of the batch.
@@ -211,13 +227,17 @@ Write `RUN/batch-01.json` (number it as the batch): a JSON list with one object 
       "gcloud_command": "…",
       "doc_ref": "https://docs.cloud.google.com/…"
     },
+    "standard": 2,
+    "decided_by": ["…exact phrase of the stem…"],
+    "step": "…the one reasoning step…",
+    "trap": {"option": "B", "why": "…why the tempting sibling fails here…"},
     "evidence": "One sentence copied word for word from the doc_ref page."
   },
   {"slot": 4, "skip": "Every decision the documentation supports on this bullet is already asked."}
 ]
 ```
 
-`objective` and `subtopic` are the slot's exact strings. Add `"also_tests"` only on a cross-domain slot. Do not add
+`objective` and `subtopic` are the slot's exact strings. Add `"also_tests"` only on a multi-topic slot. Do not add
 `id`, `uid`, `domain`, `source`, `replaces` or `blind`; the tools set them.
 
 ### 1.5 Vet, then have it solved blind
@@ -247,11 +267,14 @@ that agent type does not exist in this session, use a `general-purpose` agent an
 them:
 
 ```bash
-.venv/bin/python scripts/kb.py blind RUN/batch-01.json --answers 3:C 5:A,D 6:B
+.venv/bin/python scripts/kb.py blind RUN/batch-01.json --answers 3:C 5:A,D 6:B --by-form 3:- 5:- 6:D
 ```
 
-A question needs work in three cases: the command prints `DISAGREE`; the solver's "Also defensible" line names an
-option; or its "Problems" line says the reader needs a fact the stem does not give, or that an option is not real. Do
+`--by-form` records the solver's "Ruled out by form" line for every question: its letters, or `-` for none. A
+standard-2 question cannot be accepted without it.
+
+A question needs work in four cases: the command prints `DISAGREE`; the solver's "Also defensible" line names an
+option; its "Ruled out by form" line names an option (replace that option with a closer sibling of the key); or its "Problems" line says the reader needs a fact the stem does not give, or that an option is not real. Do
 not argue such a report away. A remark that is only editorial does not block the question: fix it if the fix is one
 phrase, and list the remark in your final report either way. For every question that needs work:
 

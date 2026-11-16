@@ -148,6 +148,21 @@ class Explanation(BaseModel):
         return v
 
 
+#: The question standard a question was written to (docs/question-standard.md). 1 is the legacy standard; 2 adds
+#: exact names, multi-topic scenarios, near-sibling options and the problem-first fields below.
+STANDARDS = (1, 2)
+#: Standard 2: how many stem phrases may decide the key, and how long the reasoning step may be.
+DECIDED_BY = (1, 3)
+STEP_WORDS = 20
+
+
+class Trap(BaseModel):
+    """The tempting sibling: the wrong option a half-prepared reader picks, and why it fails here."""
+
+    option: str = Field(pattern=r"^[A-E]$")
+    why: str = Field(min_length=10)
+
+
 #: Where a question came from. Provenance is tracked so a bank grown by hand
 #: and by LLM stays auditable — you can always ask "who wrote this one".
 Source = Literal["curated", "official-sample", "user", "llm"]
@@ -183,6 +198,11 @@ class Question(BaseModel):
     explanation: Explanation
     also_tests: List[str] = Field(default_factory=list)
     certifying_only: bool = False
+    # Standard 2 (docs/question-standard.md): the stem's deciding words, the one reasoning step, the tempting sibling.
+    standard: int = 1
+    decided_by: List[str] = Field(default_factory=list)
+    step: str = ""
+    trap: Optional[Trap] = None
 
     @field_validator("uid")
     @classmethod
@@ -221,9 +241,28 @@ class Question(BaseModel):
             raise ValueError("also_tests repeats the question's own objective")
         if self.also_tests and not any(section_of(o).label != self.domain for o in self.also_tests):
             raise ValueError("a cross-domain question must also test an objective in another section")
-        if self.also_tests:
-            self.certifying_only = True  # cross-domain questions are drawn in certifying exams only
+        if self.also_tests and self.standard < 2:
+            self.certifying_only = True  # standard 1: cross-domain questions are drawn in certifying exams only
+        if self.standard not in STANDARDS:
+            raise ValueError(f"standard must be one of {STANDARDS}")
+        if self.standard >= 2:
+            self._check_standard_two()
         return self
+
+    def _check_standard_two(self) -> None:
+        """The problem-first fields every standard-2 question carries (AC5 of docs/question-standard.md)."""
+        if not DECIDED_BY[0] <= len(self.decided_by) <= DECIDED_BY[1]:
+            raise ValueError(f"decided_by lists {DECIDED_BY[0]}-{DECIDED_BY[1]} phrases of the stem that settle the key")
+        flat = " ".join(self.question.split())
+        missing = [d for d in self.decided_by if not d.strip() or " ".join(d.split()) not in flat]
+        if missing:
+            raise ValueError(f"decided_by must quote the stem exactly; not in the stem: {missing}")
+        if not self.step.strip() or len(self.step.split()) > STEP_WORDS:
+            raise ValueError(f"step is the one reasoning step, in 1-{STEP_WORDS} words")
+        if self.trap is None:
+            raise ValueError("trap names the tempting sibling: {\"option\": letter, \"why\": reason}")
+        if self.trap.option not in self.options or self.trap.option in answer_keys(self.correct_answer):
+            raise ValueError(f"trap.option {self.trap.option} must be one of the wrong options")
 
     @property
     def keys(self) -> List[str]:
@@ -368,11 +407,14 @@ def _stored(q: Question) -> dict:
         out.pop("also_tests")
     if not out["certifying_only"]:
         out.pop("certifying_only")
+    if out["standard"] < 2:  # a legacy question keeps its stored form
+        for key in ("standard", "decided_by", "step", "trap"):
+            out.pop(key)
     return out
 
 
 class QuestionBank(BaseModel):
-    """Every question, assembled from the per-domain files under ``data/domains/``."""
+    """Every question, assembled from the per-section files under ``<bank>/sections/``."""
 
     version: int = 2
     generated_at: Optional[str] = None

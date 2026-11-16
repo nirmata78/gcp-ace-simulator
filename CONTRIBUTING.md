@@ -40,7 +40,7 @@ bank from one of those sources, please open an issue. It will be removed.
    exams). Then check that `pytest -q`, `python scripts/kb.py check` and `python scripts/kb.py lint` are clean.
 
 A question can also be **multiple-select** ("Choose two": four or five options, `"correct_answer": "A,D"`) or
-**cross-domain** (`also_tests` names the other objectives it needs); the [README](README.md#adding-questions) has the
+**multi-topic** (`also_tests` names the other objectives it needs; most version 2 questions are); the [README](README.md#adding-questions) has the
 format and the [question standard](docs/question-standard.md#multiple-select-and-cross-domain-questions) the rules.
 
 **Many at once.** `/expand 10%` in Claude Code plans a batch, writes it, proves each key with a sentence quoted from
@@ -48,8 +48,15 @@ the documentation and has every question solved blind before it is added; see
 [Growing the bank](README.md#growing-the-bank-with-expand). The no-exam-content rule binds the model as it binds you, and
 you review what it wrote before opening the PR.
 
-A good item tests a decision, not a spelling. Every wrong option should be something a reasonable person might try,
-and should be wrong for a reason you can state. Avoid flag-name and console-label trivia.
+A good item tests the decision an associate engineer makes at work, and on this exam that decision is often an exact
+name: the predefined role, the permission, the command or the flag. Exact names are fair, invented ones are not:
+every role ID and command must exist as written, and `kb.py vet` checks them. Every wrong option should be something
+a reasonable person might try, at least two should be close siblings of the key, and each should be wrong for a
+reason you can state. Console-label trivia (where a button sits) is still out.
+
+Since version 2 of the [question standard](docs/question-standard.md), every new question also carries `"standard":
+2`, the phrases of the stem that decide it (`decided_by`), the one reasoning step (`step`) and the tempting sibling
+(`trap`), and writes every identifier in backticks.
 
 **Keep every id stable.** An id is a permanent key used by people's attempt history. New ids are minted for you. A removed
 question's id goes to the bank's `retired.json` and is never used again.

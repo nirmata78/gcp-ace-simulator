@@ -10,7 +10,8 @@ exam item, a dump or a practice test.
 python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt
 streamlit run app.py                           # the simulator
 bin/start.sh / bin/stop.sh                     # the simulator in Docker, syncing data/history.json both ways
-pytest -q                                      # must stay green
+pytest -q                                      # must stay green; runs on a generated fixture bank
+ACE_TEST_BANK_DIR=banks/private pytest -q      # the same tests on the real (private) bank
 pytest tests/container                         # the container, in a real browser; needs Docker and Playwright
 python scripts/kb.py check                     # bank integrity
 python scripts/kb.py lint                      # the question standard (docs/question-standard.md)
@@ -52,9 +53,11 @@ After changing dependencies in `pyproject.toml`, regenerate both lock files with
 
 ## Rules
 
-- Write questions to `docs/question-standard.md`: a scenario, one decision, four plausible options (or four or five
-  for a "Choose two" question), a rationale for each, and a `doc_ref` you have actually checked. Cross-domain
-  questions set `also_tests` and are certifying-only. Never reuse an id; removed ids are in the bank's `retired.json`.
+- Write questions to version 2 of `docs/question-standard.md`: a scenario (usually across two or more areas of the
+  guide; associate-level migrations count), one decision, four options of which at least two are close siblings of
+  the key (or four or five for a "Choose two" question), a rationale for each, exact and real role IDs and commands
+  in backticks, `decided_by`, `step` and `trap`, and a `doc_ref` you have actually checked. Most questions set
+  `also_tests`. A candidate's report of the exam's format is fine to follow; a remembered item never is. Never reuse an id; removed ids are in the bank's `retired.json`.
 - To add many questions, run the `/expand` skill, and to replace seen ones the `/rework` skill; do not write a batch freehand. Never bypass or loosen its gates
   (planned keys, evidence quotes, blind-solve records, overlap limits): skip the slot.
 - A key never depends on a feature that was Preview in June 2026 (AC7 in `docs/question-standard.md`). Check the

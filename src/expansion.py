@@ -38,16 +38,18 @@ from src.blueprint import (
     subtopics_in,
 )
 from src.models import OPTION_KEYS, Question, QuestionBank, _normalise, _recycles, _STOPWORDS
-from src.question_lint import lint_question
+from src.question_lint import STEM_WORDS_V2, code_spans, commands, lint_question
 
 Finding = Tuple[str, str, str]
 
 BALANCES = ("exam", "batch", "current")
-#: Five of a 50-question exam are cross-domain, so a tenth of every run is.
-CROSS_SHARE = 0.10
+#: Standard 2: most exam scenarios need more than one area of the guide, so most new questions are multi-topic (AC1).
+CROSS_SHARE = 0.60
 MULTI_SHARE = 0.10
-#: One cross-domain slot in three is also multiple-select.
-CROSS_MULTI_EVERY = 3
+#: One multi-topic slot in six is also multiple-select, which keeps the multiple-select share near MULTI_SHARE.
+CROSS_MULTI_EVERY = 6
+#: The standard every new question is written to (docs/question-standard.md).
+NEW_STANDARD = 2
 BATCH_SIZE = 8
 MULTI_KEYS = [",".join(c) for c in itertools.combinations("ABCDE", 2)]
 
@@ -56,14 +58,14 @@ MULTI_KEYS = [",".join(c) for c in itertools.combinations("ABCDE", 2)]
 NOVEL_STEM_LIMIT = 0.45
 NOVEL_STEM_WARN = 0.33
 SAME_IDEA_LIMIT = 0.60
-STEM_WORDS = (25, 90)
+STEM_WORDS = STEM_WORDS_V2
 TITLE_LIMIT = 60
 EVIDENCE_MIN_WORDS = 8
 BATCH_LONGEST_KEY_LIMIT = 0.40
 #: Lint findings that are a reviewer's prompt on an old question and a defect on a new one.
-PROMOTED = {"length-tell", "cli-syntax", "no-command", "doc-ref", "vague-superlative"}
+PROMOTED = {"length-tell", "no-command", "doc-ref", "vague-superlative"}
 #: Keys a candidate carries for the pipeline; they are not part of the stored question.
-HELPER_KEYS = ("slot", "evidence", "blind", "skip")
+HELPER_KEYS = ("slot", "evidence", "blind", "skip", "identifier_refs")
 
 
 # --------------------------------------------------------------------------
@@ -262,7 +264,7 @@ def plan_summary(bank: QuestionBank, p: dict) -> List[str]:
 #: A reworked question must leave its old scenario further behind than a new question must leave the bank.
 REWORK_STEM_LIMIT = NOVEL_STEM_WARN
 REWORK_SHARED_OPTIONS = 1
-REWORK_CROSS_SHARE = 0.20
+REWORK_CROSS_SHARE = CROSS_SHARE
 
 
 def rework_plan(bank: QuestionBank, ids: Iterable[str], count: int, *, cross_share: float = REWORK_CROSS_SHARE,
@@ -354,7 +356,8 @@ def describe_slots(bank: QuestionBank, p: dict, batch: int) -> List[str]:
         out.append(f"  subtopic: {s['subtopic']}")
         for b in s["bullets"]:
             out.append(f"  guide bullet {b}: {BULLETS[b].text}")
-        out.append(f"  form: {shape}; correct_answer must be \"{s['key']}\"")
+        out.append(f"  form: {shape}; correct_answer must be \"{s['key']}\"; standard {NEW_STANDARD} "
+                   "(decided_by, step, trap; identifiers in backticks)")
         gone = bank.get(s["replaces"]) if s.get("replaces") else None
         if gone:
             out.append(f"  replaces {gone.id} ({gone.title}). Write a different scenario with a different correct "
@@ -364,7 +367,7 @@ def describe_slots(bank: QuestionBank, p: dict, batch: int) -> List[str]:
             out.append(f"    it tested: {gone.summary}  (* = its key)")
         if s["cross"]:
             mate = s["pair_with"]
-            out.append(f"  cross-domain: set also_tests; suggested partner {mate} {OBJECTIVES[mate].title} "
+            out.append(f"  multi-topic: set also_tests; suggested partner {mate} {OBJECTIVES[mate].title} "
                        "(any objective in another section will do)")
         out.append("")
     for name in dict.fromkeys(s["subtopic"] for s in slots):
@@ -504,11 +507,17 @@ def blind_sheet(raws: List[dict]) -> str:
     return "\n".join(out)
 
 
-def record_blind(raws: List[dict], answers: Dict[str, str]) -> List[Tuple[str, str, str, bool]]:
-    """Store each blind answer on its candidate; returns ``(label, key, answer, agrees)`` rows."""
+def record_blind(raws: List[dict], answers: Dict[str, str],
+                 by_form: Optional[Dict[str, str]] = None) -> List[Tuple[str, str, str, bool]]:
+    """Store each blind answer on its candidate; returns ``(label, key, answer, agrees)`` rows.
+
+    ``by_form`` holds, per candidate, the options the solver ruled out without using the stem's deciding fact
+    (letters such as ``C`` or ``A,D``, or ``-`` for none). Standard 2 needs it: such an option is too far from the key.
+    """
     rows = []
+    by_form = by_form or {}
     names = {str(raw.get("slot", i + 1)) for i, raw in enumerate(raws) if "skip" not in raw}
-    stray = sorted(set(answers) - names)
+    stray = sorted((set(answers) | set(by_form)) - names)
     if stray:
         raise ValueError(f"no candidate numbered {', '.join(stray)} in this file")
     for i, raw in enumerate(raws):
@@ -524,8 +533,110 @@ def record_blind(raws: List[dict], answers: Dict[str, str]) -> List[Tuple[str, s
         given = ",".join(sorted(set(letters.split(","))))
         agrees = given == q.correct_answer
         raw["blind"] = {"answer": given, "agrees": agrees, "hash": blind_hash(q)}
+        if name in by_form:
+            loose = by_form[name].upper().replace(" ", "")
+            if loose not in ("-", "") and not re.fullmatch(r"[A-E](,[A-E])*", loose):
+                raise ValueError(f"by-form for {name} must be option letters or -, not {by_form[name]!r}")
+            raw["blind"]["by_form"] = [] if loose in ("-", "") else sorted(set(loose.split(",")))
         rows.append((_label(raw, i), q.correct_answer, given, agrees))
     return rows
+
+
+# --------------------------------------------------------------------------
+# Identifiers: every role ID and gcloud command a standard-2 question names must exist (AC3, AC5)
+# --------------------------------------------------------------------------
+
+ROLE_PAGE = "https://docs.cloud.google.com/iam/docs/roles-permissions/{service}"
+BASIC_ROLES_PAGE = "https://docs.cloud.google.com/iam/docs/roles-overview"
+BASIC_ROLES = {"roles/owner", "roles/editor", "roles/viewer", "roles/browser"}
+GCLOUD_PAGE = "https://docs.cloud.google.com/sdk/gcloud/reference/{path}"
+_ROLE = re.compile(r"roles/[A-Za-z][\w.]*\w")
+_PERMISSION = re.compile(r"^[a-z][a-z0-9]+\.[a-zA-Z]+\.[a-zA-Z]+$")
+_FLAG = re.compile(r"(?<![\w-])(--[a-z][a-z0-9-]*)")
+
+
+def named_identifiers(q: Question) -> List[Tuple[str, str]]:
+    """``(kind, text)`` for the role IDs, permissions and commands in the stem, the options and ``gcloud_command``.
+
+    Only text in backticks counts (AC6); ``gcloud_command`` counts whole. A command keeps its flags, so they can be
+    checked against its reference page.
+    """
+    spans = [s for text in [q.question, *q.options.values()] for s in code_spans(text)]
+    spans += [ln for ln in q.explanation.gcloud_command.splitlines() if ln.strip() and not ln.lstrip().startswith("#")]
+    out: List[Tuple[str, str]] = []
+    for span in spans:
+        for m in _ROLE.finditer(span):
+            out.append(("role", m.group(0)))
+        if _PERMISSION.match(span.strip()):
+            out.append(("permission", span.strip()))
+        for tool in ("gcloud", "kubectl", "bq", "gsutil"):
+            for start in [m.start() for m in re.finditer(rf"\b{tool}\b", span)]:
+                out.append(("command", span[start:].split("|")[0].split("&&")[0].strip()))
+    return list(dict.fromkeys(out))
+
+
+def _gcloud_path(command: str) -> List[str]:
+    """The command path of a gcloud invocation: ``gcloud compute instances create vm-1 --zone=x`` -> compute, ...,
+    vm-1. Positional arguments are included; the caller tries shorter paths until a reference page exists."""
+    words = command.split()[1:]
+    path = []
+    for w in words:
+        if w.startswith("-") or not re.fullmatch(r"[a-z][a-z0-9-]*", w):
+            break
+        path.append(w)
+    return path
+
+
+def check_identifiers(q: Question, raw: dict, pages: Callable[[str], str]) -> List[Finding]:
+    """Each role ID, permission and gcloud command (with its flags) must appear on its reference page.
+
+    ``identifier_refs`` in a candidate maps an identifier to the page that documents it, for the few that the URL
+    rules below cannot find (a role on a page named differently from its service, a kubectl or bq command).
+    """
+    refs = raw.get("identifier_refs") or {}
+    out: List[Finding] = []
+
+    def on(url: str, text: str) -> Optional[str]:
+        try:
+            page = pages(url)
+        except Exception as exc:  # 404 and network errors alike: the page does not prove the identifier
+            return f"cannot read {url}: {exc}"
+        return None if text in page else f"{text} is not on {url}"
+
+    for kind, ident in named_identifiers(q):
+        if ident in refs:
+            problem = on(refs[ident], ident.split()[-1] if kind == "command" else ident)
+            if problem:
+                out.append(("error", "identifier", f"{kind} `{ident}`: {problem}"))
+            continue
+        if kind in ("role", "permission"):
+            service = ident.removeprefix("roles/").split(".")[0]
+            url = BASIC_ROLES_PAGE if ident in BASIC_ROLES else ROLE_PAGE.format(service=service)
+            problem = on(url, ident)
+            if problem:
+                out.append(("error", "identifier", f"{kind} `{ident}` is not a real, current {kind}: {problem}. "
+                            "Fix it, or give its page in identifier_refs (AC3)"))
+        elif ident.startswith("gcloud"):
+            path = _gcloud_path(ident)
+            page, url = None, None
+            for n in range(len(path), 0, -1):
+                url = GCLOUD_PAGE.format(path="/".join(path[:n]))
+                try:
+                    page = pages(url)
+                    break
+                except Exception:
+                    continue
+            if page is None:
+                out.append(("error", "identifier", f"no gcloud reference page for `{ident}`: the command does not "
+                            "exist as written (AC3)"))
+                continue
+            missing = [f for f in dict.fromkeys(_FLAG.findall(ident)) if f not in page and f"[no-]{f[2:]}" not in page]
+            if missing:
+                out.append(("error", "identifier", f"`{ident}`: {', '.join(missing)} not on {url} (AC3)"))
+        else:
+            out.append(("warning", "identifier", f"`{ident}` is not checked automatically; verify it, or give its page "
+                        "in identifier_refs"))
+    return out
 
 
 def vet(bank: QuestionBank, raws: List[dict], *, plan: Optional[dict] = None,
@@ -578,6 +689,9 @@ def vet(bank: QuestionBank, raws: List[dict], *, plan: Optional[dict] = None,
             out.append(("error", "stem-length", f"the stem is {n} words; a new stem has {STEM_WORDS[0]}-{STEM_WORDS[1]}"))
         if q.source != "curated":
             out.append(("error", "source", "a new question has source 'curated' (AC7)"))
+        if q.standard < NEW_STANDARD:
+            out.append(("error", "standard", f"a new question is written to standard {NEW_STANDARD}: set \"standard\": "
+                        f"{NEW_STANDARD} with decided_by, step and trap (docs/question-standard.md)"))
         if urlparse(q.explanation.doc_ref).scheme != "https":
             out.append(("error", "doc-ref", "doc_ref must be an https link to official documentation (AC5)"))
         if len(q.title) > TITLE_LIMIT:
@@ -659,6 +773,8 @@ def vet(bank: QuestionBank, raws: List[dict], *, plan: Optional[dict] = None,
                 for note in preview_notes(page):
                     out.append(("warning", "preview", f"the page mentions Preview; the key must not depend on it "
                                 f"(AC7): …{note}…"))
+        if pages is not None and q.standard >= 2:
+            out += check_identifiers(q, raw, pages)
 
         if final:
             blind = raw.get("blind") or {}
@@ -667,6 +783,12 @@ def vet(bank: QuestionBank, raws: List[dict], *, plan: Optional[dict] = None,
             elif not blind.get("agrees"):
                 out.append(("error", "blind", f"the blind solver answered {blind.get('answer') or 'nothing'}, "
                             f"the key is {q.correct_answer} (AC4)"))
+            elif q.standard >= 2 and "by_form" not in blind:
+                out.append(("error", "blind", "the blind record has no by-form report: record which options the "
+                            "solver ruled out without the deciding fact (kb.py blind --by-form SLOT:LETTERS, or SLOT:-)"))
+            elif q.standard >= 2 and blind["by_form"]:
+                out.append(("error", "by-form", f"the blind solver ruled out {', '.join(blind['by_form'])} without the "
+                            "deciding fact; make that distractor a closer sibling of the key (AC3, AC4)"))
 
     singles = [q for q in parsed.values() if not q.is_multi]
     if len(singles) >= 5:
@@ -690,7 +812,9 @@ def ledger_entry(q: Question, raw: dict, today: Optional[str] = None, replaces: 
                  "documentation page in doc_ref.",
         "replacement_id": None,
         "evidence": {"doc_ref": q.explanation.doc_ref, "quote": str(raw.get("evidence", "")).strip()},
-        "blind_solve": {"answer": blind.get("answer"), "agrees": bool(blind.get("agrees"))},
+        "blind_solve": {"answer": blind.get("answer"), "agrees": bool(blind.get("agrees")),
+                        "by_form": blind.get("by_form")},
+        "standard": q.standard,
     }
 
 

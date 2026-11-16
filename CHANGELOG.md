@@ -17,6 +17,16 @@ All notable changes to this project are recorded here. The format follows
 
 ### Added
 
+- **Question standard version 2** ([`docs/question-standard.md`](docs/question-standard.md), #15), from a passing
+  candidate's report of the exam's format. Exact role IDs, permissions, commands and flags are fair options when
+  knowing them is the decision, and `kb.py vet` checks each one against the IAM roles and gcloud reference pages.
+  Most questions are multi-topic (60% of a planned run sets `also_tests`), and are drawn in every mode with a section
+  id. Associate-level migration scenarios are in scope. At least two distractors are close siblings of the key, and
+  the blind solver reports any option it could rule out without the deciding fact (`kb.py blind --by-form`).
+  Identifiers go in backticks. New fields `standard`, `decided_by`, `step` and `trap` carry the "decided by / answer /
+  tempting sibling" teaching format. Standard-1 questions still load, and lint reports the new rules on them as
+  warnings. `kb.py lint` shows how much of the bank is on standard 2.
+
 - **The image is published on every release tag**, for linux/amd64 and linux/arm64 with provenance and SBOM
   attestations: `ghcr.io/nirmata78/gcp-ace-simulator`, mirrored to `docker.io/aoreshkevich/gcp-ace-simulator`. Tags are
   the full version, plus `MAJOR.MINOR`, `MAJOR` and `latest` for the newest release (#7).

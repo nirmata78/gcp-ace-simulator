@@ -1,7 +1,7 @@
 ---
 name: expand
 description: Grow the ACE question bank by a planned amount, such as "/expand 10%" or "/expand 25". Plans where the new questions go (steering sections toward the exam weights), writes single-answer, multiple-select and cross-domain questions from the exam guide and Google Cloud documentation, proves every key with a quoted sentence, has each question solved blind by a second agent, adds the ones that pass, and commits them on a branch. Use only when the user asks to expand, grow or add a batch of questions to the bank.
-argument-hint: "<N | N%> [--section N] [--objective X.Y] [--balance exam|batch|current] [--cross-share 0.1] [--multi-share 0.1] [--dry-run]"
+argument-hint: "<N | N%> [--section N] [--objective X.Y] [--balance exam|batch|current] [--cross-share 0.6] [--multi-share 0.1] [--dry-run]"
 disable-model-invocation: true
 allowed-tools: Read, Write, Edit, Grep, Glob, Agent, WebSearch, Bash(.venv/bin/python scripts/kb.py *), Bash(.venv/bin/python scripts/build_study_links.py), Bash(.venv/bin/pytest *), Bash(git status *), Bash(git diff *), Bash(git branch *), Bash(git checkout -b expand/*), Bash(git add *), Bash(git commit *), Bash(date *), Bash(ls *), Bash(mkdir -p build/expand/*)
 ---
@@ -113,17 +113,24 @@ Read the page as plain text, never from memory and never through a summary:
   another decision. A Preview feature may be a wrong option, never the answer (AC7).
 - If a wrong option depends on a fact you are not sure of, read its page too.
 
-Then write the question **in this order**. The order prevents the usual defects.
+Write to **version 2** of `docs/question-standard.md`: exact role IDs and commands where the bullet is about access or
+a task, most scenarios across two or more areas of the guide, associate-level migration scenarios in scope, close
+sibling options, and every identifier in backticks. Then write the question **in this order**. The order prevents the
+usual defects.
 
 1. **The fact:** the evidence sentence, and in your own words what it means.
-2. **The decision and the correct option:** short and plain. Name the product, role or action. An option says what
-   to do and stops: no "so that…", "because…" or "which lets…" clause. Reasons belong in the rationales.
+2. **The decision and the correct option:** short and plain. Name the product, the exact role ID (`roles/…`), the
+   exact command or the action. An option says what to do and stops: no "so that…", "because…" or "which lets…"
+   clause. Reasons belong in the rationales.
 3. **Three wrong options** (four for a multiple-select slot, which has five options and two correct). Each one is a
-   real product, role, setting or command that solves a *neighbouring* problem. For each, write down the fact in the
-   scenario that makes it wrong. Each needs its **own** reason; if two fail for the same reason, replace one.
-4. **The stem:** an invented company, what exists, what is needed, and every fact from points 2 and 3 that decides the
-   answer. 25 to 90 words. The last sentence is one direct question. A multiple-select stem ends with
-   `(Choose two.)`.
+   real product, role, permission, setting or command. **At least two are close siblings of the key**: the next role
+   in the same family, another verb or flag in the same command group, the same feature at another scope, the same
+   service in another mode. The reader must need the stem's deciding fact to separate them. For each, write down the
+   fact in the scenario that makes it wrong. Each needs its **own** reason; if two fail for the same reason, replace
+   one. Pick the **tempting sibling**: the one a half-prepared reader would choose.
+4. **The stem:** an invented company, what exists (on premises or in Google Cloud), what is needed, and every fact
+   from points 2 and 3 that decides the answer. 25 to 130 words; migration and architecture scenarios may use the
+   upper half. The last sentence is one direct question. A multiple-select stem ends with `(Choose two.)`.
 5. **Place the options** so that the correct one sits on the slot's letter. Then make the four options alike: same
    grammatical form, similar length. The correct option must not be the longest; lengthen a wrong option with a true
    detail rather than padding it.
@@ -134,14 +141,21 @@ Then write the question **in this order**. The order prevents the usual defects.
    read; do not compose them from memory. If the page gives neither, read the product's how-to page for it.
 8. **`title`** (under 60 characters, a label, no final full stop), **`summary`** (one sentence: the single idea
    tested), **`tags`** (two to five, lowercase, hyphenated).
+9. **The problem-first fields:** `"standard": 2`; `decided_by`, the one to three phrases of the stem that settle the
+   key, copied exactly; `step`, the one reasoning step in 20 words or fewer, as a question and its answer ("Where
+   does the code run? On Google Cloud, so attach."); `trap`, `{"option": "<the tempting sibling's letter>", "why":
+   "<one sentence on why it fails here>"}`.
+10. **Backticks:** every role ID, permission, command, flag, condition expression, API name and resource name in the
+   stem, the options and the rationales is in backticks: `` `roles/storage.objectCreator` ``,
+   `` `gcloud run deploy` ``, `` `--condition` ``. Product names stay prose.
 
 **Multiple-select slots.** Five options A to E, two correct, on the letters the slot gives (`"correct_answer": "A,D"`).
 The two correct options are two separate actions or facts that are *both* needed; if one alone would satisfy the stem,
 the question is broken. Do not write them as two halves of one sentence, and do not let two wrong options pair off as
 an obvious couple.
 
-**Cross-domain slots.** The scenario needs knowledge from the slot's objective *and* from an objective in another
-section: put those in `"also_tests": ["4.2"]`. The slot's own objective is the decision the question ends on. The
+**Multi-topic slots** (most of a run). The scenario needs knowledge from the slot's objective *and* from an objective
+in another section: put those in `"also_tests": ["4.2"]`. The slot's own objective is the decision the question ends on. The
 test is this: a reader who knows only the slot's objective cannot rule out every wrong option. Mentioning another
 product is not enough. The slot suggests a partner objective; use another one if it gives a more natural scenario.
 
@@ -151,7 +165,10 @@ Before a question goes into the file, answer these honestly. A "no" means rewrit
 
 - Could a careful engineer defend a second option under an assumption the stem does not rule out?
 - Does the stem state every fact needed, including network facts (external IP, Cloud NAT, which VPC or project)?
-- Is every option real? No invented flag, role, command or feature.
+- Is every option real? No invented flag, role, permission, command or feature. Every role ID and `gcloud` command
+  is spelled exactly as its reference page spells it; `vet` checks them against the IAM roles reference and the gcloud
+  reference, and a `kubectl`, `bq` or `gsutil` command needs its page in `"identifier_refs": {"<command>": "<url>"}`.
+- Are at least two distractors close siblings of the key, so that no option falls without the deciding fact?
 - Would the answer survive if the reader had never seen the option list (it tests judgement, not recognition)?
 - Does the key avoid resting on a price, a quota value or anything marked *verify* in the theory?
 
@@ -175,13 +192,17 @@ Write `RUN/batch-01.json` (number it as the batch): a JSON list with one object 
       "gcloud_command": "…",
       "doc_ref": "https://docs.cloud.google.com/…"
     },
+    "standard": 2,
+    "decided_by": ["…exact phrase of the stem…"],
+    "step": "…the one reasoning step…",
+    "trap": {"option": "B", "why": "…why the tempting sibling fails here…"},
     "evidence": "One sentence copied word for word from the doc_ref page."
   },
   {"slot": 4, "skip": "The bank already asks each decision under bullet 4.1.3 that the documentation supports."}
 ]
 ```
 
-`objective` and `subtopic` are the slot's exact strings. Add `"also_tests"` only on a cross-domain slot. Do not add
+`objective` and `subtopic` are the slot's exact strings. Add `"also_tests"` only on a multi-topic slot. Do not add
 `id`, `uid`, `domain`, `source` or `blind`; the tools set them.
 
 ### 1.5 Vet, then have it solved blind
@@ -208,11 +229,15 @@ this session, use a `general-purpose` agent and put the instructions from `.clau
 the sheet.) Wait for its reply. Then record its answers exactly as it gave them:
 
 ```bash
-.venv/bin/python scripts/kb.py blind RUN/batch-01.json --answers 3:C 5:A,D 6:B
+.venv/bin/python scripts/kb.py blind RUN/batch-01.json --answers 3:C 5:A,D 6:B --by-form 3:- 5:- 6:D
 ```
 
-A question needs work in three cases: the command prints `DISAGREE`; the solver's "Also defensible" line names an
-option; or its "Problems" line says the reader needs a fact the stem does not give (a time window, a default, a
+`--by-form` records the solver's "Ruled out by form" line for every question: its letters, or `-` for none. A
+standard-2 question cannot be accepted without it.
+
+A question needs work in four cases: the command prints `DISAGREE`; the solver's "Also defensible" line names an
+option; its "Ruled out by form" line names an option (replace that option with a closer sibling of the key); or its
+"Problems" line says the reader needs a fact the stem does not give (a time window, a default, a
 limit, an assumption), or that an option is not real. Do not argue such a report away: put the missing fact in the
 stem. A remark that is only editorial (awkward wording, a formatting difference, "the key is unaffected") does not
 block the question: fix it if the fix is one phrase, and list the remark in your final report either way. Remember

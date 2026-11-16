@@ -410,10 +410,18 @@ never reuse more than two of an existing question's options:
 {existing}
 
 Requirements:
-- A concrete scenario, 2-4 sentences, with a clear requirement and enough detail to be decidable.
+- Follow version 2 of the question standard (docs/question-standard.md).
+- A concrete scenario of 25-130 words, with a clear requirement and enough detail to be decidable. Most
+  scenarios need knowledge from two or more areas of the guide (IAM, networking, data, operations);
+  list the other objectives in "also_tests". Associate-level migrations from on premises are in scope.
 - Exactly four options; exactly one unambiguously correct.
-- Every distractor must be plausible and wrong for a specific, stateable technical reason.
-  Never use filler such as "None of the above".
+- Every distractor must be plausible and wrong for a specific, stateable technical reason. At least two
+  are close siblings of the key: the next role in the same family, another verb or flag of the same
+  command, the same feature at another scope. Never use filler such as "None of the above".
+- Exact IAM role IDs, permissions, commands and flags are welcome when knowing them is the decision.
+  Every one must be real and current. Write every identifier in backticks: `roles/iam.serviceAccountUser`.
+- standard: 2. decided_by: 1-3 exact phrases of the stem that settle the key. step: the one reasoning
+  step in 20 words or fewer. trap: {{"option": letter of the tempting wrong option, "why": one sentence}}.
 - option_breakdown must explain all of A, B, C and D. The correct one starts with "Correct.".
 - title: a short label under 60 characters, no trailing full stop or question mark.
 - summary: one sentence stating the single idea the question tests.
@@ -425,7 +433,8 @@ Requirements:
 Return ONLY a JSON array of {count} object(s) — no prose, no markdown fences — shaped exactly:
 [{{"objective": "2.3", "subtopic": "...", "title": "...", "summary": "...", "tags": ["..."],
    "question": "...", "options": {{"A": "...", "B": "...", "C": "...", "D": "..."}},
-   "correct_answer": "A",
+   "correct_answer": "A", "also_tests": ["4.1"], "standard": 2, "decided_by": ["..."], "step": "...",
+   "trap": {{"option": "B", "why": "..."}},
    "explanation": {{"summary": "...",
      "option_breakdown": {{"A": "...", "B": "...", "C": "...", "D": "..."}},
      "gcloud_command": "...", "doc_ref": "https://cloud.google.com/..."}}}}]
@@ -434,7 +443,8 @@ Return ONLY a JSON array of {count} object(s) — no prose, no markdown fences �
 
 def cmd_lint(args) -> int:
     """The machine-checkable parts of docs/question-standard.md."""
-    from src.question_lint import LONGEST_KEY_LIMIT, key_spread, lint_bank, longest_key_rate
+    from src.question_lint import (LONGEST_KEY_LIMIT, MULTI_TOPIC_TARGET, key_spread, lint_bank, longest_key_rate,
+                                   multi_topic_share)
 
     bank = load(args.data_dir)
     qs = [q for q in bank.questions if not args.ids or q.id in args.ids]
@@ -454,6 +464,11 @@ def cmd_lint(args) -> int:
     print(f"\n{bold('Key spread')}  {spread}")
     print(f"{bold('Longest option is the key')}  "
           + (green if ok else red)(f"{rate:.0%} (limit {LONGEST_KEY_LIMIT:.0%}, chance 25%)"))
+    share, v2 = multi_topic_share(bank.questions)
+    legacy = len(bank.questions) - v2
+    print(f"{bold('Standard 2')}  {v2} questions, {legacy} still on standard 1"
+          + (f"; multi-topic " + (green if share >= MULTI_TOPIC_TARGET else yellow)(
+              f"{share:.0%} (target {MULTI_TOPIC_TARGET:.0%}+)") if v2 else ""))
     print(f"{bold('Findings')}  {errors} errors" + (f", {warnings} warnings" if args.warnings else ""))
     return 1 if errors or not ok else 0
 
@@ -586,10 +601,15 @@ def cmd_add(args) -> int:
     if not candidates:
         print(red("\nNo valid questions produced."), file=sys.stderr)
         return 1
+    legacy = [q.title for q in candidates if q.standard < 2]
+    if legacy:
+        print(f"[ERROR] a new question is written to standard 2 (\"standard\": 2, decided_by, step, trap; "
+              f"docs/question-standard.md): {', '.join(legacy)}", file=sys.stderr)
+        return 1
 
     flagged = 0
     for q in candidates:
-        q.id = bank.next_id(q.domain, QuestionBank.retired_ids(args.data_dir), cross=q.is_cross_domain)
+        q.id = bank.next_id(q.domain, QuestionBank.retired_ids(args.data_dir), cross=q.certifying_only)
         _preview(q)
         if _report_overlap(bank, q, args.threshold):
             flagged += 1
@@ -817,7 +837,8 @@ def cmd_blind(args) -> int:
             print(blind_sheet(raws))
             return 0
         answers = dict(a.replace("=", ":").split(":", 1) for a in args.answers)
-        rows = record_blind(raws, answers)
+        loose = dict(a.replace("=", ":").split(":", 1) for a in (args.by_form or []))
+        rows = record_blind(raws, answers, loose)
     except Exception as exc:
         print(f"[ERROR] {' '.join(str(exc).split())}\nRun kb.py vet first; give answers as SLOT:LETTERS.",
               file=sys.stderr)
@@ -861,7 +882,7 @@ def cmd_accept(args) -> int:
             mark(plan, raw["slot"], "skipped", reason=str(raw["skip"]).strip())
             continue
         q = parsed[f"slot {raw['slot']}"]
-        q.id = bank.next_id(q.domain, retired, cross=q.is_cross_domain)
+        q.id = bank.next_id(q.domain, retired, cross=q.certifying_only)
         gone = bank.get(slots[raw["slot"]].get("replaces") or "")
         bank.questions.append(q)
         ledger["entries"].append(ledger_entry(q, raw, replaces=gone.id if gone else None))
@@ -1031,6 +1052,8 @@ def main() -> int:
     p = sub.add_parser("blind", help="candidates without keys, and recording a blind solver's answers")
     p.add_argument("file", type=Path)
     p.add_argument("--answers", nargs="+", metavar="SLOT:LETTERS", help="for example 12:B 13:A,D")
+    p.add_argument("--by-form", nargs="+", metavar="SLOT:LETTERS",
+                   help="options the solver ruled out without the deciding fact, for example 12:- 13:C")
     p.set_defaults(func=cmd_blind)
 
     p = sub.add_parser("accept", help="add a vetted, blind-solved batch to the bank")
