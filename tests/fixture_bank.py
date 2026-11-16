@@ -113,6 +113,9 @@ def write(out: Path) -> Path:
     retired = {"_note": "Fixture: ids left out of the generated bank.",
                "retired": [{"id": i, "date": "2026-11-16", "reason": "fixture gap"} for i in RETIRED]}
     (out / RETIRED_FILE).write_text(json.dumps(retired, indent=1) + "\n", encoding="utf-8")
+    # Readable by the container's non-root user when mounted (mkdtemp makes the folder 0700).
+    for p in [out, *out.rglob("*")]:
+        p.chmod(0o755 if p.is_dir() else 0o644)
     return out
 
 

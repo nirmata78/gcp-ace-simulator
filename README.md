@@ -209,7 +209,9 @@ python scripts/kb.py lint                   # the question standard: errors, and
 
 ### Adding questions
 
-Give an `objective` and a `subtopic` from the closed list; the section is derived from the objective.
+Give an `objective` and a `subtopic` from the closed list; the section is derived from the objective. New questions
+follow version 2 of the [question standard](docs/question-standard.md): identifiers in backticks, close sibling
+options, and three problem-first fields that the reveal, the reports and the course teach from.
 
 ```json
 {
@@ -221,6 +223,11 @@ Give an `objective` and a `subtopic` from the closed list; the section is derive
   "question": "…",
   "options": { "A": "…", "B": "…", "C": "…", "D": "…" },
   "correct_answer": "B",
+  "also_tests": ["4.1"],
+  "standard": 2,
+  "decided_by": ["…the stem's deciding phrase, quoted exactly…"],
+  "step": "…the one reasoning step, in 20 words or fewer…",
+  "trap": { "option": "C", "why": "…why the tempting sibling fails here…" },
   "explanation": {
     "summary": "…",
     "option_breakdown": { "A": "…", "B": "Correct. …", "C": "…", "D": "…" },
@@ -238,8 +245,9 @@ python scripts/kb.py add --file batch.json --yes   # a JSON list works too
 **Multiple-select.** Give four or five options (`A`–`E`), two or three correct, as `"correct_answer": "A,D"`, a
 rationale for every option, and end the stem with "(Choose two.)" or "(Choose three.)".
 
-**Cross-domain.** Add `"also_tests": ["4.2"]`, the other objectives the scenario needs, at least one in another
-section. The question is then certifying-only and gets an `ace-x-NNN` id. New ids are always above every id in use or
+**Multi-topic.** Add `"also_tests": ["4.2"]`, the other objectives the scenario needs, at least one in another
+section. Most standard-2 questions are multi-topic: they keep a section id and are drawn in every mode. (A standard-1
+cross-domain question is certifying-only and has an `ace-x-NNN` id.) New ids are always above every id in use or
 in the bank's `retired.json`, so a removed question's id is never reused.
 
 **With Claude** (optional; needs `ANTHROPIC_API_KEY`). Give a topic or a rough stem. The prompt gives the model the

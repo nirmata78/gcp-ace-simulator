@@ -96,7 +96,7 @@ def test_a_single_answer_question_has_exactly_four_options(bank):
         Question.model_validate(raw)
 
 
-def test_a_cross_domain_question_is_always_certifying_only_and_gets_an_x_id(bank):
+def test_a_standard_one_cross_domain_question_is_certifying_only_and_gets_an_x_id(bank):
     raw = next(q for q in bank.questions if q.is_cross_domain).model_dump(mode="json")
     raw.pop("uid")
     q = Question.model_validate({**raw, "id": "pending", "certifying_only": False})
@@ -104,3 +104,16 @@ def test_a_cross_domain_question_is_always_certifying_only_and_gets_an_x_id(bank
     used = max(int(x.id[6:]) for x in bank.questions if x.id.startswith("ace-x-"))
     assert bank.next_id(q.domain, cross=True) == f"ace-x-{used + 1:03d}"
     assert bank.next_id(q.domain).startswith("ace-s")
+
+
+def test_a_standard_two_multi_topic_question_is_drawn_everywhere(bank):
+    """Standard 2: most questions test several objectives, so they are neither certifying-only nor ace-x."""
+    raw = next(q for q in bank.questions if q.is_cross_domain).model_dump(mode="json")
+    raw.pop("uid")
+    raw.update(id="pending", certifying_only=False, standard=2, decided_by=[raw["question"][:20]],
+               step="The deciding fact picks the key.",
+               trap={"option": next(k for k in raw["options"] if k not in raw["correct_answer"]), "why": "Fixture sibling."})
+    q = Question.model_validate(raw)
+    assert q.is_cross_domain and not q.certifying_only
+    mixed = QuestionBank(questions=[*bank.questions, q.model_copy(update={"id": "ace-s9-001", "title": "Fixture v2 multi-topic", "uid": str(uuid.uuid4())})])
+    assert any(p.id == "ace-s9-001" for p in filtered_pool(mixed))

@@ -44,6 +44,13 @@ def bank() -> QuestionBank:
     return QuestionBank.load(DATA)
 
 
+def docs(url: str) -> str:
+    """A stand-in for the documentation: the quote's page, and a gcloud reference page that lists the flags."""
+    if "/sdk/gcloud/reference/" in url:
+        return "gcloud iam roles create ROLE_ID --organization=ORGANIZATION --file=FILE --project=PROJECT"
+    return page_text(PAGE)
+
+
 def candidate() -> dict:
     """A well-formed candidate. A fixture only: it is never added to the real bank."""
     return {
@@ -76,6 +83,10 @@ def candidate() -> dict:
             "gcloud_command": "gcloud iam roles create auditLister --organization=ORG_ID --file=role.yaml",
             "doc_ref": "https://docs.cloud.google.com/iam/docs/creating-custom-roles",
         },
+        "standard": 2,
+        "decided_by": ["every present and future project", "without being recreated"],
+        "step": "Grantable in every project, now and later, means define the role once above them all.",
+        "trap": {"option": "B", "why": "A folder looks like the shared parent, but custom roles cannot live on one."},
         "evidence": QUOTE,
     }
 
@@ -167,7 +178,7 @@ def test_the_mix_and_the_keys_are_planned(bank):
     slots = p["slots"]
     cross = [s for s in slots if s["cross"]]
     multi = [s for s in slots if s["kind"] == "multi"]
-    assert len(cross) == 8 and len(multi) == 8
+    assert len(cross) == 48 and len(multi) == 8  # standard 2: most questions are multi-topic
     assert any(s["kind"] == "multi" for s in cross) and any(s["kind"] == "single" for s in cross)
     assert all(s["options"] == 5 and len(s["key"].split(",")) == 2 for s in multi)
     assert all(OBJECTIVES[s["pair_with"]].section != s["section"] for s in cross)
@@ -184,7 +195,7 @@ def test_the_mix_and_the_keys_are_planned(bank):
 
 
 def test_a_sound_candidate_passes(bank):
-    found, parsed = vet(bank, [candidate()], plan=one_slot(), pages=lambda url: page_text(PAGE))
+    found, parsed = vet(bank, [candidate()], plan=one_slot(), pages=docs)
     assert not codes(found) and "slot 1" in parsed
 
 
@@ -201,6 +212,7 @@ def test_a_candidate_must_match_its_slot(bank):
 def test_form_defects_are_errors_on_a_new_question(bank):
     c = candidate()
     c["question"] = "Where should an administrator create the custom role?"
+    c["decided_by"] = ["create the custom role"]
     c["explanation"]["gcloud_command"] = ""
     c["explanation"]["doc_ref"] = "https://example.com/blog/custom-roles"
     c["options"]["C"] += ", because an organization-level custom role is grantable in every project under it"
@@ -213,7 +225,8 @@ def test_form_defects_are_errors_on_a_new_question(bank):
 def test_a_restated_bank_question_is_rejected(bank):
     old = bank.questions[0]
     c = candidate()
-    c.update(question=old.question, title=old.title, objective=old.objective, subtopic=old.subtopic)
+    c.update(question=old.question, title=old.title, objective=old.objective, subtopic=old.subtopic,
+             decided_by=[old.question[:30]])
     c.pop("slot")
     found, _ = vet(bank, [c])
     assert {"stem-overlap", "title"} <= codes(found, "item 1")
@@ -290,6 +303,8 @@ def test_final_vetting_needs_an_agreeing_blind_record_for_the_current_wording(ba
             record_blind([c], bad)
     assert "blind" in codes(vet(bank, [c], final=True)[0])
     record_blind([c], {"1": " c "})
+    assert "blind" in codes(vet(bank, [c], final=True)[0]), "standard 2 needs the solver's by-form report"
+    record_blind([c], {"1": " c "}, {"1": "-"})
     assert c["blind"]["hash"] == blind_hash(parse_candidate(c)) and not codes(vet(bank, [c], final=True)[0])
     c["options"]["A"] = "In each project, by importing one shared role definition"
     assert "blind" in codes(vet(bank, [c], final=True)[0]), "an edit after the blind solve voids it"
@@ -320,7 +335,7 @@ def test_accept_adds_a_batch_and_records_it(tmp_path, capsys):
     assert kb.cmd_accept(_args(tmp_path)) == 1, "no blind record yet"
     assert len(QuestionBank.load(tmp_path / "data").questions) == len(before.questions)
 
-    record_blind(batch, {"1": "C"})
+    record_blind(batch, {"1": "C"}, {"1": "-"})
     (tmp_path / "batch.json").write_text(json.dumps(batch))
     assert kb.cmd_accept(_args(tmp_path)) == 0
     after = QuestionBank.load(tmp_path / "data")
@@ -332,7 +347,7 @@ def test_accept_adds_a_batch_and_records_it(tmp_path, capsys):
     assert [s["status"] for s in slots] == ["filled", "skipped"] and slots[0]["id"] == new[0].id
     entry = json.loads((tmp_path / "ledger.json").read_text())["entries"][0]
     assert entry["id"] == new[0].id and entry["verdict"] == "new" and entry["evidence"]["quote"] == QUOTE
-    assert entry["blind_solve"] == {"answer": "C", "agrees": True}
+    assert entry["blind_solve"] == {"answer": "C", "agrees": True, "by_form": []} and entry["standard"] == 2
     assert "slot" not in json.dumps(json.loads((tmp_path / "data/sections/section-4-security.json").read_text())["questions"][-1])
 
     assert kb.cmd_accept(_args(tmp_path)) == 1, "a filled slot cannot be filled twice"
@@ -397,7 +412,7 @@ def test_accepting_a_rework_retires_what_it_replaces(tmp_path, bank, capsys):
     old = _old(bank)
     (tmp_path / "plan.json").write_text(json.dumps(one_slot(replaces=old.id)))
     batch = [candidate()]
-    record_blind(batch, {"1": "C"})
+    record_blind(batch, {"1": "C"}, {"1": "-"})
     (tmp_path / "batch.json").write_text(json.dumps(batch))
     assert kb.cmd_accept(_args(tmp_path)) == 0
     after = QuestionBank.load(tmp_path / "data")
@@ -410,3 +425,52 @@ def test_accepting_a_rework_retires_what_it_replaces(tmp_path, bank, capsys):
     assert (gone["id"], gone["verdict"], gone["replacement_id"]) == (old.id, "removed", new_id)
     assert gone["original"]["question"] == old.question
     capsys.readouterr()
+
+
+# -- standard 2 (docs/question-standard.md) --------------------------------------
+
+
+def test_a_new_question_must_be_written_to_standard_two(bank):
+    c = candidate()
+    for key in ("standard", "decided_by", "step", "trap"):
+        c.pop(key)
+    assert "standard" in codes(vet(bank, [c])[0])
+
+
+def test_the_problem_first_fields_are_checked(bank):
+    for bad in ({"decided_by": ["words that are not in the stem"]}, {"decided_by": []},
+                {"step": " ".join(["word"] * 25)}, {"trap": {"option": "C", "why": "C is the key, not a sibling"}},
+                {"trap": None}):
+        assert "schema" in codes(vet(bank, [{**candidate(), **bad}])[0]), bad
+
+
+def test_every_named_role_and_command_must_exist(bank):
+    c = candidate()
+    c["options"]["A"] = "Grant `roles/iam.roleAdmin` in each project and copy the role there"
+    c["explanation"]["gcloud_command"] = "gcloud iam roles create auditLister --organization=ORG_ID --made-up-flag"
+
+    def pages(url):
+        if url.endswith("roles-permissions/iam"):
+            return "roles/iam.roleAdmin Role Administrator"
+        if url.endswith("reference/iam/roles/create"):
+            return "--organization=ORGANIZATION --file=FILE"
+        if "/sdk/gcloud/reference/" in url:
+            raise OSError("404")
+        return page_text(PAGE)
+
+    msgs = [m for s, code, m in vet(bank, [c], pages=pages)[0]["slot 1"] if code == "identifier"]
+    assert len(msgs) == 1 and "--made-up-flag" in msgs[0]
+    c["options"]["A"] = "Grant `roles/iam.roleAdministrator` in each project and copy the role there"
+    msgs = [m for s, code, m in vet(bank, [c], pages=pages)[0]["slot 1"] if code == "identifier"]
+    assert any("roles/iam.roleAdministrator" in m for m in msgs)
+    c["explanation"]["gcloud_command"] = "gcloud iam rolez create auditLister"
+    msgs = [m for s, code, m in vet(bank, [c], pages=pages)[0]["slot 1"] if code == "identifier"]
+    assert any("no gcloud reference page" in m for m in msgs)
+
+
+def test_a_solver_ruling_an_option_out_by_form_is_a_defect(bank):
+    c = candidate()
+    record_blind([c], {"1": "C"}, {"1": "D"})
+    assert c["blind"]["by_form"] == ["D"] and "by-form" in codes(vet(bank, [c], final=True)[0])
+    with pytest.raises(ValueError):
+        record_blind([c], {"1": "C"}, {"1": "maybe"})

@@ -17,8 +17,14 @@ For each question:
 3. Try to defend each remaining option. Ask: under an assumption the stem does not rule out, would this option also
    meet the requirement? If yes, report it.
 4. Note anything that would make a careful reader hesitate: a fact the stem needs but does not give, an option that
-   is not a real product, role, flag or command, a grammatical or length cue that gives the answer away, or a
+   is not a real product, role, permission, flag or command as written (check exact role IDs and command spellings on
+   the IAM roles reference and the gcloud reference), a grammatical or length cue that gives the answer away, or a
    requirement that can be read two ways.
+5. Note which options you ruled out **without** using the fact in the stem that decides the question: by form, by
+   length, by an absolute word, because the option was off-topic, or because it was not a close relative of the other
+   options. These options are too easy, and the question will be sent back. Be strict: an option you needed the stem's
+   specific facts to rule out does not count.
+6. Quote the words of the stem that decided your answer.
 
 Reply with exactly one block per question, in the order given, and nothing before or after the blocks:
 
@@ -27,6 +33,8 @@ Question <number>
 Answer: <letter, or two letters such as A,D>
 Confidence: <high | medium | low>
 Also defensible: <letters, or none> - <one sentence on why, if any>
+Ruled out by form: <letters, or none> - <one sentence on how, if any>
+Decided by: "<the stem's words that decided the answer>"
 Problems: <none, or one or two sentences>
 ```
 

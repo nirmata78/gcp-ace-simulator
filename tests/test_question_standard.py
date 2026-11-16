@@ -86,3 +86,49 @@ def test_audit_flags_a_paraphrase_and_passes_an_unrelated_stem():
     rows = audit([("x", "Worker Pods drain a Pub/Sub subscription; CPU stays low as the backlog grows"),
                   ("y", "Which storage class suits data read once a year?")], refs)
     assert [r["flagged"] for r in rows] == [True, False]
+
+
+# -- standard 2 ----------------------------------------------------------------
+
+
+def test_identifiers_outside_backticks_are_found():
+    from src.question_lint import bare_identifiers
+
+    found = dict((i, k) for k, i in bare_identifiers(
+        "Grant roles/iam.serviceAccountUser, then run gcloud compute instances create with --shielded-secure-boot; "
+        "the caller needs iam.serviceAccounts.actAs and storage.googleapis.com enabled."))
+    assert found == {"roles/iam.serviceAccountUser": "role ID", "gcloud compute instances create": "command",
+                     "--shielded-secure-boot": "flag", "iam.serviceAccounts.actAs": "permission",
+                     "storage.googleapis.com": "API name"}
+    assert not bare_identifiers("Grant `roles/iam.serviceAccountUser` and run `gcloud compute instances list`.")
+    assert not bare_identifiers("Use gcloud and the console; the gcloud CLI is installed. See example.com.")
+
+
+def test_standard_two_makes_bare_identifiers_an_error(bank):
+    q = bank.questions[0].model_copy(deep=True)
+    q.options["A"] = "Grant roles/viewer on the project"
+    assert ("warning", "ident-unformatted") in {(s, c) for s, c, _ in lint_question(q)}
+    q.standard = 2
+    assert ("error", "ident-unformatted") in {(s, c) for s, c, _ in lint_question(q)}
+    q.options["A"] = "Grant `roles/viewer` on the project"
+    assert "ident-unformatted" not in {c for _, c, _ in lint_question(q)}
+
+
+def test_siblings_are_options_from_the_same_family():
+    from src.models import Question
+    from src.question_lint import siblings
+
+    raw = {"id": "x", "title": "Sibling fixture", "objective": "4.1", "subtopic": "Role Types and Custom Roles",
+           "summary": "s", "question": "stem", "correct_answer": "A",
+           "options": {"A": "`roles/iam.serviceAccountTokenCreator` on the account",
+                       "B": "`roles/iam.serviceAccountUser` on the account",
+                       "C": "A new VPC firewall rule for egress", "D": "Cloud Monitoring uptime check alerts"},
+           "explanation": {"summary": "s", "option_breakdown": {k: k for k in "ABCD"}}}
+    assert siblings(Question.model_validate(raw)) == ["B"]
+
+
+def test_a_legacy_question_keeps_its_stored_form(bank, tmp_path):
+    from src.models import _stored
+
+    q = bank.questions[0]
+    assert {"standard", "decided_by", "step", "trap"}.isdisjoint(_stored(q))

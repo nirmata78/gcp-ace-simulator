@@ -103,13 +103,16 @@ def weighted_sample(
     unseen one left. An objective that runs out hands its share to unseen questions elsewhere in
     the same section first, so the section split holds while the section has unseen stock.
 
-    Cross-domain questions (``also_tests``) fill ``cross_share`` of each section's quota first,
-    counted against their own section, so the 10 / 15 / 15 / 10 split still holds.
+    Certifying-only cross-domain questions (standard 1) fill ``cross_share`` of each section's quota first,
+    counted against their own section, so the 10 / 15 / 15 / 10 split still holds. Standard-2 questions are
+    multi-topic by default and are drawn by their own objective.
     """
     rng = rng or random.Random()
     obj_w = objective_weights()
-    cross = [q for q in bank.questions if q.is_cross_domain]
-    single = [q for q in bank.questions if not q.is_cross_domain]
+    # The reserved quota is for the legacy cross-domain set (standard 1, certifying-only). A standard-2 question that
+    # also tests other objectives is drawn with its own objective, like any other.
+    cross = [q for q in bank.questions if q.certifying_only]
+    single = [q for q in bank.questions if not q.certifying_only]
     by_obj: Dict[str, List[Question]] = {}
     for q in single:
         by_obj.setdefault(q.objective, []).append(q)
