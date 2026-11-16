@@ -18,7 +18,7 @@ banks/
 |---|---|
 | From source | Put the bank in `banks/private/`, or start with `ACE_BANK_DIR=/path/to/bank streamlit run app.py` |
 | `kb.py` | Uses the same bank: `ACE_BANK_DIR=/path/to/bank python scripts/kb.py check` |
-| Docker | `compose.yaml` mounts `./banks/private` read-only. Use `ACE_BANK_HOST=/path/to/bank docker compose up` for another folder |
+| Docker | `compose.yaml` mounts `./banks/private` read-only. Use `ACE_BANK_HOST=/path/to/bank docker compose up` for another folder. The container runs as a non-root user, so the folder must be world-readable (`chmod -R a+rX banks/private`) |
 
 A bank's questions follow the schema in the [README](../README.md#adding-questions) and the
 [question standard](../docs/question-standard.md). Run `python scripts/kb.py check` and `python scripts/kb.py lint` on
